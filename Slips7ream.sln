@@ -1,0 +1,19 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Slips7ream", "Slips7ream\Slips7ream.vbproj", "{04FE216D-F198-4EDA-9CC8-7E5E9A875602}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AnyCPU = Debug|AnyCPU
+		Release|AnyCPU = Release|AnyCPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{04FE216D-F198-4EDA-9CC8-7E5E9A875602}.Debug|AnyCPU.ActiveCfg = Debug|Any CPU
+		{04FE216D-F198-4EDA-9CC8-7E5E9A875602}.Debug|AnyCPU.Build.0 = Debug|Any CPU
+		{04FE216D-F198-4EDA-9CC8-7E5E9A875602}.Release|AnyCPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
