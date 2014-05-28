@@ -157,7 +157,8 @@ UDF 1.02: Legacy UDF understood by most drives. Compatible with old hardware.
   </data>
   <data name="chkUEFI.ToolTip" xml:space="preserve">
     <value>Enable Unified Extensible Firmware Interface compatibility, which may be necessary for newer systems (particularly machines that came with Windows 8).
-UEFI requires a 64-bit Operating System, so please only use x64 Image Packages with UEFI.</value>
+UEFI requires a 64-bit Operating System, so please only use x64 Image Packages with UEFI.
+UEFI requires a custom Video Card driver which is only built for Windows 8, so please enable your UEFI's compatibility module to allow Windows 7 access to the video card.</value>
   </data>
   <data name="cmbLimit.ToolTip" xml:space="preserve">
     <value>Enter a maximum size for the Image. All sizes will be converted to MegaBytes.
