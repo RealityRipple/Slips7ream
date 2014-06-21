@@ -9,7 +9,8 @@
       mySettings.TempDir = txtTemp.Text
     Else
       txtTemp.Focus()
-      MsgBox("Temp Parent Directory Not Found!" & vbNewLine & "Please choose a directory that exists to put the Temp directory in.", MsgBoxStyle.Exclamation, "Missing Temp Parent Directory")
+      MsgDlg(Me, "Please choose a directory that exists to put the Temp directory in.", "Temp Parent Directory Not Found!", "Missing Temp Parent Directory", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder)
+      Exit Sub
     End If
     mySettings.x86WhiteList = Split(txtWhitelist.Text, vbNewLine)
     mySettings.Timeout = txtTimeout.Value * 1000 * 60

@@ -1,4 +1,5 @@
-﻿Module modFunctions
+﻿Imports Microsoft.WindowsAPICodePack.Dialogs
+Module modFunctions
   Private Declare Auto Function GetShortPathName Lib "kernel32.dll" (ByVal lpszLongPath As String, ByVal lpszShortPath As String, ByVal cchBuffer As Int32) As Int32
   Public Structure UpdateInfo
     Public IsFile As Boolean
@@ -345,4 +346,421 @@
     Next
     FileList = FilesOutOfOrder
   End Sub
+#Region "Task Dialogs"
+  Public Function SelectionBox(owner As Form, newPath As String, newVer As Integer, oldPath As String, oldVer As Integer, ByRef Always As Boolean) As Boolean
+    Dim newData As New UpdateInfoEx(newPath)
+    Dim oldData As New UpdateInfoEx(oldPath)
+    If TaskDialog.IsPlatformSupported Then
+      If newVer > oldVer Then
+        Using dlgUpdate As New TaskDialog
+          dlgUpdate.Cancelable = False
+          dlgUpdate.StartupLocation = TaskDialogStartupLocation.CenterOwner
+          dlgUpdate.Caption = "Replace Older Version?"
+          dlgUpdate.InstructionText = "There is already an older version of KB" & oldData.KBArticle & " in the list."
+          dlgUpdate.StandardButtons = TaskDialogStandardButtons.None
+          dlgUpdate.Text = "Click the version you want to keep"
+          dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
+          dlgUpdate.FooterCheckBoxChecked = False
+          dlgUpdate.FooterCheckBoxText = "&Do this for all new versions"
+          Dim em As String = ChrW(&H2003) & ChrW(&H2003)
+          Dim cmdYes As New CommandLink(
+            "cmdNew",
+            "Use Newer Version " & newVer,
+            "Replace the update with this new version:" & vbNewLine &
+            em & newData.DisplayName & vbNewLine &
+            em & "Size: " & ByteSize(New IO.FileInfo(newPath).Length) & vbNewLine &
+            em & "Built: " & newData.BuildDate)
+          cmdYes.Default = True
+          AddHandler cmdYes.Click, AddressOf SelectionDialogButton_Click
+          dlgUpdate.Controls.Add(cmdYes)
+          Dim cmdNo As New CommandLink(
+            "cmdOld",
+            "Use Older Version " & oldVer,
+            "This update will not be replaced:" & vbNewLine &
+            em & oldData.DisplayName & vbNewLine &
+            em & "Size: " & ByteSize(New IO.FileInfo(oldPath).Length) & vbNewLine &
+            em & "Built: " & oldData.BuildDate)
+          AddHandler cmdNo.Click, AddressOf SelectionDialogButton_Click
+          dlgUpdate.Controls.Add(cmdNo)
+          dlgUpdate.OwnerWindowHandle = owner.Handle
+          AddHandler dlgUpdate.Opened, AddressOf RefreshDlg
+          Dim ret As TaskDialogResult = dlgUpdate.Show()
+          Always = dlgUpdate.FooterCheckBoxChecked
+          If ret = TaskDialogResult.Yes Then Return True
+          Return False
+        End Using
+      Else
+        Using dlgUpdate As New TaskDialog
+          dlgUpdate.Cancelable = False
+          dlgUpdate.StartupLocation = TaskDialogStartupLocation.CenterOwner
+          dlgUpdate.Caption = "Replace Newer Version?"
+          dlgUpdate.InstructionText = "There is already a newer version of KB" & newData.KBArticle & " in the list."
+          dlgUpdate.StandardButtons = TaskDialogStandardButtons.None
+          dlgUpdate.Text = "Click the version you want to keep"
+          dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
+          dlgUpdate.FooterCheckBoxChecked = False
+          dlgUpdate.FooterCheckBoxText = "&Do this for all old versions"
+          Dim em As String = ChrW(&H2003) & ChrW(&H2003)
+          Dim cmdYes As New CommandLink(
+            "cmdNew",
+            "Use Older Version " & newVer,
+            "Replace the update with this old version:" & vbNewLine &
+            em & newData.DisplayName & vbNewLine &
+            em & "Size: " & ByteSize(New IO.FileInfo(newPath).Length) & vbNewLine &
+            em & "Built: " & newData.BuildDate)
+          AddHandler cmdYes.Click, AddressOf SelectionDialogButton_Click
+          dlgUpdate.Controls.Add(cmdYes)
+          Dim cmdNo As New CommandLink(
+            "cmdOld",
+            "Use Newer Version " & oldVer,
+            "This update will not be replaced:" & vbNewLine &
+            em & oldData.DisplayName & vbNewLine &
+            em & "Size: " & ByteSize(New IO.FileInfo(oldPath).Length) & vbNewLine &
+            em & "Built: " & oldData.BuildDate)
+          cmdNo.Default = True
+          AddHandler cmdNo.Click, AddressOf SelectionDialogButton_Click
+          dlgUpdate.Controls.Add(cmdNo)
+          dlgUpdate.OwnerWindowHandle = owner.Handle
+          AddHandler dlgUpdate.Opened, AddressOf RefreshDlg
+          Dim ret As TaskDialogResult = dlgUpdate.Show()
+          Always = dlgUpdate.FooterCheckBoxChecked
+          If ret = TaskDialogResult.Yes Then Return True
+          Return False
+        End Using
+      End If
+    Else
+      If newVer > oldVer Then
+        Return MessageBox.Show(owner, "There is already an older version of this update in the list." & vbNewLine & "Do you want to replace " & oldData.DisplayName & " with version " & newVer & "?", "Replace Older Version?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = DialogResult.Yes
+      Else
+        Return MessageBox.Show(owner, "There is already a newer version of this update in the list." & vbNewLine & "Do you want to replace " & oldData.DisplayName & " with version " & newVer & "?", "Replace Newer Version", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = DialogResult.Yes
+      End If
+    End If
+  End Function
+  Private Sub SelectionDialogButton_Click(sender As TaskDialogCommandLink, e As EventArgs)
+    Select Case sender.Name
+      Case "cmdNew" : CType(sender.HostingDialog, TaskDialog).Close(TaskDialogResult.Yes)
+      Case "cmdOld" : CType(sender.HostingDialog, TaskDialog).Close(TaskDialogResult.No)
+    End Select
+  End Sub
+
+  Private Class CommandLink
+    Inherits TaskDialogCommandLink
+    Public Sub New(name As String, text As String)
+      MyBase.New(name, text)
+    End Sub
+    Public Sub New(name As String, text As String, instruction As String)
+      MyBase.New(name, text, instruction)
+    End Sub
+    Public Overrides Function ToString() As String
+      Dim str As String
+      Dim noLabel As Boolean = String.IsNullOrEmpty(Me.Text)
+      Dim noInstruction As Boolean = String.IsNullOrEmpty(Me.Instruction)
+      If noLabel And noInstruction Then
+        str = String.Empty
+      ElseIf Not noLabel And noInstruction Then
+        str = Me.Text
+      ElseIf noLabel And Not noInstruction Then
+        str = Me.Instruction
+      Else
+        str = Me.Text & vbLf & Me.Instruction
+      End If
+      Return str
+    End Function
+  End Class
+
+  Public Enum TaskDialogIcon
+    None = 0
+    Space = &H1
+    File = &H2
+    OpenFolder = &H3
+    OpenFolder2 = &H4
+    ClosedFolder = &H5
+    FolderOpening = &H6
+    SearchCatalog = &H8
+    CatalogFolder = &H9
+    CatalogFolderOpening = &HA
+    Games = &HE
+    EXE = &HF
+    SearchFolder = &H12
+    AlignedTextFile = &H13
+    Envelope = &H14
+    PictureViewer = &H15
+    MusicSheet = &H16
+    VideoClip = &H17
+    DefaultPrograms = &H18
+    Internet = &H19
+    PrinterFolder = &H1A
+    ControlPanel = &H1B
+    FloppyDrive35 = &H1C
+    FloppyDrive525 = &H1D
+    CDDrive = &H1E
+    NetworkDriveDisconnected = &H1F
+    HardDrive = &H20
+    NetworkDrive = &H21
+    MemoryChip = &H22
+    RemovableDrive = &H23
+    WindowsDrive = &H24
+    DVDDrive = &H25
+    DVDR = &H26
+    DVDRAM = &H27
+    DVDROM = &H28
+    DVDRW = &H29
+    ZipDrive = &H2A
+    TapeDrive = &H2B
+    BluDrive = &H2C
+    PrinterInternet = &H2D
+    Camcorder = &H2E
+    Phone = &H2F
+    PrinterDefaultFloppy = &H30
+    PrinterDefault = &H31
+    PrinterDefaultNetwork = &H32
+    Printer = &H33
+    PrinterFloppy = &H34
+    PrinterNetwork = &H35
+    TrashFull = &H36
+    TrashEmpty = &H37
+    DVD = &H38
+    Camera = &H39
+    CardReader = &H3A
+    Padlock = &H3B
+    SDCard = &H3C
+    CD = &H3D
+    CDR = &H3E
+    CDROM = &H3F
+    CDRW = &H40
+    JewelCase = &H41
+    MP3Player = &H42
+    DLL = &H43
+    Batch = &H44
+    INI = &H45
+    GIF = &H46
+    BMP = &H47
+    JPEG = &H48
+    InternetFolder = &H49
+    InternetFolderOpen = &H4A
+    UnknownDrive = &H4B
+    Fax = &H4C
+    Fonts = &H4D
+    ShieldUAC = &H4E
+    UserAccount = &H4F
+    StartMenu = &H50
+    Information = &H51
+    Key = &H52
+    PNG = &H53
+    Warning = &H54
+    CDMusic = &H55
+    Accessibility = &H56
+    WindowsUpdate = &H57
+    UserAccount2 = &H58
+    Delete = &H59
+    RichText = &H5A
+    WhiteFloppyDrive = &H5B
+    SilverScreen = &H5C
+    PDA = &H5D
+    TextSelection = &H5E
+    Scanner = &H5F
+    ExternalChip = &H60
+    Disabled = &H61
+    [Error] = &H62
+    Question = &H63
+    Run = &H64
+    Sleep = &H65
+    BlankTextFile = &H66
+    Projector = &H67
+    ShieldQuestion = &H68
+    ShieldError = &H69
+    ShieldOK = &H6A
+    ShieldWarning = &H6B
+    MusicFolder = &H6C
+    Computer = &H6D
+    Desktop = &H6E
+    Defrag = &H6F
+    DocumentsFolder = &H70
+    PicturesFolder = &H71
+    Options = &H72
+    FavoritesFolder = &H73
+    TaskDialog = &H74
+    Recent = &H75
+    InternetNetwork = &H78
+    UserFolder = &H7B
+    FontBigA = &H7C
+    FontTTCert = &H7D
+    FontTCCert = &H7E
+    FontOCert = &H7F
+    FontLittleA = &H80
+    Fonts2 = &H81
+    GuestUser = &H82
+    MusicFile = &H83
+    PictureFile = &H84
+    VideoFile = &H85
+    MediaFile = &H86
+    DVDMusic = &H87
+    DVDVideo = &H88
+    CDMusic2 = &H89
+    DVDVideoClip = &H8A
+    HDDVDVideoClip = &H8B
+    BluRayVideoClip = &H8C
+    VCDVideoClip = &H8D
+    SVCDVideoClip = &H8E
+    NetworkFolder = &H8F
+    InternetTime = &H90
+    SearchComputer = &H91
+    CDUnknown = &H92
+    ComputerTransfer = &H93
+    LibraryStack = &H94
+    SystemProperties = &H95
+    ResourceMonitor = &H96
+    Personalize = &H97
+    Network = &H98
+    CDBurn = &H9B
+    [Default] = &H9D
+    FontTT = &H9E
+    FontTC = &H9F
+    FontO = &HA0
+    WindowsUpdate2 = &HA1
+    FolderFull = &HA2
+    Shortcut = &HA3
+    [Shared] = &HA4
+    Preferences = &HA5
+    FolderPreferences = &HA6
+    ZipDriveDisconnected = &HA7
+    Unknown = &HA8
+    Download = &HA9
+    Bad = &HAA
+    MoveToNetwork = &HAB
+    DVDPlusR = &HAC
+    DVDPlusRW = &HAD
+    ZipFile = &HAE
+    CompressedFile = &HAF
+    Sound = &HB0
+    Search = &HB1
+    UserAccountsFolder = &HB2
+    InternetRJ45 = &HB3
+    CDMusicPlus = &HB4
+    ContactsFolder = &HB5
+    Keyboard = &HB6
+    DesktopFolder = &HB7
+    DownloadsFolder = &HB8
+    LinksFolder = &HB9
+    GamesFolder = &HBA
+    VideoFolder = &HBD
+    GreenFolder = &HBE
+    EmptyBox = &HBF
+    BorderedBox = &HC0
+    VideoStandard = &HC1
+    VideoWide = &HC2
+    ShieldUpdateTime = &HC3
+    PrinterSound = &HC4
+    PersonalizeComputer = &HC5
+    Library = &H3E9
+    LibraryDocuments = &H3EA
+    LibraryPictures = &H3EB
+    LibraryMusic = &H3EC
+    LibraryVideos = &H3ED
+    TV = &H3F0
+    Users = &H3F2
+    Homegroup = &H3F5
+    Library2 = &H3F6
+    FavoritesFolder2 = &H3FC
+    ComputerDialog = &H3FD
+    ComputerTasks = &H3FE
+    Libraries = &H3FF
+    Favorites = &H400
+    SearchesFolder = &H401
+    Album = &H402
+    No = &H403
+    User = &H405
+    DriveUnlocked = &H406
+    DriveLocked = &H407
+    DriveUnlockedError = &H408
+    DriveUnlockedWindows = &H409
+    DriveUnlcokedErrorWindows = &H40A
+    DriveUnlockedRemovable = &H40B
+    DriveLockedRemovable = &H40C
+    DriveUnlockedErrorRemovable = &H40D
+    TaskDialog2 = &HFF9C
+    ShieldUAC2 = &HFFF7
+    ShieldOK2 = &HFFF8
+    ShieldError2 = &HFFF9
+    ShieldWarning2 = &HFFFA
+    ShieldUAC3 = &HFFFB
+    ShieldUAC4 = &HFFFC
+    Information2 = &HFFFD
+    Error2 = &HFFFE
+    Warning2 = &HFFFF
+  End Enum
+  Public Function MsgDlg(owner As Form, Text As String, Optional Title As String = Nothing, Optional Caption As String = Nothing, Optional Buttons As MessageBoxButtons = MessageBoxButtons.OK, Optional Icon As TaskDialogIcon = TaskDialogIcon.None, Optional DefaultButton As MessageBoxDefaultButton = MessageBoxDefaultButton.Button1, Optional Details As String = Nothing) As DialogResult
+    If TaskDialog.IsPlatformSupported Then
+      Using dlgMessage As New TaskDialog
+        dlgMessage.Cancelable = True
+        dlgMessage.Caption = Caption
+        dlgMessage.InstructionText = Title
+        dlgMessage.Text = Text
+        dlgMessage.Icon = Icon
+        Select Case Buttons
+          Case MessageBoxButtons.YesNo : dlgMessage.StandardButtons = TaskDialogStandardButtons.Yes Or TaskDialogStandardButtons.No
+          Case MessageBoxButtons.YesNoCancel : dlgMessage.StandardButtons = TaskDialogStandardButtons.Yes Or TaskDialogStandardButtons.No Or TaskDialogStandardButtons.Cancel
+          Case MessageBoxButtons.OKCancel : dlgMessage.StandardButtons = TaskDialogStandardButtons.Ok Or TaskDialogStandardButtons.Cancel
+          Case MessageBoxButtons.RetryCancel : dlgMessage.StandardButtons = TaskDialogStandardButtons.Retry Or TaskDialogStandardButtons.Cancel
+          Case MessageBoxButtons.AbortRetryIgnore : dlgMessage.StandardButtons = TaskDialogStandardButtons.Close Or TaskDialogStandardButtons.Retry Or TaskDialogStandardButtons.Cancel
+        End Select
+        If Not String.IsNullOrEmpty(Details) Then
+          dlgMessage.DetailsExpanded = False
+          dlgMessage.DetailsCollapsedLabel = "View Details"
+          dlgMessage.DetailsExpandedLabel = "Hide Details"
+          dlgMessage.DetailsExpandedText = Details
+          dlgMessage.ExpansionMode = TaskDialogExpandedDetailsLocation.ExpandContent
+        End If
+        If owner IsNot Nothing Then dlgMessage.OwnerWindowHandle = owner.Handle
+        AddHandler dlgMessage.Opened, AddressOf RefreshDlg
+        Dim ret = dlgMessage.Show()
+        Select Case ret
+          Case TaskDialogResult.Yes : Return DialogResult.Yes
+          Case TaskDialogResult.No : Return DialogResult.No
+          Case TaskDialogResult.Ok : Return DialogResult.OK
+          Case TaskDialogResult.Cancel : Return DialogResult.Cancel
+          Case TaskDialogResult.Close : Return DialogResult.Ignore
+          Case TaskDialogResult.Retry : Return DialogResult.Retry
+          Case TaskDialogResult.CustomButtonClicked : Return DialogResult.Abort
+        End Select
+        Return DialogResult.None
+      End Using
+    Else
+      Dim Content As String
+      If String.IsNullOrEmpty(Title) And String.IsNullOrEmpty(Text) Then
+        Content = String.Empty
+      ElseIf String.IsNullOrEmpty(Title) Then
+        Content = Text
+      ElseIf String.IsNullOrEmpty(Text) Then
+        Content = Title
+      Else
+        Content = Title & vbNewLine & vbNewLine & Text
+      End If
+      Dim msgIcon As MessageBoxIcon = MessageBoxIcon.None
+      Select Case Icon
+        Case TaskDialogIcon.None : msgIcon = MessageBoxIcon.None
+        Case TaskDialogIcon.Error, TaskDialogIcon.Error2, TaskDialogIcon.ShieldError, TaskDialogIcon.ShieldError2 : msgIcon = MessageBoxIcon.Error
+        Case TaskDialogIcon.Question, TaskDialogIcon.ShieldQuestion : msgIcon = MessageBoxIcon.Question
+        Case TaskDialogIcon.Warning, TaskDialogIcon.Warning2, TaskDialogIcon.ShieldWarning, TaskDialogIcon.ShieldWarning2 : msgIcon = MessageBoxIcon.Warning
+        Case TaskDialogIcon.Information, TaskDialogIcon.Information2 : msgIcon = MessageBoxIcon.Information
+        Case Else
+          Select Case Buttons
+            Case MessageBoxButtons.YesNo, MessageBoxButtons.YesNoCancel : msgIcon = MessageBoxIcon.Question
+            Case MessageBoxButtons.OKCancel : msgIcon = MessageBoxIcon.Information
+            Case MessageBoxButtons.RetryCancel : msgIcon = MessageBoxIcon.Error
+            Case MessageBoxButtons.AbortRetryIgnore : msgIcon = MessageBoxIcon.Warning
+          End Select
+      End Select
+      Return MessageBox.Show(owner, Content, Caption, Buttons, msgIcon, DefaultButton)
+    End If
+  End Function
+  Private Sub RefreshDlg(sender As Object, e As EventArgs)
+    Dim dlg As TaskDialog = sender
+    dlg.Icon = dlg.Icon
+    dlg.InstructionText = dlg.InstructionText
+  End Sub
+
+#End Region
+
+
 End Module

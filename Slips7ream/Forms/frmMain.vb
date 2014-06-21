@@ -509,6 +509,8 @@
 
 #Region "Drag/Drop"
   Public Sub DragDropEvent(sender As Object, e As DragEventArgs)
+    ReplaceAllOldUpdates = TriState.UseDefault
+    ReplaceAllNewUpdates = TriState.UseDefault
     If e.Data.GetFormats(True).Contains("FileDrop") Then
       Dim Data = e.Data.GetData("FileDrop")
       Dim FileCount As Integer = Data.Length
@@ -534,7 +536,11 @@
       End If
       RedoColumns()
       If FailCollection.Count > 0 Then
-        MsgBox("Failed to add the following files:" & vbNewLine & vbNewLine & Join(FailCollection.ToArray, vbNewLine), MsgBoxStyle.Exclamation, "Could not Add Updates")
+        If FailCollection.Count > 10 Then
+          FailCollection(9) = vbNewLine & "...and " & FailCollection.Count - 10 & " other failures."
+          FailCollection.RemoveRange(10, FailCollection.Count - 10)
+        End If
+        MsgDlg(Me, "Some files could not be added to the Update List." & vbNewLine & "Click View Details to see a complete list.", "Failed to add files to the Update List", "Could not Add Updates", MessageBoxButtons.OK, TaskDialogIcon.WindowsUpdate, , Join(FailCollection.ToArray, vbNewLine))
       End If
     Else
       e.Effect = DragDropEffects.None
@@ -647,6 +653,8 @@
   End Sub
 #Region "Buttons"
   Private Sub cmdAddMSU_Click(sender As System.Object, e As System.EventArgs) Handles cmdAddMSU.Click
+    ReplaceAllOldUpdates = TriState.UseDefault
+    ReplaceAllNewUpdates = TriState.UseDefault
     Using cdlBrowse As New OpenFileDialog
       cdlBrowse.Filter = "All Packages|*.MSU;*.CAB;*.MLC;*.EXE|Windows Updates|*.MSU;*.CAB|Language Packs|*.MLC;*.EXE|All Files|*.*"
       cdlBrowse.Title = "Add Windows Updates..."
@@ -676,11 +684,14 @@
         End If
         RedoColumns()
         If FailCollection.Count > 0 Then
-          MsgBox("Failed to add the following files:" & vbNewLine & vbNewLine & Join(FailCollection.ToArray, vbNewLine), MsgBoxStyle.Exclamation, "Could not Add Updates")
+          If FailCollection.Count > 10 Then
+            FailCollection(9) = vbNewLine & "...and " & FailCollection.Count - 10 & " other failures."
+            FailCollection.RemoveRange(10, FailCollection.Count - 10)
+          End If
+          MsgDlg(Me, "Some files could not be added to the Update List." & vbNewLine & "Click View Details to see a complete list.", "Failed to add files to the Update List", "Could not Add Updates", MessageBoxButtons.OK, TaskDialogIcon.WindowsUpdate, , Join(FailCollection.ToArray, vbNewLine))
         End If
       End If
     End Using
-
   End Sub
   Private Class AddResult
     Public Success As Boolean
@@ -693,20 +704,78 @@
       End If
     End Sub
   End Class
+
+  Dim ReplaceAllOldUpdates As TriState = TriState.UseDefault
+  Dim ReplaceAllNewUpdates As TriState = TriState.UseDefault
   Private Function AddToUpdates(sUpdate As String) As AddResult
     If My.Computer.FileSystem.FileExists(sUpdate) Then
       Dim msuData As New UpdateInfoEx(sUpdate)
-      If String.IsNullOrEmpty(msuData.DisplayName) Then
-        Return New AddResult(False, "Unable to Parse Update Info.")
-      End If
+      If String.IsNullOrEmpty(msuData.DisplayName) Then Return New AddResult(False, "Unable to parse information.")
       For Each item As ListViewItem In lvMSU.Items
-        If item.Text = msuData.DisplayName And item.SubItems(1).Text = msuData.Architecture & " " & IO.Path.GetExtension(sUpdate).Substring(1).ToUpper Then
-          Return New AddResult(False, "Already in Update List.")
+        If item.SubItems(1).Text = msuData.Architecture & " " & IO.Path.GetExtension(sUpdate).Substring(1).ToUpper Then
+          If item.Text = msuData.DisplayName Then
+            Return New AddResult(False, "Update already added.")
+          ElseIf msuData.DisplayName.Contains("-v") Or item.Text.Contains("-v") Then
+            Dim AddingName As String = msuData.DisplayName
+            Dim AddingVer As String = "1"
+            If AddingName.Contains("-v") Then
+              AddingVer = AddingName.Substring(AddingName.IndexOf("-v") + 2)
+              AddingVer = AddingVer.Substring(0, AddingVer.IndexOf("-"))
+              AddingName = AddingName.Substring(0, AddingName.IndexOf("-v"))
+            ElseIf AddingName.Contains("-x") Then
+              AddingName = AddingName.Substring(0, AddingName.IndexOf("-x"))
+            End If
+            Dim ItemName As String = item.Text
+            Dim ItemVer As String = "1"
+            If ItemName.Contains("-v") Then
+              ItemVer = ItemName.Substring(ItemName.IndexOf("-v") + 2)
+              ItemVer = ItemVer.Substring(0, ItemVer.IndexOf("-"))
+              ItemName = ItemName.Substring(0, ItemName.IndexOf("-v"))
+            ElseIf ItemName.Contains("-x") Then
+              ItemName = ItemName.Substring(0, ItemName.IndexOf("-x"))
+            End If
+            If AddingName = ItemName Then
+              Dim aVer, iVer As Integer
+              If Not Integer.TryParse(AddingVer, aVer) Then aVer = 1
+              If Not Integer.TryParse(ItemVer, iVer) Then iVer = 1
+              Dim always As Boolean = False
+              If aVer > iVer Then
+                If ReplaceAllOldUpdates = TriState.True Then
+                  item.Remove()
+                ElseIf ReplaceAllOldUpdates = TriState.False Then
+                  Return New AddResult(True)
+                Else
+                  If SelectionBox(Me, sUpdate, AddingVer, item.Tag, ItemVer, always) Then
+                    If always Then ReplaceAllOldUpdates = TriState.True
+                    item.Remove()
+                  Else
+                    If always Then ReplaceAllOldUpdates = TriState.False
+                    Return New AddResult(True)
+                  End If
+                End If
+              ElseIf aVer < iVer Then
+                If ReplaceAllNewUpdates = TriState.True Then
+                  item.Remove()
+                ElseIf ReplaceAllNewUpdates = TriState.False Then
+                  Return New AddResult(True)
+                Else
+                  If SelectionBox(Me, sUpdate, AddingVer, item.Tag, ItemVer, always) Then
+                    If always Then ReplaceAllNewUpdates = TriState.True
+                    item.Remove()
+                  Else
+                    If always Then ReplaceAllNewUpdates = TriState.False
+                    Return New AddResult(True)
+                  End If
+                End If
+              Else
+                Return New AddResult(False, "Update already added.")
+              End If
+            End If
+          End If
         End If
       Next
-      If msuData.DisplayName.ToLower.Contains("-kb2533552-") Then Return New AddResult(False, "Update Can't be Integrated.")
-      'If msuData.DisplayName.ToLower.Contains("-kb2647753-v2-") Then Return New AddResult(False, "Version 2 Can't be Integrated; Use v4.")
-      If msuData.DisplayName.ToLower.Contains("-kb947821-") Then Return New AddResult(False, "Update Readiness Tool Can't be Integrated.")
+      If msuData.DisplayName.ToLower.Contains("-kb2533552-") Then Return New AddResult(False, "Update can't be integrated.")
+      If msuData.DisplayName.ToLower.Contains("-kb947821-") Then Return New AddResult(False, "Update can't be integrated.")
       Dim lvItem As New ListViewItem(msuData.DisplayName)
       lvItem.Tag = sUpdate
       Dim bWhitelist As Boolean = msuData.Architecture = "x86" AndAlso CheckWhitelist(msuData.DisplayName)
@@ -749,7 +818,7 @@
       End Select
       Return New AddResult(False, "Unknown Update Type: """ & IO.Path.GetExtension(sUpdate).ToUpper & """.")
     Else
-      Return New AddResult(False, "File does not exist.")
+      Return New AddResult(False, "File doesn't exist.")
     End If
   End Function
   Private Sub cmdRemMSU_Click(sender As System.Object, e As System.EventArgs) Handles cmdRemMSU.Click
@@ -770,7 +839,7 @@
   End Sub
   Private Sub cmdClearMSU_Click(sender As System.Object, e As System.EventArgs) Handles cmdClearMSU.Click
     If lvMSU.Items.Count > 0 Then
-      If MsgBox("Do you want to clear the Update List?", MsgBoxStyle.Question Or MsgBoxStyle.YesNo, "Remove all Updates?") = MsgBoxResult.Yes Then
+      If MsgDlg(Me, IIf(lvMSU.Items.Count > 2, "All " & lvMSU.Items.Count & " updates", "All updates") & " will be removed from the list.", "Do you want to clear the Update List?", "Remove all Updates", MessageBoxButtons.YesNo, TaskDialogIcon.Delete, MessageBoxDefaultButton.Button2) = Windows.Forms.DialogResult.Yes Then
         lvMSU.Items.Clear()
         RedoColumns()
       End If
@@ -1073,10 +1142,10 @@
         Try
           Process.Start("explorer.exe", "/select," & sPath)
         Catch ex As Exception
-          MsgBox("Unable to open the folder for """ & sPath & """!" & vbNewLine & ex.Message, MsgBoxStyle.Exclamation, "Could not Open Folder")
+          MsgDlg(Me, "Unable to open the folder for """ & sPath & """!", "Could not open folder.", "Folder Not Found", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder, , ex.Message)
         End Try
       Else
-        MsgBox("Unable to find the file """ & sPath & """!", MsgBoxStyle.Exclamation, "Could not Find Completed Image")
+        MsgDlg(Me, "Unable to find the file """ & sPath & """!", "Could not find completed Image.", "File Not Found", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder)
       End If
     End If
   End Sub
@@ -1443,7 +1512,7 @@
             Else
               My.Computer.FileSystem.DeleteDirectory(ISODir & "\efi\boot\", FileIO.DeleteDirectoryOption.DeleteAllContents)
               chkUEFI.Checked = False
-              MsgBox("Unable to enable UEFI Boot: \Windows\Boot\EFI\bootmgfw.efi folder not found in Image!", MsgBoxStyle.Exclamation, "Could not Enable UEFI Boot")
+              MsgDlg(Me, """\Windows\Boot\EFI\bootmgfw.efi"" file not found in Image!", "Unable to enable UEFI Boot.", "Missing File", MessageBoxButtons.OK, TaskDialogIcon.Error)
             End If
           Else
             chkUEFI.Checked = False
@@ -1451,7 +1520,7 @@
           End If
         Else
           chkUEFI.Checked = False
-          MsgBox("Unable to enable UEFI Boot: \efi\microsoft\boot\ folder not found in ISO!", MsgBoxStyle.Exclamation, "Could not Enable UEFI Boot")
+          MsgDlg(Me, """\efi\microsoft\boot\"" folder not found in ISO!", "Unable to enable UEFI Boot.", "Missing Folder", MessageBoxButtons.OK, TaskDialogIcon.Error)
         End If
       End If
       If Not NoMount Then
@@ -2090,7 +2159,6 @@
       Return False
     End Try
   End Function
-
 #Region "DISM"
   Private Function InitDISM(WIMFile As String, WIMIndex As Integer, MountPath As String) As Boolean
     Dim sRet As String = RunWithReturn(AIKDir & "dism", "/Mount-Wim /WimFile:" & ShortenPath(WIMFile) & " /index:" & WIMIndex.ToString.Trim & " /MountDir:" & ShortenPath(MountPath) & " /English")
@@ -3002,7 +3070,7 @@
 
       If e.Result = clsUpdate.CheckEventArgs.ResultType.NewUpdate Then
         SetStatus("New Version Available!")
-        If MsgBox("SLIPS7REAM v" & e.Version & " is available! Would you like to update now?", MsgBoxStyle.YesNo Or MsgBoxStyle.Question, "Update SLIPS7REAM?") = MsgBoxResult.Yes Then
+        If MsgDlg(Me, "Would you like to update now?", "SLIPS7REAM v" & e.Version & " is available!", "Update SLIPS7REAM", MessageBoxButtons.YesNo, TaskDialogIcon.InternetRJ45) = Windows.Forms.DialogResult.Yes Then
           cUpdate.DownloadUpdate(WorkDir & "Setup.exe")
         End If
       Else
@@ -3027,7 +3095,7 @@
           Shell(WorkDir & "Setup.exe /silent", AppWinStyle.NormalFocus, False)
           Application.Exit()
         Catch ex As Exception
-          MsgBox("There was an error starting the update. If you have User Account Control enabled, please allow the SLIPS7REAM Installer to run." & vbNewLine & vbNewLine & ex.Message, MsgBoxStyle.Critical Or MsgBoxStyle.SystemModal, "SLIPS7REAM Update Failure")
+          MsgDlg(Me, "If you have User Account Control enabled, please allow the SLIPS7REAM Installer to run.", "There was an error starting the update.", "SLIPS7REAM Update Failure", MessageBoxButtons.OK, TaskDialogIcon.ShieldUAC, , ex.Message)
         End Try
       Else
         SetStatus("Update Failure!")
