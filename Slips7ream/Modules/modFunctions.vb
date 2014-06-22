@@ -290,13 +290,25 @@ Module modFunctions
   End Function
   Public ReadOnly Property AIKDir As String
     Get
-      Dim tempDir As String = Application.StartupPath & "\tools\"
+      Dim toolsDir As String = Application.StartupPath & "\tools\"
       If Environment.Is64BitProcess Then
-        tempDir &= "amd64\"
+        toolsDir &= "amd64\"
       Else
-        tempDir &= "x86\"
+        toolsDir &= "x86\"
       End If
-      Return tempDir
+      Return toolsDir
+    End Get
+  End Property
+  Public ReadOnly Property DismPath As String
+    Get
+      Dim DismDir As String = AIKDir
+      If IO.File.Exists(Environment.SystemDirectory & "\dism.exe") Then Return Environment.SystemDirectory & "\dism"
+      If Environment.Is64BitProcess Then
+        DismDir &= "amd64\"
+      Else
+        DismDir &= "x86\"
+      End If
+      Return DismDir & "dism"
     End Get
   End Property
   Public Function ShortenPath(Path As String) As String

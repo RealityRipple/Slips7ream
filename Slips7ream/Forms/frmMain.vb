@@ -2112,7 +2112,7 @@
 #End Region
 #Region "Command Calls"
   Private Sub CleanMounts()
-    Dim DISMInfo As String = RunWithReturn(AIKDir & "dism", "/Get-MountedWimInfo /English", True)
+    Dim DISMInfo As String = RunWithReturn(DismPath, "/Get-MountedWimInfo /English", True)
     Dim mFindA As String = WorkDir.Substring(0, WorkDir.Length - 1).ToLower
     Dim mFindB As String = ShortenPath(mFindA).ToLower
     If Not DISMInfo.Contains("No mounted images found.") Then
@@ -2121,10 +2121,10 @@
       For Each line In sLines
         If line.Contains("Mount Dir : ") Then
           Dim tmpPath As String = line.Substring(line.IndexOf(":") + 2)
-          If line.ToLower.Contains(mFindA) Or line.ToLower.Contains(mFindB) Then RunHidden(AIKDir & "dism", "/Unmount-Wim /MountDir:" & ShortenPath(tmpPath) & " /discard /English")
+          If line.ToLower.Contains(mFindA) Or line.ToLower.Contains(mFindB) Then RunHidden(DismPath, "/Unmount-Wim /MountDir:" & ShortenPath(tmpPath) & " /discard /English")
         End If
       Next
-      RunHidden(AIKDir & "dism", "/cleanup-wim")
+      RunHidden(DismPath, "/cleanup-wim")
     End If
     Dim ImageXInfo As String = RunWithReturn(AIKDir & "imagex", "/unmount", True)
     If Not ImageXInfo.Contains("Number of Mounted Images: 0") Then
@@ -2161,11 +2161,11 @@
   End Function
 #Region "DISM"
   Private Function InitDISM(WIMFile As String, WIMIndex As Integer, MountPath As String) As Boolean
-    Dim sRet As String = RunWithReturn(AIKDir & "dism", "/Mount-Wim /WimFile:" & ShortenPath(WIMFile) & " /index:" & WIMIndex.ToString.Trim & " /MountDir:" & ShortenPath(MountPath) & " /English")
+    Dim sRet As String = RunWithReturn(DismPath, "/Mount-Wim /WimFile:" & ShortenPath(WIMFile) & " /index:" & WIMIndex.ToString.Trim & " /MountDir:" & ShortenPath(MountPath) & " /English")
     Return sRet.Contains("The operation completed successfully.")
   End Function
   Private Function GetDISMPackages(WIMFile As String) As Integer
-    Dim PackageList As String = RunWithReturn(AIKDir & "dism", "/Get-WimInfo /WimFile:" & ShortenPath(WIMFile) & " /English")
+    Dim PackageList As String = RunWithReturn(DismPath, "/Get-WimInfo /WimFile:" & ShortenPath(WIMFile) & " /English")
     Dim PackageRows() As String = Split(PackageList, vbNewLine)
     Dim Indexes As Integer = 0
     For Each row In PackageRows
@@ -2176,20 +2176,20 @@
     Return Indexes
   End Function
   Private Function GetDISMPackageData(WIMFile As String, Index As Integer) As PackageInfoEx
-    Dim PackageList As String = RunWithReturn(AIKDir & "dism", "/Get-WimInfo /WimFile:" & ShortenPath(WIMFile) & " /index:" & Index & " /English")
+    Dim PackageList As String = RunWithReturn(DismPath, "/Get-WimInfo /WimFile:" & ShortenPath(WIMFile) & " /index:" & Index & " /English")
     Dim Info As New PackageInfoEx(PackageList)
     Return Info
   End Function
   Private Function AddToDism(MountPath As String, AddPath As String) As Boolean
-    Dim sRet As String = RunWithReturn(AIKDir & "dism", "/Image:" & ShortenPath(MountPath) & " /Add-Package /PackagePath:" & ShortenPath(AddPath) & " /English")
+    Dim sRet As String = RunWithReturn(DismPath, "/Image:" & ShortenPath(MountPath) & " /Add-Package /PackagePath:" & ShortenPath(AddPath) & " /English")
     Return sRet.Contains("The operation completed successfully.")
   End Function
   Private Function SaveDISM(MountPath As String) As Boolean
-    Dim sRet As String = RunWithReturn(AIKDir & "dism", "/Unmount-Wim /MountDir:" & ShortenPath(MountPath) & " /commit" & " /English")
+    Dim sRet As String = RunWithReturn(DismPath, "/Unmount-Wim /MountDir:" & ShortenPath(MountPath) & " /commit" & " /English")
     Return sRet.Contains("The operation completed successfully.")
   End Function
   Private Function DiscardDISM(MountPath As String) As Boolean
-    Dim sRet As String = RunWithReturn(AIKDir & "dism", "/Unmount-Wim /MountDir:" & ShortenPath(MountPath) & " /discard" & " /English")
+    Dim sRet As String = RunWithReturn(DismPath, "/Unmount-Wim /MountDir:" & ShortenPath(MountPath) & " /discard" & " /English")
     Return sRet.Contains("The operation completed successfully.")
   End Function
 #End Region
