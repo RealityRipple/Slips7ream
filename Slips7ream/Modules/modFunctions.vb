@@ -350,9 +350,9 @@ Module modFunctions
   End Sub
 #Region "Task Dialogs"
   Public Function SelectionBox(owner As Form, newPath As String, newVer As Integer, oldPath As String, oldVer As Integer, ByRef Always As Boolean) As Boolean
-    Dim newData As New UpdateInfoEx(newPath)
-    Dim oldData As New UpdateInfoEx(oldPath)
     If TaskDialog.IsPlatformSupported Then
+      Dim newData As New UpdateInfoEx(newPath)
+      Dim oldData As New UpdateInfoEx(oldPath)
       If newVer > oldVer Then
         Using dlgUpdate As New TaskDialog
           dlgUpdate.Cancelable = False
@@ -411,7 +411,6 @@ Module modFunctions
             em & "Size: " & ByteSize(New IO.FileInfo(newPath).Length) & vbNewLine &
             em & "Built: " & newData.BuildDate)
           AddHandler cmdYes.Click, AddressOf SelectionDialogButton_Click
-
           Dim cmdNo As New CommandLink(
             "cmdOld",
             "Use Newer Version " & oldVer,
@@ -425,18 +424,28 @@ Module modFunctions
           dlgUpdate.Controls.Add(cmdYes)
           dlgUpdate.OwnerWindowHandle = owner.Handle
           AddHandler dlgUpdate.Opened, AddressOf RefreshDlg
-          Dim ret As TaskDialogResult = dlgUpdate.Show()
+          Dim ret As TaskDialogResult
+          Try
+            ret = dlgUpdate.Show
+          Catch ex As Exception
+            Return SelectionBoxLegacy(owner, newPath, newVer, oldPath, oldVer, Always)
+          End Try
           Always = dlgUpdate.FooterCheckBoxChecked
           If ret = TaskDialogResult.Yes Then Return True
           Return False
         End Using
       End If
     Else
-      If newVer > oldVer Then
-        Return MessageBox.Show(owner, "There is already an older version of this update in the list." & vbNewLine & "Do you want to replace " & oldData.DisplayName & " with version " & newVer & "?", "Replace Older Version?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = DialogResult.Yes
-      Else
-        Return MessageBox.Show(owner, "There is already a newer version of this update in the list." & vbNewLine & "Do you want to replace " & oldData.DisplayName & " with version " & newVer & "?", "Replace Newer Version", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = DialogResult.Yes
-      End If
+      Return SelectionBoxLegacy(owner, newPath, newVer, oldPath, oldVer, Always)
+    End If
+  End Function
+  Private Function SelectionBoxLegacy(owner As Form, newPath As String, newVer As Integer, oldPath As String, oldVer As Integer, ByRef Always As Boolean) As Boolean
+    Dim newData As New UpdateInfoEx(newPath)
+    Dim oldData As New UpdateInfoEx(oldPath)
+    If newVer > oldVer Then
+      Return MessageBox.Show(owner, "There is already an older version of this update in the list." & vbNewLine & "Do you want to replace " & oldData.DisplayName & " with version " & newVer & "?", "Replace Older Version?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = DialogResult.Yes
+    Else
+      Return MessageBox.Show(owner, "There is already a newer version of this update in the list." & vbNewLine & "Do you want to replace " & oldData.DisplayName & " with version " & newVer & "?", "Replace Newer Version", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = DialogResult.Yes
     End If
   End Function
   Private Sub SelectionDialogButton_Click(sender As TaskDialogCommandLink, e As EventArgs)
@@ -716,7 +725,12 @@ Module modFunctions
         End If
         If owner IsNot Nothing Then dlgMessage.OwnerWindowHandle = owner.Handle
         AddHandler dlgMessage.Opened, AddressOf RefreshDlg
-        Dim ret = dlgMessage.Show()
+        Dim ret As TaskDialogResult
+        Try
+          ret = dlgMessage.Show()
+        Catch ex As Exception
+          Return MsgDlgLegacy(owner, Text, Title, Caption, Buttons, Icon, DefaultButton, Details)
+        End Try
         Select Case ret
           Case TaskDialogResult.Yes : Return DialogResult.Yes
           Case TaskDialogResult.No : Return DialogResult.No
@@ -729,32 +743,7 @@ Module modFunctions
         Return DialogResult.None
       End Using
     Else
-      Dim Content As String
-      If String.IsNullOrEmpty(Title) And String.IsNullOrEmpty(Text) Then
-        Content = String.Empty
-      ElseIf String.IsNullOrEmpty(Title) Then
-        Content = Text
-      ElseIf String.IsNullOrEmpty(Text) Then
-        Content = Title
-      Else
-        Content = Title & vbNewLine & vbNewLine & Text
-      End If
-      Dim msgIcon As MessageBoxIcon = MessageBoxIcon.None
-      Select Case Icon
-        Case TaskDialogIcon.None : msgIcon = MessageBoxIcon.None
-        Case TaskDialogIcon.Error, TaskDialogIcon.Error2, TaskDialogIcon.ShieldError, TaskDialogIcon.ShieldError2 : msgIcon = MessageBoxIcon.Error
-        Case TaskDialogIcon.Question, TaskDialogIcon.ShieldQuestion : msgIcon = MessageBoxIcon.Question
-        Case TaskDialogIcon.Warning, TaskDialogIcon.Warning2, TaskDialogIcon.ShieldWarning, TaskDialogIcon.ShieldWarning2 : msgIcon = MessageBoxIcon.Warning
-        Case TaskDialogIcon.Information, TaskDialogIcon.Information2 : msgIcon = MessageBoxIcon.Information
-        Case Else
-          Select Case Buttons
-            Case MessageBoxButtons.YesNo, MessageBoxButtons.YesNoCancel : msgIcon = MessageBoxIcon.Question
-            Case MessageBoxButtons.OKCancel : msgIcon = MessageBoxIcon.Information
-            Case MessageBoxButtons.RetryCancel : msgIcon = MessageBoxIcon.Error
-            Case MessageBoxButtons.AbortRetryIgnore : msgIcon = MessageBoxIcon.Warning
-          End Select
-      End Select
-      Return MessageBox.Show(owner, Content, Caption, Buttons, msgIcon, DefaultButton)
+      Return MsgDlgLegacy(owner, Text, Title, Caption, Buttons, Icon, DefaultButton, Details)
     End If
   End Function
   Private Sub RefreshDlg(sender As Object, e As EventArgs)
@@ -762,8 +751,33 @@ Module modFunctions
     dlg.Icon = dlg.Icon
     dlg.InstructionText = dlg.InstructionText
   End Sub
-
+  Private Function MsgDlgLegacy(owner As Form, Text As String, Optional Title As String = Nothing, Optional Caption As String = Nothing, Optional Buttons As MessageBoxButtons = MessageBoxButtons.OK, Optional Icon As TaskDialogIcon = TaskDialogIcon.None, Optional DefaultButton As MessageBoxDefaultButton = MessageBoxDefaultButton.Button1, Optional Details As String = Nothing) As DialogResult
+    Dim Content As String
+    If String.IsNullOrEmpty(Title) And String.IsNullOrEmpty(Text) Then
+      Content = String.Empty
+    ElseIf String.IsNullOrEmpty(Title) Then
+      Content = Text
+    ElseIf String.IsNullOrEmpty(Text) Then
+      Content = Title
+    Else
+      Content = Title & vbNewLine & vbNewLine & Text
+    End If
+    Dim msgIcon As MessageBoxIcon = MessageBoxIcon.None
+    Select Case Icon
+      Case TaskDialogIcon.None : msgIcon = MessageBoxIcon.None
+      Case TaskDialogIcon.Error, TaskDialogIcon.Error2, TaskDialogIcon.ShieldError, TaskDialogIcon.ShieldError2 : msgIcon = MessageBoxIcon.Error
+      Case TaskDialogIcon.Question, TaskDialogIcon.ShieldQuestion : msgIcon = MessageBoxIcon.Question
+      Case TaskDialogIcon.Warning, TaskDialogIcon.Warning2, TaskDialogIcon.ShieldWarning, TaskDialogIcon.ShieldWarning2 : msgIcon = MessageBoxIcon.Warning
+      Case TaskDialogIcon.Information, TaskDialogIcon.Information2 : msgIcon = MessageBoxIcon.Information
+      Case Else
+        Select Case Buttons
+          Case MessageBoxButtons.YesNo, MessageBoxButtons.YesNoCancel : msgIcon = MessageBoxIcon.Question
+          Case MessageBoxButtons.OKCancel : msgIcon = MessageBoxIcon.Information
+          Case MessageBoxButtons.RetryCancel : msgIcon = MessageBoxIcon.Error
+          Case MessageBoxButtons.AbortRetryIgnore : msgIcon = MessageBoxIcon.Warning
+        End Select
+    End Select
+    Return MessageBox.Show(owner, Content, Caption, Buttons, msgIcon, DefaultButton)
+  End Function
 #End Region
-
-
 End Module
