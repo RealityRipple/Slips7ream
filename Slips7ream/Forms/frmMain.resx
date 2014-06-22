@@ -126,21 +126,38 @@
   <data name="cmbPriority.ToolTip" xml:space="preserve">
     <value>Choose a SLIPS7REAM work priority.
 
-Realtime: SLIPS7REAM will have the highest possible priority. This can cause other applications to hang or your computer to become unresponsive.
-High: SLIPS7REAM will be in the top priority list, using all available processor time.
-Above Normal: SLIPS7REAM will take priority over normal tasks without interfering with higher priority processes.
-Normal: The default priority value.
-Below Normal: SLIPS7REAM will allow other processes to take precedence. This option is best if you want SLIPS7REAM to run in the background.
-Low: SLIPS7REAM will only run on idle time, and will be pre-empted by normal program use.
+Realtime:
+   SLIPS7REAM will have the highest possible priority.
+   This can cause other applications to hang or your computer to become unresponsive.
+High:
+   SLIPS7REAM will be in the top priority list, using all available processor time.
+Above Normal:
+   SLIPS7REAM will take priority over normal tasks without interfering with higher priority processes.
+Normal:
+   The default priority value.
+Below Normal:
+   SLIPS7REAM will allow other processes to take precedence.
+   This option is best if you want SLIPS7REAM to run in the background.
+Low:
+   SLIPS7REAM will only run on idle time, and will be pre-empted by normal program use.
 
-CAUTION: Use extreme care when specifying High or Realtime. The threads of a process with RealTime priority preempt the threads of all other processes, including operating system processes performing important tasks, and can cause disk caches not to flush or cause the mouse to be unresponsive. </value>
+CAUTION: Use extreme care when specifying High or Realtime.
+The threads of a process with RealTime priority preempt the threads of all other processes,
+including operating system processes performing important tasks,
+and can cause disk caches not to flush or cause the mouse to be unresponsive. </value>
   </data>
   <data name="cmbLimitType.ToolTip" xml:space="preserve">
-    <value>If you need to split up the WIM or ISO Images into smaller files to conform to File System limits or disc capacities, you can do so here.
+    <value>If you need to split up the WIM or ISO Images into smaller files
+to conform to File System limits or disc capacities, you can do so here.
 
-Single File: The Image is untouched and may grow to any size.
-Split WIM: The WIM Package is split into multiple pieces of a specified size.
-Split ISO: The WIM Pacakage and ISO Image are split into multiple pieces of a specified size. Note that the WIM files will be about 350 MB smaller than the size you specify, allowing for other data on the first disc.
+Single File:
+   The Image is untouched and may grow to any size.
+Split WIM:
+   The WIM Package is split into multiple pieces of a specified size.
+Split ISO:
+   The WIM Pacakage and ISO Image are split into multiple pieces of a specified size.
+   Note that the WIM files will be about 350 MB smaller than the size you specify,
+   allowing for other data on the first disc.
 
 (Split ISO is only an option if saving to an ISO.)</value>
   </data>
@@ -148,17 +165,26 @@ Split ISO: The WIM Pacakage and ISO Image are split into multiple pieces of a sp
     <value>File System to use for writing ISO.
 If your INSTALL.WIM is larger than 4 GB, please use a UDF File System.
 
-ISO 9960: Standard format. Limited file name conventions.
-Joliet: Joliet extension of ISO 9960, endorsed by Microsoft. Enhanced file name capabilities.
-UDF: Universal Disk Format, or ISO/IEC 13346. Superior standard, but less compatible. Large file sizes.
-UDF 1.02: Legacy UDF understood by most drives. Compatible with old hardware.
+ISO 9960:
+   Standard format. Limited file name conventions.
+Joliet:
+   Joliet extension of ISO 9960, endorsed by Microsoft. Enhanced file name capabilities.
+UDF:
+   Universal Disk Format, or ISO/IEC 13346. Superior standard, but less compatible. Large file sizes.
+UDF 1.02:
+   Legacy UDF understood by most drives. Compatible with old hardware.
 
-(Items marked with "/ISO 9960" employ a backup format using the ISO 9960 standard when the selected format can't be read.)</value>
+(Items marked with "/ISO 9960" employ a backup format using
+the ISO 9960 standard when the selected format can't be read.)</value>
   </data>
   <data name="chkUEFI.ToolTip" xml:space="preserve">
-    <value>Enable Unified Extensible Firmware Interface compatibility, which may be necessary for newer systems (particularly machines that came with Windows 8).
+    <value>Enable Unified Extensible Firmware Interface compatibility,
+which may be necessary for newer systems (particularly machines that came with Windows 8).
+
 UEFI requires a 64-bit Operating System, so please only use x64 Image Packages with UEFI.
-UEFI requires a custom Video Card driver which is only built for Windows 8, so please enable your UEFI's compatibility module to allow Windows 7 access to the video card.</value>
+
+UEFI requires a custom Video Card driver which is only built for Windows 8,
+so please enable your UEFI's compatibility module to allow Windows 7 access to the video card.</value>
   </data>
   <data name="cmbLimit.ToolTip" xml:space="preserve">
     <value>Enter a maximum size for the Image. All sizes will be converted to MegaBytes.

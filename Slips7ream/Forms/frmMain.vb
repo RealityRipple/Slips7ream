@@ -2531,17 +2531,21 @@
               pbIndividual.Value += 1
               Dim DisplayName As String = IO.Path.GetFileNameWithoutExtension(tmpMSU.Path)
               If Not String.IsNullOrEmpty(tmpMSU.KBArticle) Then
-                DisplayName = "KB" & tmpMSU.KBArticle
+                If IsNumeric(tmpMSU.KBArticle) Then
+                  DisplayName = "KB" & tmpMSU.KBArticle
+                Else
+                  DisplayName = tmpMSU.KBArticle
+                End If
               ElseIf Not String.IsNullOrEmpty(tmpMSU.DisplayName) Then
                 DisplayName = tmpMSU.DisplayName
               End If
-              SetStatus((I + 1).ToString.Trim & "/" & MSU_32.Count.ToString & " - Integrating """ & DisplayName & """ into """ & tmpDISM.Name & """...")
+              SetStatus((I + 1).ToString.Trim & "/" & MSU_32.Count.ToString & " - Integrating " & DisplayName & " into " & tmpDISM.Name & "...")
               Select Case GetUpdateType(tmpMSU.Path)
                 Case UpdateType.MSU, UpdateType.CAB, UpdateType.LP
                   If Not AddToDism(Mount, tmpMSU.Path) Then
                     DiscardDISM(Mount)
                     ToggleInputs(True)
-                    SetStatus("Failed to integrate """ & DisplayName & """ into """ & tmpDISM.Name & """!")
+                    SetStatus("Failed to integrate " & DisplayName & " into " & tmpDISM.Name & "!")
                     Return False
                   End If
                   If GetUpdateType(tmpMSU.Path) = UpdateType.LP Then LangChange = True
@@ -2552,14 +2556,14 @@
                     If My.Computer.FileSystem.FileExists(tmpCAB) Then My.Computer.FileSystem.DeleteFile(tmpCAB)
                     DiscardDISM(Mount)
                     ToggleInputs(True)
-                    SetStatus("Failed to extract """ & DisplayName & """ from EXE to CAB!")
+                    SetStatus("Failed to extract " & DisplayName & " from EXE to CAB!")
                     Return False
                   End If
                   If Not AddToDism(Mount, tmpCAB) Then
                     If My.Computer.FileSystem.FileExists(tmpCAB) Then My.Computer.FileSystem.DeleteFile(tmpCAB)
                     DiscardDISM(Mount)
                     ToggleInputs(True)
-                    SetStatus("Failed to integrate """ & DisplayName & """ into """ & tmpDISM.Name & """!")
+                    SetStatus("Failed to integrate " & DisplayName & " into " & tmpDISM.Name & "!")
                     Return False
                   End If
                   If My.Computer.FileSystem.FileExists(tmpCAB) Then My.Computer.FileSystem.DeleteFile(tmpCAB)
@@ -2572,7 +2576,7 @@
                     If My.Computer.FileSystem.FileExists(tmpCAB) Then My.Computer.FileSystem.DeleteFile(tmpCAB)
                     DiscardDISM(Mount)
                     ToggleInputs(True)
-                    SetStatus("Failed to integrate """ & DisplayName & """ into """ & tmpDISM.Name & """!")
+                    SetStatus("Failed to integrate " & DisplayName & " into " & tmpDISM.Name & "!")
                     Return False
                   End If
                   If My.Computer.FileSystem.FileExists(tmpCAB) Then My.Computer.FileSystem.DeleteFile(tmpCAB)
@@ -2626,17 +2630,21 @@
               pbIndividual.Value += 1
               Dim DisplayName As String = IO.Path.GetFileNameWithoutExtension(tmpMSU.Path)
               If Not String.IsNullOrEmpty(tmpMSU.KBArticle) Then
-                DisplayName = "KB" & tmpMSU.KBArticle
+                If IsNumeric(tmpMSU.KBArticle) Then
+                  DisplayName = "KB" & tmpMSU.KBArticle
+                Else
+                  DisplayName = tmpMSU.KBArticle
+                End If
               ElseIf Not String.IsNullOrEmpty(tmpMSU.DisplayName) Then
                 DisplayName = tmpMSU.DisplayName
               End If
-              SetStatus((I + 1).ToString.Trim & "/" & MSU_32.Count.ToString & " - Integrating """ & DisplayName & """ into """ & tmpDISM.Name & """...")
+              SetStatus((I + 1).ToString.Trim & "/" & MSU_32.Count.ToString & " - Integrating " & DisplayName & " into " & tmpDISM.Name & "...")
               Select Case GetUpdateType(tmpMSU.Path)
                 Case UpdateType.MSU, UpdateType.CAB, UpdateType.LP
                   If Not AddToDism(Mount, tmpMSU.Path) Then
                     DiscardDISM(Mount)
                     ToggleInputs(True)
-                    SetStatus("Failed to integrate """ & DisplayName & """ into """ & tmpDISM.Name & """!")
+                    SetStatus("Failed to integrate " & DisplayName & " into " & tmpDISM.Name & "!")
                     Return False
                   End If
                   If GetUpdateType(tmpMSU.Path) = UpdateType.LP Then LangChange = True
@@ -2647,14 +2655,14 @@
                     If My.Computer.FileSystem.FileExists(tmpCAB) Then My.Computer.FileSystem.DeleteFile(tmpCAB)
                     DiscardDISM(Mount)
                     ToggleInputs(True)
-                    SetStatus("Failed to extract """ & DisplayName & """ from EXE to CAB!")
+                    SetStatus("Failed to extract " & DisplayName & " from EXE to CAB!")
                     Return False
                   End If
                   If Not AddToDism(Mount, tmpCAB) Then
                     If My.Computer.FileSystem.FileExists(tmpCAB) Then My.Computer.FileSystem.DeleteFile(tmpCAB)
                     DiscardDISM(Mount)
                     ToggleInputs(True)
-                    SetStatus("Failed to integrate """ & DisplayName & """ into """ & tmpDISM.Name & """!")
+                    SetStatus("Failed to integrate " & DisplayName & " into " & tmpDISM.Name & "!")
                     Return False
                   End If
                   If My.Computer.FileSystem.FileExists(tmpCAB) Then My.Computer.FileSystem.DeleteFile(tmpCAB)
@@ -2667,7 +2675,7 @@
                     If My.Computer.FileSystem.FileExists(tmpCAB) Then My.Computer.FileSystem.DeleteFile(tmpCAB)
                     DiscardDISM(Mount)
                     ToggleInputs(True)
-                    SetStatus("Failed to integrate """ & DisplayName & """ into """ & tmpDISM.Name & """!")
+                    SetStatus("Failed to integrate " & DisplayName & " into " & tmpDISM.Name & "!")
                     Return False
                   End If
                   If My.Computer.FileSystem.FileExists(tmpCAB) Then My.Computer.FileSystem.DeleteFile(tmpCAB)
@@ -2848,7 +2856,7 @@
           Return False
         End If
         pbIndividual.Value += 1
-        SetStatus("Merging Service Pack into Image Package """ & dismData.Name & """...")
+        SetStatus("Merging Service Pack into " & dismData.Name & "...")
         If Not AddToDism(Mount, Work & "SP1") Then
           DiscardDISM(Mount)
           ToggleInputs(True)
