@@ -301,14 +301,17 @@ Module modFunctions
   End Property
   Public ReadOnly Property DismPath As String
     Get
-      Dim DismDir As String = AIKDir
-      If IO.File.Exists(Environment.SystemDirectory & "\dism.exe") Then Return Environment.SystemDirectory & "\dism"
-      If Environment.Is64BitProcess Then
-        DismDir &= "amd64\"
-      Else
-        DismDir &= "x86\"
+      Dim localDir As String = AIKDir
+      localDir &= "Dism.exe"
+      Dim systemDir As String = Environment.SystemDirectory & "\Dism.exe"
+      If IO.File.Exists(systemDir) Then
+        Dim sysInfo As FileVersionInfo = FileVersionInfo.GetVersionInfo(systemDir)
+        Dim locInfo As FileVersionInfo = FileVersionInfo.GetVersionInfo(localDir)
+        If clsUpdate.CompareVersions(sysInfo.ProductVersion, locInfo.ProductVersion) Then
+          Return systemDir
+        End If
       End If
-      Return DismDir & "dism"
+      Return localDir
     End Get
   End Property
   Public Function ShortenPath(Path As String) As String
