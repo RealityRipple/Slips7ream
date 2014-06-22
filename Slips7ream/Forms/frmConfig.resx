@@ -121,8 +121,9 @@
     <value>17, 17</value>
   </metadata>
   <data name="txtWhitelist.ToolTip" xml:space="preserve">
-    <value>x86 Windows Updates allowed in x64 Images. One update by Name per line.
+    <value>x86 Windows Updates allowed in x64 Images. One update by Display Name per line.
 
-(This feature is useful for integrating Internet Explorer 10's Spelling and Hyphenation packages, and should be used carefully.)</value>
+(This feature is useful for integrating Spelling and Hyphenation packages
+for Internet Explorer 10 and 11, and should be used carefully.)</value>
   </data>
 </root>

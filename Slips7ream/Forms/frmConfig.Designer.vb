@@ -168,7 +168,7 @@ Partial Class frmConfig
     Me.lblDonate.AutoSize = True
     Me.pnlConfig.SetColumnSpan(Me.lblDonate, 2)
     Me.lblDonate.Cursor = System.Windows.Forms.Cursors.Hand
-    Me.lblDonate.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Underline)
+    Me.lblDonate.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!)
     Me.lblDonate.ForeColor = System.Drawing.Color.MediumBlue
     Me.lblDonate.Location = New System.Drawing.Point(45, 159)
     Me.lblDonate.Name = "lblDonate"

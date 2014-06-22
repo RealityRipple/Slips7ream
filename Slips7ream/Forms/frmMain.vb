@@ -486,7 +486,7 @@
               props.lblKBLink.Text = "Details"
               props.lblKBLink.Visible = False
             Else
-              props.lblKBLink.Text = "Article " & msuData.KBArticle
+              props.lblKBLink.Text = "Article KB" & msuData.KBArticle
               props.lblKBLink.Visible = True
             End If
           Else
@@ -496,7 +496,7 @@
               props.lblKBLink.Text = "Details"
               props.lblKBLink.Visible = True
             Else
-              props.lblKBLink.Text = "Article " & msuData.KBArticle
+              props.lblKBLink.Text = "Article KB" & msuData.KBArticle
               props.lblKBLink.Visible = True
             End If
           End If
@@ -2531,11 +2531,7 @@
               pbIndividual.Value += 1
               Dim DisplayName As String = IO.Path.GetFileNameWithoutExtension(tmpMSU.Path)
               If Not String.IsNullOrEmpty(tmpMSU.KBArticle) Then
-                If IsNumeric(tmpMSU.KBArticle) Then
-                  DisplayName = "KB" & tmpMSU.KBArticle
-                Else
-                  DisplayName = tmpMSU.KBArticle
-                End If
+                DisplayName = "KB" & tmpMSU.KBArticle
               ElseIf Not String.IsNullOrEmpty(tmpMSU.DisplayName) Then
                 DisplayName = tmpMSU.DisplayName
               End If
@@ -2630,11 +2626,7 @@
               pbIndividual.Value += 1
               Dim DisplayName As String = IO.Path.GetFileNameWithoutExtension(tmpMSU.Path)
               If Not String.IsNullOrEmpty(tmpMSU.KBArticle) Then
-                If IsNumeric(tmpMSU.KBArticle) Then
-                  DisplayName = "KB" & tmpMSU.KBArticle
-                Else
-                  DisplayName = tmpMSU.KBArticle
-                End If
+                DisplayName = "KB" & tmpMSU.KBArticle
               ElseIf Not String.IsNullOrEmpty(tmpMSU.DisplayName) Then
                 DisplayName = tmpMSU.DisplayName
               End If
@@ -3104,12 +3096,15 @@
       SetStatus("Download Complete!")
       Application.DoEvents()
       If My.Computer.FileSystem.FileExists(WorkDir & "Setup.exe") Then
-        Try
-          Shell(WorkDir & "Setup.exe /silent", AppWinStyle.NormalFocus, False)
-          Application.Exit()
-        Catch ex As Exception
-          MsgDlg(Me, "If you have User Account Control enabled, please allow the SLIPS7REAM Installer to run.", "There was an error starting the update.", "SLIPS7REAM Update Failure", MessageBoxButtons.OK, TaskDialogIcon.ShieldUAC, , ex.Message)
-        End Try
+        Do
+          Try
+            Shell(WorkDir & "Setup.exe /silent", AppWinStyle.NormalFocus, False)
+            Exit Do
+          Catch ex As Exception
+            If MsgDlg(Me, "If you have User Account Control enabled, please allow the SLIPS7REAM Installer to run." & vbNewLine & "Would you like to attempt to run the update again?", "There was an error starting the update.", "SLIPS7REAM Update Failure", MessageBoxButtons.YesNo, TaskDialogIcon.ShieldUAC, , ex.Message) = Windows.Forms.DialogResult.No Then Exit Do
+          End Try
+        Loop
+        Application.Exit()
       Else
         SetStatus("Update Failure!")
       End If

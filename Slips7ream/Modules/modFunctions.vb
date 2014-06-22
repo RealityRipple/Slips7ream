@@ -42,6 +42,7 @@ Module modFunctions
                   BuildDate = GetMSUValue(sLine)
                 ElseIf sLine.StartsWith("KB Article Number=") Then
                   KBArticle = GetMSUValue(sLine)
+                  If KBArticle.StartsWith("KB") Then KBArticle = KBArticle.Substring(2)
                 ElseIf sLine.StartsWith("Support Link=") Then
                   SupportLink = GetMSUValue(sLine)
                 End If
@@ -63,6 +64,7 @@ Module modFunctions
               Architecture = xAssemblyIdentity.Attribute("processorArchitecture")
               Dim xPackage As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}package")
               KBArticle = xPackage.Attribute("identifier")
+              If KBArticle.StartsWith("KB") Then KBArticle = KBArticle.Substring(2)
               Dim xParent As XElement = xPackage.Element("{urn:schemas-microsoft-com:asm.v3}parent")
               Dim xParentAssemblyIdentity As XElement = xParent.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
               AppliesTo = xParentAssemblyIdentity.Attribute("name")
