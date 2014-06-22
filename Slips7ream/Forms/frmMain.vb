@@ -2530,14 +2530,18 @@
               Dim tmpMSU = MSU_32(I)
               pbIndividual.Value += 1
               Dim DisplayName As String = IO.Path.GetFileNameWithoutExtension(tmpMSU.Path)
-              If Not String.IsNullOrEmpty(tmpMSU.DisplayName) Then DisplayName = tmpMSU.DisplayName
-              SetStatus("Merging Update """ & DisplayName & """ (" & (I + 1).ToString.Trim & "/" & MSU_32.Count.ToString & ") into Image Package """ & tmpDISM.Name & """...")
+              If Not String.IsNullOrEmpty(tmpMSU.KBArticle) Then
+                DisplayName = "KB" & tmpMSU.KBArticle
+              ElseIf Not String.IsNullOrEmpty(tmpMSU.DisplayName) Then
+                DisplayName = tmpMSU.DisplayName
+              End If
+              SetStatus((I + 1).ToString.Trim & "/" & MSU_32.Count.ToString & " - Integrating """ & DisplayName & """ into """ & tmpDISM.Name & """...")
               Select Case GetUpdateType(tmpMSU.Path)
                 Case UpdateType.MSU, UpdateType.CAB, UpdateType.LP
                   If Not AddToDism(Mount, tmpMSU.Path) Then
                     DiscardDISM(Mount)
                     ToggleInputs(True)
-                    SetStatus("Failed to Add Update """ & DisplayName & """ into Image Package """ & tmpDISM.Name & """!")
+                    SetStatus("Failed to integrate """ & DisplayName & """ into """ & tmpDISM.Name & """!")
                     Return False
                   End If
                   If GetUpdateType(tmpMSU.Path) = UpdateType.LP Then LangChange = True
@@ -2548,14 +2552,14 @@
                     If My.Computer.FileSystem.FileExists(tmpCAB) Then My.Computer.FileSystem.DeleteFile(tmpCAB)
                     DiscardDISM(Mount)
                     ToggleInputs(True)
-                    SetStatus("Failed to Extract Update """ & DisplayName & """ from EXE to CAB!")
+                    SetStatus("Failed to extract """ & DisplayName & """ from EXE to CAB!")
                     Return False
                   End If
                   If Not AddToDism(Mount, tmpCAB) Then
                     If My.Computer.FileSystem.FileExists(tmpCAB) Then My.Computer.FileSystem.DeleteFile(tmpCAB)
                     DiscardDISM(Mount)
                     ToggleInputs(True)
-                    SetStatus("Failed to Add Update """ & DisplayName & """ into Image Package """ & tmpDISM.Name & """!")
+                    SetStatus("Failed to integrate """ & DisplayName & """ into """ & tmpDISM.Name & """!")
                     Return False
                   End If
                   If My.Computer.FileSystem.FileExists(tmpCAB) Then My.Computer.FileSystem.DeleteFile(tmpCAB)
@@ -2568,7 +2572,7 @@
                     If My.Computer.FileSystem.FileExists(tmpCAB) Then My.Computer.FileSystem.DeleteFile(tmpCAB)
                     DiscardDISM(Mount)
                     ToggleInputs(True)
-                    SetStatus("Failed to Add Update """ & DisplayName & """ into Image Package """ & tmpDISM.Name & """!")
+                    SetStatus("Failed to integrate """ & DisplayName & """ into """ & tmpDISM.Name & """!")
                     Return False
                   End If
                   If My.Computer.FileSystem.FileExists(tmpCAB) Then My.Computer.FileSystem.DeleteFile(tmpCAB)
@@ -2580,9 +2584,7 @@
                 Return False
               End If
             Next
-
             Dim DoSave As Boolean = True
-
             If DISM_64.Count = 0 Then
               If D = DISM_32.Count - 1 Then
                 DoSave = False
@@ -2623,14 +2625,18 @@
               Dim tmpMSU = MSU_64(I)
               pbIndividual.Value += 1
               Dim DisplayName As String = IO.Path.GetFileNameWithoutExtension(tmpMSU.Path)
-              If Not String.IsNullOrEmpty(tmpMSU.DisplayName) Then DisplayName = tmpMSU.DisplayName
-              SetStatus("Merging Update """ & DisplayName & """ (" & (I + 1).ToString.Trim & "/" & MSU_64.Count.ToString & ") into Image Package """ & tmpDISM.Name & """...")
+              If Not String.IsNullOrEmpty(tmpMSU.KBArticle) Then
+                DisplayName = "KB" & tmpMSU.KBArticle
+              ElseIf Not String.IsNullOrEmpty(tmpMSU.DisplayName) Then
+                DisplayName = tmpMSU.DisplayName
+              End If
+              SetStatus((I + 1).ToString.Trim & "/" & MSU_32.Count.ToString & " - Integrating """ & DisplayName & """ into """ & tmpDISM.Name & """...")
               Select Case GetUpdateType(tmpMSU.Path)
                 Case UpdateType.MSU, UpdateType.CAB, UpdateType.LP
                   If Not AddToDism(Mount, tmpMSU.Path) Then
                     DiscardDISM(Mount)
                     ToggleInputs(True)
-                    SetStatus("Failed to Add Update """ & DisplayName & """ into Image Package """ & tmpDISM.Name & """!")
+                    SetStatus("Failed to integrate """ & DisplayName & """ into """ & tmpDISM.Name & """!")
                     Return False
                   End If
                   If GetUpdateType(tmpMSU.Path) = UpdateType.LP Then LangChange = True
@@ -2641,14 +2647,14 @@
                     If My.Computer.FileSystem.FileExists(tmpCAB) Then My.Computer.FileSystem.DeleteFile(tmpCAB)
                     DiscardDISM(Mount)
                     ToggleInputs(True)
-                    SetStatus("Failed to Extract Update """ & DisplayName & """ from EXE to CAB!")
+                    SetStatus("Failed to extract """ & DisplayName & """ from EXE to CAB!")
                     Return False
                   End If
                   If Not AddToDism(Mount, tmpCAB) Then
                     If My.Computer.FileSystem.FileExists(tmpCAB) Then My.Computer.FileSystem.DeleteFile(tmpCAB)
                     DiscardDISM(Mount)
                     ToggleInputs(True)
-                    SetStatus("Failed to Add Update """ & DisplayName & """ into Image Package """ & tmpDISM.Name & """!")
+                    SetStatus("Failed to integrate """ & DisplayName & """ into """ & tmpDISM.Name & """!")
                     Return False
                   End If
                   If My.Computer.FileSystem.FileExists(tmpCAB) Then My.Computer.FileSystem.DeleteFile(tmpCAB)
@@ -2661,7 +2667,7 @@
                     If My.Computer.FileSystem.FileExists(tmpCAB) Then My.Computer.FileSystem.DeleteFile(tmpCAB)
                     DiscardDISM(Mount)
                     ToggleInputs(True)
-                    SetStatus("Failed to Add Update """ & DisplayName & """ into Image Package """ & tmpDISM.Name & """!")
+                    SetStatus("Failed to integrate """ & DisplayName & """ into """ & tmpDISM.Name & """!")
                     Return False
                   End If
                   If My.Computer.FileSystem.FileExists(tmpCAB) Then My.Computer.FileSystem.DeleteFile(tmpCAB)
@@ -2674,7 +2680,6 @@
               End If
             Next
             Dim DoSave As Boolean = True
-
             If D = DISM_64.Count - 1 Then
               DoSave = False
             End If
