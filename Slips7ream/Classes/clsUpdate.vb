@@ -138,11 +138,12 @@
   Private Sub wsVer_DownloadFileCompleted(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs) Handles wsVer.DownloadFileCompleted
     RaiseEvent DownloadResult(sender, e)
   End Sub
-  Public Shared Function CompareVersions(sRemote As String) As Boolean
-    Dim sLocal As String = Application.ProductVersion
+  Public Shared Function CompareVersions(sRemote As String, Optional sLocal As String = Nothing) As Boolean
+    If String.IsNullOrEmpty(sLocal) Then sLocal = Application.ProductVersion
     Dim LocalVer(3) As String
     If sLocal.Contains(".") Then
       For I As Integer = 1 To 3
+        LocalVer(0) = sLocal.Split(".")(0)
         If sLocal.Split(".").Count > I Then
           Dim sTmp As String = sLocal.Split(".")(I).Trim
           If IsNumeric(sTmp) And sTmp.Length < 4 Then sTmp &= StrDup(4 - sTmp.Length, "0"c)
@@ -152,6 +153,7 @@
         End If
       Next
     ElseIf sLocal.Contains(",") Then
+      LocalVer(0) = sLocal.Split(".")(0)
       For I As Integer = 1 To 3
         If sLocal.Split(",").Count > I Then
           Dim sTmp As String = sLocal.Split(",")(I).Trim
@@ -164,6 +166,7 @@
     End If
     Dim RemoteVer(3) As String
     If sRemote.Contains(".") Then
+      RemoteVer(0) = sRemote.Split(".")(0)
       For I As Integer = 1 To 3
         If sRemote.Split(".").Count > I Then
           Dim sTmp As String = sRemote.Split(".")(I).Trim
@@ -174,6 +177,7 @@
         End If
       Next
     ElseIf sRemote.Contains(",") Then
+      RemoteVer(0) = sRemote.Split(",")(0)
       For I As Integer = 1 To 3
         If sRemote.Split(",").Count > I Then
           Dim sTmp As String = sRemote.Split(",")(I).Trim
