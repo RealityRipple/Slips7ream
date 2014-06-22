@@ -3057,7 +3057,8 @@
     If DateDiff(DateInterval.Day, mySettings.LastUpdate, Today) > 13 Then
       mySettings.LastUpdate = Today
       cUpdate = New clsUpdate
-      cUpdate.CheckVersion()
+      Dim updateCaller As New MethodInvoker(AddressOf cUpdate.CheckVersion)
+      updateCaller.BeginInvoke(Nothing, Nothing)
     End If
   End Sub
   Private Sub cUpdate_CheckingVersion(sender As Object, e As System.EventArgs) Handles cUpdate.CheckingVersion
@@ -3067,19 +3068,22 @@
     SetStatus("Checking for new Version... (" & e.ProgressPercentage & "%)")
   End Sub
   Private Sub cUpdate_CheckResult(sender As Object, e As clsUpdate.CheckEventArgs) Handles cUpdate.CheckResult
-    If e.Cancelled Then
-      SetStatus("Update Check Cancelled!")
-    ElseIf e.Error IsNot Nothing Then
-      SetStatus("Update Check Failed: " & e.Error.Message & "!")
+    If Me.InvokeRequired Then
+      Me.Invoke(New EventHandler(Of clsUpdate.CheckEventArgs)(AddressOf cUpdate_CheckResult), sender, e)
     Else
-
-      If e.Result = clsUpdate.CheckEventArgs.ResultType.NewUpdate Then
-        SetStatus("New Version Available!")
-        If MsgDlg(Me, "Would you like to update now?", "SLIPS7REAM v" & e.Version & " is available!", "SLIPS7REAM Update", MessageBoxButtons.YesNo, TaskDialogIcon.InternetRJ45) = Windows.Forms.DialogResult.Yes Then
-          cUpdate.DownloadUpdate(WorkDir & "Setup.exe")
-        End If
+      If e.Cancelled Then
+        SetStatus("Update Check Cancelled!")
+      ElseIf e.Error IsNot Nothing Then
+        SetStatus("Update Check Failed: " & e.Error.Message & "!")
       Else
-        SetStatus("Idle")
+        If e.Result = clsUpdate.CheckEventArgs.ResultType.NewUpdate Then
+          SetStatus("New Version Available!")
+          If MsgDlg(Me, "Would you like to update now?", "SLIPS7REAM v" & e.Version & " is available!", "Application Update", MessageBoxButtons.YesNo, TaskDialogIcon.InternetRJ45) = Windows.Forms.DialogResult.Yes Then
+            cUpdate.DownloadUpdate(WorkDir & "Setup.exe")
+          End If
+        Else
+          SetStatus("Idle")
+        End If
       End If
     End If
   End Sub
@@ -3087,26 +3091,30 @@
     SetStatus("Downloading New Version - Waiting for Response...")
   End Sub
   Private Sub cUpdate_DownloadResult(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs) Handles cUpdate.DownloadResult
-    If e.Cancelled Then
-      SetStatus("Update Download Cancelled!")
-    ElseIf e.Error IsNot Nothing Then
-      SetStatus("Update Download Failed: " & e.Error.Message & "!")
+    If Me.InvokeRequired Then
+      Me.Invoke(New System.ComponentModel.AsyncCompletedEventHandler(AddressOf cUpdate_CheckResult), sender, e)
     Else
-      cUpdate.Dispose()
-      SetStatus("Download Complete!")
-      Application.DoEvents()
-      If My.Computer.FileSystem.FileExists(WorkDir & "Setup.exe") Then
-        Do
-          Try
-            Shell(WorkDir & "Setup.exe /silent", AppWinStyle.NormalFocus, False)
-            Exit Do
-          Catch ex As Exception
-            If MsgDlg(Me, "If you have User Account Control enabled, please allow the SLIPS7REAM Installer to run." & vbNewLine & "Would you like to attempt to run the update again?", "There was an error starting the update.", "SLIPS7REAM Update Failure", MessageBoxButtons.YesNo, TaskDialogIcon.ShieldUAC, , ex.Message) = Windows.Forms.DialogResult.No Then Exit Do
-          End Try
-        Loop
-        Application.Exit()
+      If e.Cancelled Then
+        SetStatus("Update Download Cancelled!")
+      ElseIf e.Error IsNot Nothing Then
+        SetStatus("Update Download Failed: " & e.Error.Message & "!")
       Else
-        SetStatus("Update Failure!")
+        cUpdate.Dispose()
+        SetStatus("Download Complete!")
+        Application.DoEvents()
+        If My.Computer.FileSystem.FileExists(WorkDir & "Setup.exe") Then
+          Do
+            Try
+              Shell(WorkDir & "Setup.exe /silent", AppWinStyle.NormalFocus, False)
+              Exit Do
+            Catch ex As Exception
+              If MsgDlg(Me, "If you have User Account Control enabled, please allow the SLIPS7REAM Installer to run." & vbNewLine & "Would you like to attempt to run the update again?", "There was an error starting the update.", "Application Update Failure", MessageBoxButtons.YesNo, TaskDialogIcon.ShieldUAC, , ex.Message) = Windows.Forms.DialogResult.No Then Exit Do
+            End Try
+          Loop
+          Application.Exit()
+        Else
+          SetStatus("Update Failure!")
+        End If
       End If
     End If
   End Sub
@@ -3114,4 +3122,8 @@
     SetStatus("Downloading New Version - " & ByteSize(e.BytesReceived) & " of " & ByteSize(e.TotalBytesToReceive) & "... (" & e.ProgressPercentage & "%)")
   End Sub
 #End Region
+
+  Private Sub pctTitle_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles pctTitle.MouseUp
+    If e.Button = Windows.Forms.MouseButtons.Middle Then mySettings.LastUpdate = Today.Subtract(New TimeSpan(14, 0, 0, 0, 0))
+  End Sub
 End Class
