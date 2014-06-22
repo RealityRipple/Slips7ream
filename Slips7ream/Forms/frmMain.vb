@@ -540,7 +540,7 @@
           FailCollection(9) = vbNewLine & "...and " & FailCollection.Count - 10 & " other failures."
           FailCollection.RemoveRange(10, FailCollection.Count - 10)
         End If
-        MsgDlg(Me, "Some files could not be added to the Update List." & vbNewLine & "Click View Details to see a complete list.", "Failed to add files to the Update List", "Could not Add Updates", MessageBoxButtons.OK, TaskDialogIcon.WindowsUpdate, , Join(FailCollection.ToArray, vbNewLine))
+        MsgDlg(Me, "Some files could not be added to the Update List." & vbNewLine & "Click View Details to see a complete list.", "Unable to add files to the Update List.", "Error Adding Updates", MessageBoxButtons.OK, TaskDialogIcon.WindowsUpdate, , Join(FailCollection.ToArray, vbNewLine))
       End If
     Else
       e.Effect = DragDropEffects.None
@@ -688,7 +688,7 @@
             FailCollection(9) = vbNewLine & "...and " & FailCollection.Count - 10 & " other failures."
             FailCollection.RemoveRange(10, FailCollection.Count - 10)
           End If
-          MsgDlg(Me, "Some files could not be added to the Update List." & vbNewLine & "Click View Details to see a complete list.", "Failed to add files to the Update List", "Could not Add Updates", MessageBoxButtons.OK, TaskDialogIcon.WindowsUpdate, , Join(FailCollection.ToArray, vbNewLine))
+          MsgDlg(Me, "Some files could not be added to the Update List." & vbNewLine & "Click View Details to see a complete list.", "Unable to add files to the Update List.", "Error Adding Updates", MessageBoxButtons.OK, TaskDialogIcon.WindowsUpdate, , Join(FailCollection.ToArray, vbNewLine))
         End If
       End If
     End Using
@@ -839,7 +839,7 @@
   End Sub
   Private Sub cmdClearMSU_Click(sender As System.Object, e As System.EventArgs) Handles cmdClearMSU.Click
     If lvMSU.Items.Count > 0 Then
-      If MsgDlg(Me, IIf(lvMSU.Items.Count > 2, "All " & lvMSU.Items.Count & " updates", "All updates") & " will be removed from the list.", "Do you want to clear the Update List?", "Remove all Updates", MessageBoxButtons.YesNo, TaskDialogIcon.Delete, MessageBoxDefaultButton.Button2) = Windows.Forms.DialogResult.Yes Then
+      If MsgDlg(Me, IIf(lvMSU.Items.Count > 2, "All " & lvMSU.Items.Count & " updates", "All updates") & " will be removed from the list.", "Do you want to clear the Update List?", "Remove All Updates", MessageBoxButtons.YesNo, TaskDialogIcon.Delete, MessageBoxDefaultButton.Button2) = Windows.Forms.DialogResult.Yes Then
         lvMSU.Items.Clear()
         RedoColumns()
       End If
@@ -1142,10 +1142,10 @@
         Try
           Process.Start("explorer.exe", "/select," & sPath)
         Catch ex As Exception
-          MsgDlg(Me, "Unable to open the folder for """ & sPath & """!", "Could not open folder.", "Folder Not Found", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder, , ex.Message)
+          MsgDlg(Me, "Unable to open the folder for """ & sPath & """!", "Unable to open folder.", "Folder Not Found", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder, , ex.Message)
         End Try
       Else
-        MsgDlg(Me, "Unable to find the file """ & sPath & """!", "Could not find completed Image.", "File Not Found", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder)
+        MsgDlg(Me, "Unable to find the file """ & sPath & """!", "Unable to find completed Image.", "File Not Found", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder)
       End If
     End If
   End Sub
@@ -1512,7 +1512,7 @@
             Else
               My.Computer.FileSystem.DeleteDirectory(ISODir & "\efi\boot\", FileIO.DeleteDirectoryOption.DeleteAllContents)
               chkUEFI.Checked = False
-              MsgDlg(Me, """\Windows\Boot\EFI\bootmgfw.efi"" file not found in Image!", "Unable to enable UEFI Boot.", "Missing File", MessageBoxButtons.OK, TaskDialogIcon.Error)
+              MsgDlg(Me, "Unable to find the file ""\Windows\Boot\EFI\bootmgfw.efi"" in Image!", "Unable to enable UEFI Boot.", "File Not Found", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder)
             End If
           Else
             chkUEFI.Checked = False
@@ -1520,7 +1520,7 @@
           End If
         Else
           chkUEFI.Checked = False
-          MsgDlg(Me, """\efi\microsoft\boot\"" folder not found in ISO!", "Unable to enable UEFI Boot.", "Missing Folder", MessageBoxButtons.OK, TaskDialogIcon.Error)
+          MsgDlg(Me, "Unable to find the folder ""\efi\microsoft\boot\"" in ISO!", "Unable to enable UEFI Boot.", "Folder Not Found", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder)
         End If
       End If
       If Not NoMount Then
@@ -3070,7 +3070,7 @@
 
       If e.Result = clsUpdate.CheckEventArgs.ResultType.NewUpdate Then
         SetStatus("New Version Available!")
-        If MsgDlg(Me, "Would you like to update now?", "SLIPS7REAM v" & e.Version & " is available!", "Update SLIPS7REAM", MessageBoxButtons.YesNo, TaskDialogIcon.InternetRJ45) = Windows.Forms.DialogResult.Yes Then
+        If MsgDlg(Me, "Would you like to update now?", "SLIPS7REAM v" & e.Version & " is available!", "SLIPS7REAM Update", MessageBoxButtons.YesNo, TaskDialogIcon.InternetRJ45) = Windows.Forms.DialogResult.Yes Then
           cUpdate.DownloadUpdate(WorkDir & "Setup.exe")
         End If
       Else

@@ -9,7 +9,7 @@
       mySettings.TempDir = txtTemp.Text
     Else
       txtTemp.Focus()
-      MsgDlg(Me, "Please choose a directory that exists to put the Temp directory in.", "Temp Parent Directory Not Found!", "Missing Temp Parent Directory", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder)
+      MsgDlg(Me, "Please choose a directory that exists to put the Temp directory in.", "Unable to find parent directory.", "Folder Not Found", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder, , """" & sDir & """ does not exist.")
       Exit Sub
     End If
     mySettings.x86WhiteList = Split(txtWhitelist.Text, vbNewLine)
@@ -41,7 +41,7 @@
         .CheckPathExists = True,
         .CheckFileExists = False,
         .CreatePrompt = False,
-        .FileName = "Slipstream",
+        .FileName = "Slips7ream",
         .Filter = "Directories|",
         .OverwritePrompt = False,
         .ShowHelp = False,

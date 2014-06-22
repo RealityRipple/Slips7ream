@@ -693,7 +693,7 @@ Module modFunctions
     If TaskDialog.IsPlatformSupported Then
       Using dlgMessage As New TaskDialog
         dlgMessage.Cancelable = True
-        dlgMessage.Caption = Caption
+        dlgMessage.Caption = "SLIPS7REAM - " & Caption
         dlgMessage.InstructionText = Title
         dlgMessage.Text = Text
         dlgMessage.Icon = Icon
