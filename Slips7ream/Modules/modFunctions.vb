@@ -356,7 +356,7 @@ Module modFunctions
           dlgUpdate.Cancelable = False
           dlgUpdate.StartupLocation = TaskDialogStartupLocation.CenterOwner
           dlgUpdate.Caption = "Replace Older Version?"
-          dlgUpdate.InstructionText = "There is already an older version of KB" & oldData.KBArticle & " in the list."
+          dlgUpdate.InstructionText = "There is already an older version of KB" & oldData.KBArticle & " in the Update List."
           dlgUpdate.StandardButtons = TaskDialogStandardButtons.None
           dlgUpdate.Text = "Click the version you want to keep"
           dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
@@ -394,7 +394,7 @@ Module modFunctions
           dlgUpdate.Cancelable = False
           dlgUpdate.StartupLocation = TaskDialogStartupLocation.CenterOwner
           dlgUpdate.Caption = "Replace Newer Version?"
-          dlgUpdate.InstructionText = "There is already a newer version of KB" & newData.KBArticle & " in the list."
+          dlgUpdate.InstructionText = "There is already a newer version of KB" & newData.KBArticle & " in the Update List."
           dlgUpdate.StandardButtons = TaskDialogStandardButtons.None
           dlgUpdate.Text = "Click the version you want to keep"
           dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
@@ -409,7 +409,7 @@ Module modFunctions
             em & "Size: " & ByteSize(New IO.FileInfo(newPath).Length) & vbNewLine &
             em & "Built: " & newData.BuildDate)
           AddHandler cmdYes.Click, AddressOf SelectionDialogButton_Click
-          dlgUpdate.Controls.Add(cmdYes)
+
           Dim cmdNo As New CommandLink(
             "cmdOld",
             "Use Newer Version " & oldVer,
@@ -420,6 +420,7 @@ Module modFunctions
           cmdNo.Default = True
           AddHandler cmdNo.Click, AddressOf SelectionDialogButton_Click
           dlgUpdate.Controls.Add(cmdNo)
+          dlgUpdate.Controls.Add(cmdYes)
           dlgUpdate.OwnerWindowHandle = owner.Handle
           AddHandler dlgUpdate.Opened, AddressOf RefreshDlg
           Dim ret As TaskDialogResult = dlgUpdate.Show()
@@ -624,7 +625,7 @@ Module modFunctions
     Preferences = &HA5
     FolderPreferences = &HA6
     ZipDriveDisconnected = &HA7
-    Unknown = &HA8
+    WindowsPhotoFile = &HA8
     Download = &HA9
     Bad = &HAA
     MoveToNetwork = &HAB
