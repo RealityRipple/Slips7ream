@@ -5,15 +5,20 @@
   Private lExtractVal As ULong
   Private lExtractTotal As ULong
   Private lCurrentIndex As UInteger
-  Public Event DisplayProgress(index As UInteger, items As Long, Value As ULong, Total As ULong)
-  Public Event DisplayResult(index As UInteger, items As Long, result As OperationResult)
-  Public Sub New(fileNumber As UInteger, fileName As String)
+  Private aState As Object
+  Public Delegate Sub DisplayProgressCallback(index As UInteger, items As Long, Value As ULong, Total As ULong, State As Object)
+  Public Event DisplayProgress(index As UInteger, items As Long, Value As ULong, Total As ULong, State As Object)
+  Public Delegate Sub DisplayResultCallback(index As UInteger, items As Long, result As OperationResult, State As Object)
+  Public Event DisplayResult(index As UInteger, items As Long, result As OperationResult, State As Object)
+  Public Sub New(fileNumber As UInteger, fileName As String, AsyncState As Object)
     Files.Add(fileNumber, fileName)
+    aState = AsyncState
   End Sub
-  Public Sub New(fileNumbers() As UInteger, fileNames() As String, destDir As String)
+  Public Sub New(fileNumbers() As UInteger, fileNames() As String, destDir As String, AsyncState As Object)
     For I As Integer = 0 To fileNumbers.LongLength - 1
       Files.Add(fileNumbers(I), destDir & fileNames(I))
     Next
+    aState = AsyncState
   End Sub
 #Region "IArchiveExtractCallback Members"
   Public Sub SetTotal(total As ULong) Implements IArchiveExtractCallback.SetTotal
@@ -21,7 +26,7 @@
   End Sub
   Public Sub SetCompleted(ByRef completeValue As ULong) Implements IArchiveExtractCallback.SetCompleted
     lExtractVal = completeValue
-    RaiseEvent DisplayProgress(lCurrentIndex, Files.LongCount, lExtractVal, lExtractTotal)
+    RaiseEvent DisplayProgress(lCurrentIndex, Files.LongCount, lExtractVal, lExtractTotal, aState)
   End Sub
   Public Function GetStream(index As UInteger, ByRef outStream As ISequentialOutStream, askExtractMode As AskMode) As Integer Implements IArchiveExtractCallback.GetStream
     If Files.ContainsKey(index) AndAlso (askExtractMode = AskMode.kExtract) Then
@@ -41,7 +46,7 @@
   Public Sub PrepareOperation(askExtractMode As AskMode) Implements IArchiveExtractCallback.PrepareOperation
   End Sub
   Public Sub SetOperationResult(e As OperationResult) Implements IArchiveExtractCallback.SetOperationResult
-    RaiseEvent DisplayResult(lCurrentIndex, Files.LongCount, e)
+    RaiseEvent DisplayResult(lCurrentIndex, Files.LongCount, e, aState)
     If FileStream IsNot Nothing Then FileStream.Dispose()
   End Sub
 #End Region

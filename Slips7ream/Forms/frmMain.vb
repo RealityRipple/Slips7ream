@@ -2264,6 +2264,8 @@
 #End Region
 #Region "7-Zip"
   Private WithEvents ExtractCallback As ArchiveCallback
+  Private c_ExtractRet As New Collections.Generic.List(Of String)
+  Private Delegate Function ArchiveExtractInvoker(indices As UInteger(), numItems As UInteger, testMode As Integer, extractCallback As IArchiveExtractCallback) As Integer
   Private Sub ExtractFiles(Format As KnownSevenZipFormat, Source As String, Destination As String)
     Dim sStatus As String = GetStatus()
     If sStatus.EndsWith("...") Then sStatus = sStatus.Substring(0, sStatus.Length - 3)
@@ -2304,8 +2306,20 @@
           For Each sDir As String In sDirs
             IO.Directory.CreateDirectory(Destination & sDir)
           Next
-          ExtractCallback = New ArchiveCallback(sFiles.Keys.ToArray, sFiles.Values.ToArray, Destination)
+          Dim cIndex As Integer = c_ExtractRet.Count
+          c_ExtractRet.Add(Nothing)
+          ExtractCallback = New ArchiveCallback(sFiles.Keys.ToArray, sFiles.Values.ToArray, Destination, cIndex)
           Archive.Extract(sFiles.Keys.ToArray, sFiles.LongCount, 0, ExtractCallback)
+          Dim extractInvoker As New ArchiveExtractInvoker(AddressOf Archive.Extract)
+          extractInvoker.BeginInvoke(sFiles.Keys.ToArray, sFiles.LongCount, 0, ExtractCallback, Nothing, Nothing)
+          Do While c_ExtractRet(cIndex) Is Nothing
+            Application.DoEvents()
+            Threading.Thread.Sleep(1)
+            If StopRun Then
+              Exit Do
+            End If
+          Loop
+          c_ExtractRet(cIndex) = Nothing
           SetProgress(0, 1000)
         End Using
         Archive.Close()
@@ -2357,8 +2371,20 @@
           For Each sDir As String In sDirs
             IO.Directory.CreateDirectory(Destination & sDir)
           Next
-          ExtractCallback = New ArchiveCallback(sFiles.Keys.ToArray, sFiles.Values.ToArray, Destination)
+          Dim cIndex As Integer = c_ExtractRet.Count
+          c_ExtractRet.Add(Nothing)
+          ExtractCallback = New ArchiveCallback(sFiles.Keys.ToArray, sFiles.Values.ToArray, Destination, cIndex)
           Archive.Extract(sFiles.Keys.ToArray, sFiles.LongCount, 0, ExtractCallback)
+          Dim extractInvoker As New ArchiveExtractInvoker(AddressOf Archive.Extract)
+          extractInvoker.BeginInvoke(sFiles.Keys.ToArray, sFiles.LongCount, 0, ExtractCallback, Nothing, Nothing)
+          Do While c_ExtractRet(cIndex) Is Nothing
+            Application.DoEvents()
+            Threading.Thread.Sleep(1)
+            If StopRun Then
+              Exit Do
+            End If
+          Loop
+          c_ExtractRet(cIndex) = Nothing
           SetProgress(0, 1000)
         End Using
         Archive.Close()
@@ -2398,8 +2424,20 @@
               'Ignore
             Else
               If sPath.ToLower.EndsWith("\" & File.ToLower) Then
-                ExtractCallback = New ArchiveCallback(I, Destination & IO.Path.GetFileName(sPath))
-                Archive.Extract(New UInteger() {I}, 1, 0, ExtractCallback)
+                Dim cIndex As Integer = c_ExtractRet.Count
+                c_ExtractRet.Add(Nothing)
+                ExtractCallback = New ArchiveCallback(I, Destination & IO.Path.GetFileName(sPath), cIndex)
+                'Archive.Extract(New UInteger() {I}, 1, 0, ExtractCallback)
+                Dim extractInvoker As New ArchiveExtractInvoker(AddressOf Archive.Extract)
+                extractInvoker.BeginInvoke(New UInteger() {I}, 1, 0, ExtractCallback, Nothing, Nothing)
+                Do While c_ExtractRet(cIndex) Is Nothing
+                  Application.DoEvents()
+                  Threading.Thread.Sleep(1)
+                  If StopRun Then
+                    Exit Do
+                  End If
+                Loop
+                c_ExtractRet(cIndex) = Nothing
                 Exit For
               End If
             End If
@@ -2413,22 +2451,33 @@
       End Try
     End Using
   End Sub
-  Private Sub ExtractCallback_DisplayProgress(index As UInteger, items As Long, Value As ULong, Total As ULong) Handles ExtractCallback.DisplayProgress
-    Dim iMax As Integer = pbIndividual.Width
-    Dim iVal As Integer = (Value / Total) * iMax
-    If pbIndividual.Value = iVal And pbIndividual.Maximum = iMax Then Exit Sub
-    SetProgress(iVal, iMax)
-    Application.DoEvents()
+  Private Sub ExtractCallback_DisplayProgress(index As UInteger, items As Long, Value As ULong, Total As ULong, State As Object) Handles ExtractCallback.DisplayProgress
+    If Me.InvokeRequired Then
+      Me.BeginInvoke(New ArchiveCallback.DisplayProgressCallback(AddressOf ExtractCallback_DisplayProgress), index, items, Value, Total, State)
+    Else
+      Dim iMax As Integer = pbIndividual.Width
+      Dim iVal As Integer = (Value / Total) * iMax
+      If pbIndividual.Value = iVal And pbIndividual.Maximum = iMax Then Exit Sub
+      SetProgress(iVal, iMax)
+      Application.DoEvents()
+    End If
   End Sub
-  Private Sub ExtractCallback_DisplayResult(index As UInteger, items As Long, result As OperationResult) Handles ExtractCallback.DisplayResult
-    If result = OperationResult.kCRCError Then
-      MsgDlg(Me, "CRC Error in compressed file #" & index & ".", "There was an error while extracting.", "Extract Error", MessageBoxButtons.OK, TaskDialogIcon.Error)
-    ElseIf result = OperationResult.kDataError Then
-      MsgDlg(Me, "Data Error in compressed file #" & index & ".", "There was an error while extracting.", "Extract Error", MessageBoxButtons.OK, TaskDialogIcon.Error)
-    ElseIf result = OperationResult.kUnSupportedMethod Then
-      MsgDlg(Me, "Unsupported Method in compressed file #" & index & ".", "There was an error while extracting.", "Extract Error", MessageBoxButtons.OK, TaskDialogIcon.Error)
-    ElseIf result = OperationResult.kOK Then
-
+  Private Sub ExtractCallback_DisplayResult(index As UInteger, items As Long, result As OperationResult, State As Object) Handles ExtractCallback.DisplayResult
+    If Me.InvokeRequired Then
+      Me.BeginInvoke(New ArchiveCallback.DisplayResultCallback(AddressOf ExtractCallback_DisplayResult), index, items, result, State)
+    Else
+      If result = OperationResult.kCRCError Then
+        MsgDlg(Me, "CRC Error in compressed file #" & index & ".", "There was an error while extracting.", "Extract Error", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        c_ExtractRet(index) = "CRC Error"
+      ElseIf result = OperationResult.kDataError Then
+        MsgDlg(Me, "Data Error in compressed file #" & index & ".", "There was an error while extracting.", "Extract Error", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        c_ExtractRet(index) = "Data Error"
+      ElseIf result = OperationResult.kUnSupportedMethod Then
+        MsgDlg(Me, "Unsupported Method in compressed file #" & index & ".", "There was an error while extracting.", "Extract Error", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        c_ExtractRet(index) = "Unsupported Method"
+      Else
+        c_ExtractRet(index) = "OK"
+      End If
     End If
   End Sub
 #End Region
@@ -3311,8 +3360,4 @@
     SetStatus("Downloading New Version - " & ByteSize(e.BytesReceived) & " of " & ByteSize(e.TotalBytesToReceive) & "... (" & e.ProgressPercentage & "%)")
   End Sub
 #End Region
-
-  Private Sub pctTitle_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles pctTitle.MouseUp
-    If e.Button = Windows.Forms.MouseButtons.Middle Then mySettings.LastUpdate = Today.Subtract(New TimeSpan(14, 0, 0, 0, 0))
-  End Sub
 End Class
