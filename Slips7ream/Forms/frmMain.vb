@@ -1466,7 +1466,7 @@
       Dim ISODDir As String = Work & "ISOD%n\"
 
       If Not My.Computer.FileSystem.DirectoryExists(ISODir) Then My.Computer.FileSystem.CreateDirectory(ISODir)
-      pbIndividual.Style = ProgressBarStyle.Marquee
+      pbIndividual.Style = ProgressBarStyle.Continuous
       SetStatus("Extracting ISO contents...")
       ExtractFiles(KnownSevenZipFormat.Udf, ISOFile, ISODir, "install.wim")
       pbTotal.Value += 1
@@ -2354,13 +2354,13 @@
               End If
             End If
           Next
+          For Each sDir As String In sDirs
+            IO.Directory.CreateDirectory(Destination & sDir)
+          Next
+          ExtractCallback = New ArchiveCallback(sFiles.Keys.ToArray, sFiles.Values.ToArray, Destination)
+          Archive.Extract(sFiles.Keys.ToArray, sFiles.LongCount, 0, ExtractCallback)
+          SetProgress(0, 1000)
         End Using
-        For Each sDir As String In sDirs
-          IO.Directory.CreateDirectory(Destination & sDir)
-        Next
-        ExtractCallback = New ArchiveCallback(sFiles.Keys.ToArray, sFiles.Values.ToArray, Destination)
-        Archive.Extract(sFiles.Keys.ToArray, sFiles.LongCount, 0, ExtractCallback)
-        SetProgress(0, 1000)
         Archive.Close()
         Runtime.InteropServices.Marshal.ReleaseComObject(Archive)
       Catch ex As Exception
@@ -2885,10 +2885,11 @@
     End If
     pbIndividual.Value = 0
     Dim PackageCount As Integer = GetDISMPackages(WIMPath)
-    pbIndividual.Maximum = PackageCount + 13
+    Dim pbMax As Integer = (PackageCount * 3) + 14
+    pbIndividual.Maximum = pbMax
     SetStatus("Extracting Service Pack...")
     RunHidden(SPPath, "/x:""" & Work & "SP1""")
-    pbIndividual.Value += 1
+    SetProgress(1, pbMax)
     If StopRun Then
       ToggleInputs(True)
       Return False
@@ -2908,12 +2909,11 @@
       SetStatus("No KB976932.cab to extract!")
       Return False
     End If
-    pbIndividual.Value += 1
+    SetProgress(2, pbMax)
     If StopRun Then
       ToggleInputs(True)
       Return False
     End If
-
     Dim Extract As String = Work & "SP1\NestedMPPcontent.cab"
     If My.Computer.FileSystem.FileExists(Extract) Then
       SetStatus("Extracting NestedMPPcontent.cab...")
@@ -2928,7 +2928,7 @@
       ToggleInputs(True)
       Return False
     End If
-    pbIndividual.Value += 1
+    SetProgress(3, pbMax)
     Dim Update As String = Work & "SP1\update.ses"
     If My.Computer.FileSystem.FileExists(Update) Then
       SetStatus("Modifying update.ses...")
@@ -2942,7 +2942,7 @@
       ToggleInputs(True)
       Return False
     End If
-    pbIndividual.Value += 1
+    SetProgress(4, pbMax)
     Update = Work & "SP1\update.mum"
     If My.Computer.FileSystem.FileExists(Update) Then
       SetStatus("Modifying update.mum...")
@@ -2956,7 +2956,7 @@
       ToggleInputs(True)
       Return False
     End If
-    pbIndividual.Value += 1
+    SetProgress(5, pbMax)
     Dim Update86 As String = Work & "SP1\Windows7SP1-KB976933~31bf3856ad364e35~x86~~6.1.1.17514.mum"
     Dim Update64 As String = Work & "SP1\Windows7SP1-KB976933~31bf3856ad364e35~amd64~~6.1.1.17514.mum"
     If My.Computer.FileSystem.FileExists(Update86) Then
@@ -2974,7 +2974,7 @@
       ToggleInputs(True)
       Return False
     End If
-    pbIndividual.Value += 1
+    SetProgress(6, pbMax)
     Dim CABList As String = Work & "SP1\cabinet.cablist.ini"
     If My.Computer.FileSystem.FileExists(CABList) Then My.Computer.FileSystem.DeleteFile(CABList)
     CABList = Work & "SP1\old_cabinet.cablist.ini"
@@ -2991,12 +2991,13 @@
         SetStatus("No KB976933-LangsCab" & I.ToString.Trim & ".cab to extract!")
         Return False
       End If
-      pbIndividual.Value += 1
+      SetProgress(7 + I, pbMax)
       If StopRun Then
         ToggleInputs(True)
         Return False
       End If
     Next
+    SetProgress(14, pbMax)
     If PackageCount > 0 Then
       For I As Integer = 1 To PackageCount
         Dim dismData As PackageInfoEx = GetDISMPackageData(WIMPath, I)
@@ -3032,6 +3033,7 @@
           ToggleInputs(True)
           Return False
         End If
+        pbIndividual.Value += 1
         SetStatus("Saving Image Package """ & dismData.Name & """...")
         If Not SaveDISM(Mount) Then
           DiscardDISM(Mount)
@@ -3043,6 +3045,7 @@
           ToggleInputs(True)
           Return False
         End If
+        pbIndividual.Value += 1
       Next
     Else
       ToggleInputs(True)
