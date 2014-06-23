@@ -222,6 +222,7 @@ Partial Class frmMain
     Me.lvMSU.AllowDrop = True
     Me.lvMSU.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colUpdate, Me.colType})
     Me.lvMSU.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.lvMSU.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
     Me.lvMSU.HideSelection = False
     Me.lvMSU.LargeImageList = Me.imlUpdates
     Me.lvMSU.Location = New System.Drawing.Point(103, 207)
@@ -909,6 +910,7 @@ Partial Class frmMain
     Me.lvImages.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colIndex, Me.colName, Me.colSize})
     Me.lvImages.Dock = System.Windows.Forms.DockStyle.Fill
     Me.lvImages.FullRowSelect = True
+    Me.lvImages.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
     Me.lvImages.Location = New System.Drawing.Point(103, 101)
     Me.lvImages.MultiSelect = False
     Me.lvImages.Name = "lvImages"
