@@ -101,6 +101,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationEvents.vb" />
+    <Compile Include="Classes\cls7zArchiveCallback.vb" />
+    <Compile Include="Classes\cls7zFormat.vb" />
+    <Compile Include="Classes\cls7zInterface.vb" />
     <Compile Include="Classes\clsLinkLabel.vb">
       <SubType>Component</SubType>
     </Compile>
