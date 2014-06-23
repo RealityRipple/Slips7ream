@@ -258,87 +258,92 @@
       cmdClearMSU.Enabled = lvMSU.Items.Count > 0
     End If
   End Sub
+  Private Delegate Sub ToggleInputsInvoker(Enabled As Boolean)
   Private Sub ToggleInputs(Enabled As Boolean)
-    If Enabled Then
-      Me.Cursor = Cursors.Default
-      tmrAnimation.Stop()
-      FreshDraw()
+    If Me.InvokeRequired Then
+      Me.Invoke(New ToggleInputsInvoker(AddressOf ToggleInputs), Enabled)
     Else
-      Me.Cursor = Cursors.AppStarting
-      tmrAnimation.Start()
-    End If
-    pnlSlips7ream.SuspendLayout()
-    lblWIM.Enabled = Enabled
-    txtWIM.Enabled = Enabled
-    cmdWIM.Enabled = Enabled
-    chkSP.Enabled = Enabled
-    txtSP.Enabled = IIf(Enabled, chkSP.Checked, Enabled)
-    cmdSP.Enabled = IIf(Enabled, chkSP.Checked, Enabled)
-    lblSP64.Enabled = IIf(Enabled, chkSP.Checked, Enabled)
-    txtSP64.Enabled = IIf(Enabled, chkSP.Checked, Enabled)
-    cmdSP64.Enabled = IIf(Enabled, chkSP.Checked, Enabled)
-    lblMSU.Enabled = Enabled
-    lvMSU.Enabled = Enabled
-    lvMSU.HideSelection = Not Enabled
-    cmdAddMSU.Enabled = Enabled
-    cmdRemMSU.Enabled = IIf(Enabled, lvMSU.SelectedItems.Count > 0, Enabled)
-    cmdClearMSU.Enabled = IIf(Enabled, lvMSU.Items.Count > 0, Enabled)
-    If RunComplete Then
-      cmdBegin.Text = "Rerun"
-      cmdOpenFolder.Visible = True
-    Else
-      cmdBegin.Text = "Begin"
-      cmdOpenFolder.Visible = False
-    End If
-    cmdBegin.Visible = Enabled
-    chkISO.Enabled = Enabled
-    txtISO.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
-    cmdISO.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
-    chkUnlock.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
-    chkUEFI.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
-    lblISOLabel.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
-    txtISOLabel.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
-    lblISOFS.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
-    cmbISOFormat.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
-    cmbLimitType.Enabled = Enabled
-    If chkISO.Checked Then
-      If Not cmbLimitType.Items.Contains("Split ISO") Then cmbLimitType.Items.Add("Split ISO")
-    Else
-      If cmbLimitType.Items.Contains("Split ISO") Then cmbLimitType.Items.Remove("Split ISO")
-    End If
-    If cmbLimitType.SelectedIndex = -1 Then cmbLimitType.SelectedIndex = 0
-    cmbLimit.Enabled = IIf(Enabled, cmbLimitType.SelectedIndex > 0, Enabled)
-    chkMerge.Enabled = Enabled
-    txtMerge.Enabled = IIf(Enabled, chkMerge.Checked, Enabled)
-    cmdMerge.Enabled = IIf(Enabled, chkMerge.Checked, Enabled)
-    lblImages.Enabled = Enabled
-    lvImages.Enabled = Enabled
-    If Enabled Then
-      cmdClose.Text = "Close"
-      lblActivity.Text = "Idle"
-    Else
-      cmdClose.Text = "Cancel"
-    End If
-    cmdConfig.Visible = Enabled
-    cmdClose.Enabled = True
-    If pbTotal.Visible = Enabled Then
-      pbTotal.Visible = Not Enabled
-      pbIndividual.Visible = Not Enabled
-      If Me.WindowState = FormWindowState.Normal Then
-        If pbTotal.Visible Then
-          Me.Height += HeightDifferentialB
-          Me.MinimumSize = New Size(Me.MinimumSize.Width, Me.MinimumSize.Height + HeightDifferentialB)
-        Else
-          Me.MinimumSize = New Size(Me.MinimumSize.Width, Me.MinimumSize.Height - HeightDifferentialB)
-          Me.Height -= HeightDifferentialB
+      If Enabled Then
+        Me.Cursor = Cursors.Default
+        tmrAnimation.Stop()
+        FreshDraw()
+      Else
+        Me.Cursor = Cursors.AppStarting
+        tmrAnimation.Start()
+      End If
+      pnlSlips7ream.SuspendLayout()
+      lblWIM.Enabled = Enabled
+      txtWIM.Enabled = Enabled
+      cmdWIM.Enabled = Enabled
+      chkSP.Enabled = Enabled
+      txtSP.Enabled = IIf(Enabled, chkSP.Checked, Enabled)
+      cmdSP.Enabled = IIf(Enabled, chkSP.Checked, Enabled)
+      lblSP64.Enabled = IIf(Enabled, chkSP.Checked, Enabled)
+      txtSP64.Enabled = IIf(Enabled, chkSP.Checked, Enabled)
+      cmdSP64.Enabled = IIf(Enabled, chkSP.Checked, Enabled)
+      lblMSU.Enabled = Enabled
+      lvMSU.Enabled = Enabled
+      lvMSU.HideSelection = Not Enabled
+      cmdAddMSU.Enabled = Enabled
+      cmdRemMSU.Enabled = IIf(Enabled, lvMSU.SelectedItems.Count > 0, Enabled)
+      cmdClearMSU.Enabled = IIf(Enabled, lvMSU.Items.Count > 0, Enabled)
+      If RunComplete Then
+        cmdBegin.Text = "Rerun"
+        cmdOpenFolder.Visible = True
+      Else
+        cmdBegin.Text = "Begin"
+        cmdOpenFolder.Visible = False
+      End If
+      cmdBegin.Visible = Enabled
+      chkISO.Enabled = Enabled
+      txtISO.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
+      cmdISO.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
+      chkUnlock.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
+      chkUEFI.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
+      lblISOLabel.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
+      txtISOLabel.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
+      lblISOFS.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
+      cmbISOFormat.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
+      cmbLimitType.Enabled = Enabled
+      If chkISO.Checked Then
+        If Not cmbLimitType.Items.Contains("Split ISO") Then cmbLimitType.Items.Add("Split ISO")
+      Else
+        If cmbLimitType.Items.Contains("Split ISO") Then cmbLimitType.Items.Remove("Split ISO")
+      End If
+      If cmbLimitType.SelectedIndex = -1 Then cmbLimitType.SelectedIndex = 0
+      cmbLimit.Enabled = IIf(Enabled, cmbLimitType.SelectedIndex > 0, Enabled)
+      chkMerge.Enabled = Enabled
+      txtMerge.Enabled = IIf(Enabled, chkMerge.Checked, Enabled)
+      cmdMerge.Enabled = IIf(Enabled, chkMerge.Checked, Enabled)
+      lblImages.Enabled = Enabled
+      lvImages.Enabled = Enabled
+      If Enabled Then
+        cmdClose.Text = "Close"
+        lblActivity.Text = "Idle"
+      Else
+        cmdClose.Text = "Cancel"
+      End If
+      cmdConfig.Visible = Enabled
+      cmdClose.Enabled = True
+      If pbTotal.Visible = Enabled Then
+        pbTotal.Visible = Not Enabled
+        pbIndividual.Visible = Not Enabled
+        If Me.WindowState = FormWindowState.Normal Then
+          If pbTotal.Visible Then
+            Me.Height += HeightDifferentialB
+            Me.MinimumSize = New Size(Me.MinimumSize.Width, Me.MinimumSize.Height + HeightDifferentialB)
+          Else
+            Me.MinimumSize = New Size(Me.MinimumSize.Width, Me.MinimumSize.Height - HeightDifferentialB)
+            Me.Height -= HeightDifferentialB
+          End If
         End If
       End If
+      pbTotal.Visible = Not Enabled
+      pbIndividual.Visible = Not Enabled
+      pnlSlips7ream.ResumeLayout(True)
+      If Not pbTotal.Visible Then pbTotal.Value = 0
+      If Not pbIndividual.Visible Then pbIndividual.Value = 0
     End If
-    pbTotal.Visible = Not Enabled
-    pbIndividual.Visible = Not Enabled
-    pnlSlips7ream.ResumeLayout(True)
-    If Not pbTotal.Visible Then pbTotal.Value = 0
-    If Not pbIndividual.Visible Then pbIndividual.Value = 0
   End Sub
   Private Sub pctTitle_DoubleClick(sender As Object, e As System.EventArgs) Handles pctTitle.DoubleClick
     frmTetris.Show()
@@ -1011,7 +1016,8 @@
   Private Sub ParseImageList(ToRun As String)
     SetDisp(MNGList.Delete)
     SetTitle("Parsing WIM Packages", "Reading data from Windows Image package descriptor...")
-    tmrAnimation.Start()
+    ToggleInputs(False)
+    'tmrAnimation.Start()
     If ToRun = "WIM" Then
       ParseMainWIM()
     ElseIf ToRun = "MERGE" Then
@@ -1021,7 +1027,8 @@
       ParseMergeWIM()
     End If
     ClearLister(ToRun)
-    tmrAnimation.Stop()
+    ToggleInputs(True)
+    'tmrAnimation.Stop()
     FreshDraw()
   End Sub
 #End Region
@@ -2491,13 +2498,15 @@
             If String.IsNullOrEmpty(tmpMSU.Architecture) Then
               Continue For
             Else
-              If tmpMSU.Architecture = "x86" Then
+              If DISM_32.Count > 0 And tmpMSU.Architecture = "x86" Then
                 MSU_32.Add(tmpMSU)
               End If
-              If tmpMSU.Architecture = "amd64" Then
-                MSU_64.Add(tmpMSU)
-              Else
-                If CheckWhitelist(tmpMSU.DisplayName) Then MSU_64.Add(tmpMSU)
+              If DISM_64.Count > 0 Then
+                If tmpMSU.Architecture = "amd64" Then
+                  MSU_64.Add(tmpMSU)
+                Else
+                  If CheckWhitelist(tmpMSU.DisplayName) Then MSU_64.Add(tmpMSU)
+                End If
               End If
             End If
           End If
@@ -2630,7 +2639,7 @@
               ElseIf Not String.IsNullOrEmpty(tmpMSU.DisplayName) Then
                 DisplayName = tmpMSU.DisplayName
               End If
-              SetStatus((I + 1).ToString.Trim & "/" & MSU_32.Count.ToString & " - Integrating " & DisplayName & " into " & tmpDISM.Name & "...")
+              SetStatus((I + 1).ToString.Trim & "/" & MSU_64.Count.ToString & " - Integrating " & DisplayName & " into " & tmpDISM.Name & "...")
               Select Case GetUpdateType(tmpMSU.Path)
                 Case UpdateType.MSU, UpdateType.CAB, UpdateType.LP
                   If Not AddToDism(Mount, tmpMSU.Path) Then
