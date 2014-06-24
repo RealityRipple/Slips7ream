@@ -2748,10 +2748,9 @@
         Dim DISM_64 As New Collections.Generic.List(Of PackageInfoEx)
         Dim MSU_32 As New Collections.Generic.List(Of UpdateInfoEx)
         Dim MSU_64 As New Collections.Generic.List(Of UpdateInfoEx)
-        pbIndividual.Value = 0
-        pbIndividual.Maximum = PackageCount
+        SetProgress(0, PackageCount)
         For I As Integer = 1 To PackageCount
-          pbIndividual.Value += 1
+          SetProgress(I, PackageCount)
           SetStatus("Loading Image Package #" & I.ToString.Trim & " Data...")
           Dim tmpDISM As PackageInfoEx = GetDISMPackageData(WIMPath, I)
           If tmpDISM.Architecture = "x86" Then
@@ -2760,11 +2759,10 @@
             DISM_64.Add(tmpDISM)
           End If
         Next
-        pbIndividual.Value = 0
-        pbIndividual.Maximum = MSUPaths.Length
+        SetProgress(0, MSUPaths.Length)
         For I As Integer = 0 To MSUPaths.Length - 1
           If MSUPaths(I).IsFile Then
-            pbIndividual.Value += 1
+            SetProgress(I, MSUPaths.Length)
             SetStatus("Loading Update """ & IO.Path.GetFileNameWithoutExtension(MSUPaths(I).Path) & """ Data...")
             Dim tmpMSU As New UpdateInfoEx(MSUPaths(I).Path)
             If Not String.IsNullOrEmpty(tmpMSU.Failure) Then Continue For
@@ -2781,18 +2779,21 @@
             End If
           End If
         Next
-        pbIndividual.Value = 0
-        pbIndividual.Maximum = 1
+        SetProgress(0, 1)
+        Dim pbMax As Integer = 1
+        Dim pbVal As Integer = 0
         For Each tmpDISM In DISM_32
-          pbIndividual.Maximum += MSU_32.Count + 1
+          pbMax += MSU_32.Count + 1
         Next
         For Each tmpDISM In DISM_64
-          pbIndividual.Maximum += MSU_64.Count + 1
+          pbMax += MSU_64.Count + 1
         Next
+        SetProgress(0, pbMax)
         If MSU_32.Count > 0 Then
           For D As Integer = 0 To DISM_32.Count - 1
             Dim tmpDISM As PackageInfoEx = DISM_32(D)
-            pbIndividual.Value += 1
+            pbVal += 1
+            SetProgress(pbVal, pbMax)
             SetStatus("Loading Image Package """ & tmpDISM.Name & """...")
             If Not InitDISM(WIMPath, tmpDISM.Index, Mount) Then
               DiscardDISM(Mount)
@@ -2807,7 +2808,8 @@
             End If
             For I As Integer = 0 To MSU_32.Count - 1
               Dim tmpMSU = MSU_32(I)
-              pbIndividual.Value += 1
+              pbVal += 1
+              SetProgress(pbVal, pbMax)
               Dim DisplayName As String = IO.Path.GetFileNameWithoutExtension(tmpMSU.Path)
               If Not String.IsNullOrEmpty(tmpMSU.KBArticle) Then
                 DisplayName = "KB" & tmpMSU.KBArticle
@@ -2887,7 +2889,8 @@
         If MSU_64.Count > 0 Then
           For D As Integer = 0 To DISM_64.Count - 1
             Dim tmpDISM As PackageInfoEx = DISM_64(D)
-            pbIndividual.Value += 1
+            pbVal += 1
+            SetProgress(pbVal, pbMax)
             SetStatus("Loading Image Package """ & tmpDISM.Name & """...")
             If Not InitDISM(WIMPath, tmpDISM.Index, Mount) Then
               DiscardDISM(Mount)
@@ -2902,7 +2905,8 @@
             End If
             For I As Integer = 0 To MSU_64.Count - 1
               Dim tmpMSU = MSU_64(I)
-              pbIndividual.Value += 1
+              pbVal += 1
+              SetProgress(pbVal, pbMax)
               Dim DisplayName As String = IO.Path.GetFileNameWithoutExtension(tmpMSU.Path)
               If Not String.IsNullOrEmpty(tmpMSU.KBArticle) Then
                 DisplayName = "KB" & tmpMSU.KBArticle
@@ -2990,7 +2994,7 @@
       ToggleInputs(True)
       Return False
     End If
-    pbIndividual.Value = 0
+    SetProgress(0, 1)
     Dim PackageCount As Integer = GetDISMPackages(WIMPath)
     Dim ActivePackages As Integer = 0
     If PackageCount > 0 Then
@@ -3180,7 +3184,7 @@
       SetStatus("No packages in WIM!")
       Return False
     End If
-    pbIndividual.Value = 0
+    SetProgress(0, pbMax)
     pbIndividual.Style = ProgressBarStyle.Continuous
     SetStatus("Clearing Temp Files...")
     SlowDeleteDirectory(Work & "SP1", FileIO.DeleteDirectoryOption.DeleteAllContents)
