@@ -17,15 +17,21 @@ Module modFunctions
     Public BuildDate As String
     Public KBArticle As String
     Public SupportLink As String
+    Public Failure As String
     Public Sub New(Location As String)
       Path = Location
+      Failure = Nothing
       If My.Computer.FileSystem.FileExists(Location) Then
         Select Case GetUpdateType(Location)
           Case UpdateType.MSU
             Dim MSUPath As String = WorkDir & "UpdateMSU_Extract\"
-            If My.Computer.FileSystem.DirectoryExists(MSUPath) Then My.Computer.FileSystem.DeleteDirectory(MSUPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If My.Computer.FileSystem.DirectoryExists(MSUPath) Then SlowDeleteDirectory(MSUPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
             My.Computer.FileSystem.CreateDirectory(MSUPath)
-            ExtractAFile(Location, MSUPath, "*pkgProperties.txt")
+            Dim exRet As String = ExtractAFile(KnownSevenZipFormat.Cab, Location, MSUPath, "pkgProperties.txt")
+            If Not exRet = "OK" Then
+              Failure = exRet
+              Exit Sub
+            End If
             Dim filePath() As String = My.Computer.FileSystem.GetFiles(MSUPath, FileIO.SearchOption.SearchTopLevelOnly).ToArray
             If filePath.Count >= 1 Then
               Dim sFile As String = filePath(0)
@@ -48,14 +54,18 @@ Module modFunctions
                 End If
               Next
             Else
-              'can't read
+              Failure = "File Not Found"
             End If
-            If My.Computer.FileSystem.DirectoryExists(MSUPath) Then My.Computer.FileSystem.DeleteDirectory(MSUPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If My.Computer.FileSystem.DirectoryExists(MSUPath) Then SlowDeleteDirectory(MSUPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           Case UpdateType.CAB
             Dim CABPath As String = WorkDir & "UpdateCAB_Extract\"
-            If My.Computer.FileSystem.DirectoryExists(CABPath) Then My.Computer.FileSystem.DeleteDirectory(CABPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If My.Computer.FileSystem.DirectoryExists(CABPath) Then SlowDeleteDirectory(CABPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
             My.Computer.FileSystem.CreateDirectory(CABPath)
-            ExtractAFile(Location, CABPath, "update.mum")
+            Dim exRet As String = ExtractAFile(KnownSevenZipFormat.Cab, Location, CABPath, "update.mum")
+            If Not exRet = "OK" Then
+              Failure = exRet
+              Exit Sub
+            End If
             If My.Computer.FileSystem.FileExists(CABPath & "update.mum") Then
               Dim xMUM As XElement = XElement.Load(CABPath & "update.mum")
               DisplayName = xMUM.Attribute("displayName")
@@ -70,14 +80,18 @@ Module modFunctions
               AppliesTo = xParentAssemblyIdentity.Attribute("name")
               BuildDate = Nothing
             Else
-              'can't read
+              Failure = "File Not Found"
             End If
-            If My.Computer.FileSystem.DirectoryExists(CABPath) Then My.Computer.FileSystem.DeleteDirectory(CABPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If My.Computer.FileSystem.DirectoryExists(CABPath) Then SlowDeleteDirectory(CABPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           Case UpdateType.LP
             Dim LPPath As String = WorkDir & "UpdateLP_Extract\"
-            If My.Computer.FileSystem.DirectoryExists(LPPath) Then My.Computer.FileSystem.DeleteDirectory(LPPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If My.Computer.FileSystem.DirectoryExists(LPPath) Then SlowDeleteDirectory(LPPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
             My.Computer.FileSystem.CreateDirectory(LPPath)
-            ExtractAFile(Location, LPPath, "update.mum")
+            Dim exRet As String = ExtractAFile(KnownSevenZipFormat.Cab, Location, LPPath, "update.mum")
+            If Not exRet = "OK" Then
+              Failure = exRet
+              Exit Sub
+            End If
             If My.Computer.FileSystem.FileExists(LPPath & "update.mum") Then
               Dim xMUM As XElement = XElement.Load(LPPath & "update.mum")
               Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
@@ -91,14 +105,18 @@ Module modFunctions
               AppliesTo = xParentAssemblyIdentity.Attribute("name")
               BuildDate = Nothing
             Else
-              'can't read
+              Failure = "File Not Found"
             End If
-            If My.Computer.FileSystem.DirectoryExists(LPPath) Then My.Computer.FileSystem.DeleteDirectory(LPPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If My.Computer.FileSystem.DirectoryExists(LPPath) Then SlowDeleteDirectory(LPPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           Case UpdateType.LIP
             Dim MLCPath As String = WorkDir & "UpdateMLC_Extract\"
-            If My.Computer.FileSystem.DirectoryExists(MLCPath) Then My.Computer.FileSystem.DeleteDirectory(MLCPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If My.Computer.FileSystem.DirectoryExists(MLCPath) Then SlowDeleteDirectory(MLCPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
             My.Computer.FileSystem.CreateDirectory(MLCPath)
-            ExtractAFile(Location, MLCPath, "update.mum")
+            Dim exRet As String = ExtractAFile(KnownSevenZipFormat.Cab, Location, MLCPath, "update.mum")
+            If Not exRet = "OK" Then
+              Failure = exRet
+              Exit Sub
+            End If
             If My.Computer.FileSystem.FileExists(MLCPath & "update.mum") Then
               Dim xMUM As XElement = XElement.Load(MLCPath & "update.mum")
               Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
@@ -112,14 +130,18 @@ Module modFunctions
               AppliesTo = xParentAssemblyIdentity.Attribute("name")
               BuildDate = Nothing
             Else
-              'can't read
+              Failure = "File Not Found"
             End If
-            If My.Computer.FileSystem.DirectoryExists(MLCPath) Then My.Computer.FileSystem.DeleteDirectory(MLCPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If My.Computer.FileSystem.DirectoryExists(MLCPath) Then SlowDeleteDirectory(MLCPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           Case UpdateType.EXE
             Dim EXEPath As String = WorkDir & "UpdateEXE_Extract\"
-            If My.Computer.FileSystem.DirectoryExists(EXEPath) Then My.Computer.FileSystem.DeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If My.Computer.FileSystem.DirectoryExists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
             My.Computer.FileSystem.CreateDirectory(EXEPath)
-            ExtractAFile(Location, EXEPath, "update.mum")
+            Dim exRet As String = ExtractAFile(KnownSevenZipFormat.Cab, Location, EXEPath, "update.mum")
+            If Not exRet = "OK" Then
+              Failure = exRet
+              Exit Sub
+            End If
             If My.Computer.FileSystem.FileExists(EXEPath & "update.mum") Then
               Dim xMUM As XElement = XElement.Load(EXEPath & "update.mum")
               Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
@@ -133,9 +155,9 @@ Module modFunctions
               AppliesTo = xParentAssemblyIdentity.Attribute("name")
               BuildDate = Nothing
             Else
-              'can't read
+              Failure = "File Not Found"
             End If
-            If My.Computer.FileSystem.DirectoryExists(EXEPath) Then My.Computer.FileSystem.DeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If My.Computer.FileSystem.DirectoryExists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           Case UpdateType.Other
             DisplayName = Nothing
             AppliesTo = Nothing
@@ -143,31 +165,101 @@ Module modFunctions
             Architecture = Nothing
             KBArticle = Nothing
             BuildDate = Nothing
+            Failure = "Unknown File Type"
         End Select
       End If
     End Sub
-    Private Sub ExtractAFile(Source As String, Destination As String, File As String)
-      Dim SevenZ As String = AIKDir & "7z.exe"
-      RunHidden(SevenZ, "e -y -o""" & Destination & """ """ & Source & """ " & File)
+    Private Shared ExtractCallback As ArchiveCallback
+    Private Shared c_ExtractRet As New Collections.Generic.List(Of String)
+    Private Function ExtractAFile(Format As KnownSevenZipFormat, Source As String, Destination As String, File As String) As String
+      Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractAFile))
+      Dim cIndex As Integer = c_ExtractRet.Count
+      c_ExtractRet.Add(Nothing)
+      tRunWithReturn.Start({Format, Source, Destination, File, cIndex})
+      Do While String.IsNullOrEmpty(c_ExtractRet(cIndex))
+        Application.DoEvents()
+        Threading.Thread.Sleep(1)
+      Loop
+      Dim sRet As String = c_ExtractRet(cIndex)
+      c_ExtractRet(cIndex) = Nothing
+      Return sRet
+    End Function
+    Private Sub AsyncExtractAFile(Obj As Object)
+      Dim Format As KnownSevenZipFormat, Source, Destination, File As String
+      Format = Obj(0)
+      Source = Obj(1)
+      Destination = Obj(2)
+      File = Obj(3)
+      Dim cIndex As UInteger = Obj(4)
+      If Not Destination.EndsWith(IO.Path.DirectorySeparatorChar) Then Destination &= IO.Path.DirectorySeparatorChar
+      Using f7z As New SevenZipFormat(AIKDir & "7z.dll")
+        Dim Archive As IInArchive = f7z.CreateInArchive(SevenZipFormat.GetClassIdFromKnownFormat(Format))
+        If Archive Is Nothing Then
+          c_ExtractRet(cIndex) = "Error Initializing " & Format.ToString & " Reading Format!"
+          Exit Sub
+        End If
+        Try
+          Using ArchiveStream As New InStreamWrapper(IO.File.OpenRead(Source))
+            Dim checkPos As ULong = 128 * 1024
+            Dim arCallback As New ArchiveOpenCallback
+            If Not Archive.Open(ArchiveStream, checkPos, arCallback) = 0 Then
+              Archive.Close()
+              Runtime.InteropServices.Marshal.ReleaseComObject(Archive)
+              c_ExtractRet(cIndex) = "Error Reading Archive!"
+              Exit Sub
+            End If
+            Dim Elements As UInteger = Archive.GetNumberOfItems
+            For I As UInteger = 0 To Elements - 1
+              Dim ElFolder As New PropVariant
+              Archive.GetProperty(I, ItemPropId.kpidIsFolder, ElFolder)
+              Dim bFolder As Boolean = ElFolder.GetObject
+              Dim ElPath As New PropVariant
+              Archive.GetProperty(I, ItemPropId.kpidPath, ElPath)
+              Dim sPath As String = ElPath.GetObject
+              If bFolder Then
+                'Ignore
+              Else
+                If sPath.ToLower.EndsWith(File.ToLower) Then
+                  ExtractCallback = New ArchiveCallback(I, Destination & IO.Path.GetFileName(sPath), cIndex)
+                  AddHandler ExtractCallback.DisplayProgress, AddressOf ExtractCallback_DisplayProgress
+                  AddHandler ExtractCallback.DisplayResult, AddressOf ExtractCallback_DisplayResult
+                  Archive.Extract(New UInteger() {I}, 1, 0, ExtractCallback)
+                  c_ExtractRet(cIndex) = "OK"
+                  Exit For
+                End If
+              End If
+            Next
+          End Using
+          Archive.Close()
+          Runtime.InteropServices.Marshal.ReleaseComObject(Archive)
+        Catch ex As Exception
+          c_ExtractRet(cIndex) = "Error: " & ex.Message
+        End Try
+      End Using
+      If String.IsNullOrEmpty(c_ExtractRet(cIndex)) Then c_ExtractRet(cIndex) = "File Not Found"
     End Sub
+    Private Sub ExtractCallback_DisplayProgress(index As UInteger, items As Long, Value As ULong, Total As ULong, State As Object)
+    End Sub
+    Private Sub ExtractCallback_DisplayResult(index As UInteger, items As Long, result As OperationResult, State As Object)
+      If frmMain.InvokeRequired Then
+        frmMain.BeginInvoke(New ArchiveCallback.DisplayResultCallback(AddressOf ExtractCallback_DisplayResult), index, items, result, State)
+      Else
+        If result = OperationResult.kCRCError Then
+          c_ExtractRet(State) = "CRC Error"
+        ElseIf result = OperationResult.kDataError Then
+          c_ExtractRet(State) = "Data Error"
+        ElseIf result = OperationResult.kUnSupportedMethod Then
+          c_ExtractRet(State) = "Unsupported Method"
+        Else
+
+        End If
+      End If
+    End Sub
+
     Private Function GetMSUValue(Line As String) As String
       Dim sTmp As String = Line.Substring(Line.IndexOf("="c) + 1)
       Return sTmp.Substring(1, sTmp.Length - 2)
     End Function
-    Private Sub RunHidden(Filename As String, Arguments As String)
-      Dim mySettings As New MySettings
-      Dim PkgList As New Process
-      PkgList.StartInfo.FileName = Filename
-      PkgList.StartInfo.Arguments = Arguments
-      PkgList.StartInfo.UseShellExecute = True
-      PkgList.StartInfo.WindowStyle = ProcessWindowStyle.Hidden
-      PkgList.Start()
-      If mySettings.Timeout > 0 Then
-        PkgList.WaitForExit(mySettings.Timeout)
-      Else
-        PkgList.WaitForExit()
-      End If
-    End Sub
     Private ReadOnly Property WorkDir As String
       Get
         Dim mySettings As New MySettings
@@ -334,6 +426,49 @@ Module modFunctions
     If Long.TryParse(sSize, lRet) Then Return lRet
     Return 0
   End Function
+  Public Sub SlowDeleteDirectory(Directory As String, OnDirectoryNotEmpty As FileIO.DeleteDirectoryOption)
+    If Not IO.Directory.Exists(Directory) Then Exit Sub
+    If OnDirectoryNotEmpty = FileIO.DeleteDirectoryOption.ThrowIfDirectoryNonEmpty Then
+      If IO.Directory.GetFileSystemEntries(Directory).Count > 0 Then Exit Sub
+      IO.Directory.Delete(Directory, False)
+    Else
+      Dim sDirs() As String = IO.Directory.GetDirectories(Directory)
+      Dim sFiles() As String = IO.Directory.GetFiles(Directory)
+      For I As Integer = 0 To sDirs.Count - 1
+        frmMain.SetTotal(I, sDirs.Count - 1)
+        SlowDeleteDirectory(sDirs(I), OnDirectoryNotEmpty)
+        If I Mod 25 = 0 Then Application.DoEvents()
+      Next
+
+      For I As Integer = 0 To sFiles.Count - 1
+        frmMain.SetProgress(I, sFiles.Count - 1)
+        Try
+          IO.File.Delete(sFiles(I))
+        Catch ex As Exception
+        End Try
+        If I Mod 25 = 0 Then Application.DoEvents()
+      Next
+      Try
+        IO.Directory.Delete(Directory)
+      Catch ex As Exception
+        GrantFullControlToEveryone(Directory)
+        SlowDeleteDirectory(Directory, OnDirectoryNotEmpty)
+      End Try
+    End If
+  End Sub
+  Private Function GrantFullControlToEveryone(ByVal Folder As String) As Boolean
+    Try
+      Dim Security As System.Security.AccessControl.DirectorySecurity = IO.Directory.GetAccessControl(Folder)
+      Dim Sid As New System.Security.Principal.SecurityIdentifier(System.Security.Principal.WellKnownSidType.WorldSid, Nothing)
+      Dim Account As System.Security.Principal.NTAccount = TryCast(Sid.Translate(GetType(System.Security.Principal.NTAccount)), System.Security.Principal.NTAccount)
+      Dim Grant As New System.Security.AccessControl.FileSystemAccessRule(Account, System.Security.AccessControl.FileSystemRights.FullControl, System.Security.AccessControl.InheritanceFlags.ContainerInherit Or System.Security.AccessControl.InheritanceFlags.ObjectInherit, System.Security.AccessControl.PropagationFlags.None, System.Security.AccessControl.AccessControlType.Allow)
+      Security.AddAccessRule(Grant)
+      IO.Directory.SetAccessControl(Folder, Security)
+      Return True
+    Catch ex As Exception
+      Return False
+    End Try
+  End Function
   Public Enum UpdateType
     MSU
     CAB
@@ -380,23 +515,43 @@ Module modFunctions
           dlgUpdate.FooterCheckBoxChecked = False
           dlgUpdate.FooterCheckBoxText = "&Do this for all new versions"
           Dim em As String = ChrW(&H2003) & ChrW(&H2003)
+          Dim sYes As String
+          Dim newFInfo As New IO.FileInfo(newPath)
+          If String.IsNullOrEmpty(newData.Failure) Then
+            sYes = "Replace the update with this new version:" & vbNewLine &
+              em & newData.DisplayName & vbNewLine &
+              em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
+              em & "Built: " & newData.BuildDate
+          Else
+            sYes = "Replace the update with this new version:" & vbNewLine &
+              em & IO.Path.GetFileNameWithoutExtension(newPath) & vbNewLine &
+              em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
+              em & "Built: " & newFInfo.LastWriteTime.ToShortDateString
+          End If
           Dim cmdYes As New CommandLink(
             "cmdNew",
             "Use Newer Version " & newVer,
-            "Replace the update with this new version:" & vbNewLine &
-            em & newData.DisplayName & vbNewLine &
-            em & "Size: " & ByteSize(New IO.FileInfo(newPath).Length) & vbNewLine &
-            em & "Built: " & newData.BuildDate)
+            sYes)
           cmdYes.Default = True
           AddHandler cmdYes.Click, AddressOf SelectionDialogButton_Click
           dlgUpdate.Controls.Add(cmdYes)
+          Dim sNo As String
+          Dim oldFInfo As New IO.FileInfo(oldPath)
+          If String.IsNullOrEmpty(oldData.Failure) Then
+            sNo = "This update will not be replaced:" & vbNewLine &
+              em & oldData.DisplayName & vbNewLine &
+              em & "Size: " & ByteSize(oldFInfo.Length) & vbNewLine &
+              em & "Built: " & oldData.BuildDate
+          Else
+            sNo = "This update will not be replaced:" & vbNewLine &
+              em & IO.Path.GetFileNameWithoutExtension(oldPath) & vbNewLine &
+              em & "Size: " & ByteSize(oldFInfo.Length) & vbNewLine &
+              em & "Built: " & oldFInfo.LastWriteTime.ToShortDateString
+          End If
           Dim cmdNo As New CommandLink(
             "cmdOld",
             "Use Older Version " & oldVer,
-            "This update will not be replaced:" & vbNewLine &
-            em & oldData.DisplayName & vbNewLine &
-            em & "Size: " & ByteSize(New IO.FileInfo(oldPath).Length) & vbNewLine &
-            em & "Built: " & oldData.BuildDate)
+            sNo)
           AddHandler cmdNo.Click, AddressOf SelectionDialogButton_Click
           dlgUpdate.Controls.Add(cmdNo)
           dlgUpdate.OwnerWindowHandle = owner.Handle
@@ -418,21 +573,41 @@ Module modFunctions
           dlgUpdate.FooterCheckBoxChecked = False
           dlgUpdate.FooterCheckBoxText = "&Do this for all old versions"
           Dim em As String = ChrW(&H2003) & ChrW(&H2003)
+          Dim sYes As String
+          Dim newFInfo As New IO.FileInfo(newPath)
+          If String.IsNullOrEmpty(newData.Failure) Then
+            sYes = "Replace the update with this old version:" & vbNewLine &
+              em & newData.DisplayName & vbNewLine &
+              em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
+              em & "Built: " & newData.BuildDate
+          Else
+            sYes = "Replace the update with this old version:" & vbNewLine &
+              em & IO.Path.GetFileNameWithoutExtension(newPath) & vbNewLine &
+              em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
+              em & "Built: " & newFInfo.LastWriteTime.ToShortDateString
+          End If
           Dim cmdYes As New CommandLink(
             "cmdNew",
             "Use Older Version " & newVer,
-            "Replace the update with this old version:" & vbNewLine &
-            em & newData.DisplayName & vbNewLine &
-            em & "Size: " & ByteSize(New IO.FileInfo(newPath).Length) & vbNewLine &
-            em & "Built: " & newData.BuildDate)
+            sYes)
           AddHandler cmdYes.Click, AddressOf SelectionDialogButton_Click
+          Dim sNo As String
+          Dim oldFInfo As New IO.FileInfo(oldPath)
+          If String.IsNullOrEmpty(oldData.Failure) Then
+            sNo = "This update will not be replaced:" & vbNewLine &
+              em & oldData.DisplayName & vbNewLine &
+              em & "Size: " & ByteSize(oldFInfo.Length) & vbNewLine &
+              em & "Built: " & oldData.BuildDate
+          Else
+            sNo = "This update will not be replaced:" & vbNewLine &
+              em & IO.Path.GetFileNameWithoutExtension(oldPath) & vbNewLine &
+              em & "Size: " & ByteSize(oldFInfo.Length) & vbNewLine &
+              em & "Built: " & oldFInfo.LastWriteTime.ToShortDateString
+          End If
           Dim cmdNo As New CommandLink(
             "cmdOld",
             "Use Newer Version " & oldVer,
-            "This update will not be replaced:" & vbNewLine &
-            em & oldData.DisplayName & vbNewLine &
-            em & "Size: " & ByteSize(New IO.FileInfo(oldPath).Length) & vbNewLine &
-            em & "Built: " & oldData.BuildDate)
+            sNo)
           cmdNo.Default = True
           AddHandler cmdNo.Click, AddressOf SelectionDialogButton_Click
           dlgUpdate.Controls.Add(cmdNo)
@@ -455,12 +630,22 @@ Module modFunctions
     End If
   End Function
   Private Function SelectionBoxLegacy(owner As Form, newPath As String, newVer As Integer, oldPath As String, oldVer As Integer, ByRef Always As Boolean) As Boolean
-    Dim newData As New UpdateInfoEx(newPath)
     Dim oldData As New UpdateInfoEx(oldPath)
-    If newVer > oldVer Then
-      Return MessageBox.Show(owner, "There is already an older version of this update in the list." & vbNewLine & "Do you want to replace " & oldData.DisplayName & " with version " & newVer & "?", "Replace Older Version?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = DialogResult.Yes
+    Dim UpdateName As String
+    If String.IsNullOrEmpty(oldData.Failure) Then
+      UpdateName = oldData.DisplayName
     Else
-      Return MessageBox.Show(owner, "There is already a newer version of this update in the list." & vbNewLine & "Do you want to replace " & oldData.DisplayName & " with version " & newVer & "?", "Replace Newer Version", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = DialogResult.Yes
+      Dim newData As New UpdateInfoEx(newPath)
+      If String.IsNullOrEmpty(newData.Failure) Then
+        UpdateName = newData.DisplayName
+      Else
+        UpdateName = IO.Path.GetFileNameWithoutExtension(oldPath)
+      End If
+    End If
+    If newVer > oldVer Then
+      Return MessageBox.Show(owner, "There is already an older version of this update in the list." & vbNewLine & "Do you want to replace " & UpdateName & " with version " & newVer & "?", "Replace Older Version?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = DialogResult.Yes
+    Else
+      Return MessageBox.Show(owner, "There is already a newer version of this update in the list." & vbNewLine & "Do you want to replace " & UpdateName & " with version " & newVer & "?", "Replace Newer Version", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = DialogResult.Yes
     End If
   End Function
   Private Sub SelectionDialogButton_Click(sender As TaskDialogCommandLink, e As EventArgs)

@@ -46,8 +46,10 @@
   Public Sub PrepareOperation(askExtractMode As AskMode) Implements IArchiveExtractCallback.PrepareOperation
   End Sub
   Public Sub SetOperationResult(e As OperationResult) Implements IArchiveExtractCallback.SetOperationResult
-    RaiseEvent DisplayResult(lCurrentIndex, Files.LongCount, e, aState)
-    If FileStream IsNot Nothing Then FileStream.Dispose()
+    If Files.ContainsKey(lCurrentIndex) Then
+      RaiseEvent DisplayResult(lCurrentIndex, Files.LongCount, e, aState)
+      If FileStream IsNot Nothing Then FileStream.Dispose()
+    End If
   End Sub
 #End Region
 End Class
