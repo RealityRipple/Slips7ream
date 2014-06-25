@@ -1,6 +1,6 @@
 ﻿Public Class clsUpdate
   Implements IDisposable
-  Private Const VersionURL As String = "http://update.realityripple.com/Slips7ream/ver"
+  Private Const VersionURL As String = "http://update.realityripple.com/Slips7ream/version"
   Class ProgressEventArgs
     Inherits EventArgs
     Public BytesReceived As Long

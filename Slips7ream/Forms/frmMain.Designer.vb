@@ -49,6 +49,7 @@ Partial Class frmMain
     Me.cmdClose = New System.Windows.Forms.Button()
     Me.lblActivity = New System.Windows.Forms.Label()
     Me.cmdConfig = New System.Windows.Forms.Button()
+    Me.expOutput = New Slips7ream.Expander()
     Me.cmdOpenFolder = New System.Windows.Forms.Button()
     Me.chkSP = New System.Windows.Forms.CheckBox()
     Me.chkISO = New System.Windows.Forms.CheckBox()
@@ -92,7 +93,6 @@ Partial Class frmMain
     Me.mnuClear = New System.Windows.Forms.MenuItem()
     Me.mnuSpacer = New System.Windows.Forms.MenuItem()
     Me.mnuSelectAll = New System.Windows.Forms.MenuItem()
-    Me.expOutput = New Slips7ream.Expander()
     Me.ttInfo = New Slips7ream.ToolTip(Me.components)
     Me.pnlSlips7ream.SuspendLayout()
     Me.pnlSP64.SuspendLayout()
@@ -472,6 +472,18 @@ Partial Class frmMain
     Me.cmdConfig.Text = "Configuration"
     Me.ttInfo.SetTooltip(Me.cmdConfig, "Change SLIPS7REAM settings.")
     Me.cmdConfig.UseVisualStyleBackColor = True
+    '
+    'expOutput
+    '
+    Me.expOutput.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.expOutput.AutoSize = True
+    Me.expOutput.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.expOutput.Location = New System.Drawing.Point(3, 5)
+    Me.expOutput.Name = "expOutput"
+    Me.expOutput.Open = False
+    Me.expOutput.Size = New System.Drawing.Size(19, 19)
+    Me.expOutput.TabIndex = 4
+    Me.ttInfo.SetTooltip(Me.expOutput, "Show Output consoles.")
     '
     'cmdOpenFolder
     '
@@ -965,18 +977,6 @@ Partial Class frmMain
     '
     Me.mnuSelectAll.Index = 3
     Me.mnuSelectAll.Text = "Select &All"
-    '
-    'expOutput
-    '
-    Me.expOutput.Anchor = System.Windows.Forms.AnchorStyles.Left
-    Me.expOutput.AutoSize = True
-    Me.expOutput.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.expOutput.Location = New System.Drawing.Point(3, 5)
-    Me.expOutput.Name = "expOutput"
-    Me.expOutput.Open = False
-    Me.expOutput.Size = New System.Drawing.Size(19, 19)
-    Me.expOutput.TabIndex = 4
-    Me.ttInfo.SetTooltip(Me.expOutput, "Show Output consoles.")
     '
     'ttInfo
     '
