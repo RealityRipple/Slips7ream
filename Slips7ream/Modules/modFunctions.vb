@@ -27,7 +27,7 @@ Module modFunctions
             Dim MSUPath As String = WorkDir & "UpdateMSU_Extract\"
             If My.Computer.FileSystem.DirectoryExists(MSUPath) Then SlowDeleteDirectory(MSUPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
             My.Computer.FileSystem.CreateDirectory(MSUPath)
-            Dim exRet As String = ExtractAFile(KnownSevenZipFormat.Cab, Location, MSUPath, "pkgProperties.txt")
+            Dim exRet As String = ExtractAFile(Location, MSUPath, "pkgProperties.txt")
             If Not exRet = "OK" Then
               Failure = exRet
               Exit Sub
@@ -61,7 +61,7 @@ Module modFunctions
             Dim CABPath As String = WorkDir & "UpdateCAB_Extract\"
             If My.Computer.FileSystem.DirectoryExists(CABPath) Then SlowDeleteDirectory(CABPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
             My.Computer.FileSystem.CreateDirectory(CABPath)
-            Dim exRet As String = ExtractAFile(KnownSevenZipFormat.Cab, Location, CABPath, "update.mum")
+            Dim exRet As String = ExtractAFile(Location, CABPath, "update.mum")
             If Not exRet = "OK" Then
               Failure = exRet
               Exit Sub
@@ -87,7 +87,7 @@ Module modFunctions
             Dim LPPath As String = WorkDir & "UpdateLP_Extract\"
             If My.Computer.FileSystem.DirectoryExists(LPPath) Then SlowDeleteDirectory(LPPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
             My.Computer.FileSystem.CreateDirectory(LPPath)
-            Dim exRet As String = ExtractAFile(KnownSevenZipFormat.Cab, Location, LPPath, "update.mum")
+            Dim exRet As String = ExtractAFile(Location, LPPath, "update.mum")
             If Not exRet = "OK" Then
               Failure = exRet
               Exit Sub
@@ -112,7 +112,7 @@ Module modFunctions
             Dim MLCPath As String = WorkDir & "UpdateMLC_Extract\"
             If My.Computer.FileSystem.DirectoryExists(MLCPath) Then SlowDeleteDirectory(MLCPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
             My.Computer.FileSystem.CreateDirectory(MLCPath)
-            Dim exRet As String = ExtractAFile(KnownSevenZipFormat.Cab, Location, MLCPath, "update.mum")
+            Dim exRet As String = ExtractAFile(Location, MLCPath, "update.mum")
             If Not exRet = "OK" Then
               Failure = exRet
               Exit Sub
@@ -137,7 +137,7 @@ Module modFunctions
             Dim EXEPath As String = WorkDir & "UpdateEXE_Extract\"
             If My.Computer.FileSystem.DirectoryExists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
             My.Computer.FileSystem.CreateDirectory(EXEPath)
-            Dim exRet As String = ExtractAFile(KnownSevenZipFormat.Cab, Location, EXEPath, "update.mum")
+            Dim exRet As String = ExtractAFile(Location, EXEPath, "update.mum")
             If Not exRet = "OK" Then
               Failure = exRet
               Exit Sub
@@ -169,13 +169,15 @@ Module modFunctions
         End Select
       End If
     End Sub
-    Private Shared ExtractCallback As ArchiveCallback
+    Private Extractor As Extraction.ArchiveFile
     Private Shared c_ExtractRet As New Collections.Generic.List(Of String)
-    Private Function ExtractAFile(Format As KnownSevenZipFormat, Source As String, Destination As String, File As String) As String
+
+    Private Delegate Sub ExtractAFileInvoker(Source As String, Destination As String, File As String)
+    Private Function ExtractAFile(Source As String, Destination As String, File As String) As String
       Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractAFile))
       Dim cIndex As Integer = c_ExtractRet.Count
       c_ExtractRet.Add(Nothing)
-      tRunWithReturn.Start({Format, Source, Destination, File, cIndex})
+      tRunWithReturn.Start({Source, Destination, File, cIndex})
       Do While String.IsNullOrEmpty(c_ExtractRet(cIndex))
         Application.DoEvents()
         Threading.Thread.Sleep(1)
@@ -185,74 +187,37 @@ Module modFunctions
       Return sRet
     End Function
     Private Sub AsyncExtractAFile(Obj As Object)
-      Dim Format As KnownSevenZipFormat, Source, Destination, File As String
-      Format = Obj(0)
-      Source = Obj(1)
-      Destination = Obj(2)
-      File = Obj(3)
-      Dim cIndex As UInteger = Obj(4)
+      Dim Source, Destination, Find As String
+      Source = Obj(0)
+      Destination = Obj(1)
+      Find = Obj(2)
+      Dim cIndex As UInteger = Obj(3)
+      Dim bFound As Boolean = False
       If Not Destination.EndsWith(IO.Path.DirectorySeparatorChar) Then Destination &= IO.Path.DirectorySeparatorChar
-      Using f7z As New SevenZipFormat(AIKDir & "7z.dll")
-        Dim Archive As IInArchive = f7z.CreateInArchive(SevenZipFormat.GetClassIdFromKnownFormat(Format))
-        If Archive Is Nothing Then
-          c_ExtractRet(cIndex) = "Error Initializing " & Format.ToString & " Reading Format!"
-          Exit Sub
-        End If
+
+      Using Extractor As New Extraction.ArchiveFile(New IO.FileInfo(Source))
         Try
-          Using ArchiveStream As New InStreamWrapper(IO.File.OpenRead(Source))
-            Dim checkPos As ULong = 128 * 1024
-            Dim arCallback As New ArchiveOpenCallback
-            If Not Archive.Open(ArchiveStream, checkPos, arCallback) = 0 Then
-              Archive.Close()
-              Runtime.InteropServices.Marshal.ReleaseComObject(Archive)
-              c_ExtractRet(cIndex) = "Error Reading Archive!"
-              Exit Sub
-            End If
-            Dim Elements As UInteger = Archive.GetNumberOfItems
-            For I As UInteger = 0 To Elements - 1
-              Dim ElFolder As New PropVariant
-              Archive.GetProperty(I, ItemPropId.kpidIsFolder, ElFolder)
-              Dim bFolder As Boolean = ElFolder.GetObject
-              Dim ElPath As New PropVariant
-              Archive.GetProperty(I, ItemPropId.kpidPath, ElPath)
-              Dim sPath As String = ElPath.GetObject
-              If bFolder Then
-                'Ignore
-              Else
-                If sPath.ToLower.EndsWith(File.ToLower) Then
-                  ExtractCallback = New ArchiveCallback(I, Destination & IO.Path.GetFileName(sPath), cIndex)
-                  AddHandler ExtractCallback.DisplayProgress, AddressOf ExtractCallback_DisplayProgress
-                  AddHandler ExtractCallback.DisplayResult, AddressOf ExtractCallback_DisplayResult
-                  Archive.Extract(New UInteger() {I}, 1, 0, ExtractCallback)
-                  c_ExtractRet(cIndex) = "OK"
-                  Exit For
-                End If
-              End If
-            Next
-          End Using
-          Archive.Close()
-          Runtime.InteropServices.Marshal.ReleaseComObject(Archive)
+          Extractor.Open()
         Catch ex As Exception
-          c_ExtractRet(cIndex) = "Error: " & ex.Message
+          c_ExtractRet(cIndex) = "Error Opening: " & ex.Message
+        End Try
+        For Each File In Extractor
+          If File.Name.ToLower.EndsWith(Find.ToLower) Then
+            File.Destination = New IO.FileInfo(Destination & File.Name)
+            bFound = True
+            Exit For
+          End If
+        Next
+        Try
+          Extractor.Extract()
+        Catch ex As Exception
+          c_ExtractRet(cIndex) = "Error Extracting: " & ex.Message
         End Try
       End Using
-      If String.IsNullOrEmpty(c_ExtractRet(cIndex)) Then c_ExtractRet(cIndex) = "File Not Found"
-    End Sub
-    Private Sub ExtractCallback_DisplayProgress(index As UInteger, items As Long, Value As ULong, Total As ULong, State As Object)
-    End Sub
-    Private Sub ExtractCallback_DisplayResult(index As UInteger, items As Long, result As OperationResult, State As Object)
-      If frmMain.InvokeRequired Then
-        frmMain.BeginInvoke(New ArchiveCallback.DisplayResultCallback(AddressOf ExtractCallback_DisplayResult), index, items, result, State)
+      If bFound Then
+        c_ExtractRet(cIndex) = "OK"
       Else
-        If result = OperationResult.kCRCError Then
-          c_ExtractRet(State) = "CRC Error"
-        ElseIf result = OperationResult.kDataError Then
-          c_ExtractRet(State) = "Data Error"
-        ElseIf result = OperationResult.kUnSupportedMethod Then
-          c_ExtractRet(State) = "Unsupported Method"
-        Else
-
-        End If
+        c_ExtractRet(cIndex) = "File Not Found"
       End If
     End Sub
 

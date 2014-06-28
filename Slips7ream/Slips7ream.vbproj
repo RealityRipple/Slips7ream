@@ -101,9 +101,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationEvents.vb" />
-    <Compile Include="Classes\cls7zArchiveCallback.vb" />
-    <Compile Include="Classes\cls7zFormat.vb" />
-    <Compile Include="Classes\cls7zInterface.vb" />
     <Compile Include="Classes\clsLinkLabel.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -113,6 +110,15 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Classes\clsUpdate.vb" />
+    <Compile Include="Classes\SevenZip\Archive.vb" />
+    <Compile Include="Classes\SevenZip\ArchiveFile.vb" />
+    <Compile Include="Classes\SevenZip\COM\ArchiveFormat.vb" />
+    <Compile Include="Classes\SevenZip\COM\Enumerations.vb" />
+    <Compile Include="Classes\SevenZip\COM\Interfaces.vb" />
+    <Compile Include="Classes\SevenZip\COM\PropVariant.vb" />
+    <Compile Include="Classes\SevenZip\COM\SaveNativeMethods.vb" />
+    <Compile Include="Classes\SevenZip\SevenZipFileStream.vb" />
+    <Compile Include="Classes\SevenZip\Variant.vb" />
     <Compile Include="Controls\ctlExpander.Designer.vb">
       <DependentUpon>ctlExpander.vb</DependentUpon>
     </Compile>

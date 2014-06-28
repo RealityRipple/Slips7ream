@@ -381,6 +381,7 @@
 #End Region
 #Region "WIM"
   Private Sub txtWIM_TextChanged(sender As System.Object, e As System.EventArgs) Handles txtWIM.TextChanged
+    If Not IO.File.Exists(txtWIM.Text) Then Exit Sub
     RunComplete = False
     cmdBegin.Text = "Begin"
     cmdOpenFolder.Visible = False
@@ -533,7 +534,7 @@
         ToggleInputs(False)
         pbTotal.Value = 0
         pbTotal.Maximum = FileCount
-        pbIndividual.Style = ProgressBarStyle.Marquee
+        SetProgress(0, 0)
         SetStatus("Reading Update Information...")
       End If
       Dim FailCollection As New Collections.Generic.List(Of String)
@@ -546,7 +547,7 @@
       Next
       lvMSU.ResumeLayout(True)
       If FileCount > 2 Then
-        pbIndividual.Style = ProgressBarStyle.Continuous
+        SetProgress(0, 1)
         ToggleInputs(True)
       End If
       RedoColumns()
@@ -684,7 +685,7 @@
           ToggleInputs(False)
           pbTotal.Value = 0
           pbTotal.Maximum = FileCount
-          pbIndividual.Style = ProgressBarStyle.Marquee
+          SetProgress(0, 0)
           SetStatus("Reading Update Information...")
         End If
         lvMSU.SuspendLayout()
@@ -696,7 +697,7 @@
         Next
         lvMSU.ResumeLayout(True)
         If FileCount > 2 Then
-          pbIndividual.Style = ProgressBarStyle.Continuous
+          SetProgress(0, 1)
           ToggleInputs(True)
         End If
         RedoColumns()
@@ -947,6 +948,7 @@
     RedoColumns()
   End Sub
   Private Sub txtMerge_TextChanged(sender As System.Object, e As System.EventArgs) Handles txtMerge.TextChanged
+    If Not IO.File.Exists(txtMerge.Text) Then Exit Sub
     If tLister2 Is Nothing Then
       tLister2 = New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf ParseImageList))
       tLister2.Start("MERGE")
@@ -1026,21 +1028,26 @@
       End If
     End If
   End Sub
+  Private Delegate Sub ParseImageListInvoker(ToRun As String)
   Private Sub ParseImageList(ToRun As String)
-    SetDisp(MNGList.Delete)
-    SetTitle("Parsing WIM Packages", "Reading data from Windows Image package descriptor...")
-    ToggleInputs(False)
-    If ToRun = "WIM" Then
-      ParseMainWIM()
-    ElseIf ToRun = "MERGE" Then
-      ParseMergeWIM()
+    If Me.InvokeRequired Then
+      Me.BeginInvoke(New ParseImageListInvoker(AddressOf ParseImageList), ToRun)
     Else
-      ParseMainWIM()
-      ParseMergeWIM()
+      SetDisp(MNGList.Delete)
+      SetTitle("Parsing WIM Packages", "Reading data from Windows Image package descriptor...")
+      ToggleInputs(False)
+      If ToRun = "WIM" Then
+        ParseMainWIM()
+      ElseIf ToRun = "MERGE" Then
+        ParseMergeWIM()
+      Else
+        ParseMainWIM()
+        ParseMergeWIM()
+      End If
+      ClearLister(ToRun)
+      ToggleInputs(True)
+      FreshDraw()
     End If
-    ClearLister(ToRun)
-    ToggleInputs(True)
-    FreshDraw()
   End Sub
 #End Region
 #Region "UEFI"
@@ -1186,7 +1193,7 @@
     ToggleInputs(False)
     Dim WIMFile As String = Nothing
     If My.Computer.FileSystem.DirectoryExists(WorkDir) Then
-      pbIndividual.Style = ProgressBarStyle.Continuous
+      SetProgress(0, 1)
       If Not CleanMounts() Then
         ToggleInputs(True)
         SetStatus("Active Mount Detected!")
@@ -1205,9 +1212,8 @@
     End If
     Dim iTotalVal As Integer = 0
     SetTotal(0, 12)
-    SetProgress(0, 100)
+    SetProgress(0, 1)
     pbTotal.Style = ProgressBarStyle.Continuous
-    pbIndividual.Style = ProgressBarStyle.Continuous
 
     SetDisp(MNGList.Copy)
     SetStatus("Checking WIM...")
@@ -1219,9 +1225,9 @@
       Exit Sub
     Else
       If IO.Path.GetExtension(txtWIM.Text).ToLower = ".iso" Then
-        pbIndividual.Style = ProgressBarStyle.Continuous
+        SetProgress(0, 1)
         SetStatus("Extracting Image from ISO...")
-        ExtractAFile(KnownSevenZipFormat.Udf, txtWIM.Text, Work, "INSTALL.WIM")
+        ExtractAFile(txtWIM.Text, Work, "INSTALL.WIM")
         iTotalVal += 1
         SetTotal(iTotalVal, 12)
         WIMFile = Work & "INSTALL.WIM"
@@ -1260,9 +1266,9 @@
       Dim MergeWorkExtract As String = MergeWork & "Extract\"
       If Not My.Computer.FileSystem.DirectoryExists(MergeWorkExtract) Then My.Computer.FileSystem.CreateDirectory(MergeWorkExtract)
       If IO.Path.GetExtension(MergeFile).ToLower = ".iso" Then
-        pbIndividual.Style = ProgressBarStyle.Continuous
+        SetProgress(0, 1)
         SetStatus("Extracting Merge Image from ISO...")
-        ExtractAFile(KnownSevenZipFormat.Udf, MergeFile, MergeWorkExtract, "INSTALL.WIM")
+        ExtractAFile(MergeFile, MergeWorkExtract, "INSTALL.WIM")
         Application.DoEvents()
         MergeWIM = MergeWorkExtract & "INSTALL.WIM"
       Else
@@ -1306,8 +1312,7 @@
     Next
     If My.Computer.FileSystem.DirectoryExists(MergeWork) Then SlowDeleteDirectory(MergeWork, FileIO.DeleteDirectoryOption.DeleteAllContents)
 
-    SetProgress(0, 100)
-    pbIndividual.Style = ProgressBarStyle.Marquee
+    SetProgress(0, 0)
     iTotalVal += 1
     SetTotal(iTotalVal, 12)
     SetStatus("Making Backup of Old WIM...")
@@ -1323,7 +1328,7 @@
       SetStatus("Cleaning Up Backup WIM...")
       My.Computer.FileSystem.DeleteFile(WIMFile & ".del")
     End If
-    pbIndividual.Style = ProgressBarStyle.Continuous
+    SetProgress(0, 1)
     Application.DoEvents()
     If StopRun Then
       ToggleInputs(True)
@@ -1493,9 +1498,9 @@
       Dim ISODDir As String = Work & "ISOD%n\"
 
       If Not My.Computer.FileSystem.DirectoryExists(ISODir) Then My.Computer.FileSystem.CreateDirectory(ISODir)
-      pbIndividual.Style = ProgressBarStyle.Continuous
+      SetProgress(0, 1)
       SetStatus("Extracting ISO contents...")
-      ExtractFiles(KnownSevenZipFormat.Udf, ISOFile, ISODir, "install.wim")
+      ExtractFiles(ISOFile, ISODir, "install.wim")
       iTotalVal += 1
       SetTotal(iTotalVal, 12)
 
@@ -1515,10 +1520,10 @@
         End Try
       End If
       If LangChange Then
-        pbIndividual.Style = ProgressBarStyle.Marquee
+        SetProgress(0, 0)
         SetStatus("Updating Language INIs...")
         Dim PackageCount As Integer = GetDISMPackages(ISODir & "sources\install.wim")
-        pbIndividual.Style = ProgressBarStyle.Continuous
+        SetProgress(0, 1)
         If Not UpdateLang(ISODir, PackageCount) Then
           Dim sMsg As String = lblActivity.Text
           If Not NoMount Then DiscardDISM(Mount)
@@ -1566,7 +1571,7 @@
       End If
       SetStatus("Integrating INSTALL.WIM...")
       My.Computer.FileSystem.CopyFile(WIMFile, ISODir & "sources\install.wim", True)
-      pbIndividual.Style = ProgressBarStyle.Continuous
+      SetProgress(0, 1)
       iTotalVal += 1
       SetTotal(iTotalVal, 12)
 
@@ -1584,14 +1589,13 @@
             Dim WIMSplit As Long = ISOSplit - 351
             If splUEFI And (WIMSplit > 4095) Then WIMSplit = 4095
             If Math.Floor(ISOSplit / WIMSplit) > 1 Then
-              'Split WIM to WIMSplit size, put 1 WIM on first, and Math.Floor(ISOSplit / WIMSplit) per ISO afterward
-              pbIndividual.Style = ProgressBarStyle.Marquee
+              REM Split WIM to WIMSplit size, put 1 WIM on first, and Math.Floor(ISOSplit / WIMSplit) per ISO afterward
+              SetProgress(0, 0)
               SetStatus("Splitting WIM into " & ByteSize(WIMSplit * 1024 * 1024) & " Chunks...")
               If SplitWIM(WIMToSplit, IO.Path.ChangeExtension(WIMToSplit, ".swm"), WIMSplit) Then
                 If My.Computer.FileSystem.FileExists(WIMToSplit) Then My.Computer.FileSystem.DeleteFile(WIMToSplit)
-                pbIndividual.Style = ProgressBarStyle.Continuous
+                SetProgress(0, 1)
                 SetStatus("Generating Data ISOs...")
-                pbIndividual.Style = ProgressBarStyle.Continuous
                 Dim DiscNumber As Integer = 1
                 Dim WIMNumber As Integer = 0
                 Dim FilesInOrder() As String = My.Computer.FileSystem.GetFiles(ISODir & "sources\", FileIO.SearchOption.SearchTopLevelOnly, "*.swm").ToArray
@@ -1607,7 +1611,7 @@
                     If Not My.Computer.FileSystem.DirectoryExists(sIDir & "sources\") Then My.Computer.FileSystem.CreateDirectory(sIDir & "sources\")
                     My.Computer.FileSystem.MoveFile(File, sIDir & "\sources\" & IO.Path.GetFileName(File))
                     If WIMNumber = Math.Floor(ISOSplit / WIMSplit) Or I = FilesInOrder.Count - 1 Then
-                      ExtractFiles(KnownSevenZipFormat.Zip, Application.StartupPath & "\AR.zip", sIDir)
+                      ExtractAllFiles(Application.StartupPath & "\AR.zip", sIDir)
                       If (cmbISOFormat.SelectedIndex = 0) Or (cmbISOFormat.SelectedIndex = 1) Or (cmbISOFormat.SelectedIndex = 2) Or (cmbISOFormat.SelectedIndex = 4) Or (cmbISOFormat.SelectedIndex = 6) Then
                         SetStatus("Looking for oversized files...")
                         Dim BigList = FindBigFiles(sIDir)
@@ -1615,15 +1619,15 @@
                           Using fsAlert As New frmFS(BigList, sIDir, cmbISOFormat.SelectedIndex)
                             Select Case fsAlert.ShowDialog(Me)
                               Case Windows.Forms.DialogResult.Yes
-                                'UDF
+                                REM UDF
                                 cmbISOFormat.SelectedIndex = 3
                               Case Windows.Forms.DialogResult.OK
-                                'UDF102
+                                REM UDF102
                                 cmbISOFormat.SelectedIndex = 5
                               Case Windows.Forms.DialogResult.No
-                                'Default
+                                REM Default
                               Case Windows.Forms.DialogResult.Cancel
-                                'STOP
+                                REM STOP
                                 ToggleInputs(True)
                                 SetStatus("ISO creation cancelled by user!")
                                 Exit Sub
@@ -1672,13 +1676,13 @@
                 Exit Sub
               End If
             ElseIf Math.Floor(ISOSplit / WIMSplit) = 1 Then
-              'Split WIM to WIMSplit size, put 1 WIM on each ISO including first
-              pbIndividual.Style = ProgressBarStyle.Marquee
+              REM Split WIM to WIMSplit size, put 1 WIM on each ISO including first
+              SetProgress(0, 0)
               SetStatus("Splitting WIM into " & ByteSize(WIMSplit * 1024 * 1024) & " Chunks...")
               If SplitWIM(WIMToSplit, IO.Path.ChangeExtension(WIMToSplit, ".swm"), WIMSplit) Then
                 If My.Computer.FileSystem.FileExists(WIMToSplit) Then My.Computer.FileSystem.DeleteFile(WIMToSplit)
+                SetProgress(0, 1)
                 SetStatus("Generating Data ISOs...")
-                pbIndividual.Style = ProgressBarStyle.Continuous
                 Dim FilesInOrder() As String = My.Computer.FileSystem.GetFiles(ISODir & "sources\", FileIO.SearchOption.SearchTopLevelOnly, "*.swm").ToArray
                 SortFiles(FilesInOrder)
                 FilesInOrder.OrderBy(Function(path) Int32.Parse(IO.Path.GetFileNameWithoutExtension(path)))
@@ -1691,7 +1695,7 @@
                     If Not My.Computer.FileSystem.DirectoryExists(sIDir) Then My.Computer.FileSystem.CreateDirectory(sIDir)
                     If Not My.Computer.FileSystem.DirectoryExists(sIDir & "sources\") Then My.Computer.FileSystem.CreateDirectory(sIDir & "sources\")
                     My.Computer.FileSystem.MoveFile(File, sIDir & "\sources\" & IO.Path.GetFileName(File))
-                    ExtractFiles(KnownSevenZipFormat.Zip, Application.StartupPath & "\AR.zip", sIDir)
+                    ExtractAllFiles(Application.StartupPath & "\AR.zip", sIDir)
                     If (cmbISOFormat.SelectedIndex = 0) Or (cmbISOFormat.SelectedIndex = 1) Or (cmbISOFormat.SelectedIndex = 2) Or (cmbISOFormat.SelectedIndex = 4) Or (cmbISOFormat.SelectedIndex = 6) Then
                       SetStatus("Looking for oversized files...")
                       Dim BigList = FindBigFiles(sIDir)
@@ -1699,15 +1703,15 @@
                         Using fsAlert As New frmFS(BigList, sIDir, cmbISOFormat.SelectedIndex)
                           Select Case fsAlert.ShowDialog(Me)
                             Case Windows.Forms.DialogResult.Yes
-                              'UDF
+                              REM UDF
                               cmbISOFormat.SelectedIndex = 3
                             Case Windows.Forms.DialogResult.OK
-                              'UDF102
+                              REM UDF102
                               cmbISOFormat.SelectedIndex = 5
                             Case Windows.Forms.DialogResult.No
-                              'Default
+                              REM Default
                             Case Windows.Forms.DialogResult.Cancel
-                              'STOP
+                              REM STOP
                               ToggleInputs(True)
                               SetStatus("ISO creation cancelled by user!")
                               Exit Sub
@@ -1748,13 +1752,13 @@
                 Exit Sub
               End If
             Else
-              'Split WIM to WIMSplit size, put no WIMs on first ISO, one per ISO afterward
-              pbIndividual.Style = ProgressBarStyle.Marquee
+              REM Split WIM to WIMSplit size, put no WIMs on first ISO, one per ISO afterward
+              SetProgress(0, 0)
               SetStatus("Splitting WIM into " & ByteSize(WIMSplit * 1024 * 1024) & " Chunks...")
               If SplitWIM(WIMToSplit, IO.Path.ChangeExtension(WIMToSplit, ".swm"), WIMSplit) Then
                 If My.Computer.FileSystem.FileExists(WIMToSplit) Then My.Computer.FileSystem.DeleteFile(WIMToSplit)
+                SetProgress(0, 1)
                 SetStatus("Generating Data ISOs...")
-                pbIndividual.Style = ProgressBarStyle.Continuous
                 Dim FilesInOrder() As String = My.Computer.FileSystem.GetFiles(ISODir & "sources\", FileIO.SearchOption.SearchTopLevelOnly, "*.swm").ToArray
                 SortFiles(FilesInOrder)
                 FilesInOrder.OrderBy(Function(path) Int32.Parse(IO.Path.GetFileNameWithoutExtension(path)))
@@ -1764,7 +1768,7 @@
                     If Not My.Computer.FileSystem.DirectoryExists(sIDir) Then My.Computer.FileSystem.CreateDirectory(sIDir)
                     If Not My.Computer.FileSystem.DirectoryExists(sIDir & "sources\") Then My.Computer.FileSystem.CreateDirectory(sIDir & "sources\")
                     My.Computer.FileSystem.MoveFile(File, sIDir & "\sources\install.swm")
-                    ExtractFiles(KnownSevenZipFormat.Zip, Application.StartupPath & "\AR.zip", sIDir)
+                    ExtractAllFiles(Application.StartupPath & "\AR.zip", sIDir)
                     If (cmbISOFormat.SelectedIndex = 0) Or (cmbISOFormat.SelectedIndex = 1) Or (cmbISOFormat.SelectedIndex = 2) Or (cmbISOFormat.SelectedIndex = 4) Or (cmbISOFormat.SelectedIndex = 6) Then
                       SetStatus("Looking for oversized files...")
                       Dim BigList = FindBigFiles(sIDir)
@@ -1772,15 +1776,15 @@
                         Using fsAlert As New frmFS(BigList, sIDir, cmbISOFormat.SelectedIndex)
                           Select Case fsAlert.ShowDialog(Me)
                             Case Windows.Forms.DialogResult.Yes
-                              'UDF
+                              REM UDF
                               cmbISOFormat.SelectedIndex = 3
                             Case Windows.Forms.DialogResult.OK
-                              'UDF102
+                              REM UDF102
                               cmbISOFormat.SelectedIndex = 5
                             Case Windows.Forms.DialogResult.No
-                              'Default
+                              REM Default
                             Case Windows.Forms.DialogResult.Cancel
-                              'STOP
+                              REM STOP
                               ToggleInputs(True)
                               SetStatus("ISO creation cancelled by user!")
                               Exit Sub
@@ -1819,7 +1823,7 @@
                     If Not My.Computer.FileSystem.DirectoryExists(sIDir) Then My.Computer.FileSystem.CreateDirectory(sIDir)
                     If Not My.Computer.FileSystem.DirectoryExists(sIDir & "sources\") Then My.Computer.FileSystem.CreateDirectory(sIDir & "sources\")
                     My.Computer.FileSystem.MoveFile(File, sIDir & "\sources\" & IO.Path.GetFileName(File))
-                    ExtractFiles(KnownSevenZipFormat.Zip, Application.StartupPath & "\AR.zip", sIDir)
+                    ExtractAllFiles(Application.StartupPath & "\AR.zip", sIDir)
                     If (cmbISOFormat.SelectedIndex = 0) Or (cmbISOFormat.SelectedIndex = 1) Or (cmbISOFormat.SelectedIndex = 2) Or (cmbISOFormat.SelectedIndex = 4) Or (cmbISOFormat.SelectedIndex = 6) Then
                       SetStatus("Looking for oversized files...")
                       Dim BigList = FindBigFiles(sIDir)
@@ -1827,15 +1831,15 @@
                         Using fsAlert As New frmFS(BigList, sIDir, cmbISOFormat.SelectedIndex)
                           Select Case fsAlert.ShowDialog(Me)
                             Case Windows.Forms.DialogResult.Yes
-                              'UDF
+                              REM UDF
                               cmbISOFormat.SelectedIndex = 3
                             Case Windows.Forms.DialogResult.OK
-                              'UDF102
+                              REM UDF102
                               cmbISOFormat.SelectedIndex = 5
                             Case Windows.Forms.DialogResult.No
-                              'Default
+                              REM Default
                             Case Windows.Forms.DialogResult.Cancel
-                              'STOP
+                              REM STOP
                               ToggleInputs(True)
                               SetStatus("ISO creation cancelled by user!")
                               Exit Sub
@@ -1877,8 +1881,8 @@
               End If
             End If
           ElseIf splUEFI And splWIMSize > 4095 Then
-            'Split WIM to 4095 MB size
-            pbIndividual.Style = ProgressBarStyle.Marquee
+            REM Split WIM to 4095 MB size
+            SetProgress(0, 0)
             SetStatus("Splitting WIM into 4095 MB Chunks...")
             If SplitWIM(WIMToSplit, IO.Path.ChangeExtension(WIMToSplit, ".swm"), 4095) Then
               If My.Computer.FileSystem.FileExists(WIMToSplit) Then My.Computer.FileSystem.DeleteFile(WIMToSplit)
@@ -1890,8 +1894,8 @@
           End If
         Else
           If splWIMSize > splFileSize Then
-            'Split WIM to FileSize size
-            pbIndividual.Style = ProgressBarStyle.Marquee
+            REM Split WIM to FileSize size
+            SetProgress(0, 0)
             SetStatus("Splitting WIM into " & ByteSize(splFileSize * 1024 * 1024) & " Chunks...")
             If SplitWIM(WIMToSplit, IO.Path.ChangeExtension(WIMToSplit, ".swm"), splFileSize) Then
               If My.Computer.FileSystem.FileExists(WIMToSplit) Then My.Computer.FileSystem.DeleteFile(WIMToSplit)
@@ -1910,15 +1914,15 @@
             Using fsAlert As New frmFS(BigList, ISODir, cmbISOFormat.SelectedIndex)
               Select Case fsAlert.ShowDialog(Me)
                 Case Windows.Forms.DialogResult.Yes
-                  'UDF
+                  REM UDF
                   cmbISOFormat.SelectedIndex = 3
                 Case Windows.Forms.DialogResult.OK
-                  'UDF102
+                  REM UDF102
                   cmbISOFormat.SelectedIndex = 5
                 Case Windows.Forms.DialogResult.No
-                  'Default
+                  REM Default
                 Case Windows.Forms.DialogResult.Cancel
-                  'STOP
+                  REM STOP
                   ToggleInputs(True)
                   SetStatus("ISO creation cancelled by user!")
                   Exit Sub
@@ -1943,12 +1947,12 @@
                                           "boot\fonts\kor_boot.ttf" & vbNewLine &
                                           "boot\fonts\wgl4_boot.ttf" & vbNewLine &
                                           "sources\boot.wim" & vbNewLine, False, System.Text.Encoding.GetEncoding(1252))
-      pbIndividual.Style = ProgressBarStyle.Marquee
+      SetProgress(0, 0)
       SetStatus("Making Backup of Old ISO...")
       My.Computer.FileSystem.MoveFile(ISOFile, ISOFile & ".del", True)
       iTotalVal += 1
       SetTotal(iTotalVal, 12)
-      pbIndividual.Style = ProgressBarStyle.Continuous
+      SetProgress(0, 0)
       SetStatus("Building New ISO...")
       Dim Saved As Boolean = False
       Try
@@ -1971,7 +1975,7 @@
       End Try
       iTotalVal += 1
       SetTotal(iTotalVal, 12)
-      pbIndividual.Style = ProgressBarStyle.Continuous
+      SetProgress(0, 1)
       If Saved Then
         If My.Computer.FileSystem.FileExists(ISOFile & ".del") Then My.Computer.FileSystem.DeleteFile(ISOFile & ".del")
       Else
@@ -1998,7 +2002,7 @@
           Dim splFileSize As Long = NumericVal(limVal)
           Dim splWIMSize As Long = My.Computer.FileSystem.GetFileInfo(WIMFile).Length
           If splWIMSize > splFileSize Then
-            'Split WIMs to FileSize size
+            REM Split WIMs to FileSize size
             SetStatus("Splitting WIM into " & ByteSize(splFileSize * 1024 * 1024) & " Chunks...")
             If SplitWIM(WIMFile, IO.Path.ChangeExtension(WIMFile, ".swm"), splFileSize) Then
               My.Computer.FileSystem.DeleteFile(WIMFile)
@@ -2019,20 +2023,20 @@
     SetStatus("Complete!")
     Select Case cmbCompletion.SelectedIndex
       Case 0
-        'done
+        REM done
         RunComplete = True
         ToggleInputs(True)
       Case 1
-        'close
+        REM close
         Me.Close()
       Case 2
-        'shut down
+        REM shut down
         Process.Start("shutdown", "/s /t 0 /d p:0:0 /f")
       Case 3
-        'restart
+        REM restart
         Process.Start("shutdown", "/r /t 0 /d p:0:0 /f")
       Case 4
-        'sleep
+        REM sleep
         Application.SetSuspendState(PowerState.Suspend, False, False)
     End Select
   End Sub
@@ -2099,10 +2103,27 @@
     If Me.InvokeRequired Then
       Me.BeginInvoke(New SetProgressInvoker(AddressOf SetProgress), Value, Maximum)
     Else
-      pbIndividual.Maximum = Maximum
-      pbIndividual.Value = Value
+      If Value = 0 And Maximum = 0 Then
+        pbIndividual.Style = ProgressBarStyle.Marquee
+        pbIndividual.Value = 0
+        pbIndividual.Maximum = 1
+      ElseIf Value <= Maximum Then
+        pbIndividual.Style = ProgressBarStyle.Continuous
+        If pbIndividual.Value > Maximum Then
+          pbIndividual.Value = Value
+          pbIndividual.Maximum = Maximum
+        Else
+          pbIndividual.Maximum = Maximum
+          pbIndividual.Value = Value
+        End If
+      Else
+        pbIndividual.Style = ProgressBarStyle.Continuous
+        pbIndividual.Value = 0
+        pbIndividual.Maximum = Maximum
+      End If
     End If
   End Sub
+
   Public Sub SetTotal(Value As Integer, Maximum As Integer)
     If Me.InvokeRequired Then
       Me.BeginInvoke(New SetProgressInvoker(AddressOf SetTotal), Value, Maximum)
@@ -2160,39 +2181,43 @@
 #End Region
 #Region "Command Calls"
   Private Function CleanMounts() As Boolean
-    Dim DISMInfo As String = RunWithReturn(DismPath, "/Get-MountedWimInfo /English", True)
-    Dim mFindA As String = WorkDir.Substring(0, WorkDir.Length - 1).ToLower
-    Dim mFindB As String = ShortenPath(mFindA).ToLower
-    If Not DISMInfo.Contains("No mounted images found.") Then
-      SetStatus("Cleaning Old DISM Mounts...")
-      Dim sLines() As String = Split(DISMInfo, vbNewLine)
-      For Each line In sLines
-        If line.Contains("Mount Dir : ") Then
-          Dim tmpPath As String = line.Substring(line.IndexOf(":") + 2)
-          If line.ToLower.Contains(mFindA) Or line.ToLower.Contains(mFindB) Then RunHidden(DismPath, "/Unmount-Wim /MountDir:" & ShortenPath(tmpPath) & " /discard /English")
-        End If
-      Next
-    End If
-    RunHidden(DismPath, "/cleanup-wim")
-    Dim ImageXInfo As String = RunWithReturn(AIKDir & "imagex", "/unmount", True)
-    If Not ImageXInfo.Contains("Number of Mounted Images: 0") Then
-      SetStatus("Cleaning Old ImageX Mounts...")
-      Dim sLines() As String = Split(ImageXInfo, vbNewLine)
-      For Each line In sLines
-        If line.Contains("Mount Path") Then
-          Dim tmpPath As String = line.Substring(line.IndexOf("[") + 1)
-          tmpPath = tmpPath.Substring(0, tmpPath.IndexOf("]"))
-          If tmpPath.ToLower.Contains(mFindA) Or tmpPath.ToLower.Contains(mFindB) Then RunHidden(AIKDir & "imagex", "/unmount " & ShortenPath(tmpPath))
-        End If
-      Next
-    End If
-    RunHidden(AIKDir & "imagex", "/cleanup")
-    SlowDeleteDirectory(WorkDir & "MOUNT\", FileIO.DeleteDirectoryOption.DeleteAllContents)
-    If IO.Directory.Exists(WorkDir & "MOUNT\") Then Return False
-    Return True
+    Try
+      Dim DISMInfo As String = RunWithReturn(DismPath, "/Get-MountedWimInfo /English", True)
+      Dim mFindA As String = WorkDir.Substring(0, WorkDir.Length - 1).ToLower
+      Dim mFindB As String = ShortenPath(mFindA).ToLower
+      If Not DISMInfo.Contains("No mounted images found.") Then
+        SetStatus("Cleaning Old DISM Mounts...")
+        Dim sLines() As String = Split(DISMInfo, vbNewLine)
+        For Each line In sLines
+          If line.Contains("Mount Dir : ") Then
+            Dim tmpPath As String = line.Substring(line.IndexOf(":") + 2)
+            If line.ToLower.Contains(mFindA) Or line.ToLower.Contains(mFindB) Then RunHidden(DismPath, "/Unmount-Wim /MountDir:" & ShortenPath(tmpPath) & " /discard /English")
+          End If
+        Next
+      End If
+      RunHidden(DismPath, "/cleanup-wim")
+      Dim ImageXInfo As String = RunWithReturn(AIKDir & "imagex", "/unmount", True)
+      If Not ImageXInfo.Contains("Number of Mounted Images: 0") Then
+        SetStatus("Cleaning Old ImageX Mounts...")
+        Dim sLines() As String = Split(ImageXInfo, vbNewLine)
+        For Each line In sLines
+          If line.Contains("Mount Path") Then
+            Dim tmpPath As String = line.Substring(line.IndexOf("[") + 1)
+            tmpPath = tmpPath.Substring(0, tmpPath.IndexOf("]"))
+            If tmpPath.ToLower.Contains(mFindA) Or tmpPath.ToLower.Contains(mFindB) Then RunHidden(AIKDir & "imagex", "/unmount " & ShortenPath(tmpPath))
+          End If
+        Next
+      End If
+      RunHidden(AIKDir & "imagex", "/cleanup")
+      SlowDeleteDirectory(WorkDir & "MOUNT\", FileIO.DeleteDirectoryOption.DeleteAllContents)
+      If IO.Directory.Exists(WorkDir & "MOUNT\") Then Return False
+      Return True
+    Catch ex As Exception
+      Return False
+    End Try
   End Function
   Private Function MakeDataImages(sIDir As String, sDiscName As String, ISODest As String) As Boolean
-    ExtractFiles(KnownSevenZipFormat.Zip, Application.StartupPath & "\AR.zip", sIDir)
+    ExtractAllFiles(Application.StartupPath & "\AR.zip", sIDir)
     Try
       My.Computer.FileSystem.WriteAllBytes(ISODest, {0, 0}, False)
       Dim isoFormat As String = "-n"
@@ -2295,249 +2320,242 @@
   End Function
 #End Region
 #Region "7-Zip"
-  Private WithEvents ExtractCallback As ArchiveCallback
+  Private WithEvents Extractor As Extraction.ArchiveFile
   Private c_ExtractRet As New Collections.Generic.List(Of String)
-  Private Sub ExtractFiles(Format As KnownSevenZipFormat, Source As String, Destination As String)
-    Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractFiles))
-    Dim cIndex As Integer = c_ExtractRet.Count
-    c_ExtractRet.Add(Nothing)
-    tRunWithReturn.Start({Format, Source, Destination, cIndex})
-    Do While String.IsNullOrEmpty(c_ExtractRet(cIndex))
-      Application.DoEvents()
-      Threading.Thread.Sleep(1)
-    Loop
-    Dim sRet As String = c_ExtractRet(cIndex)
-    c_ExtractRet(cIndex) = Nothing
-    Select Case sRet
-      Case "OK"
-
-      Case "CRC Error"
-        MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-      Case "Data Error"
-        MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-      Case "Unsupported Method"
-        MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-      Case "File Not Found"
-        MsgDlg(Me, "Unable to find files in " & IO.Path.GetFileName(Source) & "!", "The files were not found.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-      Case Else
-        MsgDlg(Me, sRet, "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-    End Select
-  End Sub
-  Private Sub ExtractFiles(Format As KnownSevenZipFormat, Source As String, Destination As String, Except As String)
-    Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractFiles))
-    Dim cIndex As Integer = c_ExtractRet.Count
-    c_ExtractRet.Add(Nothing)
-    tRunWithReturn.Start({Format, Source, Destination, Except, cIndex})
-    Do While String.IsNullOrEmpty(c_ExtractRet(cIndex))
-      Application.DoEvents()
-      Threading.Thread.Sleep(1)
-    Loop
-    Dim sRet As String = c_ExtractRet(cIndex)
-    c_ExtractRet(cIndex) = Nothing
-    Select Case sRet
-      Case "OK"
-
-      Case "CRC Error"
-        MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-      Case "Data Error"
-        MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-      Case "Unsupported Method"
-        MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-      Case "File Not Found"
-        MsgDlg(Me, "Unable to find files in " & IO.Path.GetFileName(Source) & "!", "The files were not found.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-      Case Else
-        MsgDlg(Me, sRet, "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-    End Select
-  End Sub
-  Private Sub AsyncExtractFiles(Obj As Object)
-    Dim Format As KnownSevenZipFormat, Source, Destination, Except As String, cIndex As UInteger
-    Format = Obj(0)
-    Source = Obj(1)
-    Destination = Obj(2)
-    If UBound(Obj) = 3 Then
-      Except = Nothing
-      cIndex = Obj(3)
+  Private Delegate Sub ExtractAllFilesInvoker(Source As String, Destination As String)
+  Private Sub ExtractAllFiles(Source As String, Destination As String)
+    If Me.InvokeRequired Then
+      Me.Invoke(New ExtractAllFilesInvoker(AddressOf ExtractAllFiles), Source, Destination)
     Else
-      Except = Obj(3)
-      cIndex = Obj(4)
+      Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractAllFiles))
+      Dim cIndex As Integer = c_ExtractRet.Count
+      c_ExtractRet.Add(Nothing)
+      tRunWithReturn.Start({Source, Destination, cIndex})
+      Do While String.IsNullOrEmpty(c_ExtractRet(cIndex))
+        Application.DoEvents()
+        Threading.Thread.Sleep(1)
+      Loop
+      Dim sRet As String = c_ExtractRet(cIndex)
+      c_ExtractRet(cIndex) = Nothing
+      Select Case sRet
+        Case "OK"
+
+        Case "CRC Error"
+          MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        Case "Data Error"
+          MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        Case "Unsupported Method"
+          MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        Case "File Not Found"
+          MsgDlg(Me, "Unable to find files in " & IO.Path.GetFileName(Source) & "!", "The files were not found.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        Case Else
+          MsgDlg(Me, sRet, "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+      End Select
     End If
-    Except = Obj(3)
+  End Sub
+  Private Sub AsyncExtractAllFiles(Obj As Object)
+    Dim Source, Destination As String, cIndex As UInteger
+    Source = Obj(0)
+    Destination = Obj(1)
+    cIndex = Obj(2)
     Dim sStatus As String = GetStatus()
     If sStatus.EndsWith("...") Then sStatus = sStatus.Substring(0, sStatus.Length - 3)
     If sStatus.Contains(" (File ") Then sStatus = sStatus.Substring(0, sStatus.IndexOf(" (File"))
     If Not Destination.EndsWith(IO.Path.DirectorySeparatorChar) Then Destination &= IO.Path.DirectorySeparatorChar
-    Using f7z As New SevenZipFormat(AIKDir & "7z.dll")
-      Dim Archive As IInArchive = f7z.CreateInArchive(SevenZipFormat.GetClassIdFromKnownFormat(Format))
-      If Archive Is Nothing Then
-        SetStatus("Error Initializing " & Format.ToString & " Reading Format!")
-        Exit Sub
-      End If
-      Try
-        Dim sDirs As New Collections.Generic.List(Of String)
-        Dim sFiles As New Dictionary(Of UInteger, String)
-        Using ArchiveStream As New InStreamWrapper(IO.File.OpenRead(Source))
-          Dim checkPos As ULong = 128 * 1024
-          Dim arCallback As New ArchiveOpenCallback
-          If Not Archive.Open(ArchiveStream, checkPos, arCallback) = 0 Then
-            SetStatus("Error Reading Archive!")
-            Archive.Close()
-            Runtime.InteropServices.Marshal.ReleaseComObject(Archive)
-            Exit Sub
-          End If
-          Dim Elements As UInteger = Archive.GetNumberOfItems
-          For I As UInteger = 0 To Elements - 1
-            Dim ElFolder As New PropVariant
-            Archive.GetProperty(I, ItemPropId.kpidIsFolder, ElFolder)
-            Dim bFolder As Boolean = ElFolder.GetObject
-            Dim ElPath As New PropVariant
-            Archive.GetProperty(I, ItemPropId.kpidPath, ElPath)
-            Dim sPath As String = ElPath.GetObject
-            If bFolder Then
-              sDirs.Add(sPath)
-            Else
-              If String.IsNullOrEmpty(Except) OrElse Not sPath.ToLower.EndsWith(Except.ToLower) Then
-                sFiles.Add(I, sPath)
-              End If
-            End If
-          Next
-          For Each sDir As String In sDirs
-            IO.Directory.CreateDirectory(Destination & sDir)
-          Next
-          ExtractCallback = New ArchiveCallback(sFiles.Keys.ToArray, sFiles.Values.ToArray, Destination, cIndex)
-          Archive.Extract(sFiles.Keys.ToArray, sFiles.LongCount, 0, ExtractCallback)
-          c_ExtractRet(cIndex) = "OK"
-          SetProgress(0, 1000)
-        End Using
-        Archive.Close()
-        Runtime.InteropServices.Marshal.ReleaseComObject(Archive)
-      Catch ex As Exception
-        SetStatus("Error Extracting File: " & ex.Message)
-      End Try
-    End Using
+    Extractor = New Extraction.ArchiveFile(New IO.FileInfo(Source))
+    Try
+      Extractor.Open()
+    Catch ex As Exception
+      Extractor.Dispose()
+      Extractor = Nothing
+      c_ExtractRet(cIndex) = "Error Opening: " & ex.Message
+    End Try
+    For Each file In Extractor
+      file.Destination = New IO.FileInfo(Destination & file.Name)
+    Next
+    Try
+      Extractor.Extract()
+      Extractor.Dispose()
+      Extractor = Nothing
+    Catch ex As Exception
+      Extractor.Dispose()
+      Extractor = Nothing
+      c_ExtractRet(cIndex) = "Error Extracting: " & ex.Message
+    End Try
+    SetProgress(0, 1000)
+    c_ExtractRet(cIndex) = "OK"
   End Sub
-  Private Sub ExtractAFile(Format As KnownSevenZipFormat, Source As String, Destination As String, File As String)
-    Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractAFile))
-    Dim cIndex As Integer = c_ExtractRet.Count
-    c_ExtractRet.Add(Nothing)
-    tRunWithReturn.Start({Format, Source, Destination, File, cIndex})
-    Do While String.IsNullOrEmpty(c_ExtractRet(cIndex))
-      Application.DoEvents()
-      Threading.Thread.Sleep(1)
-    Loop
-    Dim sRet As String = c_ExtractRet(cIndex)
-    c_ExtractRet(cIndex) = Nothing
-    Select Case sRet
-      Case "OK"
+  Private Delegate Sub ExtractFilesInvoker(Source As String, Destination As String, Except As String)
+  Private Sub ExtractFiles(Source As String, Destination As String, Except As String)
+    If Me.InvokeRequired Then
+      Me.Invoke(New ExtractFilesInvoker(AddressOf ExtractFiles), Source, Destination, Except)
+    Else
+      Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractFiles))
+      Dim cIndex As Integer = c_ExtractRet.Count
+      c_ExtractRet.Add(Nothing)
+      tRunWithReturn.Start({Source, Destination, Except, cIndex})
+      Do While String.IsNullOrEmpty(c_ExtractRet(cIndex))
+        Application.DoEvents()
+        Threading.Thread.Sleep(1)
+      Loop
+      Dim sRet As String = c_ExtractRet(cIndex)
+      c_ExtractRet(cIndex) = Nothing
+      Select Case sRet
+        Case "OK"
 
-      Case "CRC Error"
-        MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to extract """ & File & """!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-      Case "Data Error"
-        MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to extract """ & File & """!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-      Case "Unsupported Method"
-        MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to extract """ & File & """!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-      Case "File Not Found"
-        MsgDlg(Me, "Unable to find """ & File & """ in " & IO.Path.GetFileName(Source) & "!", "The file was not found.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-      Case Else
-        MsgDlg(Me, sRet, "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-    End Select
+        Case "CRC Error"
+          MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        Case "Data Error"
+          MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        Case "Unsupported Method"
+          MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        Case "File Not Found"
+          MsgDlg(Me, "Unable to find files in " & IO.Path.GetFileName(Source) & "!", "The files were not found.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        Case Else
+          MsgDlg(Me, sRet, "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+      End Select
+    End If
+  End Sub
+  Private Sub AsyncExtractFiles(Obj As Object)
+    Dim Source, Destination, Except As String, cIndex As UInteger
+    Source = Obj(0)
+    Destination = Obj(1)
+    Except = Obj(2)
+    cIndex = Obj(3)
+    Dim sStatus As String = GetStatus()
+    If sStatus.EndsWith("...") Then sStatus = sStatus.Substring(0, sStatus.Length - 3)
+    If sStatus.Contains(" (File ") Then sStatus = sStatus.Substring(0, sStatus.IndexOf(" (File"))
+    If Not Destination.EndsWith(IO.Path.DirectorySeparatorChar) Then Destination &= IO.Path.DirectorySeparatorChar
+    Extractor = New Extraction.ArchiveFile(New IO.FileInfo(Source))
+    Try
+      Extractor.Open()
+    Catch ex As Exception
+      Extractor.Dispose()
+      Extractor = Nothing
+      c_ExtractRet(cIndex) = "Error Opening: " & ex.Message
+    End Try
+    For Each file In Extractor
+      If Not file.Name.ToLower.EndsWith(Except.ToLower) Then
+        file.Destination = New IO.FileInfo(Destination & file.Name)
+      End If
+    Next
+    Try
+      Extractor.Extract()
+      Extractor.Dispose()
+      Extractor = Nothing
+    Catch ex As Exception
+      Extractor.Dispose()
+      Extractor = Nothing
+      c_ExtractRet(cIndex) = "Error Extracting: " & ex.Message
+    End Try
+    SetProgress(0, 1000)
+    c_ExtractRet(cIndex) = "OK"
+  End Sub
+  Private Delegate Sub ExtractAFileInvoker(Source As String, Destination As String, File As String)
+  Private Sub ExtractAFile(Source As String, Destination As String, File As String)
+    If Me.InvokeRequired Then
+      Me.Invoke(New ExtractAFileInvoker(AddressOf ExtractAFile), Source, Destination, File)
+    Else
+      Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractAFile))
+      Dim cIndex As Integer = c_ExtractRet.Count
+      c_ExtractRet.Add(Nothing)
+      tRunWithReturn.Start({Source, Destination, File, cIndex})
+      Do While String.IsNullOrEmpty(c_ExtractRet(cIndex))
+        Application.DoEvents()
+        Threading.Thread.Sleep(1)
+      Loop
+      Dim sRet As String = c_ExtractRet(cIndex)
+      c_ExtractRet(cIndex) = Nothing
+      Select Case sRet
+        Case "OK"
+
+        Case "CRC Error"
+          MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to extract """ & File & """!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        Case "Data Error"
+          MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to extract """ & File & """!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        Case "Unsupported Method"
+          MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to extract """ & File & """!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        Case "File Not Found"
+          MsgDlg(Me, "Unable to find """ & File & """ in " & IO.Path.GetFileName(Source) & "!", "The file was not found.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        Case Else
+          MsgDlg(Me, sRet, "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+      End Select
+    End If
   End Sub
   Private Sub AsyncExtractAFile(Obj As Object)
-    Dim Format As KnownSevenZipFormat, Source, Destination, File As String
-    Format = Obj(0)
-    Source = Obj(1)
-    Destination = Obj(2)
-    File = Obj(3)
-    Dim cIndex As UInteger = Obj(4)
+    Dim Source, Destination, Find As String
+    Source = Obj(0)
+    Destination = Obj(1)
+    Find = Obj(2)
+    Dim cIndex As UInteger = Obj(3)
+    Dim bFound As Boolean = False
     If Not Destination.EndsWith(IO.Path.DirectorySeparatorChar) Then Destination &= IO.Path.DirectorySeparatorChar
-    Using f7z As New SevenZipFormat(AIKDir & "7z.dll")
-      Dim Archive As IInArchive = f7z.CreateInArchive(SevenZipFormat.GetClassIdFromKnownFormat(Format))
-      If Archive Is Nothing Then
-        c_ExtractRet(cIndex) = "Error Initializing " & Format.ToString & " Reading Format!"
-        Exit Sub
+
+    Extractor = New Extraction.ArchiveFile(New IO.FileInfo(Source))
+    Try
+      Extractor.Open()
+    Catch ex As Exception
+      Extractor.Dispose()
+      Extractor = Nothing
+      c_ExtractRet(cIndex) = "Error Opening: " & ex.Message
+    End Try
+    For Each File In Extractor
+      If File.Name.ToLower.EndsWith(Find.ToLower) Then
+        File.Destination = New IO.FileInfo(Destination & IO.Path.GetFileName(File.Name))
+        bFound = True
+        Exit For
       End If
-      Try
-        Using ArchiveStream As New InStreamWrapper(IO.File.OpenRead(Source))
-          Dim checkPos As ULong = 128 * 1024
-          Dim arCallback As New ArchiveOpenCallback
-          If Not Archive.Open(ArchiveStream, checkPos, arCallback) = 0 Then
-            Archive.Close()
-            Runtime.InteropServices.Marshal.ReleaseComObject(Archive)
-            c_ExtractRet(cIndex) = "Error Reading Archive!"
-            Exit Sub
-          End If
-          Dim Elements As UInteger = Archive.GetNumberOfItems
-          For I As UInteger = 0 To Elements - 1
-            Dim ElFolder As New PropVariant
-            Archive.GetProperty(I, ItemPropId.kpidIsFolder, ElFolder)
-            Dim bFolder As Boolean = ElFolder.GetObject
-            Dim ElPath As New PropVariant
-            Archive.GetProperty(I, ItemPropId.kpidPath, ElPath)
-            Dim sPath As String = ElPath.GetObject
-            If bFolder Then
-              'Ignore
-            Else
-              If sPath.ToLower.EndsWith(File.ToLower) Then
-                ExtractCallback = New ArchiveCallback(I, Destination & IO.Path.GetFileName(sPath), cIndex)
-                Archive.Extract(New UInteger() {I}, 1, 0, ExtractCallback)
-                c_ExtractRet(cIndex) = "OK"
-                Exit For
-              End If
-            End If
-          Next
-        End Using
-        Archive.Close()
-        Runtime.InteropServices.Marshal.ReleaseComObject(Archive)
-      Catch ex As Exception
-        c_ExtractRet(cIndex) = "Error: " & ex.Message
-      End Try
-    End Using
-    If String.IsNullOrEmpty(c_ExtractRet(cIndex)) Then c_ExtractRet(cIndex) = "File Not Found"
-  End Sub
-  Private Sub ExtractCallback_DisplayProgress(index As UInteger, items As Long, Value As ULong, Total As ULong, State As Object) Handles ExtractCallback.DisplayProgress
-    If Me.InvokeRequired Then
-      Me.BeginInvoke(New ArchiveCallback.DisplayProgressCallback(AddressOf ExtractCallback_DisplayProgress), index, items, Value, Total, State)
+    Next
+    Try
+      Extractor.Extract()
+      Extractor.Dispose()
+      Extractor = Nothing
+    Catch ex As Exception
+      Extractor.Dispose()
+      Extractor = Nothing
+      c_ExtractRet(cIndex) = "Error Extracting: " & ex.Message
+    End Try
+    SetProgress(0, 1000)
+    If bFound Then
+      c_ExtractRet(cIndex) = "OK"
     Else
+      c_ExtractRet(cIndex) = "File Not Found"
+    End If
+  End Sub
+  Private Sub Extractor_ExtractFile(sender As Object, e As Extraction.COM.ExtractFileEventArgs) Handles Extractor.ExtractFile
+    If StopRun Then e.ContinueOperation = False
+    If Extractor.ExtractionCount() > 1 Then
+      If e.Stage = Extraction.COM.ExtractionStage.Done Then
+        SetProgress(e.Item.Index, Extractor.ItemCount)
+        Application.DoEvents()
+      End If
+    End If
+  End Sub
+  Private Sub Extractor_ExtractProgress(sender As Object, e As Extraction.COM.ExtractProgressEventArgs) Handles Extractor.ExtractProgress
+    If Extractor.ExtractionCount = 1 Then
+      If StopRun Then e.ContinueOperation = False
       Dim iMax As Integer = pbIndividual.Width
-      Dim iVal As Integer = (Value / Total) * iMax
-      If pbIndividual.Value = iVal And pbIndividual.Maximum = iMax Then Exit Sub
+      Dim iVal As Integer = (e.Written / e.Total) * iMax
+      If pbIndividual.Value = iVal AndAlso pbIndividual.Maximum = iMax Then Exit Sub
       SetProgress(iVal, iMax)
       Application.DoEvents()
     End If
   End Sub
-  Private Sub ExtractCallback_DisplayResult(index As UInteger, items As Long, result As OperationResult, State As Object) Handles ExtractCallback.DisplayResult
-    If Me.InvokeRequired Then
-      Me.BeginInvoke(New ArchiveCallback.DisplayResultCallback(AddressOf ExtractCallback_DisplayResult), index, items, result, State)
-    Else
-      If result = OperationResult.kCRCError Then
-        MsgDlg(Me, "CRC Error in compressed file #" & index & ".", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-        c_ExtractRet(State) = "CRC Error"
-      ElseIf result = OperationResult.kDataError Then
-        MsgDlg(Me, "Data Error in compressed file #" & index & ".", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-        c_ExtractRet(State) = "Data Error"
-      ElseIf result = OperationResult.kUnSupportedMethod Then
-        MsgDlg(Me, "Unsupported Method in compressed file #" & index & ".", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-        c_ExtractRet(State) = "Unsupported Method"
-      Else
-
-      End If
-    End If
-  End Sub
   Private Function ExtractFailureAlert(Message As String) As Boolean
     If String.IsNullOrEmpty(Message) Then Return False
-    Select Case Message
-      Case "OK"
-        Return False
-      Case "CRC Error"
-        MsgDlg(Me, "CRC Error in compressed file!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-      Case "Data Error"
-        MsgDlg(Me, "Data Error in compressed file!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-      Case "Unsupported Method"
-        MsgDlg(Me, "Unsupported Method in compressed file!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-      Case "File Not Found"
-        MsgDlg(Me, "Unable to find expected file in compressed file!", "The file was not found.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-      Case Else
-        MsgDlg(Me, Message, "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-    End Select
+    If Message = "OK" Then
+      Return False
+    ElseIf Message.StartsWith("CRC Error") Then
+      MsgDlg(Me, "CRC Error in compressed file!" & vbNewLine & Message.Substring(Message.IndexOf("|") + 1), "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+    ElseIf Message.StartsWith("Data Error") Then
+      MsgDlg(Me, "Data Error in compressed file!" & vbNewLine & Message.Substring(Message.IndexOf("|") + 1), "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+    ElseIf Message.StartsWith("Unsupported Method") Then
+      MsgDlg(Me, "Unsupported Method in compressed file!" & vbNewLine & Message.Substring(Message.IndexOf("|") + 1), "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+    ElseIf Message.StartsWith("File Not Found") Then
+      MsgDlg(Me, "Unable to find expected file in compressed file!" & vbNewLine & Message.Substring(Message.IndexOf("|") + 1), "The file was not found.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+    Else
+      MsgDlg(Me, Message, "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+    End If
     Return True
   End Function
 #End Region
@@ -2725,9 +2743,9 @@
     Dim isEmpty As Boolean = True
     For Each item In List
       If item.GetType = GetType(String) AndAlso item Is Nothing Then
-        'ok
+        REM ok
       ElseIf item.GetType = GetType(Boolean) AndAlso item = False Then
-        'ok
+        REM ok
       Else
         isEmpty = False
         Exit For
@@ -3011,11 +3029,9 @@
       Next
     End If
     Dim pbMax As Integer = (ActivePackages * 3) + 14
-    SetProgress(0, pbMax)
-    pbIndividual.Style = ProgressBarStyle.Marquee
+    SetProgress(0, 0)
     SetStatus("Extracting Service Pack...")
     RunHidden(SPPath, "/x:""" & Work & "SP1""")
-    pbIndividual.Style = ProgressBarStyle.Continuous
     SetProgress(1, pbMax)
     If StopRun Then
       ToggleInputs(True)
@@ -3025,11 +3041,11 @@
     Dim Extract64 As String = Work & "SP1\windows6.1-KB976932-X64.cab"
     If My.Computer.FileSystem.FileExists(Extract86) Then
       SetStatus("Extracting KB976932.cab...")
-      ExtractFiles(KnownSevenZipFormat.Cab, Extract86, Work & "SP1")
+      ExtractAllFiles(Extract86, Work & "SP1")
       My.Computer.FileSystem.DeleteFile(Extract86)
     ElseIf My.Computer.FileSystem.FileExists(Extract64) Then
       SetStatus("Extracting KB976932.cab...")
-      ExtractFiles(KnownSevenZipFormat.Cab, Extract64, Work & "SP1")
+      ExtractAllFiles(Extract64, Work & "SP1")
       My.Computer.FileSystem.DeleteFile(Extract64)
     Else
       ToggleInputs(True)
@@ -3044,7 +3060,7 @@
     Dim Extract As String = Work & "SP1\NestedMPPcontent.cab"
     If My.Computer.FileSystem.FileExists(Extract) Then
       SetStatus("Extracting NestedMPPcontent.cab...")
-      ExtractFiles(KnownSevenZipFormat.Cab, Extract, Work & "SP1")
+      ExtractAllFiles(Extract, Work & "SP1")
       My.Computer.FileSystem.DeleteFile(Extract)
     Else
       ToggleInputs(True)
@@ -3111,7 +3127,7 @@
       Extract = Work & "SP1\KB976933-LangsCab" & I.ToString.Trim & ".cab"
       If My.Computer.FileSystem.FileExists(Extract) Then
         SetStatus("Extracting Language CAB " & (I + 1).ToString.Trim & " of 7...")
-        ExtractFiles(KnownSevenZipFormat.Cab, Extract, Work & "SP1")
+        ExtractAllFiles(Extract, Work & "SP1")
         My.Computer.FileSystem.DeleteFile(Extract)
       Else
         ToggleInputs(True)
@@ -3185,7 +3201,6 @@
       Return False
     End If
     SetProgress(0, pbMax)
-    pbIndividual.Style = ProgressBarStyle.Continuous
     SetStatus("Clearing Temp Files...")
     SlowDeleteDirectory(Work & "SP1", FileIO.DeleteDirectoryOption.DeleteAllContents)
     Return True
@@ -3225,7 +3240,7 @@
     If IO.Path.GetExtension(sWIM).ToLower = ".iso" Then
       SetStatus("Extracting Image from ISO...")
       SetTotal(1, 3)
-      ExtractAFile(KnownSevenZipFormat.Udf, sWIM, ParseWorkWIM, "INSTALL.WIM")
+      ExtractAFile(sWIM, ParseWorkWIM, "INSTALL.WIM")
       WIMFile = ParseWorkWIM & "INSTALL.WIM"
     Else
       WIMFile = sWIM
@@ -3256,7 +3271,6 @@
         lvItem.ToolTipText = ttItem
         AddToImageList(lvItem)
       Next
-
       If tLister2 Is Nothing Then
         SetStatus("Idle")
       Else
@@ -3279,7 +3293,7 @@
     If IO.Path.GetExtension(sMerge).ToLower = ".iso" Then
       SetStatus("Extracting Merge Image from ISO...")
       SetTotal(1, 3)
-      ExtractAFile(KnownSevenZipFormat.Udf, sMerge, ParseWorkMerge, "INSTALL.WIM")
+      ExtractAFile(sMerge, ParseWorkMerge, "INSTALL.WIM")
       MergeFile = ParseWorkMerge & "INSTALL.WIM"
     Else
       MergeFile = sMerge
