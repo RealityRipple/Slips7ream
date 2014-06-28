@@ -2770,6 +2770,11 @@
         For I As Integer = 1 To PackageCount
           SetProgress(I, PackageCount)
           SetStatus("Loading Image Package #" & I.ToString.Trim & " Data...")
+          If StopRun Then
+            DiscardDISM(Mount)
+            ToggleInputs(True)
+            Return False
+          End If
           Dim tmpDISM As PackageInfoEx = GetDISMPackageData(WIMPath, I)
           If tmpDISM.Architecture = "x86" Then
             DISM_32.Add(tmpDISM)
@@ -2780,8 +2785,13 @@
         SetProgress(0, MSUPaths.Length)
         For I As Integer = 0 To MSUPaths.Length - 1
           If MSUPaths(I).IsFile Then
-            SetProgress(I, MSUPaths.Length)
+            SetProgress(I + 1, MSUPaths.Length)
             SetStatus("Loading Update """ & IO.Path.GetFileNameWithoutExtension(MSUPaths(I).Path) & """ Data...")
+            If StopRun Then
+              DiscardDISM(Mount)
+              ToggleInputs(True)
+              Return False
+            End If
             Dim tmpMSU As New UpdateInfoEx(MSUPaths(I).Path)
             If Not String.IsNullOrEmpty(tmpMSU.Failure) Then Continue For
             If String.IsNullOrEmpty(tmpMSU.Architecture) Then Continue For
@@ -2797,7 +2807,7 @@
             End If
           End If
         Next
-        SetProgress(0, 1)
+        SetProgress(0, 0)
         Dim pbMax As Integer = 1
         Dim pbVal As Integer = 0
         For Each tmpDISM In DISM_32

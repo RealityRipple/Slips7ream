@@ -406,7 +406,7 @@ Module modFunctions
       Next
 
       For I As Integer = 0 To sFiles.Count - 1
-        frmMain.SetProgress(I, sFiles.Count - 1)
+        If sFiles.Count > 1 Then frmMain.SetProgress(I, sFiles.Count - 1)
         Try
           IO.File.Delete(sFiles(I))
         Catch ex As Exception
