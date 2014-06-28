@@ -2532,7 +2532,7 @@
     End If
   End Sub
   Private Sub Extractor_ExtractProgress(sender As Object, e As Extraction.COM.ExtractProgressEventArgs) Handles Extractor.ExtractProgress
-    If Extractor.ExtractionCount = 1 Then
+    If Extractor.ExtractionCount = 1 AndAlso e.Total > 1048576 * 64 Then
       If StopRun Then e.ContinueOperation = False
       Dim iMax As Integer = pbIndividual.Width
       Dim iVal As Integer = (e.Written / e.Total) * iMax
