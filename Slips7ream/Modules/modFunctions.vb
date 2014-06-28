@@ -404,7 +404,6 @@ Module modFunctions
         SlowDeleteDirectory(sDirs(I), OnDirectoryNotEmpty)
         If I Mod 25 = 0 Then Application.DoEvents()
       Next
-
       For I As Integer = 0 To sFiles.Count - 1
         If sFiles.Count > 1 Then frmMain.SetProgress(I, sFiles.Count - 1)
         Try
@@ -416,24 +415,9 @@ Module modFunctions
       Try
         IO.Directory.Delete(Directory)
       Catch ex As Exception
-        GrantFullControlToEveryone(Directory)
-        SlowDeleteDirectory(Directory, OnDirectoryNotEmpty)
       End Try
     End If
   End Sub
-  Private Function GrantFullControlToEveryone(ByVal Folder As String) As Boolean
-    Try
-      Dim Security As System.Security.AccessControl.DirectorySecurity = IO.Directory.GetAccessControl(Folder)
-      Dim Sid As New System.Security.Principal.SecurityIdentifier(System.Security.Principal.WellKnownSidType.WorldSid, Nothing)
-      Dim Account As System.Security.Principal.NTAccount = TryCast(Sid.Translate(GetType(System.Security.Principal.NTAccount)), System.Security.Principal.NTAccount)
-      Dim Grant As New System.Security.AccessControl.FileSystemAccessRule(Account, System.Security.AccessControl.FileSystemRights.FullControl, System.Security.AccessControl.InheritanceFlags.ContainerInherit Or System.Security.AccessControl.InheritanceFlags.ObjectInherit, System.Security.AccessControl.PropagationFlags.None, System.Security.AccessControl.AccessControlType.Allow)
-      Security.AddAccessRule(Grant)
-      IO.Directory.SetAccessControl(Folder, Security)
-      Return True
-    Catch ex As Exception
-      Return False
-    End Try
-  End Function
   Public Enum UpdateType
     MSU
     CAB
