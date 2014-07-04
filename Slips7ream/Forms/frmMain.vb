@@ -235,17 +235,17 @@
     mngDisp = New MNG
     Select Case DispType
       Case MNGList.Move
-        My.Computer.FileSystem.WriteAllBytes(My.Computer.FileSystem.SpecialDirectories.Temp & "\slips7ream_anim.mng", My.Resources.move, False)
+        My.Computer.FileSystem.WriteAllBytes(My.Computer.FileSystem.SpecialDirectories.Temp & IO.Path.DirectorySeparatorChar & "slips7ream_anim.mng", My.Resources.move, False)
       Case MNGList.Copy
-        My.Computer.FileSystem.WriteAllBytes(My.Computer.FileSystem.SpecialDirectories.Temp & "\slips7ream_anim.mng", My.Resources.copy, False)
+        My.Computer.FileSystem.WriteAllBytes(My.Computer.FileSystem.SpecialDirectories.Temp & IO.Path.DirectorySeparatorChar & "slips7ream_anim.mng", My.Resources.copy, False)
       Case MNGList.Delete
-        My.Computer.FileSystem.WriteAllBytes(My.Computer.FileSystem.SpecialDirectories.Temp & "\slips7ream_anim.mng", My.Resources.delete, False)
+        My.Computer.FileSystem.WriteAllBytes(My.Computer.FileSystem.SpecialDirectories.Temp & IO.Path.DirectorySeparatorChar & "slips7ream_anim.mng", My.Resources.delete, False)
     End Select
-    If My.Computer.FileSystem.FileExists(My.Computer.FileSystem.SpecialDirectories.Temp & "\slips7ream_anim.mng") Then
-      mngDisp.Load(My.Computer.FileSystem.SpecialDirectories.Temp & "\slips7ream_anim.mng")
+    If My.Computer.FileSystem.FileExists(My.Computer.FileSystem.SpecialDirectories.Temp & IO.Path.DirectorySeparatorChar & "slips7ream_anim.mng") Then
+      mngDisp.Load(My.Computer.FileSystem.SpecialDirectories.Temp & IO.Path.DirectorySeparatorChar & "slips7ream_anim.mng")
       FrameNumber = 0
       FrameCount = mngDisp.NumEmbeddedPNG - 1
-      My.Computer.FileSystem.DeleteFile(My.Computer.FileSystem.SpecialDirectories.Temp & "\slips7ream_anim.mng")
+      My.Computer.FileSystem.DeleteFile(My.Computer.FileSystem.SpecialDirectories.Temp & IO.Path.DirectorySeparatorChar & "slips7ream_anim.mng")
     End If
   End Sub
   Private Sub RedoColumns()
@@ -416,8 +416,8 @@
     If chkSP.Checked Then
       Dim has86 As Boolean = False
       Dim has64 As Boolean = False
-      Dim ParseWork As String = Work & "PARSE\"
-      Dim ParseWorkWIM As String = ParseWork & "WIM\"
+      Dim ParseWork As String = Work & "PARSE" & IO.Path.DirectorySeparatorChar
+      Dim ParseWorkWIM As String = ParseWork & "WIM" & IO.Path.DirectorySeparatorChar
       For Each lvItem As ListViewItem In lvImages.Items
         Dim propData As PackageInfoEx = lvItem.Tag(1)
         If propData.Architecture.Contains("64") Then has64 = True
@@ -971,9 +971,9 @@
     If lvImages.SelectedItems IsNot Nothing AndAlso lvImages.SelectedItems.Count > 0 Then
       Dim propData As PackageInfoEx
       Dim Path As String = Nothing
-      Dim ParseWork As String = Work & "PARSE\"
-      Dim ParseWorkWIM As String = ParseWork & "WIM\"
-      Dim ParseWorkMerge As String = ParseWork & "Merge\"
+      Dim ParseWork As String = Work & "PARSE" & IO.Path.DirectorySeparatorChar
+      Dim ParseWorkWIM As String = ParseWork & "WIM" & IO.Path.DirectorySeparatorChar
+      Dim ParseWorkMerge As String = ParseWork & "Merge" & IO.Path.DirectorySeparatorChar
       lvImages.SelectedItems(0).Checked = Not lvImages.SelectedItems(0).Checked
       propData = lvImages.SelectedItems(0).Tag(1)
       Dim props As New frmPackageProps(propData)
@@ -1259,11 +1259,11 @@
     End If
 
     Dim MergeWIM As String = Nothing
-    Dim MergeWork As String = Work & "Merge\"
+    Dim MergeWork As String = Work & "Merge" & IO.Path.DirectorySeparatorChar
     If Not String.IsNullOrEmpty(MergeFile) Then
       If My.Computer.FileSystem.DirectoryExists(MergeWork) Then SlowDeleteDirectory(MergeWork, FileIO.DeleteDirectoryOption.DeleteAllContents)
       My.Computer.FileSystem.CreateDirectory(MergeWork)
-      Dim MergeWorkExtract As String = MergeWork & "Extract\"
+      Dim MergeWorkExtract As String = MergeWork & "Extract" & IO.Path.DirectorySeparatorChar
       If Not My.Computer.FileSystem.DirectoryExists(MergeWorkExtract) Then My.Computer.FileSystem.CreateDirectory(MergeWorkExtract)
       If IO.Path.GetExtension(MergeFile).ToLower = ".iso" Then
         SetProgress(0, 1)
@@ -1316,17 +1316,18 @@
     iTotalVal += 1
     SetTotal(iTotalVal, 12)
     SetStatus("Making Backup of Old WIM...")
-    My.Computer.FileSystem.MoveFile(WIMFile, WIMFile & ".del", True)
+    Dim BakWIM As String = IO.Path.GetDirectoryName(WIMFile) & IO.Path.DirectorySeparatorChar & IO.Path.GetFileNameWithoutExtension(WIMFile & "_BAK.WIM")
+    My.Computer.FileSystem.MoveFile(WIMFile, BakWIM, True)
     Try
       SetStatus("Moving Generated WIM...")
       My.Computer.FileSystem.MoveFile(NewWIM, WIMFile, True)
     Catch ex As Exception
       SetStatus("Generated WIM Move Failed! Reverting to Old WIM...")
-      My.Computer.FileSystem.MoveFile(WIMFile & ".del", WIMFile, True)
+      My.Computer.FileSystem.MoveFile(BakWIM, WIMFile, True)
     End Try
-    If My.Computer.FileSystem.FileExists(WIMFile & ".del") Then
+    If My.Computer.FileSystem.FileExists(BakWIM) Then
       SetStatus("Cleaning Up Backup WIM...")
-      My.Computer.FileSystem.DeleteFile(WIMFile & ".del")
+      My.Computer.FileSystem.DeleteFile(BakWIM)
     End If
     SetProgress(0, 1)
     Application.DoEvents()
@@ -1494,8 +1495,8 @@
     SetDisp(MNGList.Move)
     If Not String.IsNullOrEmpty(ISOFile) Then
       SetTitle("Generating ISO", "Preparing WIMs and file structures, and writing ISO data...")
-      Dim ISODir As String = Work & "ISO\"
-      Dim ISODDir As String = Work & "ISOD%n\"
+      Dim ISODir As String = Work & "ISO" & IO.Path.DirectorySeparatorChar
+      Dim ISODDir As String = Work & "ISOD%n" & IO.Path.DirectorySeparatorChar
 
       If Not My.Computer.FileSystem.DirectoryExists(ISODir) Then My.Computer.FileSystem.CreateDirectory(ISODir)
       SetProgress(0, 1)
@@ -1506,12 +1507,12 @@
 
       If chkUnlock.Checked Then
         SetStatus("Unlocking All Editions...")
-        If My.Computer.FileSystem.FileExists(ISODir & "sources\ei.cfg") Then My.Computer.FileSystem.DeleteFile(ISODir & "sources\ei.cfg")
-        If My.Computer.FileSystem.FileExists(ISODir & "sources\install_Windows 7 STARTER.clg") Then My.Computer.FileSystem.DeleteFile(ISODir & "sources\install_Windows 7 STARTER.clg")
-        If My.Computer.FileSystem.FileExists(ISODir & "sources\install_Windows 7 HOMEBASIC.clg") Then My.Computer.FileSystem.DeleteFile(ISODir & "sources\install_Windows 7 HOMEBASIC.clg")
-        If My.Computer.FileSystem.FileExists(ISODir & "sources\install_Windows 7 HOMEPREMIUM.clg") Then My.Computer.FileSystem.DeleteFile(ISODir & "sources\install_Windows 7 HOMEPREMIUM.clg")
-        If My.Computer.FileSystem.FileExists(ISODir & "sources\install_Windows 7 PROFESSIONAL.clg") Then My.Computer.FileSystem.DeleteFile(ISODir & "sources\install_Windows 7 PROFESSIONAL.clg")
-        If My.Computer.FileSystem.FileExists(ISODir & "sources\install_Windows 7 ULTIMATE.clg") Then My.Computer.FileSystem.DeleteFile(ISODir & "sources\install_Windows 7 ULTIMATE.clg")
+        If My.Computer.FileSystem.FileExists(ISODir & "sources" & IO.Path.DirectorySeparatorChar & "ei.cfg") Then My.Computer.FileSystem.DeleteFile(ISODir & "sources" & IO.Path.DirectorySeparatorChar & "ei.cfg")
+        If My.Computer.FileSystem.FileExists(ISODir & "sources" & IO.Path.DirectorySeparatorChar & "install_Windows 7 STARTER.clg") Then My.Computer.FileSystem.DeleteFile(ISODir & "sources" & IO.Path.DirectorySeparatorChar & "install_Windows 7 STARTER.clg")
+        If My.Computer.FileSystem.FileExists(ISODir & "sources" & IO.Path.DirectorySeparatorChar & "install_Windows 7 HOMEBASIC.clg") Then My.Computer.FileSystem.DeleteFile(ISODir & "sources" & IO.Path.DirectorySeparatorChar & "install_Windows 7 HOMEBASIC.clg")
+        If My.Computer.FileSystem.FileExists(ISODir & "sources" & IO.Path.DirectorySeparatorChar & "install_Windows 7 HOMEPREMIUM.clg") Then My.Computer.FileSystem.DeleteFile(ISODir & "sources" & IO.Path.DirectorySeparatorChar & "install_Windows 7 HOMEPREMIUM.clg")
+        If My.Computer.FileSystem.FileExists(ISODir & "sources" & IO.Path.DirectorySeparatorChar & "install_Windows 7 PROFESSIONAL.clg") Then My.Computer.FileSystem.DeleteFile(ISODir & "sources" & IO.Path.DirectorySeparatorChar & "install_Windows 7 PROFESSIONAL.clg")
+        If My.Computer.FileSystem.FileExists(ISODir & "sources" & IO.Path.DirectorySeparatorChar & "install_Windows 7 ULTIMATE.clg") Then My.Computer.FileSystem.DeleteFile(ISODir & "sources" & IO.Path.DirectorySeparatorChar & "install_Windows 7 ULTIMATE.clg")
       End If
       If My.Computer.FileSystem.DirectoryExists(ISODir & "[BOOT]") Then
         Try
@@ -1522,9 +1523,8 @@
       If LangChange Then
         SetProgress(0, 0)
         SetStatus("Updating Language INIs...")
-        Dim PackageCount As Integer = GetDISMPackages(ISODir & "sources\install.wim")
         SetProgress(0, 1)
-        If Not UpdateLang(ISODir, PackageCount) Then
+        If Not UpdateLang(ISODir) Then
           Dim sMsg As String = lblActivity.Text
           If Not NoMount Then DiscardDISM(Mount)
           ToggleInputs(True)
@@ -1540,16 +1540,20 @@
       End If
       If chkUEFI.Checked Then
         SetStatus("Enabling UEFI Boot...")
-        If My.Computer.FileSystem.DirectoryExists(ISODir & "\efi\microsoft\boot\") Then
-          If Not My.Computer.FileSystem.DirectoryExists(ISODir & "\efi\boot\") Then
-            My.Computer.FileSystem.CopyDirectory(ISODir & "\efi\microsoft\boot\", ISODir & "\efi\boot\", True)
-            If My.Computer.FileSystem.FileExists(Mount & "\Windows\Boot\EFI\bootmgfw.efi") Then
-              My.Computer.FileSystem.CopyFile(Mount & "\Windows\Boot\EFI\bootmgfw.efi", ISODir & "\efi\boot\bootx64.efi", True)
+        Dim sEFIBootDir As String = ISODir & IO.Path.DirectorySeparatorChar & "efi" & IO.Path.DirectorySeparatorChar & "microsoft" & IO.Path.DirectorySeparatorChar & "boot" & IO.Path.DirectorySeparatorChar
+        Dim sUEFIBootDir As String = ISODir & IO.Path.DirectorySeparatorChar & "efi" & IO.Path.DirectorySeparatorChar & "boot" & IO.Path.DirectorySeparatorChar
+        Dim sEFIFile As String = Mount & IO.Path.DirectorySeparatorChar & "Windows" & IO.Path.DirectorySeparatorChar & "Boot" & IO.Path.DirectorySeparatorChar & "EFI" & IO.Path.DirectorySeparatorChar & "bootmgfw.efi"
+        Dim sUEFIFile As String = sUEFIBootDir & "bootx64.efi"
+        If My.Computer.FileSystem.DirectoryExists(sEFIBootDir) Then
+          If Not My.Computer.FileSystem.DirectoryExists(sUEFIBootDir) Then
+            My.Computer.FileSystem.CopyDirectory(sEFIBootDir, sUEFIBootDir, True)
+            If My.Computer.FileSystem.FileExists(sEFIFile) Then
+              My.Computer.FileSystem.CopyFile(sEFIFile, sUEFIFile, True)
               SetStatus("UEFI Boot Enabled!")
             Else
-              SlowDeleteDirectory(ISODir & "\efi\boot\", FileIO.DeleteDirectoryOption.DeleteAllContents)
+              SlowDeleteDirectory(sUEFIBootDir, FileIO.DeleteDirectoryOption.DeleteAllContents)
               chkUEFI.Checked = False
-              MsgDlg(Me, "Unable to find the file ""\Windows\Boot\EFI\bootmgfw.efi"" in Image!", "Unable to enable UEFI Boot.", "File was not found.", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder)
+              MsgDlg(Me, "Unable to find the file """ & IO.Path.DirectorySeparatorChar & "Windows" & IO.Path.DirectorySeparatorChar & "Boot" & IO.Path.DirectorySeparatorChar & "EFI" & IO.Path.DirectorySeparatorChar & "bootmgfw.efi"" in Image!", "Unable to enable UEFI Boot.", "File was not found.", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder)
             End If
           Else
             chkUEFI.Checked = False
@@ -1557,7 +1561,7 @@
           End If
         Else
           chkUEFI.Checked = False
-          MsgDlg(Me, "Unable to find the folder ""\efi\microsoft\boot\"" in ISO!", "Unable to enable UEFI Boot.", "Folder was not found.", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder)
+          MsgDlg(Me, "Unable to find the folder """ & IO.Path.DirectorySeparatorChar & "efi" & IO.Path.DirectorySeparatorChar & "microsoft" & IO.Path.DirectorySeparatorChar & "boot" & IO.Path.DirectorySeparatorChar & """ in ISO!", "Unable to enable UEFI Boot.", "Folder was not found.", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder)
         End If
       End If
       If Not NoMount Then
@@ -1569,19 +1573,38 @@
           Exit Sub
         End If
       End If
+      SetProgress(0, 1)
       SetStatus("Integrating INSTALL.WIM...")
-      My.Computer.FileSystem.CopyFile(WIMFile, ISODir & "sources\install.wim", True)
+      Dim ISOWIMFile As String = ISODir & "sources" & IO.Path.DirectorySeparatorChar & "install.wim"
+      If My.Computer.FileSystem.FileExists(ISOWIMFile) Then My.Computer.FileSystem.DeleteFile(ISOWIMFile)
+      Dim NewWIMPackageCount As Integer = GetDISMPackages(WIMFile)
+      For I As Integer = 0 To NewWIMPackageCount - 1
+        Dim NewWIMPackageInfo = GetDISMPackageData(WIMFile, I)
+        Dim RowIndex As String = NewWIMPackageInfo.Index
+        Dim RowName As String = NewWIMPackageInfo.Name
+        SetProgress(0, 100)
+        If ExportWIM(WIMFile, RowIndex, ISOWIMFile, RowName) Then
+          Continue For
+        Else
+          ToggleInputs(True)
+          SetStatus("Failed to Integrate WIM """ & RowName & """")
+          Exit Sub
+        End If
+        If StopRun Then
+          ToggleInputs(True)
+          Exit Sub
+        End If
+      Next
       SetProgress(0, 1)
       iTotalVal += 1
       SetTotal(iTotalVal, 12)
 
       If cmbLimitType.SelectedIndex > 0 Then
         Dim splUEFI As Boolean = chkUEFI.Checked
-        Dim WIMToSplit As String = ISODir & "sources\install.wim"
         Dim limVal As String = cmbLimit.Text
         If limVal.Contains("(") Then limVal = limVal.Substring(0, limVal.IndexOf("("))
         Dim splFileSize As Long = NumericVal(limVal)
-        Dim splWIMSize As Long = My.Computer.FileSystem.GetFileInfo(WIMToSplit).Length
+        Dim splWIMSize As Long = My.Computer.FileSystem.GetFileInfo(ISOWIMFile).Length
         Dim splISOSize As Long = splWIMSize + 351
         If cmbLimitType.SelectedIndex = 2 Then
           If splISOSize > splFileSize Then
@@ -1592,13 +1615,13 @@
               REM Split WIM to WIMSplit size, put 1 WIM on first, and Math.Floor(ISOSplit / WIMSplit) per ISO afterward
               SetProgress(0, 0)
               SetStatus("Splitting WIM into " & ByteSize(WIMSplit * 1024 * 1024) & " Chunks...")
-              If SplitWIM(WIMToSplit, IO.Path.ChangeExtension(WIMToSplit, ".swm"), WIMSplit) Then
-                If My.Computer.FileSystem.FileExists(WIMToSplit) Then My.Computer.FileSystem.DeleteFile(WIMToSplit)
+              If SplitWIM(ISOWIMFile, IO.Path.ChangeExtension(ISOWIMFile, ".swm"), WIMSplit) Then
+                If My.Computer.FileSystem.FileExists(ISOWIMFile) Then My.Computer.FileSystem.DeleteFile(ISOWIMFile)
                 SetProgress(0, 1)
                 SetStatus("Generating Data ISOs...")
                 Dim DiscNumber As Integer = 1
                 Dim WIMNumber As Integer = 0
-                Dim FilesInOrder() As String = My.Computer.FileSystem.GetFiles(ISODir & "sources\", FileIO.SearchOption.SearchTopLevelOnly, "*.swm").ToArray
+                Dim FilesInOrder() As String = My.Computer.FileSystem.GetFiles(ISODir & "sources" & IO.Path.DirectorySeparatorChar, FileIO.SearchOption.SearchTopLevelOnly, "*.swm").ToArray
                 SortFiles(FilesInOrder)
                 For I As Integer = 0 To FilesInOrder.Count - 1
                   Dim File As String = FilesInOrder(I)
@@ -1608,10 +1631,10 @@
                     WIMNumber += 1
                     Dim sIDir As String = ISODDir.Replace("%n", DiscNumber)
                     If Not My.Computer.FileSystem.DirectoryExists(sIDir) Then My.Computer.FileSystem.CreateDirectory(sIDir)
-                    If Not My.Computer.FileSystem.DirectoryExists(sIDir & "sources\") Then My.Computer.FileSystem.CreateDirectory(sIDir & "sources\")
-                    My.Computer.FileSystem.MoveFile(File, sIDir & "\sources\" & IO.Path.GetFileName(File))
+                    If Not My.Computer.FileSystem.DirectoryExists(sIDir & "sources" & IO.Path.DirectorySeparatorChar) Then My.Computer.FileSystem.CreateDirectory(sIDir & "sources" & IO.Path.DirectorySeparatorChar)
+                    My.Computer.FileSystem.MoveFile(File, sIDir & IO.Path.DirectorySeparatorChar & "sources" & IO.Path.DirectorySeparatorChar & IO.Path.GetFileName(File))
                     If WIMNumber = Math.Floor(ISOSplit / WIMSplit) Or I = FilesInOrder.Count - 1 Then
-                      ExtractAllFiles(Application.StartupPath & "\AR.zip", sIDir)
+                      ExtractAllFiles(Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip", sIDir)
                       If (cmbISOFormat.SelectedIndex = 0) Or (cmbISOFormat.SelectedIndex = 1) Or (cmbISOFormat.SelectedIndex = 2) Or (cmbISOFormat.SelectedIndex = 4) Or (cmbISOFormat.SelectedIndex = 6) Then
                         SetStatus("Looking for oversized files...")
                         Dim BigList = FindBigFiles(sIDir)
@@ -1636,10 +1659,10 @@
                         End If
                       End If
                       Dim DiscIDNo As String = DiscNumber
-                      Dim DiscFiles() As String = My.Computer.FileSystem.GetFiles(sIDir & "\sources\", FileIO.SearchOption.SearchTopLevelOnly, "*.swm").ToArray
+                      Dim DiscFiles() As String = My.Computer.FileSystem.GetFiles(sIDir & IO.Path.DirectorySeparatorChar & "sources" & IO.Path.DirectorySeparatorChar, FileIO.SearchOption.SearchTopLevelOnly, "*.swm").ToArray
                       SortFiles(DiscFiles)
                       DiscIDNo = NumericVal(IO.Path.GetFileNameWithoutExtension(DiscFiles(0)))
-                      Dim ISODFile As String = IO.Path.GetDirectoryName(ISOFile) & "\" & IO.Path.GetFileNameWithoutExtension(ISOFile) & "_D" & DiscIDNo & IO.Path.GetExtension(ISOFile)
+                      Dim ISODFile As String = IO.Path.GetDirectoryName(ISOFile) & IO.Path.DirectorySeparatorChar & IO.Path.GetFileNameWithoutExtension(ISOFile) & "_D" & DiscIDNo & IO.Path.GetExtension(ISOFile)
                       SetStatus("Building Data ISO " & DiscNumber & " (Labeled as Installation disc " & DiscIDNo & ")...")
                       Try
                         My.Computer.FileSystem.WriteAllBytes(ISODFile, {0, 0}, False)
@@ -1679,11 +1702,11 @@
               REM Split WIM to WIMSplit size, put 1 WIM on each ISO including first
               SetProgress(0, 0)
               SetStatus("Splitting WIM into " & ByteSize(WIMSplit * 1024 * 1024) & " Chunks...")
-              If SplitWIM(WIMToSplit, IO.Path.ChangeExtension(WIMToSplit, ".swm"), WIMSplit) Then
-                If My.Computer.FileSystem.FileExists(WIMToSplit) Then My.Computer.FileSystem.DeleteFile(WIMToSplit)
+              If SplitWIM(ISOWIMFile, IO.Path.ChangeExtension(ISOWIMFile, ".swm"), WIMSplit) Then
+                If My.Computer.FileSystem.FileExists(ISOWIMFile) Then My.Computer.FileSystem.DeleteFile(ISOWIMFile)
                 SetProgress(0, 1)
                 SetStatus("Generating Data ISOs...")
-                Dim FilesInOrder() As String = My.Computer.FileSystem.GetFiles(ISODir & "sources\", FileIO.SearchOption.SearchTopLevelOnly, "*.swm").ToArray
+                Dim FilesInOrder() As String = My.Computer.FileSystem.GetFiles(ISODir & "sources" & IO.Path.DirectorySeparatorChar, FileIO.SearchOption.SearchTopLevelOnly, "*.swm").ToArray
                 SortFiles(FilesInOrder)
                 FilesInOrder.OrderBy(Function(path) Int32.Parse(IO.Path.GetFileNameWithoutExtension(path)))
                 For Each File As String In FilesInOrder
@@ -1693,9 +1716,9 @@
                     Dim discNo As String = IO.Path.GetFileNameWithoutExtension(File).Substring(7)
                     Dim sIDir As String = ISODDir.Replace("%n", discNo)
                     If Not My.Computer.FileSystem.DirectoryExists(sIDir) Then My.Computer.FileSystem.CreateDirectory(sIDir)
-                    If Not My.Computer.FileSystem.DirectoryExists(sIDir & "sources\") Then My.Computer.FileSystem.CreateDirectory(sIDir & "sources\")
-                    My.Computer.FileSystem.MoveFile(File, sIDir & "\sources\" & IO.Path.GetFileName(File))
-                    ExtractAllFiles(Application.StartupPath & "\AR.zip", sIDir)
+                    If Not My.Computer.FileSystem.DirectoryExists(sIDir & "sources" & IO.Path.DirectorySeparatorChar) Then My.Computer.FileSystem.CreateDirectory(sIDir & "sources" & IO.Path.DirectorySeparatorChar)
+                    My.Computer.FileSystem.MoveFile(File, sIDir & IO.Path.DirectorySeparatorChar & "sources" & IO.Path.DirectorySeparatorChar & IO.Path.GetFileName(File))
+                    ExtractAllFiles(Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip", sIDir)
                     If (cmbISOFormat.SelectedIndex = 0) Or (cmbISOFormat.SelectedIndex = 1) Or (cmbISOFormat.SelectedIndex = 2) Or (cmbISOFormat.SelectedIndex = 4) Or (cmbISOFormat.SelectedIndex = 6) Then
                       SetStatus("Looking for oversized files...")
                       Dim BigList = FindBigFiles(sIDir)
@@ -1719,7 +1742,7 @@
                         End Using
                       End If
                     End If
-                    Dim ISODFile As String = IO.Path.GetDirectoryName(ISOFile) & "\" & IO.Path.GetFileNameWithoutExtension(ISOFile) & "_D" & discNo & IO.Path.GetExtension(ISOFile)
+                    Dim ISODFile As String = IO.Path.GetDirectoryName(ISOFile) & IO.Path.DirectorySeparatorChar & IO.Path.GetFileNameWithoutExtension(ISOFile) & "_D" & discNo & IO.Path.GetExtension(ISOFile)
                     SetStatus("Building Data ISO " & discNo & "...")
                     Try
                       My.Computer.FileSystem.WriteAllBytes(ISODFile, {0, 0}, False)
@@ -1755,20 +1778,20 @@
               REM Split WIM to WIMSplit size, put no WIMs on first ISO, one per ISO afterward
               SetProgress(0, 0)
               SetStatus("Splitting WIM into " & ByteSize(WIMSplit * 1024 * 1024) & " Chunks...")
-              If SplitWIM(WIMToSplit, IO.Path.ChangeExtension(WIMToSplit, ".swm"), WIMSplit) Then
-                If My.Computer.FileSystem.FileExists(WIMToSplit) Then My.Computer.FileSystem.DeleteFile(WIMToSplit)
+              If SplitWIM(ISOWIMFile, IO.Path.ChangeExtension(ISOWIMFile, ".swm"), WIMSplit) Then
+                If My.Computer.FileSystem.FileExists(ISOWIMFile) Then My.Computer.FileSystem.DeleteFile(ISOWIMFile)
                 SetProgress(0, 1)
                 SetStatus("Generating Data ISOs...")
-                Dim FilesInOrder() As String = My.Computer.FileSystem.GetFiles(ISODir & "sources\", FileIO.SearchOption.SearchTopLevelOnly, "*.swm").ToArray
+                Dim FilesInOrder() As String = My.Computer.FileSystem.GetFiles(ISODir & "sources" & IO.Path.DirectorySeparatorChar, FileIO.SearchOption.SearchTopLevelOnly, "*.swm").ToArray
                 SortFiles(FilesInOrder)
                 FilesInOrder.OrderBy(Function(path) Int32.Parse(IO.Path.GetFileNameWithoutExtension(path)))
                 For Each File As String In FilesInOrder
                   If IO.Path.GetFileNameWithoutExtension(File).ToLower = "install" Then
                     Dim sIDir As String = ISODDir.Replace("%n", "1")
                     If Not My.Computer.FileSystem.DirectoryExists(sIDir) Then My.Computer.FileSystem.CreateDirectory(sIDir)
-                    If Not My.Computer.FileSystem.DirectoryExists(sIDir & "sources\") Then My.Computer.FileSystem.CreateDirectory(sIDir & "sources\")
-                    My.Computer.FileSystem.MoveFile(File, sIDir & "\sources\install.swm")
-                    ExtractAllFiles(Application.StartupPath & "\AR.zip", sIDir)
+                    If Not My.Computer.FileSystem.DirectoryExists(sIDir & "sources" & IO.Path.DirectorySeparatorChar) Then My.Computer.FileSystem.CreateDirectory(sIDir & "sources" & IO.Path.DirectorySeparatorChar)
+                    My.Computer.FileSystem.MoveFile(File, sIDir & IO.Path.DirectorySeparatorChar & "sources" & IO.Path.DirectorySeparatorChar & "install.swm")
+                    ExtractAllFiles(Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip", sIDir)
                     If (cmbISOFormat.SelectedIndex = 0) Or (cmbISOFormat.SelectedIndex = 1) Or (cmbISOFormat.SelectedIndex = 2) Or (cmbISOFormat.SelectedIndex = 4) Or (cmbISOFormat.SelectedIndex = 6) Then
                       SetStatus("Looking for oversized files...")
                       Dim BigList = FindBigFiles(sIDir)
@@ -1792,7 +1815,7 @@
                         End Using
                       End If
                     End If
-                    Dim ISODFile As String = IO.Path.GetDirectoryName(ISOFile) & "\" & IO.Path.GetFileNameWithoutExtension(ISOFile) & "_D1" & IO.Path.GetExtension(ISOFile)
+                    Dim ISODFile As String = IO.Path.GetDirectoryName(ISOFile) & IO.Path.DirectorySeparatorChar & IO.Path.GetFileNameWithoutExtension(ISOFile) & "_D1" & IO.Path.GetExtension(ISOFile)
                     SetStatus("Building Data ISO 1...")
                     Try
                       My.Computer.FileSystem.WriteAllBytes(ISODFile, {0, 0}, False)
@@ -1821,9 +1844,9 @@
                     Dim discNo As String = IO.Path.GetFileNameWithoutExtension(File).Substring(7)
                     Dim sIDir As String = ISODDir.Replace("%n", discNo)
                     If Not My.Computer.FileSystem.DirectoryExists(sIDir) Then My.Computer.FileSystem.CreateDirectory(sIDir)
-                    If Not My.Computer.FileSystem.DirectoryExists(sIDir & "sources\") Then My.Computer.FileSystem.CreateDirectory(sIDir & "sources\")
-                    My.Computer.FileSystem.MoveFile(File, sIDir & "\sources\" & IO.Path.GetFileName(File))
-                    ExtractAllFiles(Application.StartupPath & "\AR.zip", sIDir)
+                    If Not My.Computer.FileSystem.DirectoryExists(sIDir & "sources" & IO.Path.DirectorySeparatorChar) Then My.Computer.FileSystem.CreateDirectory(sIDir & "sources" & IO.Path.DirectorySeparatorChar)
+                    My.Computer.FileSystem.MoveFile(File, sIDir & IO.Path.DirectorySeparatorChar & "sources" & IO.Path.DirectorySeparatorChar & IO.Path.GetFileName(File))
+                    ExtractAllFiles(Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip", sIDir)
                     If (cmbISOFormat.SelectedIndex = 0) Or (cmbISOFormat.SelectedIndex = 1) Or (cmbISOFormat.SelectedIndex = 2) Or (cmbISOFormat.SelectedIndex = 4) Or (cmbISOFormat.SelectedIndex = 6) Then
                       SetStatus("Looking for oversized files...")
                       Dim BigList = FindBigFiles(sIDir)
@@ -1847,7 +1870,7 @@
                         End Using
                       End If
                     End If
-                    Dim ISODFile As String = IO.Path.GetDirectoryName(ISOFile) & "\" & IO.Path.GetFileNameWithoutExtension(ISOFile) & "_D" & discNo & IO.Path.GetExtension(ISOFile)
+                    Dim ISODFile As String = IO.Path.GetDirectoryName(ISOFile) & IO.Path.DirectorySeparatorChar & IO.Path.GetFileNameWithoutExtension(ISOFile) & "_D" & discNo & IO.Path.GetExtension(ISOFile)
                     SetStatus("Building Data ISO " & discNo & "...")
                     Try
                       My.Computer.FileSystem.WriteAllBytes(ISODFile, {0, 0}, False)
@@ -1884,8 +1907,8 @@
             REM Split WIM to 4095 MB size
             SetProgress(0, 0)
             SetStatus("Splitting WIM into 4095 MB Chunks...")
-            If SplitWIM(WIMToSplit, IO.Path.ChangeExtension(WIMToSplit, ".swm"), 4095) Then
-              If My.Computer.FileSystem.FileExists(WIMToSplit) Then My.Computer.FileSystem.DeleteFile(WIMToSplit)
+            If SplitWIM(ISOWIMFile, IO.Path.ChangeExtension(ISOWIMFile, ".swm"), 4095) Then
+              If My.Computer.FileSystem.FileExists(ISOWIMFile) Then My.Computer.FileSystem.DeleteFile(ISOWIMFile)
             Else
               ToggleInputs(True)
               SetStatus("Failed to Split WIM!")
@@ -1897,8 +1920,8 @@
             REM Split WIM to FileSize size
             SetProgress(0, 0)
             SetStatus("Splitting WIM into " & ByteSize(splFileSize * 1024 * 1024) & " Chunks...")
-            If SplitWIM(WIMToSplit, IO.Path.ChangeExtension(WIMToSplit, ".swm"), splFileSize) Then
-              If My.Computer.FileSystem.FileExists(WIMToSplit) Then My.Computer.FileSystem.DeleteFile(WIMToSplit)
+            If SplitWIM(ISOWIMFile, IO.Path.ChangeExtension(ISOWIMFile, ".swm"), splFileSize) Then
+              If My.Computer.FileSystem.FileExists(ISOWIMFile) Then My.Computer.FileSystem.DeleteFile(ISOWIMFile)
             Else
               ToggleInputs(True)
               SetStatus("Failed to Split WIM!")
@@ -1933,20 +1956,20 @@
       End If
 
       Dim BootOrder As String = Work & "bootorder.txt"
-      My.Computer.FileSystem.WriteAllText(BootOrder, "boot\bcd" & vbNewLine &
-                                          "boot\boot.sdi" & vbNewLine &
-                                          "boot\bootfix.bin" & vbNewLine &
-                                          "boot\bootsect.exe" & vbNewLine &
-                                          "boot\etfsboot.com" & vbNewLine &
-                                          "boot\memtest.efi" & vbNewLine &
-                                          "boot\memtest.exe" & vbNewLine &
-                                          "boot\en-us\bootsect.exe.mui" & vbNewLine &
-                                          "boot\fonts\chs_boot.ttf" & vbNewLine &
-                                          "boot\fonts\cht_boot.ttf" & vbNewLine &
-                                          "boot\fonts\jpn_boot.ttf" & vbNewLine &
-                                          "boot\fonts\kor_boot.ttf" & vbNewLine &
-                                          "boot\fonts\wgl4_boot.ttf" & vbNewLine &
-                                          "sources\boot.wim" & vbNewLine, False, System.Text.Encoding.GetEncoding(1252))
+      My.Computer.FileSystem.WriteAllText(BootOrder, "boot" & IO.Path.DirectorySeparatorChar & "bcd" & vbNewLine &
+                                          "boot" & IO.Path.DirectorySeparatorChar & "boot.sdi" & vbNewLine &
+                                          "boot" & IO.Path.DirectorySeparatorChar & "bootfix.bin" & vbNewLine &
+                                          "boot" & IO.Path.DirectorySeparatorChar & "bootsect.exe" & vbNewLine &
+                                          "boot" & IO.Path.DirectorySeparatorChar & "etfsboot.com" & vbNewLine &
+                                          "boot" & IO.Path.DirectorySeparatorChar & "memtest.efi" & vbNewLine &
+                                          "boot" & IO.Path.DirectorySeparatorChar & "memtest.exe" & vbNewLine &
+                                          "boot" & IO.Path.DirectorySeparatorChar & "en-us" & IO.Path.DirectorySeparatorChar & "bootsect.exe.mui" & vbNewLine &
+                                          "boot" & IO.Path.DirectorySeparatorChar & "fonts" & IO.Path.DirectorySeparatorChar & "chs_boot.ttf" & vbNewLine &
+                                          "boot" & IO.Path.DirectorySeparatorChar & "fonts" & IO.Path.DirectorySeparatorChar & "cht_boot.ttf" & vbNewLine &
+                                          "boot" & IO.Path.DirectorySeparatorChar & "fonts" & IO.Path.DirectorySeparatorChar & "jpn_boot.ttf" & vbNewLine &
+                                          "boot" & IO.Path.DirectorySeparatorChar & "fonts" & IO.Path.DirectorySeparatorChar & "kor_boot.ttf" & vbNewLine &
+                                          "boot" & IO.Path.DirectorySeparatorChar & "fonts" & IO.Path.DirectorySeparatorChar & "wgl4_boot.ttf" & vbNewLine &
+                                          "sources" & IO.Path.DirectorySeparatorChar & "boot.wim" & vbNewLine, False, System.Text.Encoding.GetEncoding(1252))
       SetProgress(0, 0)
       SetStatus("Making Backup of Old ISO...")
       My.Computer.FileSystem.MoveFile(ISOFile, ISOFile & ".del", True)
@@ -1995,6 +2018,29 @@
         End If
       End If
 
+      SetStatus("Compressing INSTALL.WIM...")
+      Dim OldWIM As String = IO.Path.GetDirectoryName(WIMFile) & IO.Path.DirectorySeparatorChar & IO.Path.GetFileNameWithoutExtension(WIMFile & "_OLD.WIM")
+      My.Computer.FileSystem.MoveFile(WIMFile, OldWIM, True)
+      Dim NewWIMPackageCount As Integer = GetDISMPackages(OldWIM)
+      For I As Integer = 0 To NewWIMPackageCount - 1
+        Dim NewWIMPackageInfo As PackageInfoEx = GetDISMPackageData(OldWIM, I)
+        Dim RowIndex As String = NewWIMPackageInfo.Index
+        Dim RowName As String = NewWIMPackageInfo.Name
+        SetProgress(0, 100)
+        If ExportWIM(OldWIM, RowIndex, WIMFile, RowName) Then
+          Continue For
+        Else
+          ToggleInputs(True)
+          SetStatus("Failed to Compress WIM """ & RowName & """")
+          Exit Sub
+        End If
+        If StopRun Then
+          ToggleInputs(True)
+          Exit Sub
+        End If
+      Next
+      My.Computer.FileSystem.DeleteFile(OldWIM)
+
       If cmbLimitType.SelectedIndex > 0 Then
         If My.Computer.FileSystem.FileExists(WIMFile) Then
           Dim limVal As String = cmbLimit.Text
@@ -2014,7 +2060,6 @@
           End If
         End If
       End If
-      If My.Computer.FileSystem.FileExists(ISOFile & ".del") Then My.Computer.FileSystem.DeleteFile(ISOFile & ".del")
     End If
 
     SetProgress(0, 100)
@@ -2209,15 +2254,15 @@
         Next
       End If
       RunHidden(AIKDir & "imagex", "/cleanup")
-      SlowDeleteDirectory(WorkDir & "MOUNT\", FileIO.DeleteDirectoryOption.DeleteAllContents)
-      If IO.Directory.Exists(WorkDir & "MOUNT\") Then Return False
+      SlowDeleteDirectory(WorkDir & "MOUNT" & IO.Path.DirectorySeparatorChar, FileIO.DeleteDirectoryOption.DeleteAllContents)
+      If IO.Directory.Exists(WorkDir & "MOUNT" & IO.Path.DirectorySeparatorChar) Then Return False
       Return True
     Catch ex As Exception
       Return False
     End Try
   End Function
   Private Function MakeDataImages(sIDir As String, sDiscName As String, ISODest As String) As Boolean
-    ExtractAllFiles(Application.StartupPath & "\AR.zip", sIDir)
+    ExtractAllFiles(Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip", sIDir)
     Try
       My.Computer.FileSystem.WriteAllBytes(ISODest, {0, 0}, False)
       Dim isoFormat As String = "-n"
@@ -2280,21 +2325,21 @@
     ReturnProgress = False
     Return sRet.Contains("Successfully exported image")
   End Function
-  Private Function UpdateLang(SourcePath As String, SourceIndex As Integer) As Boolean
+  Private Function UpdateLang(SourcePath As String) As Boolean
     Dim sRet As String = RunWithReturn(AIKDir & "intlcfg", "-genlangini -dist:" & ShortenPath(SourcePath) & " -image:" & ShortenPath(Mount) & " -f") '-all:la-ng
     If Not sRet.Contains("A new Lang.ini file has been generated") Then
       Return False
     End If
-    Dim MountPath As String = WorkDir & "BOOT\"
+    Dim MountPath As String = WorkDir & "BOOT" & IO.Path.DirectorySeparatorChar
     If Not My.Computer.FileSystem.DirectoryExists(MountPath) Then My.Computer.FileSystem.CreateDirectory(MountPath)
     ReturnProgress = True
-    sRet = RunWithReturn(AIKDir & "imagex", "/mountrw " & ShortenPath(SourcePath & "sources\boot.wim") & " 2 " & ShortenPath(MountPath))
+    sRet = RunWithReturn(AIKDir & "imagex", "/mountrw " & ShortenPath(SourcePath & "sources" & IO.Path.DirectorySeparatorChar & "boot.wim") & " 2 " & ShortenPath(MountPath))
     ReturnProgress = False
     If Not sRet.Contains("Successfully mounted image.") Then
       SetStatus("Failed to mount boot.wim!")
       Return False
     End If
-    If My.Computer.FileSystem.FileExists(SourcePath & "sources\lang.ini") Then My.Computer.FileSystem.CopyFile(SourcePath & "sources\lang.ini", MountPath & "sources\lang.ini", True)
+    If My.Computer.FileSystem.FileExists(SourcePath & "sources" & IO.Path.DirectorySeparatorChar & "lang.ini") Then My.Computer.FileSystem.CopyFile(SourcePath & "sources" & IO.Path.DirectorySeparatorChar & "lang.ini", MountPath & "sources" & IO.Path.DirectorySeparatorChar & "lang.ini", True)
     ReturnProgress = True
     sRet = RunWithReturn(AIKDir & "imagex", "/unmount /commit " & ShortenPath(MountPath))
     ReturnProgress = False
@@ -2313,7 +2358,7 @@
     If String.IsNullOrEmpty(BootOrderFile) Then
       sRet = RunWithReturn(AIKDir & "oscdimg", "-m " & FileSystem & " " & ShortenPath(FromDir.Substring(0, FromDir.Length - 1)) & " " & ShortenPath(DestISO) & " -l" & Label)
     Else
-      sRet = RunWithReturn(AIKDir & "oscdimg", "-m " & FileSystem & " -yo" & ShortenPath(BootOrderFile) & " -b" & ShortenPath(FromDir & "boot\etfsboot.com") & " " & ShortenPath(FromDir.Substring(0, FromDir.Length - 1)) & " " & ShortenPath(DestISO) & " -l" & Label)
+      sRet = RunWithReturn(AIKDir & "oscdimg", "-m " & FileSystem & " -yo" & ShortenPath(BootOrderFile) & " -b" & ShortenPath(FromDir & "boot" & IO.Path.DirectorySeparatorChar & "etfsboot.com") & " " & ShortenPath(FromDir.Substring(0, FromDir.Length - 1)) & " " & ShortenPath(DestISO) & " -l" & Label)
     End If
     ReturnProgress = False
     Return sRet.Contains("Done.")
@@ -3047,8 +3092,8 @@
       ToggleInputs(True)
       Return False
     End If
-    Dim Extract86 As String = Work & "SP1\windows6.1-KB976932-X86.cab"
-    Dim Extract64 As String = Work & "SP1\windows6.1-KB976932-X64.cab"
+    Dim Extract86 As String = Work & "SP1" & IO.Path.DirectorySeparatorChar & "windows6.1-KB976932-X86.cab"
+    Dim Extract64 As String = Work & "SP1" & IO.Path.DirectorySeparatorChar & "windows6.1-KB976932-X64.cab"
     If My.Computer.FileSystem.FileExists(Extract86) Then
       SetStatus("Extracting KB976932.cab...")
       ExtractAllFiles(Extract86, Work & "SP1")
@@ -3067,7 +3112,7 @@
       ToggleInputs(True)
       Return False
     End If
-    Dim Extract As String = Work & "SP1\NestedMPPcontent.cab"
+    Dim Extract As String = Work & "SP1" & IO.Path.DirectorySeparatorChar & "NestedMPPcontent.cab"
     If My.Computer.FileSystem.FileExists(Extract) Then
       SetStatus("Extracting NestedMPPcontent.cab...")
       ExtractAllFiles(Extract, Work & "SP1")
@@ -3082,7 +3127,7 @@
       Return False
     End If
     SetProgress(3, pbMax)
-    Dim Update As String = Work & "SP1\update.ses"
+    Dim Update As String = Work & "SP1" & IO.Path.DirectorySeparatorChar & "update.ses"
     If My.Computer.FileSystem.FileExists(Update) Then
       SetStatus("Modifying update.ses...")
       UpdateSES(Update)
@@ -3096,7 +3141,7 @@
       Return False
     End If
     SetProgress(4, pbMax)
-    Update = Work & "SP1\update.mum"
+    Update = Work & "SP1" & IO.Path.DirectorySeparatorChar & "update.mum"
     If My.Computer.FileSystem.FileExists(Update) Then
       SetStatus("Modifying update.mum...")
       UpdateMUM(Update)
@@ -3110,8 +3155,8 @@
       Return False
     End If
     SetProgress(5, pbMax)
-    Dim Update86 As String = Work & "SP1\Windows7SP1-KB976933~31bf3856ad364e35~x86~~6.1.1.17514.mum"
-    Dim Update64 As String = Work & "SP1\Windows7SP1-KB976933~31bf3856ad364e35~amd64~~6.1.1.17514.mum"
+    Dim Update86 As String = Work & "SP1" & IO.Path.DirectorySeparatorChar & "Windows7SP1-KB976933~31bf3856ad364e35~x86~~6.1.1.17514.mum"
+    Dim Update64 As String = Work & "SP1" & IO.Path.DirectorySeparatorChar & "Windows7SP1-KB976933~31bf3856ad364e35~amd64~~6.1.1.17514.mum"
     If My.Computer.FileSystem.FileExists(Update86) Then
       SetStatus("Modifying KB976933.mum...")
       UpdateMUM(Update86)
@@ -3128,13 +3173,13 @@
       Return False
     End If
     SetProgress(6, pbMax)
-    Dim CABList As String = Work & "SP1\cabinet.cablist.ini"
+    Dim CABList As String = Work & "SP1" & IO.Path.DirectorySeparatorChar & "cabinet.cablist.ini"
     If My.Computer.FileSystem.FileExists(CABList) Then My.Computer.FileSystem.DeleteFile(CABList)
-    CABList = Work & "SP1\old_cabinet.cablist.ini"
+    CABList = Work & "SP1" & IO.Path.DirectorySeparatorChar & "old_cabinet.cablist.ini"
     If My.Computer.FileSystem.FileExists(CABList) Then My.Computer.FileSystem.DeleteFile(CABList)
 
     For I As Integer = 0 To 6
-      Extract = Work & "SP1\KB976933-LangsCab" & I.ToString.Trim & ".cab"
+      Extract = Work & "SP1" & IO.Path.DirectorySeparatorChar & "KB976933-LangsCab" & I.ToString.Trim & ".cab"
       If My.Computer.FileSystem.FileExists(Extract) Then
         SetStatus("Extracting Language CAB " & (I + 1).ToString.Trim & " of 7...")
         ExtractAllFiles(Extract, Work & "SP1")
@@ -3240,8 +3285,8 @@
   Private Sub ParseMainWIM()
     Dim sWIM As String = txtWIM.Text
     If String.IsNullOrEmpty(sWIM) Then Exit Sub
-    Dim ParseWork As String = Work & "PARSE\"
-    Dim ParseWorkWIM As String = ParseWork & "WIM\"
+    Dim ParseWork As String = Work & "PARSE" & IO.Path.DirectorySeparatorChar
+    Dim ParseWorkWIM As String = ParseWork & "WIM" & IO.Path.DirectorySeparatorChar
     If My.Computer.FileSystem.FileExists(ParseWork) Then SlowDeleteDirectory(ParseWork, FileIO.DeleteDirectoryOption.DeleteAllContents)
     My.Computer.FileSystem.CreateDirectory(ParseWork)
     My.Computer.FileSystem.CreateDirectory(ParseWorkWIM)
@@ -3294,8 +3339,8 @@
   End Sub
   Private Sub ParseMergeWIM()
     Dim sMerge As String = txtMerge.Text
-    Dim ParseWork As String = Work & "PARSE\"
-    Dim ParseWorkMerge As String = ParseWork & "Merge\"
+    Dim ParseWork As String = Work & "PARSE" & IO.Path.DirectorySeparatorChar
+    Dim ParseWorkMerge As String = ParseWork & "Merge" & IO.Path.DirectorySeparatorChar
     My.Computer.FileSystem.CreateDirectory(ParseWorkMerge)
     If String.IsNullOrEmpty(sMerge) Then Exit Sub
     Dim MergeFile As String = String.Empty
@@ -3376,21 +3421,21 @@
   Private ReadOnly Property WorkDir As String
     Get
       Dim tempDir As String = mySettings.TempDir
-      If String.IsNullOrEmpty(tempDir) Then tempDir = My.Computer.FileSystem.SpecialDirectories.Temp & "\Slips7ream\"
+      If String.IsNullOrEmpty(tempDir) Then tempDir = My.Computer.FileSystem.SpecialDirectories.Temp & IO.Path.DirectorySeparatorChar & "Slips7ream" & IO.Path.DirectorySeparatorChar
       If Not My.Computer.FileSystem.DirectoryExists(tempDir) Then My.Computer.FileSystem.CreateDirectory(tempDir)
       Return tempDir
     End Get
   End Property
   Private ReadOnly Property Work As String
     Get
-      Dim sDir As String = WorkDir & "WORK\"
+      Dim sDir As String = WorkDir & "WORK" & IO.Path.DirectorySeparatorChar
       If Not My.Computer.FileSystem.DirectoryExists(sDir) Then My.Computer.FileSystem.CreateDirectory(sDir)
       Return sDir
     End Get
   End Property
   Private ReadOnly Property Mount As String
     Get
-      Dim sDir As String = WorkDir & "MOUNT\"
+      Dim sDir As String = WorkDir & "MOUNT" & IO.Path.DirectorySeparatorChar
       If Not My.Computer.FileSystem.DirectoryExists(sDir) Then My.Computer.FileSystem.CreateDirectory(sDir)
       Return sDir
     End Get

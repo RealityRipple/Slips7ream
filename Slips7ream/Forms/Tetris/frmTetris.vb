@@ -108,8 +108,8 @@
     Public Sub New(stream As IO.UnmanagedMemoryStream, id As String)
       If Not My.Computer.FileSystem.DirectoryExists(IO.Path.GetDirectoryName(AppData)) Then My.Computer.FileSystem.CreateDirectory(IO.Path.GetDirectoryName(AppData))
       If Not My.Computer.FileSystem.DirectoryExists(AppData) Then My.Computer.FileSystem.CreateDirectory(AppData)
-      sPath1 = AppData & "\" & id & "1.wav"
-      sPath2 = AppData & "\" & id & "2.wav"
+      sPath1 = AppData & IO.Path.DirectorySeparatorChar & id & "1.wav"
+      sPath2 = AppData & IO.Path.DirectorySeparatorChar & id & "2.wav"
       If Not My.Computer.FileSystem.FileExists(sPath1) Or Not My.Computer.FileSystem.FileExists(sPath2) Then
         Dim streamData(stream.Length - 1) As Byte
         stream.Read(streamData, 0, stream.Length)
@@ -123,11 +123,11 @@
     Private ReadOnly Property AppData As String
       Get
         Static sTmp As String
-        If Not My.Computer.FileSystem.DirectoryExists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.CompanyName) Then My.Computer.FileSystem.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.CompanyName)
-        If Not My.Computer.FileSystem.DirectoryExists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.CompanyName & "\" & Application.ProductName) Then My.Computer.FileSystem.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.CompanyName & "\" & Application.ProductName)
-        If Not My.Computer.FileSystem.DirectoryExists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.CompanyName & "\" & Application.ProductName & "\Tetris") Then My.Computer.FileSystem.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.CompanyName & "\" & Application.ProductName & "\Tetris")
+        If Not My.Computer.FileSystem.DirectoryExists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & IO.Path.DirectorySeparatorChar & Application.CompanyName) Then My.Computer.FileSystem.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & IO.Path.DirectorySeparatorChar & Application.CompanyName)
+        If Not My.Computer.FileSystem.DirectoryExists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & IO.Path.DirectorySeparatorChar & Application.CompanyName & IO.Path.DirectorySeparatorChar & Application.ProductName) Then My.Computer.FileSystem.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & IO.Path.DirectorySeparatorChar & Application.CompanyName & IO.Path.DirectorySeparatorChar & Application.ProductName)
+        If Not My.Computer.FileSystem.DirectoryExists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & IO.Path.DirectorySeparatorChar & Application.CompanyName & IO.Path.DirectorySeparatorChar & Application.ProductName & IO.Path.DirectorySeparatorChar & "Tetris") Then My.Computer.FileSystem.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & IO.Path.DirectorySeparatorChar & Application.CompanyName & IO.Path.DirectorySeparatorChar & Application.ProductName & IO.Path.DirectorySeparatorChar & "Tetris")
         If String.IsNullOrEmpty(sTmp) Then
-          sTmp = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.CompanyName & "\" & Application.ProductName & "\Tetris"
+          sTmp = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & IO.Path.DirectorySeparatorChar & Application.CompanyName & IO.Path.DirectorySeparatorChar & Application.ProductName & IO.Path.DirectorySeparatorChar & "Tetris"
         End If
         Return sTmp
       End Get
@@ -250,8 +250,8 @@
   End Sub
   Private Sub PlaySong()
     If song Is Nothing Then
-      My.Computer.FileSystem.WriteAllBytes(AppData & "\shoot_em.ogg", My.Resources.shoot_em, False)
-      song = New MCIPlayer(AppData & "\shoot_em.ogg")
+      My.Computer.FileSystem.WriteAllBytes(AppData & IO.Path.DirectorySeparatorChar & "shoot_em.ogg", My.Resources.shoot_em, False)
+      song = New MCIPlayer(AppData & IO.Path.DirectorySeparatorChar & "shoot_em.ogg")
       song.Play(True)
     End If
   End Sub
@@ -262,9 +262,9 @@
       song.Dispose()
       song = Nothing
     End If
-    If My.Computer.FileSystem.FileExists(AppData & "\shoot_em.ogg") Then
+    If My.Computer.FileSystem.FileExists(AppData & IO.Path.DirectorySeparatorChar & "shoot_em.ogg") Then
       Try
-        My.Computer.FileSystem.DeleteFile(AppData & "\shoot_em.ogg")
+        My.Computer.FileSystem.DeleteFile(AppData & IO.Path.DirectorySeparatorChar & "shoot_em.ogg")
       Catch ex As Exception
       End Try
     End If
@@ -274,11 +274,11 @@
   Private ReadOnly Property AppData As String
     Get
       Static sTmp As String
-      If Not My.Computer.FileSystem.DirectoryExists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.CompanyName) Then My.Computer.FileSystem.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.CompanyName)
-      If Not My.Computer.FileSystem.DirectoryExists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.CompanyName & "\" & Application.ProductName) Then My.Computer.FileSystem.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.CompanyName & "\" & Application.ProductName)
-      If Not My.Computer.FileSystem.DirectoryExists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.CompanyName & "\" & Application.ProductName & "\Tetris") Then My.Computer.FileSystem.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.CompanyName & "\" & Application.ProductName & "\Tetris")
+      If Not My.Computer.FileSystem.DirectoryExists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & IO.Path.DirectorySeparatorChar & Application.CompanyName) Then My.Computer.FileSystem.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & IO.Path.DirectorySeparatorChar & Application.CompanyName)
+      If Not My.Computer.FileSystem.DirectoryExists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & IO.Path.DirectorySeparatorChar & Application.CompanyName & IO.Path.DirectorySeparatorChar & Application.ProductName) Then My.Computer.FileSystem.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & IO.Path.DirectorySeparatorChar & Application.CompanyName & IO.Path.DirectorySeparatorChar & Application.ProductName)
+      If Not My.Computer.FileSystem.DirectoryExists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & IO.Path.DirectorySeparatorChar & Application.CompanyName & IO.Path.DirectorySeparatorChar & Application.ProductName & IO.Path.DirectorySeparatorChar & "Tetris") Then My.Computer.FileSystem.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & IO.Path.DirectorySeparatorChar & Application.CompanyName & IO.Path.DirectorySeparatorChar & Application.ProductName & IO.Path.DirectorySeparatorChar & "Tetris")
       If String.IsNullOrEmpty(sTmp) Then
-        sTmp = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\" & Application.CompanyName & "\" & Application.ProductName & "\Tetris"
+        sTmp = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & IO.Path.DirectorySeparatorChar & Application.CompanyName & IO.Path.DirectorySeparatorChar & Application.ProductName & IO.Path.DirectorySeparatorChar & "Tetris"
       End If
       Return sTmp
     End Get

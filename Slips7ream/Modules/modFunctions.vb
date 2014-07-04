@@ -24,7 +24,7 @@ Module modFunctions
       If My.Computer.FileSystem.FileExists(Location) Then
         Select Case GetUpdateType(Location)
           Case UpdateType.MSU
-            Dim MSUPath As String = WorkDir & "UpdateMSU_Extract\"
+            Dim MSUPath As String = WorkDir & "UpdateMSU_Extract" & IO.Path.DirectorySeparatorChar
             If My.Computer.FileSystem.DirectoryExists(MSUPath) Then SlowDeleteDirectory(MSUPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
             My.Computer.FileSystem.CreateDirectory(MSUPath)
             Dim exRet As String = ExtractAFile(Location, MSUPath, "pkgProperties.txt")
@@ -58,7 +58,7 @@ Module modFunctions
             End If
             If My.Computer.FileSystem.DirectoryExists(MSUPath) Then SlowDeleteDirectory(MSUPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           Case UpdateType.CAB
-            Dim CABPath As String = WorkDir & "UpdateCAB_Extract\"
+            Dim CABPath As String = WorkDir & "UpdateCAB_Extract" & IO.Path.DirectorySeparatorChar
             If My.Computer.FileSystem.DirectoryExists(CABPath) Then SlowDeleteDirectory(CABPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
             My.Computer.FileSystem.CreateDirectory(CABPath)
             Dim exRet As String = ExtractAFile(Location, CABPath, "update.mum")
@@ -84,7 +84,7 @@ Module modFunctions
             End If
             If My.Computer.FileSystem.DirectoryExists(CABPath) Then SlowDeleteDirectory(CABPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           Case UpdateType.LP
-            Dim LPPath As String = WorkDir & "UpdateLP_Extract\"
+            Dim LPPath As String = WorkDir & "UpdateLP_Extract" & IO.Path.DirectorySeparatorChar
             If My.Computer.FileSystem.DirectoryExists(LPPath) Then SlowDeleteDirectory(LPPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
             My.Computer.FileSystem.CreateDirectory(LPPath)
             Dim exRet As String = ExtractAFile(Location, LPPath, "update.mum")
@@ -109,7 +109,7 @@ Module modFunctions
             End If
             If My.Computer.FileSystem.DirectoryExists(LPPath) Then SlowDeleteDirectory(LPPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           Case UpdateType.LIP
-            Dim MLCPath As String = WorkDir & "UpdateMLC_Extract\"
+            Dim MLCPath As String = WorkDir & "UpdateMLC_Extract" & IO.Path.DirectorySeparatorChar
             If My.Computer.FileSystem.DirectoryExists(MLCPath) Then SlowDeleteDirectory(MLCPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
             My.Computer.FileSystem.CreateDirectory(MLCPath)
             Dim exRet As String = ExtractAFile(Location, MLCPath, "update.mum")
@@ -134,7 +134,7 @@ Module modFunctions
             End If
             If My.Computer.FileSystem.DirectoryExists(MLCPath) Then SlowDeleteDirectory(MLCPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           Case UpdateType.EXE
-            Dim EXEPath As String = WorkDir & "UpdateEXE_Extract\"
+            Dim EXEPath As String = WorkDir & "UpdateEXE_Extract" & IO.Path.DirectorySeparatorChar
             If My.Computer.FileSystem.DirectoryExists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
             My.Computer.FileSystem.CreateDirectory(EXEPath)
             Dim exRet As String = ExtractAFile(Location, EXEPath, "update.mum")
@@ -229,7 +229,7 @@ Module modFunctions
       Get
         Dim mySettings As New MySettings
         Dim tempDir As String = mySettings.TempDir
-        If String.IsNullOrEmpty(tempDir) Then tempDir = My.Computer.FileSystem.SpecialDirectories.Temp & "\Slips7ream\"
+        If String.IsNullOrEmpty(tempDir) Then tempDir = My.Computer.FileSystem.SpecialDirectories.Temp & IO.Path.DirectorySeparatorChar & "Slips7ream" & IO.Path.DirectorySeparatorChar
         If Not My.Computer.FileSystem.DirectoryExists(tempDir) Then My.Computer.FileSystem.CreateDirectory(tempDir)
         Return tempDir
       End Get
@@ -347,11 +347,11 @@ Module modFunctions
   End Function
   Public ReadOnly Property AIKDir As String
     Get
-      Dim toolsDir As String = Application.StartupPath & "\tools\"
+      Dim toolsDir As String = Application.StartupPath & IO.Path.DirectorySeparatorChar & "tools" & IO.Path.DirectorySeparatorChar
       If Environment.Is64BitProcess Then
-        toolsDir &= "amd64\"
+        toolsDir &= "amd64" & IO.Path.DirectorySeparatorChar
       Else
-        toolsDir &= "x86\"
+        toolsDir &= "x86" & IO.Path.DirectorySeparatorChar
       End If
       Return toolsDir
     End Get
@@ -360,7 +360,7 @@ Module modFunctions
     Get
       Dim localDir As String = AIKDir
       localDir &= "Dism.exe"
-      Dim systemDir As String = Environment.SystemDirectory & "\Dism.exe"
+      Dim systemDir As String = Environment.SystemDirectory & IO.Path.DirectorySeparatorChar & "Dism.exe"
       If IO.File.Exists(systemDir) Then
         Dim sysInfo As FileVersionInfo = FileVersionInfo.GetVersionInfo(systemDir)
         Dim locInfo As FileVersionInfo = FileVersionInfo.GetVersionInfo(localDir)

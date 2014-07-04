@@ -1,8 +1,8 @@
 ﻿Public Class frmConfig
   Private mySettings As MySettings
   Private Sub cmdSave_Click(sender As System.Object, e As System.EventArgs) Handles cmdSave.Click
-    If String.IsNullOrEmpty(txtTemp.Text) Then txtTemp.Text = My.Computer.FileSystem.SpecialDirectories.Temp & "\Slips7ream"
-    If Not txtTemp.Text.EndsWith("\") Then txtTemp.Text &= "\"
+    If String.IsNullOrEmpty(txtTemp.Text) Then txtTemp.Text = My.Computer.FileSystem.SpecialDirectories.Temp & IO.Path.DirectorySeparatorChar & "Slips7ream"
+    If Not txtTemp.Text.EndsWith(IO.Path.DirectorySeparatorChar) Then txtTemp.Text &= IO.Path.DirectorySeparatorChar
     Dim sDir As String = IO.Path.GetDirectoryName(IO.Path.GetDirectoryName(txtTemp.Text))
 
     If My.Computer.FileSystem.DirectoryExists(sDir) Then
@@ -23,7 +23,7 @@
   Private Sub frmConfig_Load(sender As Object, e As System.EventArgs) Handles Me.Load
     mySettings = New MySettings
     txtTemp.Text = mySettings.TempDir
-    If String.IsNullOrEmpty(txtTemp.Text) Then txtTemp.Text = My.Computer.FileSystem.SpecialDirectories.Temp & "\Slips7ream"
+    If String.IsNullOrEmpty(txtTemp.Text) Then txtTemp.Text = My.Computer.FileSystem.SpecialDirectories.Temp & IO.Path.DirectorySeparatorChar & "Slips7ream"
     txtWhitelist.Text = Join(mySettings.x86WhiteList, vbNewLine)
     txtTimeout.Value = mySettings.Timeout / 1000 / 60
     If txtTimeout.Value = 0 Then
@@ -45,11 +45,11 @@
         .Filter = "Directories|",
         .OverwritePrompt = False,
         .ShowHelp = False,
-        .InitialDirectory = IO.Path.GetDirectoryName(IO.Path.GetDirectoryName(IIf(txtTemp.Text.EndsWith("\"), txtTemp.Text, txtTemp.Text & "\"))),
+        .InitialDirectory = IO.Path.GetDirectoryName(IO.Path.GetDirectoryName(IIf(txtTemp.Text.EndsWith(IO.Path.DirectorySeparatorChar), txtTemp.Text, txtTemp.Text & IO.Path.DirectorySeparatorChar))),
         .Title = "Select a Directory for SLIPS7REAM to work in...",
         .ValidateNames = True
       }
-      If dirDlg.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then txtTemp.Text = IIf(dirDlg.FileName.EndsWith("\"), dirDlg.FileName, dirDlg.FileName & "\")
+      If dirDlg.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then txtTemp.Text = IIf(dirDlg.FileName.EndsWith(IO.Path.DirectorySeparatorChar), dirDlg.FileName, dirDlg.FileName & IO.Path.DirectorySeparatorChar)
     End Using
   End Sub
   Private Sub txtTimeout_KeyUp(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles txtTimeout.KeyUp
