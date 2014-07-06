@@ -1578,7 +1578,7 @@
       Dim ISOWIMFile As String = ISODir & "sources" & IO.Path.DirectorySeparatorChar & "install.wim"
       If My.Computer.FileSystem.FileExists(ISOWIMFile) Then My.Computer.FileSystem.DeleteFile(ISOWIMFile)
       Dim NewWIMPackageCount As Integer = GetDISMPackages(WIMFile)
-      For I As Integer = 0 To NewWIMPackageCount - 1
+      For I As Integer = 1 To NewWIMPackageCount
         Dim NewWIMPackageInfo = GetDISMPackageData(WIMFile, I)
         Dim RowIndex As String = NewWIMPackageInfo.Index
         Dim RowName As String = NewWIMPackageInfo.Name
@@ -2022,7 +2022,7 @@
       Dim OldWIM As String = IO.Path.GetDirectoryName(WIMFile) & IO.Path.DirectorySeparatorChar & IO.Path.GetFileNameWithoutExtension(WIMFile & "_OLD.WIM")
       My.Computer.FileSystem.MoveFile(WIMFile, OldWIM, True)
       Dim NewWIMPackageCount As Integer = GetDISMPackages(OldWIM)
-      For I As Integer = 0 To NewWIMPackageCount - 1
+      For I As Integer = 1 To NewWIMPackageCount
         Dim NewWIMPackageInfo As PackageInfoEx = GetDISMPackageData(OldWIM, I)
         Dim RowIndex As String = NewWIMPackageInfo.Index
         Dim RowName As String = NewWIMPackageInfo.Name
