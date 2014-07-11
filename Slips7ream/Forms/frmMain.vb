@@ -2,6 +2,7 @@
   Private StopRun As Boolean = False
   Private LangChange As Boolean = False
   Private RunComplete As Boolean = False
+  Private RunActivity As Byte = 0
   Private tLister As Threading.Thread
   Private tLister2 As Threading.Thread
   Private Const HeightDifferentialA As Integer = 187
@@ -133,6 +134,25 @@
     RedoColumns()
   End Sub
   Private Sub frmMain_FormClosing(sender As Object, e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
+    If RunActivity > 0 Then
+      Dim sActivity As String = "doing work"
+      Dim sProc As String = "current"
+      Dim sTitle As String = "Working"
+      Select Case RunActivity
+        Case 1
+          sActivity = "slipstreaming updates and packages"
+          sProc = "update integration"
+          sTitle = "Integrating"
+        Case 2
+          sActivity = "extracting and reading Image Package data"
+          sProc = "extraction"
+          sTitle = "Loading Package Data"
+      End Select
+      If MsgDlg(Me, "Do you want to cancel the " & sProc & " proceess and close SLIPS7REAM?", "SLIPS7REAM is busy " & sActivity & ".", "Stop " & sTitle & " and Close?", MessageBoxButtons.YesNo, TaskDialogIcon.Question, MessageBoxDefaultButton.Button2) = Windows.Forms.DialogResult.No Then
+        e.Cancel = True
+        Exit Sub
+      End If
+    End If
     StopRun = True
     If My.Computer.FileSystem.DirectoryExists(WorkDir) Then
       SetTitle("Cleaning Up Files", "Cleaning up mounts, work, and temporary directories...")
@@ -268,6 +288,7 @@
       Me.Invoke(New ToggleInputsInvoker(AddressOf ToggleInputs), Enabled)
     Else
       If Enabled Then
+        RunActivity = 0
         Me.Cursor = Cursors.Default
         tmrAnimation.Stop()
         FreshDraw()
@@ -388,6 +409,7 @@
     If Not IO.File.Exists(txtWIM.Text) Then Exit Sub
     RunComplete = False
     StopRun = False
+    RunActivity = 2
     cmdBegin.Text = "Begin"
     cmdOpenFolder.Visible = False
     If tLister Is Nothing Then
@@ -958,6 +980,7 @@
   Private Sub txtMerge_TextChanged(sender As System.Object, e As System.EventArgs) Handles txtMerge.TextChanged
     If Not IO.File.Exists(txtMerge.Text) Then Exit Sub
     StopRun = False
+    RunActivity = 2
     If tLister2 Is Nothing Then
       tLister2 = New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf ParseImageList))
       tLister2.Start("MERGE")
@@ -1191,6 +1214,7 @@
     RunComplete = False
     StopRun = False
     LangChange = False
+
     If txtISOLabel.Enabled And txtISOLabel.Text.Contains(" ") Then
       SetStatus("Spaces are not allowed in the ISO Label!")
       txtISOLabel.Text = Replace(txtISOLabel.Text, " ", "_")
@@ -1199,6 +1223,7 @@
     End If
 
     SetTitle("Preparing Images", "Cleaning up mounts and extracting WIM from ISO if necessary...")
+    RunActivity = 1
     ToggleInputs(False)
     Dim WIMFile As String = Nothing
     If My.Computer.FileSystem.DirectoryExists(WorkDir) Then
@@ -2098,6 +2123,24 @@
     If cmdClose.Text = "Close" Then
       Me.Close()
     Else
+      If RunActivity > 0 Then
+        Dim sActivity As String = "doing work"
+        Dim sProc As String = "current"
+        Dim sTitle As String = "Working"
+        Select Case RunActivity
+          Case 1
+            sActivity = "slipstreaming updates and packages"
+            sProc = "update integration"
+            sTitle = "Integrating"
+          Case 2
+            sActivity = "extracting and reading Image Package data"
+            sProc = "extraction"
+            sTitle = "Loading Package Data"
+        End Select
+        If MsgDlg(Me, "Do you want to cancel the " & sProc & " proceess?", "SLIPS7REAM is busy " & sActivity & ".", "Stop " & sTitle & "?", MessageBoxButtons.YesNo, TaskDialogIcon.Question, MessageBoxDefaultButton.Button2) = Windows.Forms.DialogResult.No Then
+          Exit Sub
+        End If
+      End If
       StopRun = True
       cmdClose.Enabled = False
       Application.DoEvents()
