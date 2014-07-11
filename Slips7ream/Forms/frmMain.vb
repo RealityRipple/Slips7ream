@@ -147,6 +147,10 @@
           sActivity = "extracting and reading Image Package data"
           sProc = "extraction"
           sTitle = "Loading Package Data"
+        Case 3
+          sActivity = "extracting and reading Update data"
+          sProc = "update parsing"
+          sTitle = "Loading Updates"
       End Select
       If MsgDlg(Me, "Do you want to cancel the " & sProc & " proceess and close SLIPS7REAM?", "SLIPS7REAM is busy " & sActivity & ".", "Stop " & sTitle & " and Close?", MessageBoxButtons.YesNo, TaskDialogIcon.Question, MessageBoxDefaultButton.Button2) = Windows.Forms.DialogResult.No Then
         e.Cancel = True
@@ -556,6 +560,8 @@
       Dim Data = e.Data.GetData("FileDrop")
       Dim FileCount As Integer = Data.Length
       If FileCount > 2 Then
+        RunActivity = 3
+        StopRun = False
         SetDisp(MNGList.Delete)
         SetTitle("Parsing Update Information", "Reading data from update files...")
         ToggleInputs(False)
@@ -567,8 +573,15 @@
       Dim FailCollection As New Collections.Generic.List(Of String)
       lvMSU.SuspendLayout()
       For Each Item In Data
-        If FileCount > 2 Then pbTotal.Value += 1
-        Application.DoEvents()
+        If FileCount > 2 Then
+          pbTotal.Value += 1
+          Application.DoEvents()
+          If StopRun Then
+            SetProgress(0, 1)
+            ToggleInputs(True)
+            Exit Sub
+          End If
+        End If
         Dim addRet = AddToUpdates(Item)
         If Not addRet.Success Then FailCollection.Add(IO.Path.GetFileNameWithoutExtension(Item) & ": " & addRet.FailReason)
       Next
@@ -707,6 +720,8 @@
         Dim FailCollection As New Collections.Generic.List(Of String)
         Dim FileCount As Integer = cdlBrowse.FileNames.Count
         If FileCount > 2 Then
+          RunActivity = 3
+          StopRun = False
           SetDisp(MNGList.Delete)
           SetTitle("Parsing Update Information", "Reading data from update files...")
           ToggleInputs(False)
@@ -721,6 +736,11 @@
           If FileCount > 2 Then
             pbTotal.Value += 1
             Application.DoEvents()
+            If StopRun Then
+              SetProgress(0, 1)
+              ToggleInputs(True)
+              Exit Sub
+            End If
           End If
           Dim addRet As AddResult = AddToUpdates(sUpdate)
           If Not addRet.Success Then FailCollection.Add(IO.Path.GetFileNameWithoutExtension(sUpdate) & ": " & addRet.FailReason)
@@ -2136,6 +2156,10 @@
             sActivity = "extracting and reading Image Package data"
             sProc = "extraction"
             sTitle = "Loading Package Data"
+          Case 3
+            sActivity = "extracting and reading Update data"
+            sProc = "update parsing"
+            sTitle = "Loading Updates"
         End Select
         If MsgDlg(Me, "Do you want to cancel the " & sProc & " proceess?", "SLIPS7REAM is busy " & sActivity & ".", "Stop " & sTitle & "?", MessageBoxButtons.YesNo, TaskDialogIcon.Question, MessageBoxDefaultButton.Button2) = Windows.Forms.DialogResult.No Then
           Exit Sub
