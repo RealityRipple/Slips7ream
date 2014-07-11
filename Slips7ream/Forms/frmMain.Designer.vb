@@ -25,33 +25,17 @@ Partial Class frmMain
     Me.components = New System.ComponentModel.Container()
     Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmMain))
     Me.pnlSlips7ream = New System.Windows.Forms.TableLayoutPanel()
-    Me.pnlSP64 = New System.Windows.Forms.TableLayoutPanel()
-    Me.txtSP64 = New System.Windows.Forms.TextBox()
-    Me.cmdSP64 = New System.Windows.Forms.Button()
-    Me.lblWIM = New System.Windows.Forms.Label()
-    Me.lblMSU = New System.Windows.Forms.Label()
-    Me.lvMSU = New System.Windows.Forms.ListView()
-    Me.colUpdate = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-    Me.colType = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
     Me.imlUpdates = New System.Windows.Forms.ImageList(Me.components)
-    Me.pnlMSU = New System.Windows.Forms.TableLayoutPanel()
-    Me.cmdAddMSU = New System.Windows.Forms.Button()
-    Me.cmdClearMSU = New System.Windows.Forms.Button()
-    Me.cmdRemMSU = New System.Windows.Forms.Button()
+    Me.lblWIM = New System.Windows.Forms.Label()
     Me.pnlWIM = New System.Windows.Forms.TableLayoutPanel()
     Me.txtWIM = New System.Windows.Forms.TextBox()
     Me.cmdWIM = New System.Windows.Forms.Button()
-    Me.pnlSP = New System.Windows.Forms.TableLayoutPanel()
-    Me.txtSP = New System.Windows.Forms.TextBox()
-    Me.cmdSP = New System.Windows.Forms.Button()
     Me.pnlBottom = New System.Windows.Forms.TableLayoutPanel()
     Me.cmdBegin = New System.Windows.Forms.Button()
     Me.cmdClose = New System.Windows.Forms.Button()
     Me.lblActivity = New System.Windows.Forms.Label()
     Me.cmdConfig = New System.Windows.Forms.Button()
-    Me.expOutput = New Slips7ream.Expander()
     Me.cmdOpenFolder = New System.Windows.Forms.Button()
-    Me.chkSP = New System.Windows.Forms.CheckBox()
     Me.chkISO = New System.Windows.Forms.CheckBox()
     Me.pnlISO = New System.Windows.Forms.TableLayoutPanel()
     Me.txtISO = New System.Windows.Forms.TextBox()
@@ -75,16 +59,10 @@ Partial Class frmMain
     Me.lblISOFS = New System.Windows.Forms.Label()
     Me.chkUEFI = New System.Windows.Forms.CheckBox()
     Me.cmbLimit = New System.Windows.Forms.ComboBox()
-    Me.lblSP64 = New System.Windows.Forms.Label()
     Me.chkMerge = New System.Windows.Forms.CheckBox()
     Me.pnlMerge = New System.Windows.Forms.TableLayoutPanel()
     Me.txtMerge = New System.Windows.Forms.TextBox()
     Me.cmdMerge = New System.Windows.Forms.Button()
-    Me.lblImages = New System.Windows.Forms.Label()
-    Me.lvImages = New System.Windows.Forms.ListView()
-    Me.colIndex = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-    Me.colName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-    Me.colSize = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
     Me.pctTitle = New System.Windows.Forms.PictureBox()
     Me.tmrUpdateCheck = New System.Windows.Forms.Timer(Me.components)
     Me.tmrAnimation = New System.Windows.Forms.Timer(Me.components)
@@ -93,12 +71,34 @@ Partial Class frmMain
     Me.mnuClear = New System.Windows.Forms.MenuItem()
     Me.mnuSpacer = New System.Windows.Forms.MenuItem()
     Me.mnuSelectAll = New System.Windows.Forms.MenuItem()
+    Me.spltSlips7ream = New Slips7ream.SplitContainerEx()
+    Me.pnlPackages = New System.Windows.Forms.TableLayoutPanel()
+    Me.pnlSP64 = New System.Windows.Forms.TableLayoutPanel()
+    Me.txtSP64 = New System.Windows.Forms.TextBox()
+    Me.cmdSP64 = New System.Windows.Forms.Button()
+    Me.lblImages = New System.Windows.Forms.Label()
+    Me.chkSP = New System.Windows.Forms.CheckBox()
+    Me.lblSP64 = New System.Windows.Forms.Label()
+    Me.lvImages = New System.Windows.Forms.ListView()
+    Me.colIndex = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+    Me.colName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+    Me.colSize = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+    Me.pnlSP = New System.Windows.Forms.TableLayoutPanel()
+    Me.txtSP = New System.Windows.Forms.TextBox()
+    Me.cmdSP = New System.Windows.Forms.Button()
+    Me.pnlUpdates = New System.Windows.Forms.TableLayoutPanel()
+    Me.pnlMSU = New System.Windows.Forms.TableLayoutPanel()
+    Me.cmdAddMSU = New System.Windows.Forms.Button()
+    Me.cmdClearMSU = New System.Windows.Forms.Button()
+    Me.cmdRemMSU = New System.Windows.Forms.Button()
+    Me.lblMSU = New System.Windows.Forms.Label()
+    Me.lvMSU = New System.Windows.Forms.ListView()
+    Me.colUpdate = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+    Me.colType = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+    Me.expOutput = New Slips7ream.Expander()
     Me.ttInfo = New Slips7ream.ToolTip(Me.components)
     Me.pnlSlips7ream.SuspendLayout()
-    Me.pnlSP64.SuspendLayout()
-    Me.pnlMSU.SuspendLayout()
     Me.pnlWIM.SuspendLayout()
-    Me.pnlSP.SuspendLayout()
     Me.pnlBottom.SuspendLayout()
     Me.pnlISO.SuspendLayout()
     Me.pnlProgress.SuspendLayout()
@@ -106,46 +106,44 @@ Partial Class frmMain
     Me.pnlISOOptions.SuspendLayout()
     Me.pnlMerge.SuspendLayout()
     CType(Me.pctTitle, System.ComponentModel.ISupportInitialize).BeginInit()
+    CType(Me.spltSlips7ream, System.ComponentModel.ISupportInitialize).BeginInit()
+    Me.spltSlips7ream.Panel1.SuspendLayout()
+    Me.spltSlips7ream.Panel2.SuspendLayout()
+    Me.spltSlips7ream.SuspendLayout()
+    Me.pnlPackages.SuspendLayout()
+    Me.pnlSP64.SuspendLayout()
+    Me.pnlSP.SuspendLayout()
+    Me.pnlUpdates.SuspendLayout()
+    Me.pnlMSU.SuspendLayout()
     Me.SuspendLayout()
     '
     'pnlSlips7ream
     '
     Me.pnlSlips7ream.ColumnCount = 2
-    Me.pnlSlips7ream.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlSlips7ream.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100.0!))
     Me.pnlSlips7ream.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-    Me.pnlSlips7ream.Controls.Add(Me.pnlSP64, 1, 5)
+    Me.pnlSlips7ream.Controls.Add(Me.spltSlips7ream, 0, 3)
     Me.pnlSlips7ream.Controls.Add(Me.lblWIM, 0, 1)
-    Me.pnlSlips7ream.Controls.Add(Me.lblMSU, 0, 6)
-    Me.pnlSlips7ream.Controls.Add(Me.lvMSU, 1, 6)
-    Me.pnlSlips7ream.Controls.Add(Me.pnlMSU, 1, 7)
     Me.pnlSlips7ream.Controls.Add(Me.pnlWIM, 1, 1)
-    Me.pnlSlips7ream.Controls.Add(Me.pnlSP, 1, 4)
-    Me.pnlSlips7ream.Controls.Add(Me.pnlBottom, 0, 12)
-    Me.pnlSlips7ream.Controls.Add(Me.chkSP, 0, 4)
-    Me.pnlSlips7ream.Controls.Add(Me.chkISO, 0, 8)
-    Me.pnlSlips7ream.Controls.Add(Me.pnlISO, 1, 8)
-    Me.pnlSlips7ream.Controls.Add(Me.pnlProgress, 0, 13)
-    Me.pnlSlips7ream.Controls.Add(Me.lblISOLabel, 0, 9)
-    Me.pnlSlips7ream.Controls.Add(Me.txtISOLabel, 1, 9)
-    Me.pnlSlips7ream.Controls.Add(Me.pnlControl, 0, 11)
-    Me.pnlSlips7ream.Controls.Add(Me.pnlISOOptions, 1, 10)
-    Me.pnlSlips7ream.Controls.Add(Me.lblSP64, 0, 5)
+    Me.pnlSlips7ream.Controls.Add(Me.pnlBottom, 0, 9)
+    Me.pnlSlips7ream.Controls.Add(Me.chkISO, 0, 5)
+    Me.pnlSlips7ream.Controls.Add(Me.pnlISO, 1, 5)
+    Me.pnlSlips7ream.Controls.Add(Me.pnlProgress, 0, 10)
+    Me.pnlSlips7ream.Controls.Add(Me.lblISOLabel, 0, 6)
+    Me.pnlSlips7ream.Controls.Add(Me.txtISOLabel, 1, 6)
+    Me.pnlSlips7ream.Controls.Add(Me.pnlControl, 0, 8)
+    Me.pnlSlips7ream.Controls.Add(Me.pnlISOOptions, 1, 7)
     Me.pnlSlips7ream.Controls.Add(Me.chkMerge, 0, 2)
     Me.pnlSlips7ream.Controls.Add(Me.pnlMerge, 1, 2)
-    Me.pnlSlips7ream.Controls.Add(Me.lblImages, 0, 3)
-    Me.pnlSlips7ream.Controls.Add(Me.lvImages, 1, 3)
     Me.pnlSlips7ream.Controls.Add(Me.pctTitle, 0, 0)
     Me.pnlSlips7ream.Dock = System.Windows.Forms.DockStyle.Fill
     Me.pnlSlips7ream.Location = New System.Drawing.Point(0, 0)
     Me.pnlSlips7ream.Name = "pnlSlips7ream"
-    Me.pnlSlips7ream.RowCount = 14
+    Me.pnlSlips7ream.RowCount = 11
     Me.pnlSlips7ream.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40.0!))
     Me.pnlSlips7ream.RowStyles.Add(New System.Windows.Forms.RowStyle())
     Me.pnlSlips7ream.RowStyles.Add(New System.Windows.Forms.RowStyle())
-    Me.pnlSlips7ream.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-    Me.pnlSlips7ream.RowStyles.Add(New System.Windows.Forms.RowStyle())
-    Me.pnlSlips7ream.RowStyles.Add(New System.Windows.Forms.RowStyle())
-    Me.pnlSlips7ream.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+    Me.pnlSlips7ream.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
     Me.pnlSlips7ream.RowStyles.Add(New System.Windows.Forms.RowStyle())
     Me.pnlSlips7ream.RowStyles.Add(New System.Windows.Forms.RowStyle())
     Me.pnlSlips7ream.RowStyles.Add(New System.Windows.Forms.RowStyle())
@@ -153,49 +151,14 @@ Partial Class frmMain
     Me.pnlSlips7ream.RowStyles.Add(New System.Windows.Forms.RowStyle())
     Me.pnlSlips7ream.RowStyles.Add(New System.Windows.Forms.RowStyle())
     Me.pnlSlips7ream.RowStyles.Add(New System.Windows.Forms.RowStyle())
-    Me.pnlSlips7ream.Size = New System.Drawing.Size(424, 656)
+    Me.pnlSlips7ream.Size = New System.Drawing.Size(424, 757)
     Me.pnlSlips7ream.TabIndex = 0
     '
-    'pnlSP64
+    'imlUpdates
     '
-    Me.pnlSP64.AutoSize = True
-    Me.pnlSP64.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.pnlSP64.ColumnCount = 2
-    Me.pnlSP64.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-    Me.pnlSP64.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-    Me.pnlSP64.Controls.Add(Me.txtSP64, 0, 0)
-    Me.pnlSP64.Controls.Add(Me.cmdSP64, 1, 0)
-    Me.pnlSP64.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.pnlSP64.Location = New System.Drawing.Point(100, 175)
-    Me.pnlSP64.Margin = New System.Windows.Forms.Padding(0)
-    Me.pnlSP64.Name = "pnlSP64"
-    Me.pnlSP64.RowCount = 1
-    Me.pnlSP64.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-    Me.pnlSP64.Size = New System.Drawing.Size(324, 29)
-    Me.pnlSP64.TabIndex = 9
-    Me.pnlSP64.Visible = False
-    '
-    'txtSP64
-    '
-    Me.txtSP64.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtSP64.Location = New System.Drawing.Point(3, 4)
-    Me.txtSP64.Name = "txtSP64"
-    Me.txtSP64.Size = New System.Drawing.Size(237, 20)
-    Me.txtSP64.TabIndex = 0
-    Me.ttInfo.SetTooltip(Me.txtSP64, "Windows 7 x64 Service Pack 1 installer EXE." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(Note that x64 Integration requires " & _
-        "a 64-bit Operating System.)")
-    '
-    'cmdSP64
-    '
-    Me.cmdSP64.Anchor = System.Windows.Forms.AnchorStyles.Right
-    Me.cmdSP64.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmdSP64.Location = New System.Drawing.Point(246, 3)
-    Me.cmdSP64.Name = "cmdSP64"
-    Me.cmdSP64.Size = New System.Drawing.Size(75, 23)
-    Me.cmdSP64.TabIndex = 1
-    Me.cmdSP64.Text = "Browse..."
-    Me.ttInfo.SetTooltip(Me.cmdSP64, "Choose an x64 Service Pack EXE.")
-    Me.cmdSP64.UseVisualStyleBackColor = True
+    Me.imlUpdates.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit
+    Me.imlUpdates.ImageSize = New System.Drawing.Size(16, 16)
+    Me.imlUpdates.TransparentColor = System.Drawing.Color.Transparent
     '
     'lblWIM
     '
@@ -206,116 +169,6 @@ Partial Class frmMain
     Me.lblWIM.Size = New System.Drawing.Size(83, 13)
     Me.lblWIM.TabIndex = 0
     Me.lblWIM.Text = "INSTALL.WIM: "
-    '
-    'lblMSU
-    '
-    Me.lblMSU.AutoSize = True
-    Me.lblMSU.Location = New System.Drawing.Point(3, 210)
-    Me.lblMSU.Margin = New System.Windows.Forms.Padding(3, 6, 3, 0)
-    Me.lblMSU.Name = "lblMSU"
-    Me.lblMSU.Size = New System.Drawing.Size(53, 13)
-    Me.lblMSU.TabIndex = 10
-    Me.lblMSU.Text = "Updates: "
-    '
-    'lvMSU
-    '
-    Me.lvMSU.AllowDrop = True
-    Me.lvMSU.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colUpdate, Me.colType})
-    Me.lvMSU.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.lvMSU.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
-    Me.lvMSU.HideSelection = False
-    Me.lvMSU.LargeImageList = Me.imlUpdates
-    Me.lvMSU.Location = New System.Drawing.Point(103, 207)
-    Me.lvMSU.Name = "lvMSU"
-    Me.lvMSU.ShowItemToolTips = True
-    Me.lvMSU.Size = New System.Drawing.Size(318, 42)
-    Me.lvMSU.SmallImageList = Me.imlUpdates
-    Me.lvMSU.TabIndex = 11
-    Me.lvMSU.UseCompatibleStateImageBehavior = False
-    Me.lvMSU.View = System.Windows.Forms.View.Details
-    '
-    'colUpdate
-    '
-    Me.colUpdate.Text = "Windows Update"
-    Me.colUpdate.Width = 229
-    '
-    'colType
-    '
-    Me.colType.Text = "Type"
-    Me.colType.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-    Me.colType.Width = 75
-    '
-    'imlUpdates
-    '
-    Me.imlUpdates.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit
-    Me.imlUpdates.ImageSize = New System.Drawing.Size(16, 16)
-    Me.imlUpdates.TransparentColor = System.Drawing.Color.Transparent
-    '
-    'pnlMSU
-    '
-    Me.pnlMSU.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.pnlMSU.AutoSize = True
-    Me.pnlMSU.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.pnlMSU.ColumnCount = 4
-    Me.pnlMSU.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-    Me.pnlMSU.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-    Me.pnlMSU.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-    Me.pnlMSU.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-    Me.pnlMSU.Controls.Add(Me.cmdAddMSU, 0, 0)
-    Me.pnlMSU.Controls.Add(Me.cmdClearMSU, 3, 0)
-    Me.pnlMSU.Controls.Add(Me.cmdRemMSU, 2, 0)
-    Me.pnlMSU.Location = New System.Drawing.Point(100, 252)
-    Me.pnlMSU.Margin = New System.Windows.Forms.Padding(0)
-    Me.pnlMSU.Name = "pnlMSU"
-    Me.pnlMSU.RowCount = 1
-    Me.pnlMSU.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-    Me.pnlMSU.Size = New System.Drawing.Size(324, 29)
-    Me.pnlMSU.TabIndex = 12
-    '
-    'cmdAddMSU
-    '
-    Me.cmdAddMSU.Anchor = System.Windows.Forms.AnchorStyles.None
-    Me.cmdAddMSU.AutoSize = True
-    Me.cmdAddMSU.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.cmdAddMSU.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmdAddMSU.Location = New System.Drawing.Point(3, 3)
-    Me.cmdAddMSU.Name = "cmdAddMSU"
-    Me.cmdAddMSU.Padding = New System.Windows.Forms.Padding(0, 0, 0, 1)
-    Me.cmdAddMSU.Size = New System.Drawing.Size(92, 23)
-    Me.cmdAddMSU.TabIndex = 0
-    Me.cmdAddMSU.Text = "Add Updates..."
-    Me.ttInfo.SetTooltip(Me.cmdAddMSU, "Add MSU or CAB updates.")
-    Me.cmdAddMSU.UseVisualStyleBackColor = True
-    '
-    'cmdClearMSU
-    '
-    Me.cmdClearMSU.Anchor = System.Windows.Forms.AnchorStyles.None
-    Me.cmdClearMSU.AutoSize = True
-    Me.cmdClearMSU.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.cmdClearMSU.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmdClearMSU.Location = New System.Drawing.Point(233, 3)
-    Me.cmdClearMSU.Name = "cmdClearMSU"
-    Me.cmdClearMSU.Padding = New System.Windows.Forms.Padding(0, 0, 0, 1)
-    Me.cmdClearMSU.Size = New System.Drawing.Size(88, 23)
-    Me.cmdClearMSU.TabIndex = 3
-    Me.cmdClearMSU.Text = "Clear Updates"
-    Me.ttInfo.SetTooltip(Me.cmdClearMSU, "Clear the list of Windows Updates.")
-    Me.cmdClearMSU.UseVisualStyleBackColor = True
-    '
-    'cmdRemMSU
-    '
-    Me.cmdRemMSU.Anchor = System.Windows.Forms.AnchorStyles.None
-    Me.cmdRemMSU.AutoSize = True
-    Me.cmdRemMSU.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.cmdRemMSU.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmdRemMSU.Location = New System.Drawing.Point(123, 3)
-    Me.cmdRemMSU.Name = "cmdRemMSU"
-    Me.cmdRemMSU.Padding = New System.Windows.Forms.Padding(0, 0, 0, 1)
-    Me.cmdRemMSU.Size = New System.Drawing.Size(104, 23)
-    Me.cmdRemMSU.TabIndex = 2
-    Me.cmdRemMSU.Text = "Remove Updates"
-    Me.ttInfo.SetTooltip(Me.cmdRemMSU, "Remove the selected items from the list of Windows Updates.")
-    Me.cmdRemMSU.UseVisualStyleBackColor = True
     '
     'pnlWIM
     '
@@ -356,48 +209,6 @@ Partial Class frmMain
     Me.ttInfo.SetTooltip(Me.cmdWIM, "Choose a WIM or ISO file.")
     Me.cmdWIM.UseVisualStyleBackColor = True
     '
-    'pnlSP
-    '
-    Me.pnlSP.AutoSize = True
-    Me.pnlSP.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.pnlSP.ColumnCount = 2
-    Me.pnlSP.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-    Me.pnlSP.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-    Me.pnlSP.Controls.Add(Me.txtSP, 0, 0)
-    Me.pnlSP.Controls.Add(Me.cmdSP, 1, 0)
-    Me.pnlSP.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.pnlSP.Location = New System.Drawing.Point(100, 146)
-    Me.pnlSP.Margin = New System.Windows.Forms.Padding(0)
-    Me.pnlSP.Name = "pnlSP"
-    Me.pnlSP.RowCount = 1
-    Me.pnlSP.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-    Me.pnlSP.Size = New System.Drawing.Size(324, 29)
-    Me.pnlSP.TabIndex = 7
-    '
-    'txtSP
-    '
-    Me.txtSP.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtSP.Enabled = False
-    Me.txtSP.Location = New System.Drawing.Point(3, 4)
-    Me.txtSP.Name = "txtSP"
-    Me.txtSP.Size = New System.Drawing.Size(237, 20)
-    Me.txtSP.TabIndex = 0
-    Me.ttInfo.SetTooltip(Me.txtSP, "Windows 7 Service Pack 1 installer EXE." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(Note that x64 Integration requires a 64" & _
-        "-bit Operating System.)")
-    '
-    'cmdSP
-    '
-    Me.cmdSP.Anchor = System.Windows.Forms.AnchorStyles.Right
-    Me.cmdSP.Enabled = False
-    Me.cmdSP.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmdSP.Location = New System.Drawing.Point(246, 3)
-    Me.cmdSP.Name = "cmdSP"
-    Me.cmdSP.Size = New System.Drawing.Size(75, 23)
-    Me.cmdSP.TabIndex = 1
-    Me.cmdSP.Text = "Browse..."
-    Me.ttInfo.SetTooltip(Me.cmdSP, "Choose a Service Pack EXE.")
-    Me.cmdSP.UseVisualStyleBackColor = True
-    '
     'pnlBottom
     '
     Me.pnlBottom.AutoSize = True
@@ -417,7 +228,7 @@ Partial Class frmMain
     Me.pnlBottom.Controls.Add(Me.expOutput, 0, 0)
     Me.pnlBottom.Controls.Add(Me.cmdOpenFolder, 2, 0)
     Me.pnlBottom.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.pnlBottom.Location = New System.Drawing.Point(0, 417)
+    Me.pnlBottom.Location = New System.Drawing.Point(0, 519)
     Me.pnlBottom.Margin = New System.Windows.Forms.Padding(0)
     Me.pnlBottom.Name = "pnlBottom"
     Me.pnlBottom.RowCount = 1
@@ -473,18 +284,6 @@ Partial Class frmMain
     Me.ttInfo.SetTooltip(Me.cmdConfig, "Change SLIPS7REAM settings.")
     Me.cmdConfig.UseVisualStyleBackColor = True
     '
-    'expOutput
-    '
-    Me.expOutput.Anchor = System.Windows.Forms.AnchorStyles.Left
-    Me.expOutput.AutoSize = True
-    Me.expOutput.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.expOutput.Location = New System.Drawing.Point(3, 5)
-    Me.expOutput.Name = "expOutput"
-    Me.expOutput.Open = False
-    Me.expOutput.Size = New System.Drawing.Size(19, 19)
-    Me.expOutput.TabIndex = 4
-    Me.ttInfo.SetTooltip(Me.expOutput, "Show Output consoles.")
-    '
     'cmdOpenFolder
     '
     Me.cmdOpenFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
@@ -497,24 +296,12 @@ Partial Class frmMain
     Me.cmdOpenFolder.UseVisualStyleBackColor = True
     Me.cmdOpenFolder.Visible = False
     '
-    'chkSP
-    '
-    Me.chkSP.Anchor = System.Windows.Forms.AnchorStyles.Left
-    Me.chkSP.AutoSize = True
-    Me.chkSP.Location = New System.Drawing.Point(3, 152)
-    Me.chkSP.Name = "chkSP"
-    Me.chkSP.Size = New System.Drawing.Size(93, 17)
-    Me.chkSP.TabIndex = 6
-    Me.chkSP.Text = "Service Pack:"
-    Me.ttInfo.SetTooltip(Me.chkSP, "Integrate Windows 7 Service Pack 1 into an RTM Image.")
-    Me.chkSP.UseVisualStyleBackColor = True
-    '
     'chkISO
     '
     Me.chkISO.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.chkISO.AutoSize = True
     Me.chkISO.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.chkISO.Location = New System.Drawing.Point(3, 286)
+    Me.chkISO.Location = New System.Drawing.Point(3, 388)
     Me.chkISO.Name = "chkISO"
     Me.chkISO.Size = New System.Drawing.Size(93, 18)
     Me.chkISO.TabIndex = 13
@@ -532,7 +319,7 @@ Partial Class frmMain
     Me.pnlISO.Controls.Add(Me.txtISO, 0, 0)
     Me.pnlISO.Controls.Add(Me.cmdISO, 1, 0)
     Me.pnlISO.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.pnlISO.Location = New System.Drawing.Point(100, 281)
+    Me.pnlISO.Location = New System.Drawing.Point(100, 383)
     Me.pnlISO.Margin = New System.Windows.Forms.Padding(0)
     Me.pnlISO.Name = "pnlISO"
     Me.pnlISO.RowCount = 1
@@ -576,14 +363,14 @@ Partial Class frmMain
     Me.pnlProgress.Controls.Add(Me.txtOutput, 0, 1)
     Me.pnlProgress.Controls.Add(Me.txtOutputError, 0, 2)
     Me.pnlProgress.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.pnlProgress.Location = New System.Drawing.Point(0, 446)
+    Me.pnlProgress.Location = New System.Drawing.Point(0, 548)
     Me.pnlProgress.Margin = New System.Windows.Forms.Padding(0)
     Me.pnlProgress.Name = "pnlProgress"
     Me.pnlProgress.RowCount = 3
     Me.pnlProgress.RowStyles.Add(New System.Windows.Forms.RowStyle())
     Me.pnlProgress.RowStyles.Add(New System.Windows.Forms.RowStyle())
     Me.pnlProgress.RowStyles.Add(New System.Windows.Forms.RowStyle())
-    Me.pnlProgress.Size = New System.Drawing.Size(424, 210)
+    Me.pnlProgress.Size = New System.Drawing.Size(424, 209)
     Me.pnlProgress.TabIndex = 21
     '
     'pbTotal
@@ -637,7 +424,7 @@ Partial Class frmMain
     Me.lblISOLabel.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblISOLabel.AutoSize = True
     Me.lblISOLabel.Enabled = False
-    Me.lblISOLabel.Location = New System.Drawing.Point(3, 316)
+    Me.lblISOLabel.Location = New System.Drawing.Point(3, 418)
     Me.lblISOLabel.Name = "lblISOLabel"
     Me.lblISOLabel.Size = New System.Drawing.Size(57, 13)
     Me.lblISOLabel.TabIndex = 15
@@ -647,7 +434,7 @@ Partial Class frmMain
     '
     Me.txtISOLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
     Me.txtISOLabel.Enabled = False
-    Me.txtISOLabel.Location = New System.Drawing.Point(103, 313)
+    Me.txtISOLabel.Location = New System.Drawing.Point(103, 415)
     Me.txtISOLabel.MaxLength = 32
     Me.txtISOLabel.Name = "txtISOLabel"
     Me.txtISOLabel.Size = New System.Drawing.Size(318, 20)
@@ -660,7 +447,7 @@ Partial Class frmMain
     Me.pnlControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
     Me.pnlControl.ColumnCount = 4
     Me.pnlSlips7ream.SetColumnSpan(Me.pnlControl, 2)
-    Me.pnlControl.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlControl.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100.0!))
     Me.pnlControl.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
     Me.pnlControl.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
     Me.pnlControl.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
@@ -669,7 +456,7 @@ Partial Class frmMain
     Me.pnlControl.Controls.Add(Me.lblCompletion, 2, 0)
     Me.pnlControl.Controls.Add(Me.cmbCompletion, 3, 0)
     Me.pnlControl.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.pnlControl.Location = New System.Drawing.Point(0, 390)
+    Me.pnlControl.Location = New System.Drawing.Point(0, 492)
     Me.pnlControl.Margin = New System.Windows.Forms.Padding(0)
     Me.pnlControl.Name = "pnlControl"
     Me.pnlControl.RowCount = 1
@@ -694,7 +481,7 @@ Partial Class frmMain
     Me.cmbPriority.FlatStyle = System.Windows.Forms.FlatStyle.System
     Me.cmbPriority.FormattingEnabled = True
     Me.cmbPriority.Items.AddRange(New Object() {"Realtime", "High", "Above Normal", "Normal", "Below Normal", "Low"})
-    Me.cmbPriority.Location = New System.Drawing.Point(91, 3)
+    Me.cmbPriority.Location = New System.Drawing.Point(103, 3)
     Me.cmbPriority.MaximumSize = New System.Drawing.Size(115, 0)
     Me.cmbPriority.MinimumSize = New System.Drawing.Size(115, 0)
     Me.cmbPriority.Name = "cmbPriority"
@@ -706,7 +493,7 @@ Partial Class frmMain
     '
     Me.lblCompletion.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblCompletion.AutoSize = True
-    Me.lblCompletion.Location = New System.Drawing.Point(216, 7)
+    Me.lblCompletion.Location = New System.Drawing.Point(222, 7)
     Me.lblCompletion.Name = "lblCompletion"
     Me.lblCompletion.Size = New System.Drawing.Size(79, 13)
     Me.lblCompletion.TabIndex = 2
@@ -719,7 +506,7 @@ Partial Class frmMain
     Me.cmbCompletion.FlatStyle = System.Windows.Forms.FlatStyle.System
     Me.cmbCompletion.FormattingEnabled = True
     Me.cmbCompletion.Items.AddRange(New Object() {"Do Nothing", "Close Program", "Shut Down", "Restart", "Sleep"})
-    Me.cmbCompletion.Location = New System.Drawing.Point(301, 3)
+    Me.cmbCompletion.Location = New System.Drawing.Point(307, 3)
     Me.cmbCompletion.MaximumSize = New System.Drawing.Size(115, 0)
     Me.cmbCompletion.MinimumSize = New System.Drawing.Size(115, 0)
     Me.cmbCompletion.Name = "cmbCompletion"
@@ -743,7 +530,7 @@ Partial Class frmMain
     Me.pnlISOOptions.Controls.Add(Me.chkUEFI, 0, 1)
     Me.pnlISOOptions.Controls.Add(Me.cmbLimit, 2, 1)
     Me.pnlISOOptions.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.pnlISOOptions.Location = New System.Drawing.Point(100, 336)
+    Me.pnlISOOptions.Location = New System.Drawing.Point(100, 438)
     Me.pnlISOOptions.Margin = New System.Windows.Forms.Padding(0)
     Me.pnlISOOptions.Name = "pnlISOOptions"
     Me.pnlISOOptions.RowCount = 2
@@ -830,17 +617,6 @@ Partial Class frmMain
     Me.cmbLimit.TabIndex = 5
     Me.ttInfo.SetTooltip(Me.cmbLimit, resources.GetString("cmbLimit.ToolTip"))
     '
-    'lblSP64
-    '
-    Me.lblSP64.Anchor = System.Windows.Forms.AnchorStyles.Left
-    Me.lblSP64.AutoSize = True
-    Me.lblSP64.Location = New System.Drawing.Point(3, 183)
-    Me.lblSP64.Name = "lblSP64"
-    Me.lblSP64.Size = New System.Drawing.Size(94, 13)
-    Me.lblSP64.TabIndex = 8
-    Me.lblSP64.Text = "x64 Service Pack:"
-    Me.lblSP64.Visible = False
-    '
     'chkMerge
     '
     Me.chkMerge.Anchor = System.Windows.Forms.AnchorStyles.Left
@@ -894,46 +670,6 @@ Partial Class frmMain
     Me.ttInfo.SetTooltip(Me.cmdMerge, "Choose a WIM or ISO file.")
     Me.cmdMerge.UseVisualStyleBackColor = True
     '
-    'lblImages
-    '
-    Me.lblImages.AutoSize = True
-    Me.lblImages.Location = New System.Drawing.Point(3, 104)
-    Me.lblImages.Margin = New System.Windows.Forms.Padding(3, 6, 3, 0)
-    Me.lblImages.Name = "lblImages"
-    Me.lblImages.Size = New System.Drawing.Size(90, 13)
-    Me.lblImages.TabIndex = 4
-    Me.lblImages.Text = "Image Packages:"
-    '
-    'lvImages
-    '
-    Me.lvImages.CheckBoxes = True
-    Me.lvImages.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colIndex, Me.colName, Me.colSize})
-    Me.lvImages.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.lvImages.FullRowSelect = True
-    Me.lvImages.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
-    Me.lvImages.Location = New System.Drawing.Point(103, 101)
-    Me.lvImages.MultiSelect = False
-    Me.lvImages.Name = "lvImages"
-    Me.lvImages.ShowItemToolTips = True
-    Me.lvImages.Size = New System.Drawing.Size(318, 42)
-    Me.lvImages.TabIndex = 5
-    Me.lvImages.UseCompatibleStateImageBehavior = False
-    Me.lvImages.View = System.Windows.Forms.View.Details
-    '
-    'colIndex
-    '
-    Me.colIndex.Text = "Index"
-    '
-    'colName
-    '
-    Me.colName.Text = "Name"
-    Me.colName.Width = 120
-    '
-    'colSize
-    '
-    Me.colSize.Text = "Size"
-    Me.colSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-    '
     'pctTitle
     '
     Me.pnlSlips7ream.SetColumnSpan(Me.pctTitle, 2)
@@ -978,6 +714,331 @@ Partial Class frmMain
     Me.mnuSelectAll.Index = 3
     Me.mnuSelectAll.Text = "Select &All"
     '
+    'spltSlips7ream
+    '
+    Me.pnlSlips7ream.SetColumnSpan(Me.spltSlips7ream, 2)
+    Me.spltSlips7ream.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.spltSlips7ream.DrawGrabHandle = True
+    Me.spltSlips7ream.Location = New System.Drawing.Point(0, 98)
+    Me.spltSlips7ream.Margin = New System.Windows.Forms.Padding(0)
+    Me.spltSlips7ream.Name = "spltSlips7ream"
+    Me.spltSlips7ream.Orientation = System.Windows.Forms.Orientation.Horizontal
+    '
+    'spltSlips7ream.Panel1
+    '
+    Me.spltSlips7ream.Panel1.Controls.Add(Me.pnlPackages)
+    Me.spltSlips7ream.Panel1MinSize = 110
+    '
+    'spltSlips7ream.Panel2
+    '
+    Me.spltSlips7ream.Panel2.Controls.Add(Me.pnlUpdates)
+    Me.spltSlips7ream.Panel2MinSize = 80
+    Me.spltSlips7ream.Size = New System.Drawing.Size(424, 285)
+    Me.spltSlips7ream.SplitterDistance = 123
+    Me.spltSlips7ream.TabIndex = 1
+    '
+    'pnlPackages
+    '
+    Me.pnlPackages.ColumnCount = 2
+    Me.pnlPackages.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100.0!))
+    Me.pnlPackages.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+    Me.pnlPackages.Controls.Add(Me.pnlSP64, 1, 2)
+    Me.pnlPackages.Controls.Add(Me.lblImages, 0, 0)
+    Me.pnlPackages.Controls.Add(Me.chkSP, 0, 1)
+    Me.pnlPackages.Controls.Add(Me.lblSP64, 0, 2)
+    Me.pnlPackages.Controls.Add(Me.lvImages, 1, 0)
+    Me.pnlPackages.Controls.Add(Me.pnlSP, 1, 1)
+    Me.pnlPackages.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.pnlPackages.Location = New System.Drawing.Point(0, 0)
+    Me.pnlPackages.Margin = New System.Windows.Forms.Padding(0)
+    Me.pnlPackages.Name = "pnlPackages"
+    Me.pnlPackages.RowCount = 3
+    Me.pnlPackages.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+    Me.pnlPackages.RowStyles.Add(New System.Windows.Forms.RowStyle())
+    Me.pnlPackages.RowStyles.Add(New System.Windows.Forms.RowStyle())
+    Me.pnlPackages.Size = New System.Drawing.Size(424, 123)
+    Me.pnlPackages.TabIndex = 0
+    '
+    'pnlSP64
+    '
+    Me.pnlSP64.AutoSize = True
+    Me.pnlSP64.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.pnlSP64.ColumnCount = 2
+    Me.pnlSP64.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+    Me.pnlSP64.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlSP64.Controls.Add(Me.txtSP64, 0, 0)
+    Me.pnlSP64.Controls.Add(Me.cmdSP64, 1, 0)
+    Me.pnlSP64.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.pnlSP64.Location = New System.Drawing.Point(100, 94)
+    Me.pnlSP64.Margin = New System.Windows.Forms.Padding(0)
+    Me.pnlSP64.Name = "pnlSP64"
+    Me.pnlSP64.RowCount = 1
+    Me.pnlSP64.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+    Me.pnlSP64.Size = New System.Drawing.Size(324, 29)
+    Me.pnlSP64.TabIndex = 9
+    Me.pnlSP64.Visible = False
+    '
+    'txtSP64
+    '
+    Me.txtSP64.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.txtSP64.Location = New System.Drawing.Point(3, 4)
+    Me.txtSP64.Name = "txtSP64"
+    Me.txtSP64.Size = New System.Drawing.Size(237, 20)
+    Me.txtSP64.TabIndex = 0
+    Me.ttInfo.SetTooltip(Me.txtSP64, "Windows 7 x64 Service Pack 1 installer EXE." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(Note that x64 Integration requires " & _
+        "a 64-bit Operating System.)")
+    '
+    'cmdSP64
+    '
+    Me.cmdSP64.Anchor = System.Windows.Forms.AnchorStyles.Right
+    Me.cmdSP64.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.cmdSP64.Location = New System.Drawing.Point(246, 3)
+    Me.cmdSP64.Name = "cmdSP64"
+    Me.cmdSP64.Size = New System.Drawing.Size(75, 23)
+    Me.cmdSP64.TabIndex = 1
+    Me.cmdSP64.Text = "Browse..."
+    Me.ttInfo.SetTooltip(Me.cmdSP64, "Choose an x64 Service Pack EXE.")
+    Me.cmdSP64.UseVisualStyleBackColor = True
+    '
+    'lblImages
+    '
+    Me.lblImages.AutoSize = True
+    Me.lblImages.Location = New System.Drawing.Point(3, 6)
+    Me.lblImages.Margin = New System.Windows.Forms.Padding(3, 6, 3, 0)
+    Me.lblImages.Name = "lblImages"
+    Me.lblImages.Size = New System.Drawing.Size(90, 13)
+    Me.lblImages.TabIndex = 4
+    Me.lblImages.Text = "Image Packages:"
+    '
+    'chkSP
+    '
+    Me.chkSP.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.chkSP.AutoSize = True
+    Me.chkSP.Location = New System.Drawing.Point(3, 71)
+    Me.chkSP.Name = "chkSP"
+    Me.chkSP.Size = New System.Drawing.Size(93, 17)
+    Me.chkSP.TabIndex = 6
+    Me.chkSP.Text = "Service Pack:"
+    Me.ttInfo.SetTooltip(Me.chkSP, "Integrate Windows 7 Service Pack 1 into an RTM Image.")
+    Me.chkSP.UseVisualStyleBackColor = True
+    '
+    'lblSP64
+    '
+    Me.lblSP64.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.lblSP64.AutoSize = True
+    Me.lblSP64.Location = New System.Drawing.Point(3, 102)
+    Me.lblSP64.Name = "lblSP64"
+    Me.lblSP64.Size = New System.Drawing.Size(94, 13)
+    Me.lblSP64.TabIndex = 8
+    Me.lblSP64.Text = "x64 Service Pack:"
+    Me.lblSP64.Visible = False
+    '
+    'lvImages
+    '
+    Me.lvImages.CheckBoxes = True
+    Me.lvImages.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colIndex, Me.colName, Me.colSize})
+    Me.lvImages.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.lvImages.FullRowSelect = True
+    Me.lvImages.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
+    Me.lvImages.Location = New System.Drawing.Point(103, 3)
+    Me.lvImages.MultiSelect = False
+    Me.lvImages.Name = "lvImages"
+    Me.lvImages.ShowItemToolTips = True
+    Me.lvImages.Size = New System.Drawing.Size(318, 59)
+    Me.lvImages.TabIndex = 5
+    Me.lvImages.UseCompatibleStateImageBehavior = False
+    Me.lvImages.View = System.Windows.Forms.View.Details
+    '
+    'colIndex
+    '
+    Me.colIndex.Text = "Index"
+    '
+    'colName
+    '
+    Me.colName.Text = "Name"
+    Me.colName.Width = 120
+    '
+    'colSize
+    '
+    Me.colSize.Text = "Size"
+    Me.colSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+    '
+    'pnlSP
+    '
+    Me.pnlSP.AutoSize = True
+    Me.pnlSP.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.pnlSP.ColumnCount = 2
+    Me.pnlSP.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+    Me.pnlSP.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlSP.Controls.Add(Me.txtSP, 0, 0)
+    Me.pnlSP.Controls.Add(Me.cmdSP, 1, 0)
+    Me.pnlSP.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.pnlSP.Location = New System.Drawing.Point(100, 65)
+    Me.pnlSP.Margin = New System.Windows.Forms.Padding(0)
+    Me.pnlSP.Name = "pnlSP"
+    Me.pnlSP.RowCount = 1
+    Me.pnlSP.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+    Me.pnlSP.Size = New System.Drawing.Size(324, 29)
+    Me.pnlSP.TabIndex = 7
+    '
+    'txtSP
+    '
+    Me.txtSP.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.txtSP.Enabled = False
+    Me.txtSP.Location = New System.Drawing.Point(3, 4)
+    Me.txtSP.Name = "txtSP"
+    Me.txtSP.Size = New System.Drawing.Size(237, 20)
+    Me.txtSP.TabIndex = 0
+    Me.ttInfo.SetTooltip(Me.txtSP, "Windows 7 Service Pack 1 installer EXE." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(Note that x64 Integration requires a 64" & _
+        "-bit Operating System.)")
+    '
+    'cmdSP
+    '
+    Me.cmdSP.Anchor = System.Windows.Forms.AnchorStyles.Right
+    Me.cmdSP.Enabled = False
+    Me.cmdSP.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.cmdSP.Location = New System.Drawing.Point(246, 3)
+    Me.cmdSP.Name = "cmdSP"
+    Me.cmdSP.Size = New System.Drawing.Size(75, 23)
+    Me.cmdSP.TabIndex = 1
+    Me.cmdSP.Text = "Browse..."
+    Me.ttInfo.SetTooltip(Me.cmdSP, "Choose a Service Pack EXE.")
+    Me.cmdSP.UseVisualStyleBackColor = True
+    '
+    'pnlUpdates
+    '
+    Me.pnlUpdates.ColumnCount = 2
+    Me.pnlUpdates.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100.0!))
+    Me.pnlUpdates.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+    Me.pnlUpdates.Controls.Add(Me.pnlMSU, 1, 1)
+    Me.pnlUpdates.Controls.Add(Me.lblMSU, 0, 0)
+    Me.pnlUpdates.Controls.Add(Me.lvMSU, 1, 0)
+    Me.pnlUpdates.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.pnlUpdates.Location = New System.Drawing.Point(0, 0)
+    Me.pnlUpdates.Margin = New System.Windows.Forms.Padding(0)
+    Me.pnlUpdates.Name = "pnlUpdates"
+    Me.pnlUpdates.RowCount = 2
+    Me.pnlUpdates.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+    Me.pnlUpdates.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
+    Me.pnlUpdates.Size = New System.Drawing.Size(424, 158)
+    Me.pnlUpdates.TabIndex = 0
+    '
+    'pnlMSU
+    '
+    Me.pnlMSU.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.pnlMSU.AutoSize = True
+    Me.pnlMSU.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.pnlMSU.ColumnCount = 4
+    Me.pnlMSU.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlMSU.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+    Me.pnlMSU.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlMSU.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlMSU.Controls.Add(Me.cmdAddMSU, 0, 0)
+    Me.pnlMSU.Controls.Add(Me.cmdClearMSU, 3, 0)
+    Me.pnlMSU.Controls.Add(Me.cmdRemMSU, 2, 0)
+    Me.pnlMSU.Location = New System.Drawing.Point(100, 128)
+    Me.pnlMSU.Margin = New System.Windows.Forms.Padding(0)
+    Me.pnlMSU.Name = "pnlMSU"
+    Me.pnlMSU.RowCount = 1
+    Me.pnlMSU.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+    Me.pnlMSU.Size = New System.Drawing.Size(324, 29)
+    Me.pnlMSU.TabIndex = 12
+    '
+    'cmdAddMSU
+    '
+    Me.cmdAddMSU.Anchor = System.Windows.Forms.AnchorStyles.None
+    Me.cmdAddMSU.AutoSize = True
+    Me.cmdAddMSU.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.cmdAddMSU.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.cmdAddMSU.Location = New System.Drawing.Point(3, 3)
+    Me.cmdAddMSU.Name = "cmdAddMSU"
+    Me.cmdAddMSU.Padding = New System.Windows.Forms.Padding(0, 0, 0, 1)
+    Me.cmdAddMSU.Size = New System.Drawing.Size(92, 23)
+    Me.cmdAddMSU.TabIndex = 0
+    Me.cmdAddMSU.Text = "Add Updates..."
+    Me.ttInfo.SetTooltip(Me.cmdAddMSU, "Add MSU or CAB updates.")
+    Me.cmdAddMSU.UseVisualStyleBackColor = True
+    '
+    'cmdClearMSU
+    '
+    Me.cmdClearMSU.Anchor = System.Windows.Forms.AnchorStyles.None
+    Me.cmdClearMSU.AutoSize = True
+    Me.cmdClearMSU.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.cmdClearMSU.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.cmdClearMSU.Location = New System.Drawing.Point(233, 3)
+    Me.cmdClearMSU.Name = "cmdClearMSU"
+    Me.cmdClearMSU.Padding = New System.Windows.Forms.Padding(0, 0, 0, 1)
+    Me.cmdClearMSU.Size = New System.Drawing.Size(88, 23)
+    Me.cmdClearMSU.TabIndex = 3
+    Me.cmdClearMSU.Text = "Clear Updates"
+    Me.ttInfo.SetTooltip(Me.cmdClearMSU, "Clear the list of Windows Updates.")
+    Me.cmdClearMSU.UseVisualStyleBackColor = True
+    '
+    'cmdRemMSU
+    '
+    Me.cmdRemMSU.Anchor = System.Windows.Forms.AnchorStyles.None
+    Me.cmdRemMSU.AutoSize = True
+    Me.cmdRemMSU.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.cmdRemMSU.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.cmdRemMSU.Location = New System.Drawing.Point(123, 3)
+    Me.cmdRemMSU.Name = "cmdRemMSU"
+    Me.cmdRemMSU.Padding = New System.Windows.Forms.Padding(0, 0, 0, 1)
+    Me.cmdRemMSU.Size = New System.Drawing.Size(104, 23)
+    Me.cmdRemMSU.TabIndex = 2
+    Me.cmdRemMSU.Text = "Remove Updates"
+    Me.ttInfo.SetTooltip(Me.cmdRemMSU, "Remove the selected items from the list of Windows Updates.")
+    Me.cmdRemMSU.UseVisualStyleBackColor = True
+    '
+    'lblMSU
+    '
+    Me.lblMSU.AutoSize = True
+    Me.lblMSU.Location = New System.Drawing.Point(3, 6)
+    Me.lblMSU.Margin = New System.Windows.Forms.Padding(3, 6, 3, 0)
+    Me.lblMSU.Name = "lblMSU"
+    Me.lblMSU.Size = New System.Drawing.Size(53, 13)
+    Me.lblMSU.TabIndex = 10
+    Me.lblMSU.Text = "Updates: "
+    '
+    'lvMSU
+    '
+    Me.lvMSU.AllowDrop = True
+    Me.lvMSU.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colUpdate, Me.colType})
+    Me.lvMSU.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.lvMSU.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
+    Me.lvMSU.HideSelection = False
+    Me.lvMSU.LargeImageList = Me.imlUpdates
+    Me.lvMSU.Location = New System.Drawing.Point(103, 3)
+    Me.lvMSU.Name = "lvMSU"
+    Me.lvMSU.ShowItemToolTips = True
+    Me.lvMSU.Size = New System.Drawing.Size(318, 122)
+    Me.lvMSU.SmallImageList = Me.imlUpdates
+    Me.lvMSU.TabIndex = 11
+    Me.lvMSU.UseCompatibleStateImageBehavior = False
+    Me.lvMSU.View = System.Windows.Forms.View.Details
+    '
+    'colUpdate
+    '
+    Me.colUpdate.Text = "Windows Update"
+    Me.colUpdate.Width = 229
+    '
+    'colType
+    '
+    Me.colType.Text = "Type"
+    Me.colType.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+    Me.colType.Width = 75
+    '
+    'expOutput
+    '
+    Me.expOutput.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.expOutput.AutoSize = True
+    Me.expOutput.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.expOutput.Location = New System.Drawing.Point(3, 5)
+    Me.expOutput.Name = "expOutput"
+    Me.expOutput.Open = False
+    Me.expOutput.Size = New System.Drawing.Size(19, 19)
+    Me.expOutput.TabIndex = 4
+    Me.ttInfo.SetTooltip(Me.expOutput, "Show Output consoles.")
+    '
     'ttInfo
     '
     Me.ttInfo.AutoPopDelay = 30000
@@ -989,7 +1050,7 @@ Partial Class frmMain
     Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
     Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
     Me.CancelButton = Me.cmdClose
-    Me.ClientSize = New System.Drawing.Size(424, 656)
+    Me.ClientSize = New System.Drawing.Size(424, 757)
     Me.Controls.Add(Me.pnlSlips7ream)
     Me.Icon = Global.Slips7ream.My.Resources.Resources.icon
     Me.MinimumSize = New System.Drawing.Size(440, 520)
@@ -997,14 +1058,8 @@ Partial Class frmMain
     Me.Text = "SLIPS7REAM - Windows 7 Image Slipstream Utility"
     Me.pnlSlips7ream.ResumeLayout(False)
     Me.pnlSlips7ream.PerformLayout()
-    Me.pnlSP64.ResumeLayout(False)
-    Me.pnlSP64.PerformLayout()
-    Me.pnlMSU.ResumeLayout(False)
-    Me.pnlMSU.PerformLayout()
     Me.pnlWIM.ResumeLayout(False)
     Me.pnlWIM.PerformLayout()
-    Me.pnlSP.ResumeLayout(False)
-    Me.pnlSP.PerformLayout()
     Me.pnlBottom.ResumeLayout(False)
     Me.pnlBottom.PerformLayout()
     Me.pnlISO.ResumeLayout(False)
@@ -1018,6 +1073,20 @@ Partial Class frmMain
     Me.pnlMerge.ResumeLayout(False)
     Me.pnlMerge.PerformLayout()
     CType(Me.pctTitle, System.ComponentModel.ISupportInitialize).EndInit()
+    Me.spltSlips7ream.Panel1.ResumeLayout(False)
+    Me.spltSlips7ream.Panel2.ResumeLayout(False)
+    CType(Me.spltSlips7ream, System.ComponentModel.ISupportInitialize).EndInit()
+    Me.spltSlips7ream.ResumeLayout(False)
+    Me.pnlPackages.ResumeLayout(False)
+    Me.pnlPackages.PerformLayout()
+    Me.pnlSP64.ResumeLayout(False)
+    Me.pnlSP64.PerformLayout()
+    Me.pnlSP.ResumeLayout(False)
+    Me.pnlSP.PerformLayout()
+    Me.pnlUpdates.ResumeLayout(False)
+    Me.pnlUpdates.PerformLayout()
+    Me.pnlMSU.ResumeLayout(False)
+    Me.pnlMSU.PerformLayout()
     Me.ResumeLayout(False)
 
   End Sub
@@ -1091,5 +1160,8 @@ Partial Class frmMain
   Friend WithEvents mnuSpacer As System.Windows.Forms.MenuItem
   Friend WithEvents mnuSelectAll As System.Windows.Forms.MenuItem
   Friend WithEvents cmdOpenFolder As System.Windows.Forms.Button
+  Friend WithEvents spltSlips7ream As SplitContainerEx
+  Friend WithEvents pnlPackages As System.Windows.Forms.TableLayoutPanel
+  Friend WithEvents pnlUpdates As System.Windows.Forms.TableLayoutPanel
 
 End Class

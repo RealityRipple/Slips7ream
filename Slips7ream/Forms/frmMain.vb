@@ -689,10 +689,13 @@
           SetStatus("Reading Update Information...")
         End If
         lvMSU.SuspendLayout()
-        For Each sUpdate As String In cdlBrowse.FileNames
-          If FileCount > 2 Then pbTotal.Value += 1
-          Application.DoEvents()
-          Dim addRet = AddToUpdates(sUpdate)
+        For I As Integer = 0 To cdlBrowse.FileNames.Length - 1
+          Dim sUpdate As String = cdlBrowse.FileNames(I)
+          If FileCount > 2 Then
+            pbTotal.Value += 1
+            Application.DoEvents()
+          End If
+          Dim addRet As AddResult = AddToUpdates(sUpdate)
           If Not addRet.Success Then FailCollection.Add(IO.Path.GetFileNameWithoutExtension(sUpdate) & ": " & addRet.FailReason)
         Next
         lvMSU.ResumeLayout(True)

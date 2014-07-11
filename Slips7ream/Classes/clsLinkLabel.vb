@@ -1,6 +1,6 @@
 ﻿Imports System.ComponentModel
 Imports System.Runtime.InteropServices
-<DefaultEvent("LinkClicked"), DefaultProperty("LabelColor")>
+<DefaultEvent("LinkClicked"), DefaultProperty("LabelColor"), ToolboxBitmap(GetType(System.Windows.Forms.LinkLabel))>
 Public Class LinkLabel
   Inherits System.Windows.Forms.Label
   <DllImport("user32.dll")>
