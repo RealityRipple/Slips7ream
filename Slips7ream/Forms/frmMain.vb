@@ -129,6 +129,9 @@
       FreshDraw()
     End If
   End Sub
+  Private Sub spltSlips7ream_SplitterMoved(sender As System.Object, e As System.Windows.Forms.SplitterEventArgs) Handles spltSlips7ream.SplitterMoved
+    RedoColumns()
+  End Sub
   Private Sub frmMain_FormClosing(sender As Object, e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
     StopRun = True
     If My.Computer.FileSystem.DirectoryExists(WorkDir) Then
@@ -249,13 +252,14 @@
     End If
   End Sub
   Private Sub RedoColumns()
+    If lvMSU.Columns.Count = 0 Then Exit Sub
     Dim msuSize As Integer = lvMSU.ClientSize.Width - lvMSU.Columns(1).Width - 1
     If Not lvMSU.Columns(0).Width = msuSize Then lvMSU.Columns(0).Width = msuSize
     Dim imagesSize As Integer = lvImages.ClientSize.Width - (lvImages.Columns(0).Width + lvImages.Columns(2).Width) - 1
     If Not lvImages.Columns(1).Width = imagesSize Then lvImages.Columns(1).Width = imagesSize
     If cmdAddMSU.Enabled Then
-      cmdRemMSU.Enabled = lvMSU.SelectedItems.Count > 0
-      cmdClearMSU.Enabled = lvMSU.Items.Count > 0
+      If Not cmdRemMSU.Enabled = (lvMSU.SelectedItems.Count > 0) Then cmdRemMSU.Enabled = (lvMSU.SelectedItems.Count > 0)
+      If Not cmdClearMSU.Enabled = (lvMSU.Items.Count > 0) Then cmdClearMSU.Enabled = (lvMSU.Items.Count > 0)
     End If
   End Sub
   Private Delegate Sub ToggleInputsInvoker(Enabled As Boolean)
@@ -383,6 +387,7 @@
   Private Sub txtWIM_TextChanged(sender As System.Object, e As System.EventArgs) Handles txtWIM.TextChanged
     If Not IO.File.Exists(txtWIM.Text) Then Exit Sub
     RunComplete = False
+    StopRun = False
     cmdBegin.Text = "Begin"
     cmdOpenFolder.Visible = False
     If tLister Is Nothing Then
@@ -952,6 +957,7 @@
   End Sub
   Private Sub txtMerge_TextChanged(sender As System.Object, e As System.EventArgs) Handles txtMerge.TextChanged
     If Not IO.File.Exists(txtMerge.Text) Then Exit Sub
+    StopRun = False
     If tLister2 Is Nothing Then
       tLister2 = New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf ParseImageList))
       tLister2.Start("MERGE")
