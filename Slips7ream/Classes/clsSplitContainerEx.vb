@@ -43,7 +43,7 @@ Public Class SplitContainerEx
     End If
   End Sub
   Protected Overrides Sub OnMouseDown(e As System.Windows.Forms.MouseEventArgs)
-    If Not c_ResizeRect Then MyBase.IsSplitterFixed = True : c_Focus = True : MyBase.Invalidate(MyBase.SplitterRectangle)
+    If Not c_ResizeRect And e.Button = Windows.Forms.MouseButtons.Left Then MyBase.IsSplitterFixed = True : c_Focus = True : MyBase.Invalidate(MyBase.SplitterRectangle)
     MyBase.OnMouseDown(e)
   End Sub
   Protected Overrides Sub OnMouseMove(e As System.Windows.Forms.MouseEventArgs)
@@ -74,7 +74,7 @@ Public Class SplitContainerEx
     End If
   End Sub
   Protected Overrides Sub OnMouseUp(e As System.Windows.Forms.MouseEventArgs)
-    If Not c_ResizeRect Then MyBase.IsSplitterFixed = False : c_Focus = False : MyBase.Invalidate(MyBase.SplitterRectangle)
+    If Not c_ResizeRect And e.Button = Windows.Forms.MouseButtons.Left Then MyBase.IsSplitterFixed = False : c_Focus = False : MyBase.Invalidate(MyBase.SplitterRectangle)
     MyBase.OnMouseUp(e)
   End Sub
   Protected Overrides Sub OnMouseLeave(e As System.EventArgs)
