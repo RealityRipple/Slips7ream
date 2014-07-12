@@ -717,6 +717,7 @@ Partial Class frmMain
     'spltSlips7ream
     '
     Me.pnlSlips7ream.SetColumnSpan(Me.spltSlips7ream, 2)
+    Me.spltSlips7ream.Cursor = System.Windows.Forms.Cursors.Default
     Me.spltSlips7ream.Dock = System.Windows.Forms.DockStyle.Fill
     Me.spltSlips7ream.DrawGrabHandle = True
     Me.spltSlips7ream.Location = New System.Drawing.Point(0, 98)
@@ -727,17 +728,18 @@ Partial Class frmMain
     'spltSlips7ream.Panel1
     '
     Me.spltSlips7ream.Panel1.Controls.Add(Me.pnlPackages)
-    Me.spltSlips7ream.Panel1MinSize = 110
+    Me.spltSlips7ream.Panel1MinSize = 97
     '
     'spltSlips7ream.Panel2
     '
     Me.spltSlips7ream.Panel2.Controls.Add(Me.pnlUpdates)
-    Me.spltSlips7ream.Panel2MinSize = 80
+    Me.spltSlips7ream.Panel2MinSize = 90
     Me.spltSlips7ream.ResizeRectangle = False
     Me.spltSlips7ream.Size = New System.Drawing.Size(424, 285)
-    Me.spltSlips7ream.SplitterDistance = 123
+    Me.spltSlips7ream.SplitterDistance = 181
     Me.spltSlips7ream.SplitterIncrement = 16
     Me.spltSlips7ream.TabIndex = 4
+    Me.ttInfo.SetTooltip(Me.spltSlips7ream, "Click and Drag to resize the Image Packages and Updates boxes.")
     '
     'pnlPackages
     '
@@ -758,7 +760,7 @@ Partial Class frmMain
     Me.pnlPackages.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
     Me.pnlPackages.RowStyles.Add(New System.Windows.Forms.RowStyle())
     Me.pnlPackages.RowStyles.Add(New System.Windows.Forms.RowStyle())
-    Me.pnlPackages.Size = New System.Drawing.Size(424, 123)
+    Me.pnlPackages.Size = New System.Drawing.Size(424, 181)
     Me.pnlPackages.TabIndex = 0
     '
     'pnlSP64
@@ -771,7 +773,7 @@ Partial Class frmMain
     Me.pnlSP64.Controls.Add(Me.txtSP64, 0, 0)
     Me.pnlSP64.Controls.Add(Me.cmdSP64, 1, 0)
     Me.pnlSP64.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.pnlSP64.Location = New System.Drawing.Point(100, 94)
+    Me.pnlSP64.Location = New System.Drawing.Point(100, 152)
     Me.pnlSP64.Margin = New System.Windows.Forms.Padding(0)
     Me.pnlSP64.Name = "pnlSP64"
     Me.pnlSP64.RowCount = 1
@@ -816,7 +818,7 @@ Partial Class frmMain
     '
     Me.chkSP.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.chkSP.AutoSize = True
-    Me.chkSP.Location = New System.Drawing.Point(3, 71)
+    Me.chkSP.Location = New System.Drawing.Point(3, 129)
     Me.chkSP.Name = "chkSP"
     Me.chkSP.Size = New System.Drawing.Size(93, 17)
     Me.chkSP.TabIndex = 2
@@ -828,7 +830,7 @@ Partial Class frmMain
     '
     Me.lblSP64.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblSP64.AutoSize = True
-    Me.lblSP64.Location = New System.Drawing.Point(3, 102)
+    Me.lblSP64.Location = New System.Drawing.Point(3, 160)
     Me.lblSP64.Name = "lblSP64"
     Me.lblSP64.Size = New System.Drawing.Size(94, 13)
     Me.lblSP64.TabIndex = 4
@@ -846,7 +848,7 @@ Partial Class frmMain
     Me.lvImages.MultiSelect = False
     Me.lvImages.Name = "lvImages"
     Me.lvImages.ShowItemToolTips = True
-    Me.lvImages.Size = New System.Drawing.Size(318, 59)
+    Me.lvImages.Size = New System.Drawing.Size(318, 117)
     Me.lvImages.TabIndex = 1
     Me.lvImages.UseCompatibleStateImageBehavior = False
     Me.lvImages.View = System.Windows.Forms.View.Details
@@ -875,7 +877,7 @@ Partial Class frmMain
     Me.pnlSP.Controls.Add(Me.txtSP, 0, 0)
     Me.pnlSP.Controls.Add(Me.cmdSP, 1, 0)
     Me.pnlSP.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.pnlSP.Location = New System.Drawing.Point(100, 65)
+    Me.pnlSP.Location = New System.Drawing.Point(100, 123)
     Me.pnlSP.Margin = New System.Windows.Forms.Padding(0)
     Me.pnlSP.Name = "pnlSP"
     Me.pnlSP.RowCount = 1
@@ -922,7 +924,7 @@ Partial Class frmMain
     Me.pnlUpdates.RowCount = 2
     Me.pnlUpdates.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
     Me.pnlUpdates.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30.0!))
-    Me.pnlUpdates.Size = New System.Drawing.Size(424, 158)
+    Me.pnlUpdates.Size = New System.Drawing.Size(424, 100)
     Me.pnlUpdates.TabIndex = 0
     '
     'pnlMSU
@@ -938,7 +940,7 @@ Partial Class frmMain
     Me.pnlMSU.Controls.Add(Me.cmdAddMSU, 0, 0)
     Me.pnlMSU.Controls.Add(Me.cmdClearMSU, 3, 0)
     Me.pnlMSU.Controls.Add(Me.cmdRemMSU, 2, 0)
-    Me.pnlMSU.Location = New System.Drawing.Point(100, 128)
+    Me.pnlMSU.Location = New System.Drawing.Point(100, 70)
     Me.pnlMSU.Margin = New System.Windows.Forms.Padding(0)
     Me.pnlMSU.Name = "pnlMSU"
     Me.pnlMSU.RowCount = 1
@@ -1012,7 +1014,7 @@ Partial Class frmMain
     Me.lvMSU.Location = New System.Drawing.Point(103, 3)
     Me.lvMSU.Name = "lvMSU"
     Me.lvMSU.ShowItemToolTips = True
-    Me.lvMSU.Size = New System.Drawing.Size(318, 122)
+    Me.lvMSU.Size = New System.Drawing.Size(318, 64)
     Me.lvMSU.SmallImageList = Me.imlUpdates
     Me.lvMSU.TabIndex = 1
     Me.lvMSU.UseCompatibleStateImageBehavior = False

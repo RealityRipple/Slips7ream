@@ -462,6 +462,10 @@
         lblSP64.Enabled = chkSP.Enabled
         txtSP64.Enabled = chkSP.Enabled
         cmdSP64.Enabled = chkSP.Enabled
+        If spltSlips7ream.Panel1MinSize = 97 Then
+          spltSlips7ream.SplitterDistance += 29
+          spltSlips7ream.Panel1MinSize = 126
+        End If
       Else
         chkSP.Text = "Service Pack:"
         lblSP64.Visible = False
@@ -469,6 +473,10 @@
         lblSP64.Enabled = False
         txtSP64.Enabled = False
         cmdSP64.Enabled = False
+        If spltSlips7ream.Panel1MinSize = 126 Then
+          spltSlips7ream.Panel1MinSize = 97
+          spltSlips7ream.SplitterDistance -= 29
+        End If
       End If
     Else
       chkSP.Text = "Service Pack:"
@@ -477,6 +485,10 @@
       lblSP64.Enabled = False
       txtSP64.Enabled = False
       cmdSP64.Enabled = False
+      If spltSlips7ream.Panel1MinSize = 126 Then
+        spltSlips7ream.Panel1MinSize = 97
+        spltSlips7ream.SplitterDistance -= 29
+      End If
     End If
     RedoColumns()
   End Sub
