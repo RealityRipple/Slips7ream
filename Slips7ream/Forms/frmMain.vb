@@ -456,7 +456,7 @@
         If has86 And has64 Then Exit For
       Next
       If has86 And has64 Then
-        chkSP.Text = "x86 Service Pack:"
+        chkSP.Text = "x86 &Service Pack:"
         lblSP64.Visible = True
         pnlSP64.Visible = True
         lblSP64.Enabled = chkSP.Enabled
@@ -467,7 +467,7 @@
           spltSlips7ream.Panel1MinSize = 126
         End If
       Else
-        chkSP.Text = "Service Pack:"
+        chkSP.Text = "&Service Pack:"
         lblSP64.Visible = False
         pnlSP64.Visible = False
         lblSP64.Enabled = False
@@ -479,7 +479,7 @@
         End If
       End If
     Else
-      chkSP.Text = "Service Pack:"
+      chkSP.Text = "&Service Pack:"
       lblSP64.Visible = False
       pnlSP64.Visible = False
       lblSP64.Enabled = False
