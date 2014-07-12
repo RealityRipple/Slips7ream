@@ -714,13 +714,12 @@
 
   Private Sub lvMSU_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles lvMSU.KeyDown
     If e.KeyCode = Keys.Delete Then
-      If lvMSU.SelectedItems.Count > 0 Then
-        If e.Shift Then
-          cmdClearMSU_Click(cmdClearMSU, New EventArgs)
-        Else
+      If e.Shift Then
+        cmdClearMSU_Click(cmdClearMSU, New EventArgs)
+      Else
+        If lvMSU.SelectedItems.Count > 0 Then
           cmdRemMSU_Click(cmdRemMSU, New EventArgs)
         End If
-
       End If
     End If
   End Sub
