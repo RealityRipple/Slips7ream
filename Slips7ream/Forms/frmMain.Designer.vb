@@ -400,7 +400,7 @@ Partial Class frmMain
     Me.cmdAddMSU.Size = New System.Drawing.Size(92, 23)
     Me.cmdAddMSU.TabIndex = 0
     Me.cmdAddMSU.Text = "&Add Updates..."
-    Me.ttInfo.SetTooltip(Me.cmdAddMSU, "Add MSU or CAB updates.")
+    Me.ttInfo.SetTooltip(Me.cmdAddMSU, "Add MSU, CAB, MLC, or Language Pack EXE updates.")
     Me.cmdAddMSU.UseVisualStyleBackColor = True
     '
     'cmdClearMSU
