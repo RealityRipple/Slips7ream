@@ -36,7 +36,6 @@ Partial Class frmUpdateProps
     Me.lblKBLink = New Slips7ream.LinkLabel()
     Me.cmdClose = New System.Windows.Forms.Button()
     Me.ttLink = New Slips7ream.ToolTip(Me.components)
-    Me.Icon = My.Resources.icon
     Me.pnlUpdateData.SuspendLayout()
     Me.SuspendLayout()
     '
@@ -174,11 +173,12 @@ Partial Class frmUpdateProps
     '
     Me.cmdClose.Anchor = System.Windows.Forms.AnchorStyles.Right
     Me.cmdClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
+    Me.cmdClose.FlatStyle = System.Windows.Forms.FlatStyle.System
     Me.cmdClose.Location = New System.Drawing.Point(206, 130)
     Me.cmdClose.Name = "cmdClose"
     Me.cmdClose.Size = New System.Drawing.Size(75, 23)
     Me.cmdClose.TabIndex = 10
-    Me.cmdClose.Text = "Close"
+    Me.cmdClose.Text = "&Close"
     Me.cmdClose.UseVisualStyleBackColor = True
     '
     'frmUpdateProps
@@ -190,6 +190,7 @@ Partial Class frmUpdateProps
     Me.ClientSize = New System.Drawing.Size(284, 156)
     Me.Controls.Add(Me.pnlUpdateData)
     Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
+    Me.Icon = Global.Slips7ream.My.Resources.Resources.icon
     Me.MaximizeBox = False
     Me.MinimizeBox = False
     Me.Name = "frmUpdateProps"

@@ -30,7 +30,6 @@ Partial Class frmPackageProps
     Me.lblDesc = New System.Windows.Forms.Label()
     Me.txtDesc = New System.Windows.Forms.TextBox()
     Me.lblSize = New System.Windows.Forms.Label()
-    Me.Icon = My.Resources.icon
     Me.txtSize = New System.Windows.Forms.TextBox()
     Me.lblArchitecture = New System.Windows.Forms.Label()
     Me.txtArchitecture = New System.Windows.Forms.TextBox()
@@ -169,7 +168,7 @@ Partial Class frmPackageProps
     Me.lblName.Name = "lblName"
     Me.lblName.Size = New System.Drawing.Size(38, 13)
     Me.lblName.TabIndex = 2
-    Me.lblName.Text = "Name:"
+    Me.lblName.Text = "&Name:"
     '
     'txtName
     '
@@ -509,7 +508,7 @@ Partial Class frmPackageProps
     Me.lblLanguages.Name = "lblLanguages"
     Me.lblLanguages.Size = New System.Drawing.Size(63, 13)
     Me.lblLanguages.TabIndex = 36
-    Me.lblLanguages.Text = "Languages:"
+    Me.lblLanguages.Text = "&Languages:"
     '
     'txtLanguages
     '
@@ -546,20 +545,22 @@ Partial Class frmPackageProps
     'cmdClose
     '
     Me.cmdClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
+    Me.cmdClose.FlatStyle = System.Windows.Forms.FlatStyle.System
     Me.cmdClose.Location = New System.Drawing.Point(84, 3)
     Me.cmdClose.Name = "cmdClose"
     Me.cmdClose.Size = New System.Drawing.Size(75, 23)
     Me.cmdClose.TabIndex = 40
-    Me.cmdClose.Text = "Close"
+    Me.cmdClose.Text = "&Close"
     Me.cmdClose.UseVisualStyleBackColor = True
     '
     'cmdSave
     '
+    Me.cmdSave.FlatStyle = System.Windows.Forms.FlatStyle.System
     Me.cmdSave.Location = New System.Drawing.Point(3, 3)
     Me.cmdSave.Name = "cmdSave"
     Me.cmdSave.Size = New System.Drawing.Size(75, 23)
     Me.cmdSave.TabIndex = 39
-    Me.cmdSave.Text = "Save"
+    Me.cmdSave.Text = "&Save"
     Me.cmdSave.UseVisualStyleBackColor = True
     '
     'frmPackageProps
@@ -571,6 +572,7 @@ Partial Class frmPackageProps
     Me.ClientSize = New System.Drawing.Size(304, 522)
     Me.Controls.Add(Me.pnlProps)
     Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
+    Me.Icon = Global.Slips7ream.My.Resources.Resources.icon
     Me.MaximizeBox = False
     Me.MinimizeBox = False
     Me.Name = "frmPackageProps"

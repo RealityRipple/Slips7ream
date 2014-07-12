@@ -347,10 +347,10 @@
       lblImages.Enabled = Enabled
       lvImages.Enabled = Enabled
       If Enabled Then
-        cmdClose.Text = "Close"
+        cmdClose.Text = "&Close"
         lblActivity.Text = "Idle"
       Else
-        cmdClose.Text = "Cancel"
+        cmdClose.Text = "&Cancel"
       End If
       cmdConfig.Visible = Enabled
       cmdClose.Enabled = True
@@ -715,7 +715,12 @@
   Private Sub lvMSU_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles lvMSU.KeyDown
     If e.KeyCode = Keys.Delete Then
       If lvMSU.SelectedItems.Count > 0 Then
-        cmdRemMSU_Click(cmdRemMSU, New EventArgs)
+        If e.Shift Then
+          cmdClearMSU_Click(cmdClearMSU, New EventArgs)
+        Else
+          cmdRemMSU_Click(cmdRemMSU, New EventArgs)
+        End If
+
       End If
     End If
   End Sub
@@ -2152,7 +2157,7 @@
     End Select
   End Sub
   Private Sub cmdClose_Click(sender As System.Object, e As System.EventArgs) Handles cmdClose.Click
-    If cmdClose.Text = "Close" Then
+    If cmdClose.Text = "&Close" Then
       Me.Close()
     Else
       If RunActivity > 0 Then

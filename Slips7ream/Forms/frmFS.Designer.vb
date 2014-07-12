@@ -59,7 +59,7 @@ Partial Class frmFS
     Me.lblDescription.AutoSize = True
     Me.lblDescription.Location = New System.Drawing.Point(3, 0)
     Me.lblDescription.Name = "lblDescription"
-    Me.lblDescription.Size = New System.Drawing.Size(466, 65)
+    Me.lblDescription.Size = New System.Drawing.Size(464, 65)
     Me.lblDescription.TabIndex = 0
     Me.lblDescription.Text = resources.GetString("lblDescription.Text")
     '
@@ -72,7 +72,7 @@ Partial Class frmFS
     Me.txtLargeFiles.Name = "txtLargeFiles"
     Me.txtLargeFiles.ReadOnly = True
     Me.txtLargeFiles.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-    Me.txtLargeFiles.Size = New System.Drawing.Size(472, 72)
+    Me.txtLargeFiles.Size = New System.Drawing.Size(472, 78)
     Me.txtLargeFiles.TabIndex = 1
     '
     'pnlButtons
@@ -89,7 +89,8 @@ Partial Class frmFS
     Me.pnlButtons.Controls.Add(Me.cmdUseUDF102, 1, 0)
     Me.pnlButtons.Controls.Add(Me.cmdUseCurrent, 2, 0)
     Me.pnlButtons.Controls.Add(Me.cmdCancel, 3, 0)
-    Me.pnlButtons.Location = New System.Drawing.Point(77, 146)
+    Me.pnlButtons.Location = New System.Drawing.Point(80, 149)
+    Me.pnlButtons.Margin = New System.Windows.Forms.Padding(0)
     Me.pnlButtons.Name = "pnlButtons"
     Me.pnlButtons.RowCount = 1
     Me.pnlButtons.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
@@ -104,7 +105,7 @@ Partial Class frmFS
     Me.cmdUseUDF.Name = "cmdUseUDF"
     Me.cmdUseUDF.Size = New System.Drawing.Size(75, 23)
     Me.cmdUseUDF.TabIndex = 0
-    Me.cmdUseUDF.Text = "Use UDF"
+    Me.cmdUseUDF.Text = "Use U&DF"
     Me.ttFS.SetToolTip(Me.cmdUseUDF, "Use Universal Disk Format, or ISO/IEC 13346. Superior standard, but less compatib" & _
         "le with older hardware." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "This is the best option for a modern system.")
     Me.cmdUseUDF.UseVisualStyleBackColor = True
@@ -117,7 +118,7 @@ Partial Class frmFS
     Me.cmdUseUDF102.Name = "cmdUseUDF102"
     Me.cmdUseUDF102.Size = New System.Drawing.Size(89, 23)
     Me.cmdUseUDF102.TabIndex = 1
-    Me.cmdUseUDF102.Text = "Use UDF 1.02"
+    Me.cmdUseUDF102.Text = "Use &UDF 1.02"
     Me.ttFS.SetToolTip(Me.cmdUseUDF102, "Use legacy UDF, which is understood by most drives. Compatible with old hardware." & _
         "" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "This is a good option if your disc drive is old and limited.")
     Me.cmdUseUDF102.UseVisualStyleBackColor = True
@@ -130,7 +131,7 @@ Partial Class frmFS
     Me.cmdUseCurrent.Name = "cmdUseCurrent"
     Me.cmdUseCurrent.Size = New System.Drawing.Size(93, 23)
     Me.cmdUseCurrent.TabIndex = 2
-    Me.cmdUseCurrent.Text = "Use Current FS"
+    Me.cmdUseCurrent.Text = "Use Current &FS"
     Me.ttFS.SetToolTip(Me.cmdUseCurrent, "Use the File System you already selected, damn the consequences.")
     Me.cmdUseCurrent.UseVisualStyleBackColor = True
     '
@@ -143,7 +144,7 @@ Partial Class frmFS
     Me.cmdCancel.Name = "cmdCancel"
     Me.cmdCancel.Size = New System.Drawing.Size(117, 25)
     Me.cmdCancel.TabIndex = 3
-    Me.cmdCancel.Text = "Cancel ISO Creation"
+    Me.cmdCancel.Text = "&Cancel ISO Creation"
     Me.ttFS.SetToolTip(Me.cmdCancel, "Don't make an ISO, cancel any further action.")
     Me.cmdCancel.UseVisualStyleBackColor = True
     '

@@ -79,26 +79,28 @@ Partial Class frmConfig
     Me.lblTimeout.Name = "lblTimeout"
     Me.lblTimeout.Size = New System.Drawing.Size(98, 13)
     Me.lblTimeout.TabIndex = 6
-    Me.lblTimeout.Text = "Command Timeout:"
+    Me.lblTimeout.Text = "Command Time&out:"
     '
     'cmdClose
     '
     Me.cmdClose.Anchor = System.Windows.Forms.AnchorStyles.Right
+    Me.cmdClose.FlatStyle = System.Windows.Forms.FlatStyle.System
     Me.cmdClose.Location = New System.Drawing.Point(320, 154)
     Me.cmdClose.Name = "cmdClose"
     Me.cmdClose.Size = New System.Drawing.Size(75, 23)
     Me.cmdClose.TabIndex = 9
-    Me.cmdClose.Text = "Close"
+    Me.cmdClose.Text = "&Close"
     Me.cmdClose.UseVisualStyleBackColor = True
     '
     'cmdSave
     '
     Me.cmdSave.Anchor = System.Windows.Forms.AnchorStyles.Right
+    Me.cmdSave.FlatStyle = System.Windows.Forms.FlatStyle.System
     Me.cmdSave.Location = New System.Drawing.Point(239, 154)
     Me.cmdSave.Name = "cmdSave"
     Me.cmdSave.Size = New System.Drawing.Size(75, 23)
     Me.cmdSave.TabIndex = 8
-    Me.cmdSave.Text = "Save"
+    Me.cmdSave.Text = "&Save"
     Me.cmdSave.UseVisualStyleBackColor = True
     '
     'txtTimeout
@@ -118,7 +120,7 @@ Partial Class frmConfig
     Me.lblTemp.Name = "lblTemp"
     Me.lblTemp.Size = New System.Drawing.Size(107, 13)
     Me.lblTemp.TabIndex = 3
-    Me.lblTemp.Text = "Temp Directory Path:"
+    Me.lblTemp.Text = "&Temp Directory Path:"
     '
     'txtTemp
     '
@@ -137,7 +139,7 @@ Partial Class frmConfig
     Me.cmdTemp.Name = "cmdTemp"
     Me.cmdTemp.Size = New System.Drawing.Size(75, 23)
     Me.cmdTemp.TabIndex = 5
-    Me.cmdTemp.Text = "Browse..."
+    Me.cmdTemp.Text = "B&rowse..."
     Me.cmdTemp.UseVisualStyleBackColor = True
     '
     'lblWhitelist
@@ -148,7 +150,7 @@ Partial Class frmConfig
     Me.lblWhitelist.Name = "lblWhitelist"
     Me.lblWhitelist.Size = New System.Drawing.Size(108, 13)
     Me.lblWhitelist.TabIndex = 11
-    Me.lblWhitelist.Text = "x86 Update Whitelist:"
+    Me.lblWhitelist.Text = "x86 Update &Whitelist:"
     '
     'txtWhitelist
     '
@@ -174,7 +176,7 @@ Partial Class frmConfig
     Me.lblDonate.Name = "lblDonate"
     Me.lblDonate.Size = New System.Drawing.Size(89, 13)
     Me.lblDonate.TabIndex = 13
-    Me.lblDonate.Text = "Make a Donation"
+    Me.lblDonate.Text = "Make a &Donation"
     '
     'lblTimeoutS
     '
