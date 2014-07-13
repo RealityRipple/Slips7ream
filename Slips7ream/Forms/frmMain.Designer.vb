@@ -272,6 +272,7 @@ Partial Class frmMain
     Me.pnlSP64.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
     Me.pnlSP64.Controls.Add(Me.txtSP64, 0, 0)
     Me.pnlSP64.Controls.Add(Me.cmdSP64, 1, 0)
+    Me.pnlSP64.Dock = System.Windows.Forms.DockStyle.Fill
     Me.pnlSP64.Location = New System.Drawing.Point(100, 29)
     Me.pnlSP64.Margin = New System.Windows.Forms.Padding(0)
     Me.pnlSP64.Name = "pnlSP64"
@@ -324,6 +325,7 @@ Partial Class frmMain
     Me.pnlSP.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
     Me.pnlSP.Controls.Add(Me.txtSP, 0, 0)
     Me.pnlSP.Controls.Add(Me.cmdSP, 1, 0)
+    Me.pnlSP.Dock = System.Windows.Forms.DockStyle.Fill
     Me.pnlSP.Location = New System.Drawing.Point(100, 0)
     Me.pnlSP.Margin = New System.Windows.Forms.Padding(0)
     Me.pnlSP.Name = "pnlSP"
