@@ -594,7 +594,7 @@
             Exit Sub
           End If
         End If
-        Dim addRet = AddToUpdates(Item)
+        Dim addRet As AddResult = AddToUpdates(Item)
         If Not addRet.Success Then FailCollection.Add(IO.Path.GetFileNameWithoutExtension(Item) & ": " & addRet.FailReason)
       Next
       lvMSU.ResumeLayout(True)
@@ -3166,15 +3166,15 @@
       For I As Integer = 1 To PackageCount
         Dim dismData As PackageInfoEx = GetDISMPackageData(WIMPath, I)
         Try
-          If Not String.IsNullOrEmpty(Architecture) AndAlso Not GetDISMPackageData(WIMPath, I).Architecture.Contains(Architecture) Then
-            Continue For
-          End If
+          If dismData.SPLevel > 0 Then Continue For
+          If Not String.IsNullOrEmpty(Architecture) AndAlso Not dismData.Architecture.Contains(Architecture) Then Continue For
         Catch ex As Exception
-          Continue For
+      Continue For
         End Try
         ActivePackages += 1
       Next
     End If
+    If ActivePackages = 0 Then Return True
     Dim pbMax As Integer = (ActivePackages * 3) + 14
     SetProgress(0, 0)
     SetStatus("Extracting Service Pack...")
@@ -3293,7 +3293,8 @@
       For I As Integer = 1 To PackageCount
         Dim dismData As PackageInfoEx = GetDISMPackageData(WIMPath, I)
         Try
-          If Not String.IsNullOrEmpty(Architecture) AndAlso Not GetDISMPackageData(WIMPath, I).Architecture.Contains(Architecture) Then
+          If dismData.SPLevel > 0 Then Continue For
+          If Not String.IsNullOrEmpty(Architecture) AndAlso Not dismData.Architecture.Contains(Architecture) Then
             Continue For
           End If
         Catch ex As Exception
