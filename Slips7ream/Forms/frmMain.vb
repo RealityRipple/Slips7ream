@@ -2402,7 +2402,7 @@
     Return sRet.Contains("The operation completed successfully.")
   End Function
   Private Function DiscardDISM(MountPath As String) As Boolean
-    Dim sRet As String = RunWithReturn(DismPath, "/Unmount-Wim /MountDir:" & ShortenPath(MountPath) & " /discard" & " /English")
+    Dim sRet As String = RunWithReturn(DismPath, "/Unmount-Wim /MountDir:" & ShortenPath(MountPath) & " /discard /English")
     Return sRet.Contains("The operation completed successfully.")
   End Function
 #End Region
