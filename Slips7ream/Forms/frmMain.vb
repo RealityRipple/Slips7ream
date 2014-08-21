@@ -872,6 +872,52 @@
       If msuData.DisplayName.ToLower.Contains("-kb2647753-v2-") Then
         lvItem.ForeColor = Color.Red
         ttItem &= vbNewLine & "Version 2 may not integrate correctly. SLIPS7REAM suggests using Version 4 from the Microsoft Update Catalog."
+      ElseIf msuData.DisplayName.ToLower.Contains("-kb2830477-") Then
+        Dim Req1 As Boolean = False
+        Dim Req2 As Boolean = False
+        For Each searchItem As ListViewItem In lvMSU.Items
+          If searchItem.Text.ToLower.Contains("kb2574819") Then Req1 = True
+          If searchItem.Text.ToLower.Contains("kb2857650") Then Req2 = True
+          If Req1 And Req1 Then Exit For
+        Next
+        If Not Req1 Or Not Req2 Then
+          lvItem.ForeColor = Color.Orange
+          ttItem &= vbNewLine & "Please make sure KB2574819 and KB2857650 are also integrated."
+        End If
+      ElseIf msuData.DisplayName.ToLower.Contains("-kb2574819-") Then
+        Dim Req As Boolean = False
+        For Each searchItem As ListViewItem In lvMSU.Items
+          If searchItem.Text.ToLower.Contains("kb2857650") Then
+            Req = True
+            Exit For
+          End If
+        Next
+        If Req Then
+          For Each searchItem As ListViewItem In lvMSU.Items
+            If searchItem.Text.ToLower.Contains("kb2830477") Then
+              searchItem.ForeColor = lvMSU.ForeColor
+              searchItem.ToolTipText = searchItem.ToolTipText.Substring(0, searchItem.ToolTipText.LastIndexOf(vbNewLine))
+              Exit For
+            End If
+          Next
+        End If
+      ElseIf msuData.DisplayName.ToLower.Contains("-kb2857650-") Then
+        Dim Req As Boolean = False
+        For Each searchItem As ListViewItem In lvMSU.Items
+          If searchItem.Text.ToLower.Contains("kb2574819") Then
+            Req = True
+            Exit For
+          End If
+        Next
+        If Req Then
+          For Each searchItem As ListViewItem In lvMSU.Items
+            If searchItem.Text.ToLower.Contains("kb2830477") Then
+              searchItem.ForeColor = lvMSU.ForeColor
+              searchItem.ToolTipText = searchItem.ToolTipText.Substring(0, searchItem.ToolTipText.LastIndexOf(vbNewLine))
+              Exit For
+            End If
+          Next
+        End If
       End If
       lvItem.ToolTipText = ttItem
       Select Case GetUpdateType(sUpdate)
