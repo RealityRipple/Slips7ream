@@ -1472,7 +1472,7 @@
     iTotalVal += 1
     SetTotal(iTotalVal, iTotalMax)
     SetStatus("Making Backup of Old WIM...")
-    Dim BakWIM As String = IO.Path.GetDirectoryName(WIMFile) & IO.Path.DirectorySeparatorChar & IO.Path.GetFileNameWithoutExtension(WIMFile & "_BAK.WIM")
+    Dim BakWIM As String = WorkDir & IO.Path.DirectorySeparatorChar & IO.Path.GetFileNameWithoutExtension(WIMFile & "_BAK.WIM")
     My.Computer.FileSystem.MoveFile(WIMFile, BakWIM, True)
     Try
       SetStatus("Moving Generated WIM...")
