@@ -1,5 +1,5 @@
 ﻿Public Class frmMain
-  Private StopRun As Boolean = False
+  Public StopRun As Boolean = False
   Private LangChange As Boolean = False
   Private RunComplete As Boolean = False
   Private RunActivity As Byte = 0
@@ -1467,20 +1467,28 @@
       End If
     Next
     If My.Computer.FileSystem.DirectoryExists(MergeWork) Then SlowDeleteDirectory(MergeWork, FileIO.DeleteDirectoryOption.DeleteAllContents)
-
-    SetProgress(0, 0)
+    SetProgress(0, 1)
     iTotalVal += 1
     SetTotal(iTotalVal, iTotalMax)
     SetStatus("Making Backup of Old WIM...")
     Dim BakWIM As String = WorkDir & IO.Path.DirectorySeparatorChar & IO.Path.GetFileNameWithoutExtension(WIMFile & "_BAK.WIM")
-    My.Computer.FileSystem.MoveFile(WIMFile, BakWIM, True)
-    Try
-      SetStatus("Moving Generated WIM...")
-      My.Computer.FileSystem.MoveFile(NewWIM, WIMFile, True)
-    Catch ex As Exception
+    If Not SlowCopyFile(WIMFile, BakWIM, True) Then
+      ToggleInputs(True)
+      SetStatus("Failed to back up Install WIM!")
+      Exit Sub
+    End If
+    SetStatus("Moving Generated WIM...")
+    If Not SlowCopyFile(NewWIM, WIMFile, True) Then
       SetStatus("Generated WIM Move Failed! Reverting to Old WIM...")
-      My.Computer.FileSystem.MoveFile(BakWIM, WIMFile, True)
-    End Try
+      If Not SlowCopyFile(BakWIM, WIMFile, True) Then
+        ToggleInputs(True)
+        SetStatus("Generated WIM Move Failed! Original WIM Restore Failed!")
+      Else
+        ToggleInputs(True)
+        SetStatus("Generated WIM Move Failed! Original WIM Restored.")
+      End If
+      Exit Sub
+    End If
     If My.Computer.FileSystem.FileExists(BakWIM) Then
       SetStatus("Cleaning Up Backup WIM...")
       My.Computer.FileSystem.DeleteFile(BakWIM)
@@ -1704,8 +1712,12 @@
           If Not My.Computer.FileSystem.DirectoryExists(sUEFIBootDir) Then
             My.Computer.FileSystem.CopyDirectory(sEFIBootDir, sUEFIBootDir, True)
             If My.Computer.FileSystem.FileExists(sEFIFile) Then
-              My.Computer.FileSystem.CopyFile(sEFIFile, sUEFIFile, True)
-              SetStatus("UEFI Boot Enabled!")
+              If SlowCopyFile(sEFIFile, sUEFIFile, False) Then
+                SetStatus("UEFI Boot Enabled!")
+              Else
+                SetStatus("Failed to copy UEFI file!")
+              End If
+              'My.Computer.FileSystem.CopyFile(sEFIFile, sUEFIFile, True)
             Else
               SlowDeleteDirectory(sUEFIBootDir, FileIO.DeleteDirectoryOption.DeleteAllContents)
               chkUEFI.Checked = False
@@ -1788,7 +1800,12 @@
                     Dim sIDir As String = ISODDir.Replace("%n", DiscNumber)
                     If Not My.Computer.FileSystem.DirectoryExists(sIDir) Then My.Computer.FileSystem.CreateDirectory(sIDir)
                     If Not My.Computer.FileSystem.DirectoryExists(sIDir & "sources" & IO.Path.DirectorySeparatorChar) Then My.Computer.FileSystem.CreateDirectory(sIDir & "sources" & IO.Path.DirectorySeparatorChar)
-                    My.Computer.FileSystem.MoveFile(File, sIDir & IO.Path.DirectorySeparatorChar & "sources" & IO.Path.DirectorySeparatorChar & IO.Path.GetFileName(File))
+                    SetProgress(0, 1)
+                    If Not SlowCopyFile(File, sIDir & IO.Path.DirectorySeparatorChar & "sources" & IO.Path.DirectorySeparatorChar & IO.Path.GetFileName(File), True) Then
+                      ToggleInputs(True)
+                      SetStatus("Failed to move Install WIM #" & WIMNumber & "!")
+                      Exit Sub
+                    End If
                     If WIMNumber = Math.Floor(ISOSplit / WIMSplit) Or I = FilesInOrder.Count - 1 Then
                       ExtractAllFiles(Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip", sIDir)
                       If (cmbISOFormat.SelectedIndex = 0) Or (cmbISOFormat.SelectedIndex = 1) Or (cmbISOFormat.SelectedIndex = 2) Or (cmbISOFormat.SelectedIndex = 4) Or (cmbISOFormat.SelectedIndex = 6) Then
@@ -1873,7 +1890,12 @@
                     Dim sIDir As String = ISODDir.Replace("%n", discNo)
                     If Not My.Computer.FileSystem.DirectoryExists(sIDir) Then My.Computer.FileSystem.CreateDirectory(sIDir)
                     If Not My.Computer.FileSystem.DirectoryExists(sIDir & "sources" & IO.Path.DirectorySeparatorChar) Then My.Computer.FileSystem.CreateDirectory(sIDir & "sources" & IO.Path.DirectorySeparatorChar)
-                    My.Computer.FileSystem.MoveFile(File, sIDir & IO.Path.DirectorySeparatorChar & "sources" & IO.Path.DirectorySeparatorChar & IO.Path.GetFileName(File))
+                    SetProgress(0, 1)
+                    If Not SlowCopyFile(File, sIDir & IO.Path.DirectorySeparatorChar & "sources" & IO.Path.DirectorySeparatorChar & IO.Path.GetFileName(File), True) Then
+                      ToggleInputs(True)
+                      SetStatus("Failed to move Install WIM #" & discNo & "!")
+                      Exit Sub
+                    End If
                     ExtractAllFiles(Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip", sIDir)
                     If (cmbISOFormat.SelectedIndex = 0) Or (cmbISOFormat.SelectedIndex = 1) Or (cmbISOFormat.SelectedIndex = 2) Or (cmbISOFormat.SelectedIndex = 4) Or (cmbISOFormat.SelectedIndex = 6) Then
                       SetStatus("Looking for oversized files...")
@@ -1946,7 +1968,12 @@
                     Dim sIDir As String = ISODDir.Replace("%n", "1")
                     If Not My.Computer.FileSystem.DirectoryExists(sIDir) Then My.Computer.FileSystem.CreateDirectory(sIDir)
                     If Not My.Computer.FileSystem.DirectoryExists(sIDir & "sources" & IO.Path.DirectorySeparatorChar) Then My.Computer.FileSystem.CreateDirectory(sIDir & "sources" & IO.Path.DirectorySeparatorChar)
-                    My.Computer.FileSystem.MoveFile(File, sIDir & IO.Path.DirectorySeparatorChar & "sources" & IO.Path.DirectorySeparatorChar & "install.swm")
+                    SetProgress(0, 1)
+                    If Not SlowCopyFile(File, sIDir & IO.Path.DirectorySeparatorChar & "sources" & IO.Path.DirectorySeparatorChar & "install.swm", True) Then
+                      ToggleInputs(True)
+                      SetStatus("Failed to move Primary Install WIM!")
+                      Exit Sub
+                    End If
                     ExtractAllFiles(Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip", sIDir)
                     If (cmbISOFormat.SelectedIndex = 0) Or (cmbISOFormat.SelectedIndex = 1) Or (cmbISOFormat.SelectedIndex = 2) Or (cmbISOFormat.SelectedIndex = 4) Or (cmbISOFormat.SelectedIndex = 6) Then
                       SetStatus("Looking for oversized files...")
@@ -2001,7 +2028,12 @@
                     Dim sIDir As String = ISODDir.Replace("%n", discNo)
                     If Not My.Computer.FileSystem.DirectoryExists(sIDir) Then My.Computer.FileSystem.CreateDirectory(sIDir)
                     If Not My.Computer.FileSystem.DirectoryExists(sIDir & "sources" & IO.Path.DirectorySeparatorChar) Then My.Computer.FileSystem.CreateDirectory(sIDir & "sources" & IO.Path.DirectorySeparatorChar)
-                    My.Computer.FileSystem.MoveFile(File, sIDir & IO.Path.DirectorySeparatorChar & "sources" & IO.Path.DirectorySeparatorChar & IO.Path.GetFileName(File))
+                    SetProgress(0, 1)
+                    If Not SlowCopyFile(File, sIDir & IO.Path.DirectorySeparatorChar & "sources" & IO.Path.DirectorySeparatorChar & IO.Path.GetFileName(File), True) Then
+                      ToggleInputs(True)
+                      SetStatus("Failed to move Install WIM #" & discNo & "!")
+                      Exit Sub
+                    End If
                     ExtractAllFiles(Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip", sIDir)
                     If (cmbISOFormat.SelectedIndex = 0) Or (cmbISOFormat.SelectedIndex = 1) Or (cmbISOFormat.SelectedIndex = 2) Or (cmbISOFormat.SelectedIndex = 4) Or (cmbISOFormat.SelectedIndex = 6) Then
                       SetStatus("Looking for oversized files...")
@@ -2126,9 +2158,13 @@
                                           "boot" & IO.Path.DirectorySeparatorChar & "fonts" & IO.Path.DirectorySeparatorChar & "kor_boot.ttf" & vbNewLine &
                                           "boot" & IO.Path.DirectorySeparatorChar & "fonts" & IO.Path.DirectorySeparatorChar & "wgl4_boot.ttf" & vbNewLine &
                                           "sources" & IO.Path.DirectorySeparatorChar & "boot.wim" & vbNewLine, False, System.Text.Encoding.GetEncoding(1252))
-      SetProgress(0, 0)
+      SetProgress(0, 1)
       SetStatus("Making Backup of Old ISO...")
-      My.Computer.FileSystem.MoveFile(ISOFile, ISOFile & ".del", True)
+      If Not SlowCopyFile(ISOFile, ISOFile & ".del", True) Then
+        ToggleInputs(True)
+        SetStatus("Failed to back up ISO!")
+        Exit Sub
+      End If
       iTotalVal += 1
       SetTotal(iTotalVal, iTotalMax)
       SetProgress(0, 0)
@@ -2156,8 +2192,11 @@
       If Saved Then
         If My.Computer.FileSystem.FileExists(ISOFile & ".del") Then My.Computer.FileSystem.DeleteFile(ISOFile & ".del")
       Else
-        SetStatus("Build Failed! Restoring Old ISO...")
-        My.Computer.FileSystem.MoveFile(ISOFile & ".del", ISOFile, True)
+        SetStatus("ISO Build Failed! Restoring Old ISO...")
+        If Not SlowCopyFile(ISOFile & ".del", ISOFile, True) Then
+          ToggleInputs(True)
+          SetStatus("ISO Build and backup ISO restore failed!")
+        End If
         Exit Sub
       End If
     Else
@@ -2173,7 +2212,12 @@
       End If
       SetStatus("Compressing INSTALL.WIM...")
       Dim OldWIM As String = IO.Path.GetDirectoryName(WIMFile) & IO.Path.DirectorySeparatorChar & IO.Path.GetFileNameWithoutExtension(WIMFile & "_OLD.WIM")
-      My.Computer.FileSystem.MoveFile(WIMFile, OldWIM, True)
+      SetProgress(0, 1)
+      If Not SlowCopyFile(WIMFile, OldWIM, True) Then
+        ToggleInputs(True)
+        SetStatus("Failed to back up Install WIM!")
+        Exit Sub
+      End If
       Dim NewWIMPackageCount As Integer = GetDISMPackages(OldWIM)
       For I As Integer = 1 To NewWIMPackageCount
         Dim NewWIMPackageInfo As PackageInfoEx = GetDISMPackageData(OldWIM, I)

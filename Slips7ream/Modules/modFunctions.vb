@@ -172,7 +172,6 @@ Module modFunctions
     Private Extractor As Extraction.ArchiveFile
     Private Shared c_ExtractRet As New Collections.Generic.List(Of String)
 
-    Private Delegate Sub ExtractAFileInvoker(Source As String, Destination As String, File As String)
     Private Function ExtractAFile(Source As String, Destination As String, File As String) As String
       Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractAFile))
       Dim cIndex As Integer = c_ExtractRet.Count
@@ -402,7 +401,10 @@ Module modFunctions
       For I As Integer = 0 To sDirs.Count - 1
         frmMain.SetTotal(I, sDirs.Count - 1)
         SlowDeleteDirectory(sDirs(I), OnDirectoryNotEmpty)
-        If I Mod 25 = 0 Then Application.DoEvents()
+        If I Mod 25 = 0 Then
+          If frmMain.StopRun Then Exit Sub
+          Application.DoEvents()
+        End If
       Next
       For I As Integer = 0 To sFiles.Count - 1
         If sFiles.Count > 1 Then frmMain.SetProgress(I, sFiles.Count - 1)
@@ -410,13 +412,109 @@ Module modFunctions
           IO.File.Delete(sFiles(I))
         Catch ex As Exception
         End Try
-        If I Mod 25 = 0 Then Application.DoEvents()
+        If I Mod 25 = 0 Then
+          If frmMain.StopRun Then Exit Sub
+          Application.DoEvents()
+        End If
       Next
       Try
         IO.Directory.Delete(Directory)
       Catch ex As Exception
       End Try
     End If
+  End Sub
+  Private c_SlowCopyRet As New Collections.Generic.List(Of String)
+  Public Function SlowCopyFile(File As String, Destination As String, Optional Move As Boolean = False) As Boolean
+    Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncSlowCopyFile))
+    Dim cIndex As Integer = c_SlowCopyRet.Count
+    c_SlowCopyRet.Add(0)
+    tRunWithReturn.Start({File, Destination, Move, cIndex})
+    Do While IsNumeric(c_SlowCopyRet(cIndex))
+      Dim iPercent As Integer
+      If Integer.TryParse(c_SlowCopyRet(cIndex), iPercent) Then
+        If iPercent > 990 Then
+          frmMain.SetProgress(0, 0)
+        Else
+          frmMain.SetProgress(iPercent, 1000)
+        End If
+      End If
+      Application.DoEvents()
+      Threading.Thread.Sleep(1)
+      If frmMain.StopRun Then Return False
+    Loop
+    Dim sRet As String = c_SlowCopyRet(cIndex)
+    c_SlowCopyRet(cIndex) = Nothing
+    If sRet = "OK" Then
+      Return True
+    Else
+      MsgDlg(frmMain, sRet, "Unable to " & IIf(Move, "move ", "copy ") & IO.Path.GetFileNameWithoutExtension(File) & ".", "File Transfer Failure", MessageBoxButtons.OK, TaskDialogIcon.HardDrive)
+      Return False
+    End If
+  End Function
+  Private Sub AsyncSlowCopyFile(Obj As Object)
+    Dim File As String = Obj(0)
+    Dim Destination As String = Obj(1)
+    Dim Move As Boolean = Obj(2)
+    Dim cIndex As UInteger = Obj(3)
+    If IO.File.Exists(File) Then
+      If Not IO.Directory.Exists(IO.Path.GetDirectoryName(Destination)) Then IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(Destination))
+      If IO.File.Exists(Destination) Then IO.File.Delete(Destination)
+      If Move AndAlso File(0) = Destination(0) Then
+        My.Computer.FileSystem.MoveFile(File, Destination, True)
+      Else
+        Dim destDrive As New IO.DriveInfo(Destination(0))
+        Dim destFreeSpace As Long = destDrive.AvailableFreeSpace
+        Const iChunkSize As Integer = 16 * 1024
+        Using ioSource As New IO.FileStream(File, IO.FileMode.Open, IO.FileAccess.Read, IO.FileShare.Read, iChunkSize * 4, True)
+          If ioSource.Length > destFreeSpace Then
+            c_SlowCopyRet(cIndex) = "Not Enough Space on Drive " & Destination(0) & ":\"
+            Exit Sub
+          End If
+          Using ioReader As New IO.BinaryReader(ioSource)
+            Using ioDest As New IO.FileStream(Destination, IO.FileMode.Create, IO.FileAccess.Write, IO.FileShare.None, iChunkSize * 4, True)
+              Using ioWriter As New IO.BinaryWriter(ioDest)
+                Dim lastPercent As Integer = 0
+                Do Until ioReader.BaseStream.Position >= ioReader.BaseStream.Length
+                  Dim lReadLeft As Long = ioReader.BaseStream.Length - ioReader.BaseStream.Position
+                  If lReadLeft < iChunkSize Then
+                    Dim iReadLeft As Integer = 0
+                    If lReadLeft > Integer.MaxValue Then
+                      iReadLeft = Integer.MaxValue
+                    Else
+                      iReadLeft = Convert.ToInt32(lReadLeft)
+                    End If
+                    Dim bChunk() As Byte = ioReader.ReadBytes(iReadLeft)
+                    Try
+                      ioWriter.Write(bChunk)
+                    Catch ex As Exception
+                      c_SlowCopyRet(cIndex) = ex.Message
+                    End Try
+                  Else
+                    Dim bChunk() As Byte = ioReader.ReadBytes(iChunkSize)
+                    Try
+                      ioWriter.Write(bChunk)
+                    Catch ex As Exception
+                      c_SlowCopyRet(cIndex) = ex.Message
+                    End Try
+                  End If
+                  Dim iPercent As Integer = Math.Floor((ioReader.BaseStream.Position / ioReader.BaseStream.Length) * 1000)
+                  If Not iPercent = lastPercent Then
+                    c_SlowCopyRet(cIndex) = iPercent
+                    lastPercent = iPercent
+                  End If
+                Loop
+                c_SlowCopyRet(cIndex) = "1000"
+                ioWriter.Flush()
+                ioWriter.Close()
+              End Using
+            End Using
+            ioReader.Close()
+          End Using
+        End Using
+        If Move Then IO.File.Delete(File)
+      End If
+    End If
+    c_SlowCopyRet(cIndex) = "OK"
   End Sub
   Public Enum UpdateType
     MSU
