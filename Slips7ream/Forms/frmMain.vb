@@ -327,7 +327,7 @@
       chkISO.Enabled = Enabled
       txtISO.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
       cmdISO.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
-      chkUnlock.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
+      chkUnlock.Enabled = IIf(Enabled, chkISO.Checked And (chkUnlock.Tag Is Nothing), Enabled)
       chkUEFI.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
       lblISOLabel.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
       txtISOLabel.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
@@ -988,7 +988,7 @@
     txtISO.Enabled = chkISO.Checked
     cmdISO.Enabled = chkISO.Checked
     chkUEFI.Enabled = chkISO.Checked
-    chkUnlock.Enabled = chkISO.Checked
+    chkUnlock.Enabled = chkISO.Checked And (chkUnlock.Tag Is Nothing)
     lblISOLabel.Enabled = chkISO.Checked
     txtISOLabel.Enabled = chkISO.Checked
     lblISOFS.Enabled = chkISO.Checked
@@ -1027,6 +1027,37 @@
     RunComplete = False
     cmdBegin.Text = "Begin"
     cmdOpenFolder.Visible = False
+    Dim foundEI As Boolean = False
+    Dim foundCLG As Boolean = False
+    If IO.File.Exists(txtISO.Text) Then
+      Dim sFiles() As String = ExtractFilesList(txtISO.Text)
+      For Each sFile In sFiles
+        If sFile.ToLower.Contains("ei.cfg") Then foundEI = True
+        If sFile.ToLower.Contains(".clg") Then foundCLG = True
+        If foundEI And foundCLG Then Exit For
+      Next
+      If foundEI Or foundCLG Then
+        If chkUnlock.Tag IsNot Nothing Then
+          If chkUnlock.Tag = "Y" Then
+            chkUnlock.Checked = True
+          ElseIf chkUnlock.Tag = "N" Then
+            chkUnlock.Checked = False
+          End If
+          chkUnlock.Tag = Nothing
+        End If
+        chkUnlock.Enabled = True
+      Else
+        If chkUnlock.Tag Is Nothing Then
+          If chkUnlock.Checked Then
+            chkUnlock.Tag = "Y"
+          Else
+            chkUnlock.Tag = "N"
+          End If
+        End If
+        chkUnlock.Checked = True
+        chkUnlock.Enabled = False
+      End If
+    End If
   End Sub
   Private Sub cmbISOFormat_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cmbISOFormat.SelectedIndexChanged
     If Me.Tag Is Nothing Then
@@ -1327,7 +1358,16 @@
       End Try
     End If
     Dim iTotalVal As Integer = 0
-    SetTotal(0, 12)
+    Dim iTotalMax As Integer = 2
+    If IO.Path.GetExtension(txtWIM.Text).ToLower = ".iso" Then iTotalMax += 1
+    If lvMSU.Items.Count > 0 Then iTotalMax += 2
+    If Not String.IsNullOrEmpty(txtSP.Text) Then
+      iTotalMax += 1
+      If Not String.IsNullOrEmpty(txtSP64.Text) Then iTotalMax += 1
+    End If
+    If Not String.IsNullOrEmpty(txtISO.Text) Then iTotalMax += 3
+
+    SetTotal(0, iTotalMax)
     SetProgress(0, 1)
     pbTotal.Style = ProgressBarStyle.Continuous
 
@@ -1345,7 +1385,7 @@
         SetStatus("Extracting Image from ISO...")
         ExtractAFile(txtWIM.Text, Work, "INSTALL.WIM")
         iTotalVal += 1
-        SetTotal(iTotalVal, 12)
+        SetTotal(iTotalVal, iTotalMax)
         WIMFile = Work & "INSTALL.WIM"
       Else
         WIMFile = txtWIM.Text
@@ -1430,7 +1470,7 @@
 
     SetProgress(0, 0)
     iTotalVal += 1
-    SetTotal(iTotalVal, 12)
+    SetTotal(iTotalVal, iTotalMax)
     SetStatus("Making Backup of Old WIM...")
     Dim BakWIM As String = IO.Path.GetDirectoryName(WIMFile) & IO.Path.DirectorySeparatorChar & IO.Path.GetFileNameWithoutExtension(WIMFile & "_BAK.WIM")
     My.Computer.FileSystem.MoveFile(WIMFile, BakWIM, True)
@@ -1519,7 +1559,7 @@
       Next
       SetProgress(0, 100)
       iTotalVal += 1
-      SetTotal(iTotalVal, 12)
+      SetTotal(iTotalVal, iTotalMax)
       Application.DoEvents()
     End If
     If StopRun Then
@@ -1534,7 +1574,7 @@
         SetStatus("Integrating Service Pack...")
         If IntegrateSP(WIMFile, SPFile) Then
           iTotalVal += 1
-          SetTotal(iTotalVal, 12)
+          SetTotal(iTotalVal, iTotalMax)
           SetStatus("Service Pack Integrated!")
         Else
           Dim sMsg As String = lblActivity.Text
@@ -1550,7 +1590,7 @@
         SetStatus("Integrating x86 Service Pack...")
         If IntegrateSP(WIMFile, SPFile, "86") Then
           iTotalVal += 1
-          SetTotal(iTotalVal, 12)
+          SetTotal(iTotalVal, iTotalMax)
           SetStatus("x86 Service Pack Integrated!")
         Else
           Dim sMsg As String = lblActivity.Text
@@ -1565,7 +1605,7 @@
         SetStatus("Integrating x64 Service Pack...")
         If IntegrateSP(WIMFile, SP64File, "64") Then
           iTotalVal += 1
-          SetTotal(iTotalVal, 12)
+          SetTotal(iTotalVal, iTotalMax)
           SetStatus("x64 Service Pack Integrated!")
         Else
           Dim sMsg As String = lblActivity.Text
@@ -1587,7 +1627,7 @@
       SetStatus("Integrating Updates...")
       If IntegrateFiles(WIMFile, UpdateFiles.ToArray) Then
         iTotalVal += 1
-        SetTotal(iTotalVal, 12)
+        SetTotal(iTotalVal, iTotalMax)
         SetStatus("Updates Integrated!")
       Else
         Dim sMsg As String = lblActivity.Text
@@ -1619,7 +1659,7 @@
       SetStatus("Extracting ISO contents...")
       ExtractFiles(ISOFile, ISODir, "install.wim")
       iTotalVal += 1
-      SetTotal(iTotalVal, 12)
+      SetTotal(iTotalVal, iTotalMax)
 
       If chkUnlock.Checked Then
         SetStatus("Unlocking All Editions...")
@@ -1713,7 +1753,7 @@
       Next
       SetProgress(0, 1)
       iTotalVal += 1
-      SetTotal(iTotalVal, 12)
+      SetTotal(iTotalVal, iTotalMax)
 
       If cmbLimitType.SelectedIndex > 0 Then
         Dim splUEFI As Boolean = chkUEFI.Checked
@@ -2090,7 +2130,7 @@
       SetStatus("Making Backup of Old ISO...")
       My.Computer.FileSystem.MoveFile(ISOFile, ISOFile & ".del", True)
       iTotalVal += 1
-      SetTotal(iTotalVal, 12)
+      SetTotal(iTotalVal, iTotalMax)
       SetProgress(0, 0)
       SetStatus("Building New ISO...")
       Dim Saved As Boolean = False
@@ -2112,18 +2152,16 @@
       Catch ex As Exception
         Saved = False
       End Try
-      iTotalVal += 1
-      SetTotal(iTotalVal, 12)
       SetProgress(0, 1)
       If Saved Then
         If My.Computer.FileSystem.FileExists(ISOFile & ".del") Then My.Computer.FileSystem.DeleteFile(ISOFile & ".del")
       Else
         SetStatus("Build Failed! Restoring Old ISO...")
         My.Computer.FileSystem.MoveFile(ISOFile & ".del", ISOFile, True)
+        Exit Sub
       End If
     Else
       SetTitle("Generating WIM", "Preparing WIMs and file structure...")
-
       If Not NoMount Then
         SetStatus("Saving Final Image Package...")
         If Not SaveDISM(Mount) Then
@@ -2133,7 +2171,6 @@
           Exit Sub
         End If
       End If
-
       SetStatus("Compressing INSTALL.WIM...")
       Dim OldWIM As String = IO.Path.GetDirectoryName(WIMFile) & IO.Path.DirectorySeparatorChar & IO.Path.GetFileNameWithoutExtension(WIMFile & "_OLD.WIM")
       My.Computer.FileSystem.MoveFile(WIMFile, OldWIM, True)
@@ -2177,7 +2214,6 @@
         End If
       End If
     End If
-
     SetProgress(0, 100)
     SetTotal(0, 100)
     ToggleInputs(True)
@@ -2312,7 +2348,11 @@
       Me.BeginInvoke(New SetProgressInvoker(AddressOf SetTotal), Value, Maximum)
     Else
       pbTotal.Maximum = Maximum
-      pbTotal.Value = Value
+      If Value > pbTotal.Maximum Then
+        pbTotal.Value = pbTotal.Maximum
+      Else
+        pbTotal.Value = Value
+      End If
     End If
   End Sub
   Private Sub expOutput_Closed(sender As Object, e As System.EventArgs) Handles expOutput.Closed
@@ -2701,6 +2741,62 @@
     SetProgress(0, 1000)
     If bFound Then
       c_ExtractRet(cIndex) = "OK"
+    Else
+      c_ExtractRet(cIndex) = "File Not Found"
+    End If
+  End Sub
+  Private Delegate Function ExtractFilesListInvoker(Source As String) As String()
+  Private Function ExtractFilesList(Source As String) As String()
+    If Me.InvokeRequired Then
+      Return Me.Invoke(New ExtractFilesListInvoker(AddressOf ExtractFilesList), Source)
+    Else
+      Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractFilesList))
+      Dim cIndex As Integer = c_ExtractRet.Count
+      c_ExtractRet.Add(Nothing)
+      tRunWithReturn.Start({Source, cIndex})
+      Do While String.IsNullOrEmpty(c_ExtractRet(cIndex))
+        Application.DoEvents()
+        Threading.Thread.Sleep(1)
+      Loop
+      Dim sRet As String = c_ExtractRet(cIndex)
+      c_ExtractRet(cIndex) = Nothing
+      If sRet.Contains("|") Then
+        Return Split(sRet, "|")
+      Else
+        Select Case sRet
+          Case "CRC Error"
+            MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to read the file!", "There was an error while reading.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+          Case "Data Error"
+            MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to read the file!", "There was an error while reading.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+          Case "Unsupported Method"
+            MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to read the file!", "There was an error while extracting.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+          Case "File Not Found"
+            MsgDlg(Me, "Unable to find any files in " & IO.Path.GetFileName(Source) & "!", "No files were found.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+          Case Else
+            MsgDlg(Me, sRet, "There was an error while reading.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        End Select
+        Return Nothing
+      End If
+    End If
+  End Function
+  Private Sub AsyncExtractFilesList(Obj As Object)
+    Dim Source As String
+    Source = Obj(0)
+    Dim cIndex As UInteger = Obj(1)
+    Extractor = New Extraction.ArchiveFile(New IO.FileInfo(Source))
+    Try
+      Extractor.Open()
+    Catch ex As Exception
+      Extractor.Dispose()
+      Extractor = Nothing
+      c_ExtractRet(cIndex) = "Error Opening: " & ex.Message
+    End Try
+    Dim sList As New List(Of String)
+    For Each File In Extractor
+      sList.Add(File.Name)
+    Next
+    If sList.Count > 0 Then
+      c_ExtractRet(cIndex) = Join(sList.ToArray, "|")
     Else
       c_ExtractRet(cIndex) = "File Not Found"
     End If
