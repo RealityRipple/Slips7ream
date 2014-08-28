@@ -134,6 +134,10 @@
     RedoColumns()
   End Sub
   Private Sub frmMain_FormClosing(sender As Object, e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
+    If e.CloseReason = CloseReason.WindowsShutDown Then
+      StopRun = True
+      Exit Sub
+    End If
     If RunActivity > 0 Then
       Dim sActivity As String = "doing work"
       Dim sProc As String = "current"
@@ -158,6 +162,9 @@
       End If
     End If
     StopRun = True
+    CloseCleanup()
+  End Sub
+  Private Sub CloseCleanup()
     If My.Computer.FileSystem.DirectoryExists(WorkDir) Then
       SetTitle("Cleaning Up Files", "Cleaning up mounts, work, and temporary directories...")
       SetDisp(MNGList.Delete)
@@ -2272,13 +2279,17 @@
         Me.Close()
       Case 2
         REM shut down
+        CloseCleanup()
         Process.Start("shutdown", "/s /t 0 /d p:0:0 /f")
       Case 3
         REM restart
+        CloseCleanup()
         Process.Start("shutdown", "/r /t 0 /d p:0:0 /f")
       Case 4
         REM sleep
+        CloseCleanup()
         Application.SetSuspendState(PowerState.Suspend, False, False)
+        Me.Close()
     End Select
   End Sub
   Private Sub cmdClose_Click(sender As System.Object, e As System.EventArgs) Handles cmdClose.Click
