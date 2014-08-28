@@ -14,7 +14,7 @@
   Private sTitleText As String
   Private Const FrameInterval As UInteger = 3
   Private mySettings As MySettings
-  Private taskBar As TaskbarLib.TaskbarList
+  Friend taskBar As TaskbarLib.TaskbarList
   Private Enum MNGList
     Move
     Copy
@@ -512,6 +512,7 @@
         spltSlips7ream.SplitterDistance -= 29
       End If
     End If
+
     RedoColumns()
   End Sub
   Private Sub cmdSP_Click(sender As System.Object, e As System.EventArgs) Handles cmdSP.Click
@@ -1777,7 +1778,7 @@
         End If
       End If
       SetProgress(0, 1)
-      SetStatus("Integrating INSTALL.WIM...")
+      SetStatus("Integrating and Compressing INSTALL.WIM...")
       Dim ISOWIMFile As String = ISODir & "sources" & IO.Path.DirectorySeparatorChar & "install.wim"
       If My.Computer.FileSystem.FileExists(ISOWIMFile) Then My.Computer.FileSystem.DeleteFile(ISOWIMFile)
       Dim NewWIMPackageCount As Integer = GetDISMPackages(WIMFile)
@@ -1785,7 +1786,7 @@
         Dim NewWIMPackageInfo = GetDISMPackageData(WIMFile, I)
         Dim RowIndex As String = NewWIMPackageInfo.Index
         Dim RowName As String = NewWIMPackageInfo.Name
-        SetStatus("Integrating INSTALL.WIM Package " & RowName & "...")
+        SetStatus("Integrating and Compressing INSTALL.WIM Package " & RowName & "...")
         SetProgress(0, 100)
         If ExportWIM(WIMFile, RowIndex, ISOWIMFile, RowName) Then
           Continue For
@@ -3858,6 +3859,4 @@
     SetStatus("Downloading New Version - " & ByteSize(e.BytesReceived) & " of " & ByteSize(e.TotalBytesToReceive) & "... (" & e.ProgressPercentage & "%)")
   End Sub
 #End Region
-
-
 End Class
