@@ -14,6 +14,7 @@
   Private sTitleText As String
   Private Const FrameInterval As UInteger = 3
   Private mySettings As MySettings
+  Private taskBar As TaskbarLib.TaskbarList
   Private Enum MNGList
     Move
     Copy
@@ -111,6 +112,11 @@
     Else
       Me.Location = New Point(Screen.PrimaryScreen.Bounds.Left + (Screen.PrimaryScreen.Bounds.Width / 2) - (Me.Width / 2), Screen.PrimaryScreen.Bounds.Top + (Screen.PrimaryScreen.Bounds.Height / 2) - (Me.Height / 2))
     End If
+    If VisualStyles.VisualStyleInformation.DisplayName = "Aero style" And TaskbarLib.TaskbarFinder.TaskbarVisible Then
+      If taskBar Is Nothing Then taskBar = New TaskbarLib.TaskbarList
+    Else
+      taskBar = Nothing
+    End If
     ToggleInputs(True)
     SetDisp(MNGList.Move)
     FreshDraw()
@@ -176,12 +182,12 @@
       cmdClose.Enabled = False
       StopRun = False
       CleanMounts()
-      StopRun = True
       SetStatus("Clearing Temp Directory...")
       Try
         SlowDeleteDirectory(WorkDir, FileIO.DeleteDirectoryOption.DeleteAllContents)
       Catch ex As Exception
       End Try
+      StopRun = True
       pctTitle.Image = Nothing
       mngDisp = Nothing
     End If
@@ -383,6 +389,11 @@
       pnlSlips7ream.ResumeLayout(True)
       If Not pbTotal.Visible Then pbTotal.Value = 0
       If Not pbIndividual.Visible Then pbIndividual.Value = 0
+      If pbTotal.Visible Then
+        If taskBar IsNot Nothing Then taskBar.SetProgressState(Me.Handle, TaskbarLib.TBPFLAG.TBPF_NORMAL)
+      Else
+        If taskBar IsNot Nothing Then taskBar.SetProgressState(Me.Handle, TaskbarLib.TBPFLAG.TBPF_NOPROGRESS)
+      End If
     End If
   End Sub
   Private Sub pctTitle_DoubleClick(sender As Object, e As System.EventArgs) Handles pctTitle.DoubleClick
@@ -590,6 +601,7 @@
         ToggleInputs(False)
         pbTotal.Value = 0
         pbTotal.Maximum = FileCount
+        If taskBar IsNot Nothing Then taskBar.SetProgressState(Me.Handle, TaskbarLib.TBPFLAG.TBPF_NORMAL)
         SetProgress(0, 0)
         SetStatus("Reading Update Information...")
       End If
@@ -598,6 +610,7 @@
       For Each Item In Data
         If FileCount > 2 Then
           pbTotal.Value += 1
+          If taskBar IsNot Nothing Then taskBar.SetProgressValue(Me.Handle, pbTotal.Value, pbTotal.Maximum)
           Application.DoEvents()
           If StopRun Then
             SetProgress(0, 1)
@@ -611,6 +624,7 @@
       lvMSU.ResumeLayout(True)
       If FileCount > 2 Then
         SetProgress(0, 1)
+        If taskBar IsNot Nothing Then taskBar.SetProgressState(Me.Handle, TaskbarLib.TBPFLAG.TBPF_NOPROGRESS)
         ToggleInputs(True)
       End If
       RedoColumns()
@@ -754,6 +768,7 @@
           ToggleInputs(False)
           pbTotal.Value = 0
           pbTotal.Maximum = FileCount
+          If taskBar IsNot Nothing Then taskBar.SetProgressState(Me.Handle, TaskbarLib.TBPFLAG.TBPF_NORMAL)
           SetProgress(0, 0)
           SetStatus("Reading Update Information...")
         End If
@@ -762,6 +777,7 @@
           Dim sUpdate As String = cdlBrowse.FileNames(I)
           If FileCount > 2 Then
             pbTotal.Value += 1
+            If taskBar IsNot Nothing Then taskBar.SetProgressValue(Me.Handle, pbTotal.Value, pbTotal.Maximum)
             Application.DoEvents()
             If StopRun Then
               SetProgress(0, 1)
@@ -775,6 +791,7 @@
         lvMSU.ResumeLayout(True)
         If FileCount > 2 Then
           SetProgress(0, 1)
+          If taskBar IsNot Nothing Then taskBar.SetProgressState(Me.Handle, TaskbarLib.TBPFLAG.TBPF_NOPROGRESS)
           ToggleInputs(True)
         End If
         RedoColumns()
@@ -1768,12 +1785,13 @@
         Dim NewWIMPackageInfo = GetDISMPackageData(WIMFile, I)
         Dim RowIndex As String = NewWIMPackageInfo.Index
         Dim RowName As String = NewWIMPackageInfo.Name
+        SetStatus("Integrating INSTALL.WIM Package " & RowName & "...")
         SetProgress(0, 100)
         If ExportWIM(WIMFile, RowIndex, ISOWIMFile, RowName) Then
           Continue For
         Else
           ToggleInputs(True)
-          SetStatus("Failed to Integrate WIM """ & RowName & """")
+          SetStatus("Failed to Integrate WIM Package """ & RowName & """")
           Exit Sub
         End If
         If StopRun Then
@@ -2437,8 +2455,13 @@
       pbTotal.Maximum = Maximum
       If Value > pbTotal.Maximum Then
         pbTotal.Value = pbTotal.Maximum
+        If taskBar IsNot Nothing Then taskBar.SetProgressState(Me.Handle, TaskbarLib.TBPFLAG.TBPF_NOPROGRESS)
       Else
         pbTotal.Value = Value
+        If taskBar IsNot Nothing Then
+          taskBar.SetProgressState(Me.Handle, TaskbarLib.TBPFLAG.TBPF_NORMAL)
+          taskBar.SetProgressValue(Me.Handle, Value, Maximum)
+        End If
       End If
     End If
   End Sub

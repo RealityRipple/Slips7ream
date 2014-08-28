@@ -406,17 +406,19 @@ Module modFunctions
           Application.DoEvents()
         End If
       Next
-      For I As Integer = 0 To sFiles.Count - 1
-        If sFiles.Count > 1 Then frmMain.SetProgress(I, sFiles.Count - 1)
-        Try
-          IO.File.Delete(sFiles(I))
-        Catch ex As Exception
-        End Try
-        If I Mod 25 = 0 Then
-          If frmMain.StopRun Then Exit Sub
-          Application.DoEvents()
-        End If
-      Next
+      If sFiles.Count > 0 Then
+        For I As Integer = 0 To sFiles.Count - 1
+          If sFiles.Count > 1 Then frmMain.SetProgress(I, sFiles.Count - 1)
+          Try
+            IO.File.Delete(sFiles(I))
+          Catch ex As Exception
+          End Try
+          If I Mod 25 = 0 Then
+            If frmMain.StopRun Then Exit Sub
+            Application.DoEvents()
+          End If
+        Next
+      End If
       Try
         IO.Directory.Delete(Directory)
       Catch ex As Exception

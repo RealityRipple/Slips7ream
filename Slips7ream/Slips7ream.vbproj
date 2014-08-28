@@ -109,6 +109,7 @@
     <Compile Include="Classes\clsSplitContainerEx.vb">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Classes\clsTaskBarLib.vb" />
     <Compile Include="Classes\clsToolTip.vb">
       <SubType>Component</SubType>
     </Compile>
