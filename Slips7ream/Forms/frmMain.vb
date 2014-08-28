@@ -1,5 +1,6 @@
 ﻿Public Class frmMain
   Public StopRun As Boolean = False
+  Friend taskBar As TaskbarLib.TaskbarList
   Private LangChange As Boolean = False
   Private RunComplete As Boolean = False
   Private RunActivity As Byte = 0
@@ -7,14 +8,14 @@
   Private tLister2 As Threading.Thread
   Private Const HeightDifferentialA As Integer = 187
   Private Const HeightDifferentialB As Integer = 22
+  Private Const FrameInterval As UInteger = 3
   Private WithEvents cUpdate As clsUpdate
   Private FrameNumber As UInteger
   Private FrameCount As UInteger
   Private mngDisp As MNG
   Private sTitleText As String
-  Private Const FrameInterval As UInteger = 3
+  Private windowChangedSize As Boolean
   Private mySettings As MySettings
-  Friend taskBar As TaskbarLib.TaskbarList
   Private Enum MNGList
     Move
     Copy
@@ -122,7 +123,11 @@
     FreshDraw()
     Me.Tag = Nothing
   End Sub
+  Private Sub frmMain_ResizeBegin(sender As Object, e As System.EventArgs) Handles Me.ResizeBegin
+    windowChangedSize = False
+  End Sub
   Private Sub frmMain_Resize(sender As Object, e As System.EventArgs) Handles Me.Resize
+    windowChangedSize = True
     RedoColumns()
     If Me.Tag Is Nothing And Me.Visible Then
       mySettings.Position = Me.Location
@@ -139,6 +144,13 @@
     If Not tmrAnimation.Enabled Then
       FreshDraw()
     End If
+  End Sub
+  Private Sub frmMain_ResizeEnd(sender As Object, e As System.EventArgs) Handles Me.ResizeEnd
+    If pnlSP64.Visible And Not windowChangedSize Then
+      Me.Height += 1
+      Me.Height -= 1
+    End If
+    windowChangedSize = False
   End Sub
   Private Sub spltSlips7ream_SplitterMoved(sender As System.Object, e As System.Windows.Forms.SplitterEventArgs) Handles spltSlips7ream.SplitterMoved
     RedoColumns()
@@ -430,7 +442,59 @@
     End If
   End Sub
 #End Region
+#Region "Textbox Drag/Drop"
+  Private Sub TextBoxDragDropEvent(sender As TextBox, e As System.Windows.Forms.DragEventArgs)
+    If e.Data.GetFormats(True).Contains("FileDrop") Then
+      Dim Data = e.Data.GetData("FileDrop")
+      If Data.Length = 1 Then
+        sender.Text = Data(0)
+      End If
+    End If
+  End Sub
+  Public Sub TextBoxDragEnterEvent(sender As TextBox, e As DragEventArgs)
+    e.Effect = DragDropEffects.Copy
+  End Sub
+  Public Sub TextBoxDragOverEvent(sender As TextBox, e As DragEventArgs, AllowedTypes() As String)
+    If e.Data.GetFormats(True).Contains("FileDrop") Then
+      Dim Data = e.Data.GetData("FileDrop")
+      If Data.Length = 1 Then
+        Dim hasImage As Boolean = False
+        For Each aType As String In AllowedTypes
+          If IO.Path.GetExtension(Data(0)).ToLower = aType Then
+            hasImage = True
+            Exit For
+          End If
+        Next
+        If hasImage Then
+          e.Effect = DragDropEffects.Copy
+        Else
+          e.Effect = DragDropEffects.None
+        End If
+      Else
+        e.Effect = DragDropEffects.None
+      End If
+    Else
+      e.Effect = DragDropEffects.None
+    End If
+  End Sub
+#End Region
 #Region "WIM"
+  Private Sub txtWIM_DragDrop(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles txtWIM.DragDrop
+    TextBoxDragDropEvent(sender, e)
+    If IO.Path.GetExtension(txtWIM.Text).ToLower = ".iso" Then
+      chkISO.Checked = True
+      txtISO.Text = txtWIM.Text
+    Else
+      chkISO.Checked = False
+      txtISO.Text = String.Empty
+    End If
+  End Sub
+  Private Sub txtWIM_DragEnter(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles txtWIM.DragEnter
+    TextBoxDragEnterEvent(sender, e)
+  End Sub
+  Private Sub txtWIM_DragOver(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles txtWIM.DragOver
+    TextBoxDragOverEvent(sender, e, {".wim", ".iso"})
+  End Sub
   Private Sub txtWIM_TextChanged(sender As System.Object, e As System.EventArgs) Handles txtWIM.TextChanged
     If Not IO.File.Exists(txtWIM.Text) Then Exit Sub
     RunComplete = False
@@ -515,6 +579,15 @@
 
     RedoColumns()
   End Sub
+  Private Sub txtSP_DragDrop(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles txtSP.DragDrop
+    TextBoxDragDropEvent(sender, e)
+  End Sub
+  Private Sub txtSP_DragEnter(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles txtSP.DragEnter
+    TextBoxDragEnterEvent(sender, e)
+  End Sub
+  Private Sub txtSP_DragOver(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles txtSP.DragOver
+    TextBoxDragOverEvent(sender, e, {".exe"})
+  End Sub
   Private Sub cmdSP_Click(sender As System.Object, e As System.EventArgs) Handles cmdSP.Click
     Using cdlBrowse As New OpenFileDialog
       cdlBrowse.Filter = "Service Pack EXE|*.EXE|All Files|*.*"
@@ -527,6 +600,15 @@
     End Using
   End Sub
 #Region "64-Bit"
+  Private Sub txtSP64_DragDrop(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles txtSP64.DragDrop
+    TextBoxDragDropEvent(sender, e)
+  End Sub
+  Private Sub txtSP64_DragEnter(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles txtSP64.DragEnter
+    TextBoxDragEnterEvent(sender, e)
+  End Sub
+  Private Sub txtSP64_DragOver(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles txtSP64.DragOver
+    TextBoxDragOverEvent(sender, e, {".exe"})
+  End Sub
   Private Sub cmdSP64_Click(sender As System.Object, e As System.EventArgs) Handles cmdSP64.Click
     Using cdlBrowse As New OpenFileDialog
       cdlBrowse.Filter = "Service Pack EXE|*.EXE|All Files|*.*"
@@ -1034,23 +1116,14 @@
       End If
     End If
   End Sub
-  Private Sub cmdISO_Click(sender As System.Object, e As System.EventArgs) Handles cmdISO.Click
-    Using cdlBrowse As New OpenFileDialog
-      cdlBrowse.Filter = "Windows 7 ISO|*.ISO|All Files|*.*"
-      cdlBrowse.Title = "Choose ISO to Save Image To"
-      cdlBrowse.ShowReadOnly = False
-      If Not String.IsNullOrEmpty(txtISO.Text) Then cdlBrowse.InitialDirectory = txtISO.Text
-      If cdlBrowse.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
-        txtISO.Text = cdlBrowse.FileName
-      End If
-    End Using
+  Private Sub txtISO_DragDrop(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles txtISO.DragDrop
+    TextBoxDragDropEvent(sender, e)
   End Sub
-  Private Sub txtISOLabel_TextChanged(sender As System.Object, e As System.EventArgs) Handles txtISOLabel.TextChanged
-    If Me.Tag Is Nothing Then
-      If Not String.IsNullOrEmpty(txtISOLabel.Text) Then
-        mySettings.DefaultISOLabel = txtISOLabel.Text
-      End If
-    End If
+  Private Sub txtISO_DragEnter(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles txtISO.DragEnter
+    TextBoxDragEnterEvent(sender, e)
+  End Sub
+  Private Sub txtISO_DragOver(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles txtISO.DragOver
+    TextBoxDragOverEvent(sender, e, {".iso"})
   End Sub
   Private Sub txtISO_TextChanged(sender As System.Object, e As System.EventArgs) Handles txtISO.TextChanged
     RunComplete = False
@@ -1088,6 +1161,24 @@
       End If
     End If
   End Sub
+  Private Sub cmdISO_Click(sender As System.Object, e As System.EventArgs) Handles cmdISO.Click
+    Using cdlBrowse As New OpenFileDialog
+      cdlBrowse.Filter = "Windows 7 ISO|*.ISO|All Files|*.*"
+      cdlBrowse.Title = "Choose ISO to Save Image To"
+      cdlBrowse.ShowReadOnly = False
+      If Not String.IsNullOrEmpty(txtISO.Text) Then cdlBrowse.InitialDirectory = txtISO.Text
+      If cdlBrowse.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
+        txtISO.Text = cdlBrowse.FileName
+      End If
+    End Using
+  End Sub
+  Private Sub txtISOLabel_TextChanged(sender As System.Object, e As System.EventArgs) Handles txtISOLabel.TextChanged
+    If Me.Tag Is Nothing Then
+      If Not String.IsNullOrEmpty(txtISOLabel.Text) Then
+        mySettings.DefaultISOLabel = txtISOLabel.Text
+      End If
+    End If
+  End Sub
   Private Sub cmbISOFormat_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cmbISOFormat.SelectedIndexChanged
     If Me.Tag Is Nothing Then
       mySettings.DefaultFS = cmbISOFormat.Text
@@ -1118,6 +1209,15 @@
       Next
     End If
     RedoColumns()
+  End Sub
+  Private Sub txtMerge_DragDrop(sender As Object, e As System.Windows.Forms.DragEventArgs)
+    TextBoxDragDropEvent(sender, e)
+  End Sub
+  Private Sub txtMerge_DragEnter(sender As Object, e As System.Windows.Forms.DragEventArgs)
+    TextBoxDragEnterEvent(sender, e)
+  End Sub
+  Private Sub txtMerge_DragOver(sender As Object, e As System.Windows.Forms.DragEventArgs)
+    TextBoxDragOverEvent(sender, e, {".wim", ".iso"})
   End Sub
   Private Sub txtMerge_TextChanged(sender As System.Object, e As System.EventArgs) Handles txtMerge.TextChanged
     If Not IO.File.Exists(txtMerge.Text) Then Exit Sub

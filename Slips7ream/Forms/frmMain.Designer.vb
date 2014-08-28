@@ -243,6 +243,7 @@ Partial Class frmMain
     '
     'pnlServicePacks
     '
+    Me.pnlServicePacks.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
     Me.pnlServicePacks.AutoSize = True
     Me.pnlServicePacks.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
     Me.pnlServicePacks.ColumnCount = 2
@@ -253,7 +254,6 @@ Partial Class frmMain
     Me.pnlServicePacks.Controls.Add(Me.chkSP, 0, 0)
     Me.pnlServicePacks.Controls.Add(Me.pnlSP, 1, 0)
     Me.pnlServicePacks.Controls.Add(Me.lblSP64, 0, 1)
-    Me.pnlServicePacks.Dock = System.Windows.Forms.DockStyle.Fill
     Me.pnlServicePacks.Location = New System.Drawing.Point(0, 123)
     Me.pnlServicePacks.Margin = New System.Windows.Forms.Padding(0)
     Me.pnlServicePacks.Name = "pnlServicePacks"
@@ -265,6 +265,7 @@ Partial Class frmMain
     '
     'pnlSP64
     '
+    Me.pnlSP64.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
     Me.pnlSP64.AutoSize = True
     Me.pnlSP64.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
     Me.pnlSP64.ColumnCount = 2
@@ -272,7 +273,6 @@ Partial Class frmMain
     Me.pnlSP64.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
     Me.pnlSP64.Controls.Add(Me.txtSP64, 0, 0)
     Me.pnlSP64.Controls.Add(Me.cmdSP64, 1, 0)
-    Me.pnlSP64.Dock = System.Windows.Forms.DockStyle.Fill
     Me.pnlSP64.Location = New System.Drawing.Point(100, 29)
     Me.pnlSP64.Margin = New System.Windows.Forms.Padding(0)
     Me.pnlSP64.Name = "pnlSP64"
@@ -284,6 +284,7 @@ Partial Class frmMain
     '
     'txtSP64
     '
+    Me.txtSP64.AllowDrop = True
     Me.txtSP64.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
     Me.txtSP64.Location = New System.Drawing.Point(3, 4)
     Me.txtSP64.Name = "txtSP64"
@@ -318,6 +319,7 @@ Partial Class frmMain
     '
     'pnlSP
     '
+    Me.pnlSP.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
     Me.pnlSP.AutoSize = True
     Me.pnlSP.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
     Me.pnlSP.ColumnCount = 2
@@ -325,7 +327,6 @@ Partial Class frmMain
     Me.pnlSP.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
     Me.pnlSP.Controls.Add(Me.txtSP, 0, 0)
     Me.pnlSP.Controls.Add(Me.cmdSP, 1, 0)
-    Me.pnlSP.Dock = System.Windows.Forms.DockStyle.Fill
     Me.pnlSP.Location = New System.Drawing.Point(100, 0)
     Me.pnlSP.Margin = New System.Windows.Forms.Padding(0)
     Me.pnlSP.Name = "pnlSP"
@@ -336,6 +337,7 @@ Partial Class frmMain
     '
     'txtSP
     '
+    Me.txtSP.AllowDrop = True
     Me.txtSP.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
     Me.txtSP.Enabled = False
     Me.txtSP.Location = New System.Drawing.Point(3, 4)
@@ -528,6 +530,7 @@ Partial Class frmMain
     '
     'txtWIM
     '
+    Me.txtWIM.AllowDrop = True
     Me.txtWIM.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
     Me.txtWIM.Location = New System.Drawing.Point(3, 4)
     Me.txtWIM.Name = "txtWIM"
@@ -679,6 +682,7 @@ Partial Class frmMain
     '
     'txtISO
     '
+    Me.txtISO.AllowDrop = True
     Me.txtISO.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
     Me.txtISO.Enabled = False
     Me.txtISO.Location = New System.Drawing.Point(3, 4)
@@ -999,6 +1003,7 @@ Partial Class frmMain
     '
     'txtMerge
     '
+    Me.txtMerge.AllowDrop = True
     Me.txtMerge.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
     Me.txtMerge.Enabled = False
     Me.txtMerge.Location = New System.Drawing.Point(3, 4)
@@ -1066,6 +1071,7 @@ Partial Class frmMain
     '
     'ttInfo
     '
+    Me.ttInfo.Active = False
     Me.ttInfo.AutoPopDelay = 30000
     Me.ttInfo.InitialDelay = 500
     Me.ttInfo.ReshowDelay = 100
