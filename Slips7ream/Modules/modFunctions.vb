@@ -962,149 +962,160 @@ Module modFunctions
     Warning2 = &HFFFF
   End Enum
   Public Function MsgDlg(owner As Form, Text As String, Optional Title As String = Nothing, Optional Caption As String = Nothing, Optional Buttons As MessageBoxButtons = MessageBoxButtons.OK, Optional Icon As TaskDialogIcon = TaskDialogIcon.None, Optional DefaultButton As MessageBoxDefaultButton = MessageBoxDefaultButton.Button1, Optional Details As String = Nothing) As DialogResult
-    If TaskDialog.IsPlatformSupported Then
-      Using dlgMessage As New TaskDialog
-        dlgMessage.Cancelable = True
-        dlgMessage.Caption = "SLIPS7REAM - " & Caption
-        dlgMessage.InstructionText = Title
-        dlgMessage.Text = Text
-        dlgMessage.Icon = Icon
-        Select Case Buttons
-          Case MessageBoxButtons.OK
-            Dim cmdOK As New TaskDialogButton("cmdOK", "&OK")
-            If DefaultButton = MessageBoxDefaultButton.Button1 Then
-              cmdOK.Default = True
-            Else
-              cmdOK.Default = False
-            End If
-            AddHandler cmdOK.Click, AddressOf SelectionDialogButton_Click
-            dlgMessage.Controls.Add(cmdOK)
-          Case MessageBoxButtons.YesNo
-            Dim cmdYes As New TaskDialogButton("cmdYes", "&Yes")
-            Dim cmdNo As New TaskDialogButton("cmdNo", "&No")
-            If DefaultButton = MessageBoxDefaultButton.Button1 Then
-              cmdYes.Default = True
-              cmdNo.Default = False
-            ElseIf DefaultButton = MessageBoxDefaultButton.Button2 Then
-              cmdYes.Default = False
-              cmdNo.Default = True
-            Else
-              cmdYes.Default = False
-              cmdNo.Default = False
-            End If
-            AddHandler cmdYes.Click, AddressOf SelectionDialogButton_Click
-            AddHandler cmdNo.Click, AddressOf SelectionDialogButton_Click
-            dlgMessage.Controls.Add(cmdYes)
-            dlgMessage.Controls.Add(cmdNo)
-          Case MessageBoxButtons.YesNoCancel
-            Dim cmdYes As New TaskDialogButton("cmdYes", "&Yes")
-            Dim cmdNo As New TaskDialogButton("cmdNo", "&No")
-            Dim cmdCancel As New TaskDialogButton("cmdCancel", "&Cancel")
-            If DefaultButton = MessageBoxDefaultButton.Button1 Then
-              cmdYes.Default = True
-              cmdNo.Default = False
-              cmdCancel.Default = False
-            ElseIf DefaultButton = MessageBoxDefaultButton.Button2 Then
-              cmdYes.Default = False
-              cmdNo.Default = True
-              cmdCancel.Default = False
-            Else
-              cmdYes.Default = False
-              cmdNo.Default = False
-              cmdCancel.Default = True
-            End If
-            AddHandler cmdYes.Click, AddressOf SelectionDialogButton_Click
-            AddHandler cmdNo.Click, AddressOf SelectionDialogButton_Click
-            AddHandler cmdCancel.Click, AddressOf SelectionDialogButton_Click
-            dlgMessage.Controls.Add(cmdYes)
-            dlgMessage.Controls.Add(cmdNo)
-            dlgMessage.Controls.Add(cmdCancel)
-          Case MessageBoxButtons.OKCancel
-            Dim cmdOK As New TaskDialogButton("cmdOK", "&OK")
-            Dim cmdCancel As New TaskDialogButton("cmdCancel", "&Cancel")
-            If DefaultButton = MessageBoxDefaultButton.Button1 Then
-              cmdOK.Default = True
-              cmdCancel.Default = False
-            ElseIf DefaultButton = MessageBoxDefaultButton.Button2 Then
-              cmdOK.Default = False
-              cmdCancel.Default = True
-            Else
-              cmdOK.Default = False
-              cmdCancel.Default = False
-            End If
-            AddHandler cmdOK.Click, AddressOf SelectionDialogButton_Click
-            AddHandler cmdCancel.Click, AddressOf SelectionDialogButton_Click
-            dlgMessage.Controls.Add(cmdOK)
-            dlgMessage.Controls.Add(cmdCancel)
-          Case MessageBoxButtons.RetryCancel
-            Dim cmdRetry As New TaskDialogButton("cmdRetry", "&Retry")
-            Dim cmdCancel As New TaskDialogButton("cmdCancel", "&Cancel")
-            If DefaultButton = MessageBoxDefaultButton.Button1 Then
-              cmdRetry.Default = True
-              cmdCancel.Default = False
-            ElseIf DefaultButton = MessageBoxDefaultButton.Button2 Then
-              cmdRetry.Default = False
-              cmdCancel.Default = True
-            Else
-              cmdRetry.Default = False
-              cmdCancel.Default = False
-            End If
-            AddHandler cmdRetry.Click, AddressOf SelectionDialogButton_Click
-            AddHandler cmdCancel.Click, AddressOf SelectionDialogButton_Click
-            dlgMessage.Controls.Add(cmdRetry)
-            dlgMessage.Controls.Add(cmdCancel)
-          Case MessageBoxButtons.AbortRetryIgnore
-            Dim cmdAbort As New TaskDialogButton("cmdNo", "&Abort")
-            Dim cmdRetry As New TaskDialogButton("cmdRetry", "&Retry")
-            Dim cmdIgnore As New TaskDialogButton("cmdClose", "&Ignore")
-            If DefaultButton = MessageBoxDefaultButton.Button1 Then
-              cmdAbort.Default = True
-              cmdRetry.Default = False
-              cmdIgnore.Default = False
-            ElseIf DefaultButton = MessageBoxDefaultButton.Button2 Then
-              cmdAbort.Default = False
-              cmdRetry.Default = True
-              cmdIgnore.Default = False
-            Else
-              cmdAbort.Default = False
-              cmdRetry.Default = False
-              cmdIgnore.Default = True
-            End If
-            AddHandler cmdAbort.Click, AddressOf SelectionDialogButton_Click
-            AddHandler cmdRetry.Click, AddressOf SelectionDialogButton_Click
-            AddHandler cmdIgnore.Click, AddressOf SelectionDialogButton_Click
-            dlgMessage.Controls.Add(cmdAbort)
-            dlgMessage.Controls.Add(cmdRetry)
-            dlgMessage.Controls.Add(cmdIgnore)
-        End Select
-        If Not String.IsNullOrEmpty(Details) Then
-          dlgMessage.DetailsExpanded = False
-          dlgMessage.DetailsCollapsedLabel = "View Details"
-          dlgMessage.DetailsExpandedLabel = "Hide Details"
-          dlgMessage.DetailsExpandedText = Details
-          dlgMessage.ExpansionMode = TaskDialogExpandedDetailsLocation.ExpandContent
-        End If
-        If owner IsNot Nothing Then dlgMessage.OwnerWindowHandle = owner.Handle
-        AddHandler dlgMessage.Opened, AddressOf RefreshDlg
-        Dim ret As TaskDialogResult
-        Try
-          ret = dlgMessage.Show()
-        Catch ex As Exception
-          Return MsgDlgLegacy(owner, Text, Title, Caption, Buttons, Icon, DefaultButton, Details)
-        End Try
-        Select Case ret
-          Case TaskDialogResult.Yes : Return DialogResult.Yes
-          Case TaskDialogResult.No : Return IIf(Buttons = MessageBoxButtons.AbortRetryIgnore, DialogResult.Abort, DialogResult.No)
-          Case TaskDialogResult.Ok : Return DialogResult.OK
-          Case TaskDialogResult.Cancel : Return DialogResult.Cancel
-          Case TaskDialogResult.Close : Return DialogResult.Ignore
-          Case TaskDialogResult.Retry : Return DialogResult.Retry
-        End Select
-        Return DialogResult.None
-      End Using
-    Else
-      Return MsgDlgLegacy(owner, Text, Title, Caption, Buttons, Icon, DefaultButton, Details)
+    If owner.Name = "frmMain" Then
+      Dim main As frmMain = owner
+      If main.pbTotal.Visible AndAlso main.taskBar IsNot Nothing Then main.taskBar.SetProgressState(main.Handle, TaskbarLib.TBPFLAG.TBPF_ERROR)
     End If
+    Try
+      If TaskDialog.IsPlatformSupported Then
+        Using dlgMessage As New TaskDialog
+          dlgMessage.Cancelable = True
+          dlgMessage.Caption = "SLIPS7REAM - " & Caption
+          dlgMessage.InstructionText = Title
+          dlgMessage.Text = Text
+          dlgMessage.Icon = Icon
+          Select Case Buttons
+            Case MessageBoxButtons.OK
+              Dim cmdOK As New TaskDialogButton("cmdOK", "&OK")
+              If DefaultButton = MessageBoxDefaultButton.Button1 Then
+                cmdOK.Default = True
+              Else
+                cmdOK.Default = False
+              End If
+              AddHandler cmdOK.Click, AddressOf SelectionDialogButton_Click
+              dlgMessage.Controls.Add(cmdOK)
+            Case MessageBoxButtons.YesNo
+              Dim cmdYes As New TaskDialogButton("cmdYes", "&Yes")
+              Dim cmdNo As New TaskDialogButton("cmdNo", "&No")
+              If DefaultButton = MessageBoxDefaultButton.Button1 Then
+                cmdYes.Default = True
+                cmdNo.Default = False
+              ElseIf DefaultButton = MessageBoxDefaultButton.Button2 Then
+                cmdYes.Default = False
+                cmdNo.Default = True
+              Else
+                cmdYes.Default = False
+                cmdNo.Default = False
+              End If
+              AddHandler cmdYes.Click, AddressOf SelectionDialogButton_Click
+              AddHandler cmdNo.Click, AddressOf SelectionDialogButton_Click
+              dlgMessage.Controls.Add(cmdYes)
+              dlgMessage.Controls.Add(cmdNo)
+            Case MessageBoxButtons.YesNoCancel
+              Dim cmdYes As New TaskDialogButton("cmdYes", "&Yes")
+              Dim cmdNo As New TaskDialogButton("cmdNo", "&No")
+              Dim cmdCancel As New TaskDialogButton("cmdCancel", "&Cancel")
+              If DefaultButton = MessageBoxDefaultButton.Button1 Then
+                cmdYes.Default = True
+                cmdNo.Default = False
+                cmdCancel.Default = False
+              ElseIf DefaultButton = MessageBoxDefaultButton.Button2 Then
+                cmdYes.Default = False
+                cmdNo.Default = True
+                cmdCancel.Default = False
+              Else
+                cmdYes.Default = False
+                cmdNo.Default = False
+                cmdCancel.Default = True
+              End If
+              AddHandler cmdYes.Click, AddressOf SelectionDialogButton_Click
+              AddHandler cmdNo.Click, AddressOf SelectionDialogButton_Click
+              AddHandler cmdCancel.Click, AddressOf SelectionDialogButton_Click
+              dlgMessage.Controls.Add(cmdYes)
+              dlgMessage.Controls.Add(cmdNo)
+              dlgMessage.Controls.Add(cmdCancel)
+            Case MessageBoxButtons.OKCancel
+              Dim cmdOK As New TaskDialogButton("cmdOK", "&OK")
+              Dim cmdCancel As New TaskDialogButton("cmdCancel", "&Cancel")
+              If DefaultButton = MessageBoxDefaultButton.Button1 Then
+                cmdOK.Default = True
+                cmdCancel.Default = False
+              ElseIf DefaultButton = MessageBoxDefaultButton.Button2 Then
+                cmdOK.Default = False
+                cmdCancel.Default = True
+              Else
+                cmdOK.Default = False
+                cmdCancel.Default = False
+              End If
+              AddHandler cmdOK.Click, AddressOf SelectionDialogButton_Click
+              AddHandler cmdCancel.Click, AddressOf SelectionDialogButton_Click
+              dlgMessage.Controls.Add(cmdOK)
+              dlgMessage.Controls.Add(cmdCancel)
+            Case MessageBoxButtons.RetryCancel
+              Dim cmdRetry As New TaskDialogButton("cmdRetry", "&Retry")
+              Dim cmdCancel As New TaskDialogButton("cmdCancel", "&Cancel")
+              If DefaultButton = MessageBoxDefaultButton.Button1 Then
+                cmdRetry.Default = True
+                cmdCancel.Default = False
+              ElseIf DefaultButton = MessageBoxDefaultButton.Button2 Then
+                cmdRetry.Default = False
+                cmdCancel.Default = True
+              Else
+                cmdRetry.Default = False
+                cmdCancel.Default = False
+              End If
+              AddHandler cmdRetry.Click, AddressOf SelectionDialogButton_Click
+              AddHandler cmdCancel.Click, AddressOf SelectionDialogButton_Click
+              dlgMessage.Controls.Add(cmdRetry)
+              dlgMessage.Controls.Add(cmdCancel)
+            Case MessageBoxButtons.AbortRetryIgnore
+              Dim cmdAbort As New TaskDialogButton("cmdNo", "&Abort")
+              Dim cmdRetry As New TaskDialogButton("cmdRetry", "&Retry")
+              Dim cmdIgnore As New TaskDialogButton("cmdClose", "&Ignore")
+              If DefaultButton = MessageBoxDefaultButton.Button1 Then
+                cmdAbort.Default = True
+                cmdRetry.Default = False
+                cmdIgnore.Default = False
+              ElseIf DefaultButton = MessageBoxDefaultButton.Button2 Then
+                cmdAbort.Default = False
+                cmdRetry.Default = True
+                cmdIgnore.Default = False
+              Else
+                cmdAbort.Default = False
+                cmdRetry.Default = False
+                cmdIgnore.Default = True
+              End If
+              AddHandler cmdAbort.Click, AddressOf SelectionDialogButton_Click
+              AddHandler cmdRetry.Click, AddressOf SelectionDialogButton_Click
+              AddHandler cmdIgnore.Click, AddressOf SelectionDialogButton_Click
+              dlgMessage.Controls.Add(cmdAbort)
+              dlgMessage.Controls.Add(cmdRetry)
+              dlgMessage.Controls.Add(cmdIgnore)
+          End Select
+          If Not String.IsNullOrEmpty(Details) Then
+            dlgMessage.DetailsExpanded = False
+            dlgMessage.DetailsCollapsedLabel = "View Details"
+            dlgMessage.DetailsExpandedLabel = "Hide Details"
+            dlgMessage.DetailsExpandedText = Details
+            dlgMessage.ExpansionMode = TaskDialogExpandedDetailsLocation.ExpandContent
+          End If
+          If owner IsNot Nothing Then dlgMessage.OwnerWindowHandle = owner.Handle
+          AddHandler dlgMessage.Opened, AddressOf RefreshDlg
+          Dim ret As TaskDialogResult
+          Try
+            ret = dlgMessage.Show()
+          Catch ex As Exception
+            Return MsgDlgLegacy(owner, Text, Title, Caption, Buttons, Icon, DefaultButton, Details)
+          End Try
+          Select Case ret
+            Case TaskDialogResult.Yes : Return DialogResult.Yes
+            Case TaskDialogResult.No : Return IIf(Buttons = MessageBoxButtons.AbortRetryIgnore, DialogResult.Abort, DialogResult.No)
+            Case TaskDialogResult.Ok : Return DialogResult.OK
+            Case TaskDialogResult.Cancel : Return DialogResult.Cancel
+            Case TaskDialogResult.Close : Return DialogResult.Ignore
+            Case TaskDialogResult.Retry : Return DialogResult.Retry
+          End Select
+          Return DialogResult.None
+        End Using
+      Else
+        Return MsgDlgLegacy(owner, Text, Title, Caption, Buttons, Icon, DefaultButton, Details)
+      End If
+    Finally
+      If owner.Name = "frmMain" Then
+        Dim main As frmMain = owner
+        If main.pbTotal.Visible AndAlso main.taskBar IsNot Nothing Then main.taskBar.SetProgressState(main.Handle, TaskbarLib.TBPFLAG.TBPF_NORMAL)
+      End If
+    End Try
   End Function
   Private Sub RefreshDlg(sender As Object, e As EventArgs)
     Dim dlg As TaskDialog = sender
