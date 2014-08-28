@@ -81,7 +81,11 @@
         End Select
       End Try
     End If
-    cmbCompletion.Text = "Do Nothing"
+    If mySettings.PlayAlertNoise Then
+      cmbCompletion.Text = "Play Alert Noise"
+    Else
+      cmbCompletion.Text = "Do Nothing"
+    End If
     lvImages.ShowGroups = True
     lvImages.Groups.Add("WIM", "Source Image")
     lvImages.Groups.Add("MERGE", "Merge Image")
@@ -1307,6 +1311,13 @@
       mySettings.Priority = cmbPriority.Text
     End If
   End Sub
+  Private Sub cmbCompletion_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cmbCompletion.SelectedIndexChanged
+    If cmbCompletion.SelectedIndex = 0 Then
+      mySettings.PlayAlertNoise = False
+    ElseIf cmbCompletion.SelectedIndex = 1 Then
+      mySettings.PlayAlertNoise = True
+    End If
+  End Sub
   Private Sub cmdOpenFolder_Click(sender As System.Object, e As System.EventArgs) Handles cmdOpenFolder.Click
     Dim sPath As String = Nothing
     If chkISO.Checked Then
@@ -2275,19 +2286,40 @@
         RunComplete = True
         ToggleInputs(True)
       Case 1
-        REM close
-        Me.Close()
+        REM play alert noise
+        RunComplete = True
+        ToggleInputs(True)
+        If String.IsNullOrEmpty(mySettings.AlertNoisePath) Then
+          My.Computer.Audio.PlaySystemSound(Media.SystemSounds.Asterisk)
+        ElseIf IO.File.Exists(mySettings.AlertNoisePath) Then
+          Try
+            My.Computer.Audio.Play(mySettings.AlertNoisePath, AudioPlayMode.Background)
+          Catch ex As Exception
+            mySettings.AlertNoisePath = String.Empty
+            My.Computer.Audio.PlaySystemSound(Media.SystemSounds.Asterisk)
+          End Try
+        Else
+          mySettings.AlertNoisePath = String.Empty
+          My.Computer.Audio.PlaySystemSound(Media.SystemSounds.Asterisk)
+        End If
       Case 2
+        REM close
+        RunComplete = True
+        ToggleInputs(True)
+        Me.Close()
+      Case 3
         REM shut down
         CloseCleanup()
         Process.Start("shutdown", "/s /t 0 /d p:0:0 /f")
-      Case 3
+      Case 4
         REM restart
         CloseCleanup()
         Process.Start("shutdown", "/r /t 0 /d p:0:0 /f")
-      Case 4
+      Case 5
         REM sleep
+        RunComplete = True
         CloseCleanup()
+        ToggleInputs(True)
         Application.SetSuspendState(PowerState.Suspend, False, False)
         Me.Close()
     End Select
@@ -3803,4 +3835,6 @@
     SetStatus("Downloading New Version - " & ByteSize(e.BytesReceived) & " of " & ByteSize(e.TotalBytesToReceive) & "... (" & e.ProgressPercentage & "%)")
   End Sub
 #End Region
+
+
 End Class

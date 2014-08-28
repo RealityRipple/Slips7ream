@@ -34,11 +34,18 @@ Partial Class frmConfig
     Me.cmdTemp = New System.Windows.Forms.Button()
     Me.lblWhitelist = New System.Windows.Forms.Label()
     Me.txtWhitelist = New System.Windows.Forms.TextBox()
-    Me.lblDonate = New Slips7ream.LinkLabel()
     Me.lblTimeoutS = New System.Windows.Forms.Label()
+    Me.chkAlert = New System.Windows.Forms.CheckBox()
+    Me.pnlAlert = New System.Windows.Forms.TableLayoutPanel()
+    Me.txtAlertPath = New System.Windows.Forms.TextBox()
+    Me.cmdAlertBrowse = New System.Windows.Forms.Button()
+    Me.cmdPlay = New System.Windows.Forms.Button()
+    Me.chkDefault = New System.Windows.Forms.CheckBox()
+    Me.lblDonate = New Slips7ream.LinkLabel()
     Me.ttInfo = New Slips7ream.ToolTip(Me.components)
     Me.pnlConfig.SuspendLayout()
     CType(Me.txtTimeout, System.ComponentModel.ISupportInitialize).BeginInit()
+    Me.pnlAlert.SuspendLayout()
     Me.SuspendLayout()
     '
     'pnlConfig
@@ -49,33 +56,35 @@ Partial Class frmConfig
     Me.pnlConfig.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
     Me.pnlConfig.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
     Me.pnlConfig.Controls.Add(Me.lblTimeout, 0, 2)
-    Me.pnlConfig.Controls.Add(Me.cmdClose, 3, 3)
-    Me.pnlConfig.Controls.Add(Me.cmdSave, 2, 3)
+    Me.pnlConfig.Controls.Add(Me.cmdClose, 3, 4)
+    Me.pnlConfig.Controls.Add(Me.cmdSave, 2, 4)
     Me.pnlConfig.Controls.Add(Me.txtTimeout, 1, 2)
     Me.pnlConfig.Controls.Add(Me.lblTemp, 0, 0)
     Me.pnlConfig.Controls.Add(Me.txtTemp, 1, 0)
     Me.pnlConfig.Controls.Add(Me.cmdTemp, 3, 0)
     Me.pnlConfig.Controls.Add(Me.lblWhitelist, 0, 1)
     Me.pnlConfig.Controls.Add(Me.txtWhitelist, 1, 1)
-    Me.pnlConfig.Controls.Add(Me.lblDonate, 0, 3)
+    Me.pnlConfig.Controls.Add(Me.lblDonate, 0, 4)
     Me.pnlConfig.Controls.Add(Me.lblTimeoutS, 2, 2)
+    Me.pnlConfig.Controls.Add(Me.chkAlert, 0, 3)
+    Me.pnlConfig.Controls.Add(Me.pnlAlert, 1, 3)
     Me.pnlConfig.Dock = System.Windows.Forms.DockStyle.Fill
     Me.pnlConfig.Location = New System.Drawing.Point(0, 0)
     Me.pnlConfig.Name = "pnlConfig"
-    Me.pnlConfig.RowCount = 4
+    Me.pnlConfig.RowCount = 5
     Me.pnlConfig.RowStyles.Add(New System.Windows.Forms.RowStyle())
     Me.pnlConfig.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
     Me.pnlConfig.RowStyles.Add(New System.Windows.Forms.RowStyle())
     Me.pnlConfig.RowStyles.Add(New System.Windows.Forms.RowStyle())
-    Me.pnlConfig.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
-    Me.pnlConfig.Size = New System.Drawing.Size(398, 180)
+    Me.pnlConfig.RowStyles.Add(New System.Windows.Forms.RowStyle())
+    Me.pnlConfig.Size = New System.Drawing.Size(461, 232)
     Me.pnlConfig.TabIndex = 0
     '
     'lblTimeout
     '
     Me.lblTimeout.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblTimeout.AutoSize = True
-    Me.lblTimeout.Location = New System.Drawing.Point(3, 131)
+    Me.lblTimeout.Location = New System.Drawing.Point(3, 153)
     Me.lblTimeout.Name = "lblTimeout"
     Me.lblTimeout.Size = New System.Drawing.Size(98, 13)
     Me.lblTimeout.TabIndex = 6
@@ -85,7 +94,7 @@ Partial Class frmConfig
     '
     Me.cmdClose.Anchor = System.Windows.Forms.AnchorStyles.Right
     Me.cmdClose.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmdClose.Location = New System.Drawing.Point(320, 154)
+    Me.cmdClose.Location = New System.Drawing.Point(383, 206)
     Me.cmdClose.Name = "cmdClose"
     Me.cmdClose.Size = New System.Drawing.Size(75, 23)
     Me.cmdClose.TabIndex = 9
@@ -96,7 +105,7 @@ Partial Class frmConfig
     '
     Me.cmdSave.Anchor = System.Windows.Forms.AnchorStyles.Right
     Me.cmdSave.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmdSave.Location = New System.Drawing.Point(239, 154)
+    Me.cmdSave.Location = New System.Drawing.Point(302, 206)
     Me.cmdSave.Name = "cmdSave"
     Me.cmdSave.Size = New System.Drawing.Size(75, 23)
     Me.cmdSave.TabIndex = 8
@@ -106,7 +115,7 @@ Partial Class frmConfig
     'txtTimeout
     '
     Me.txtTimeout.Anchor = System.Windows.Forms.AnchorStyles.Right
-    Me.txtTimeout.Location = New System.Drawing.Point(117, 128)
+    Me.txtTimeout.Location = New System.Drawing.Point(127, 150)
     Me.txtTimeout.Maximum = New Decimal(New Integer() {3600, 0, 0, 0})
     Me.txtTimeout.Name = "txtTimeout"
     Me.txtTimeout.Size = New System.Drawing.Size(60, 20)
@@ -126,16 +135,16 @@ Partial Class frmConfig
     '
     Me.txtTemp.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
     Me.pnlConfig.SetColumnSpan(Me.txtTemp, 2)
-    Me.txtTemp.Location = New System.Drawing.Point(117, 4)
+    Me.txtTemp.Location = New System.Drawing.Point(127, 4)
     Me.txtTemp.Name = "txtTemp"
-    Me.txtTemp.Size = New System.Drawing.Size(197, 20)
+    Me.txtTemp.Size = New System.Drawing.Size(250, 20)
     Me.txtTemp.TabIndex = 4
     Me.ttInfo.SetTooltip(Me.txtTemp, "Empty directory for the program to work in.")
     '
     'cmdTemp
     '
     Me.cmdTemp.Anchor = System.Windows.Forms.AnchorStyles.Right
-    Me.cmdTemp.Location = New System.Drawing.Point(320, 3)
+    Me.cmdTemp.Location = New System.Drawing.Point(383, 3)
     Me.cmdTemp.Name = "cmdTemp"
     Me.cmdTemp.Size = New System.Drawing.Size(75, 23)
     Me.cmdTemp.TabIndex = 5
@@ -156,13 +165,106 @@ Partial Class frmConfig
     '
     Me.pnlConfig.SetColumnSpan(Me.txtWhitelist, 3)
     Me.txtWhitelist.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.txtWhitelist.Location = New System.Drawing.Point(117, 32)
+    Me.txtWhitelist.Location = New System.Drawing.Point(127, 32)
     Me.txtWhitelist.Multiline = True
     Me.txtWhitelist.Name = "txtWhitelist"
     Me.txtWhitelist.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-    Me.txtWhitelist.Size = New System.Drawing.Size(278, 90)
+    Me.txtWhitelist.Size = New System.Drawing.Size(331, 112)
     Me.txtWhitelist.TabIndex = 12
     Me.ttInfo.SetTooltip(Me.txtWhitelist, resources.GetString("txtWhitelist.ToolTip"))
+    '
+    'lblTimeoutS
+    '
+    Me.lblTimeoutS.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.lblTimeoutS.AutoSize = True
+    Me.pnlConfig.SetColumnSpan(Me.lblTimeoutS, 2)
+    Me.lblTimeoutS.Location = New System.Drawing.Point(193, 153)
+    Me.lblTimeoutS.Name = "lblTimeoutS"
+    Me.lblTimeoutS.Size = New System.Drawing.Size(43, 13)
+    Me.lblTimeoutS.TabIndex = 10
+    Me.lblTimeoutS.Text = "minutes"
+    '
+    'chkAlert
+    '
+    Me.chkAlert.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.chkAlert.AutoSize = True
+    Me.chkAlert.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.chkAlert.Location = New System.Drawing.Point(3, 179)
+    Me.chkAlert.Name = "chkAlert"
+    Me.chkAlert.Size = New System.Drawing.Size(118, 18)
+    Me.chkAlert.TabIndex = 14
+    Me.chkAlert.Text = "&Alert on Complete:"
+    Me.ttInfo.SetTooltip(Me.chkAlert, "Play an auditory alert when the Slipstream process has completed.")
+    Me.chkAlert.UseVisualStyleBackColor = True
+    '
+    'pnlAlert
+    '
+    Me.pnlAlert.ColumnCount = 4
+    Me.pnlConfig.SetColumnSpan(Me.pnlAlert, 3)
+    Me.pnlAlert.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+    Me.pnlAlert.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlAlert.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlAlert.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlAlert.Controls.Add(Me.txtAlertPath, 0, 0)
+    Me.pnlAlert.Controls.Add(Me.cmdAlertBrowse, 1, 0)
+    Me.pnlAlert.Controls.Add(Me.cmdPlay, 3, 0)
+    Me.pnlAlert.Controls.Add(Me.chkDefault, 2, 0)
+    Me.pnlAlert.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.pnlAlert.Location = New System.Drawing.Point(124, 173)
+    Me.pnlAlert.Margin = New System.Windows.Forms.Padding(0)
+    Me.pnlAlert.Name = "pnlAlert"
+    Me.pnlAlert.RowCount = 1
+    Me.pnlAlert.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+    Me.pnlAlert.Size = New System.Drawing.Size(337, 30)
+    Me.pnlAlert.TabIndex = 15
+    '
+    'txtAlertPath
+    '
+    Me.txtAlertPath.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.txtAlertPath.Enabled = False
+    Me.txtAlertPath.Location = New System.Drawing.Point(3, 5)
+    Me.txtAlertPath.Name = "txtAlertPath"
+    Me.txtAlertPath.Size = New System.Drawing.Size(238, 20)
+    Me.txtAlertPath.TabIndex = 0
+    Me.ttInfo.SetTooltip(Me.txtAlertPath, "Path to the WAV file to play when the Slipstream process has completed.")
+    '
+    'cmdAlertBrowse
+    '
+    Me.cmdAlertBrowse.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.cmdAlertBrowse.Enabled = False
+    Me.cmdAlertBrowse.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.cmdAlertBrowse.Location = New System.Drawing.Point(247, 3)
+    Me.cmdAlertBrowse.Name = "cmdAlertBrowse"
+    Me.cmdAlertBrowse.Size = New System.Drawing.Size(29, 23)
+    Me.cmdAlertBrowse.TabIndex = 1
+    Me.cmdAlertBrowse.Text = ". . ."
+    Me.cmdAlertBrowse.UseVisualStyleBackColor = True
+    '
+    'cmdPlay
+    '
+    Me.cmdPlay.Anchor = System.Windows.Forms.AnchorStyles.None
+    Me.cmdPlay.Enabled = False
+    Me.cmdPlay.Image = Global.Slips7ream.My.Resources.Resources.play
+    Me.cmdPlay.Location = New System.Drawing.Point(311, 3)
+    Me.cmdPlay.Name = "cmdPlay"
+    Me.cmdPlay.Size = New System.Drawing.Size(23, 23)
+    Me.cmdPlay.TabIndex = 3
+    Me.ttInfo.SetTooltip(Me.cmdPlay, "Play the Alert sound.")
+    Me.cmdPlay.UseVisualStyleBackColor = True
+    '
+    'chkDefault
+    '
+    Me.chkDefault.Anchor = System.Windows.Forms.AnchorStyles.None
+    Me.chkDefault.Appearance = System.Windows.Forms.Appearance.Button
+    Me.chkDefault.Enabled = False
+    Me.chkDefault.Image = Global.Slips7ream.My.Resources.Resources.win
+    Me.chkDefault.Location = New System.Drawing.Point(282, 3)
+    Me.chkDefault.Name = "chkDefault"
+    Me.chkDefault.Size = New System.Drawing.Size(23, 23)
+    Me.chkDefault.TabIndex = 4
+    Me.chkDefault.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+    Me.ttInfo.SetTooltip(Me.chkDefault, "Use the System Default Alert sound.")
+    Me.chkDefault.UseVisualStyleBackColor = True
     '
     'lblDonate
     '
@@ -172,28 +274,17 @@ Partial Class frmConfig
     Me.lblDonate.Cursor = System.Windows.Forms.Cursors.Hand
     Me.lblDonate.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!)
     Me.lblDonate.ForeColor = System.Drawing.Color.MediumBlue
-    Me.lblDonate.Location = New System.Drawing.Point(45, 159)
+    Me.lblDonate.Location = New System.Drawing.Point(50, 211)
     Me.lblDonate.Name = "lblDonate"
     Me.lblDonate.Size = New System.Drawing.Size(89, 13)
     Me.lblDonate.TabIndex = 13
     Me.lblDonate.Text = "Make a &Donation"
     '
-    'lblTimeoutS
-    '
-    Me.lblTimeoutS.Anchor = System.Windows.Forms.AnchorStyles.Left
-    Me.lblTimeoutS.AutoSize = True
-    Me.pnlConfig.SetColumnSpan(Me.lblTimeoutS, 2)
-    Me.lblTimeoutS.Location = New System.Drawing.Point(183, 131)
-    Me.lblTimeoutS.Name = "lblTimeoutS"
-    Me.lblTimeoutS.Size = New System.Drawing.Size(43, 13)
-    Me.lblTimeoutS.TabIndex = 10
-    Me.lblTimeoutS.Text = "minutes"
-    '
     'frmConfig
     '
     Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
     Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-    Me.ClientSize = New System.Drawing.Size(398, 180)
+    Me.ClientSize = New System.Drawing.Size(461, 232)
     Me.Controls.Add(Me.pnlConfig)
     Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
     Me.Icon = Global.Slips7ream.My.Resources.Resources.icon
@@ -206,6 +297,8 @@ Partial Class frmConfig
     Me.pnlConfig.ResumeLayout(False)
     Me.pnlConfig.PerformLayout()
     CType(Me.txtTimeout, System.ComponentModel.ISupportInitialize).EndInit()
+    Me.pnlAlert.ResumeLayout(False)
+    Me.pnlAlert.PerformLayout()
     Me.ResumeLayout(False)
 
   End Sub
@@ -222,4 +315,10 @@ Partial Class frmConfig
   Friend WithEvents lblWhitelist As System.Windows.Forms.Label
   Friend WithEvents txtWhitelist As System.Windows.Forms.TextBox
   Friend WithEvents lblDonate As Slips7ream.LinkLabel
+  Friend WithEvents chkAlert As System.Windows.Forms.CheckBox
+  Friend WithEvents pnlAlert As System.Windows.Forms.TableLayoutPanel
+  Friend WithEvents txtAlertPath As System.Windows.Forms.TextBox
+  Friend WithEvents cmdAlertBrowse As System.Windows.Forms.Button
+  Friend WithEvents cmdPlay As System.Windows.Forms.Button
+  Friend WithEvents chkDefault As System.Windows.Forms.CheckBox
 End Class

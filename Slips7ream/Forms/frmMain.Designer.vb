@@ -855,7 +855,7 @@ Partial Class frmMain
     Me.cmbCompletion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
     Me.cmbCompletion.FlatStyle = System.Windows.Forms.FlatStyle.System
     Me.cmbCompletion.FormattingEnabled = True
-    Me.cmbCompletion.Items.AddRange(New Object() {"Do Nothing", "Close Program", "Shut Down", "Restart", "Sleep"})
+    Me.cmbCompletion.Items.AddRange(New Object() {"Do Nothing", "Play Alert Noise", "Close Program", "Shut Down", "Restart", "Sleep"})
     Me.cmbCompletion.Location = New System.Drawing.Point(307, 3)
     Me.cmbCompletion.MaximumSize = New System.Drawing.Size(115, 0)
     Me.cmbCompletion.MinimumSize = New System.Drawing.Size(115, 0)

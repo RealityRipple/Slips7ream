@@ -10,6 +10,8 @@
   Private c_DefaultSplit As Integer = 0
   Private c_SplitVal As String
   Private c_LastUpdate As Date = New Date(1970, 1, 1)
+  Private c_PlayAlertNoise As Boolean
+  Private c_AlertNoisePath As String
   Public Property TempDir As String
     Get
       Return c_TempDir
@@ -109,6 +111,24 @@
       Save()
     End Set
   End Property
+  Public Property PlayAlertNoise As Boolean
+    Get
+      Return c_PlayAlertNoise
+    End Get
+    Set(value As Boolean)
+      c_PlayAlertNoise = value
+      Save()
+    End Set
+  End Property
+  Public Property AlertNoisePath As String
+    Get
+      Return c_AlertNoisePath
+    End Get
+    Set(value As String)
+      c_AlertNoisePath = value
+      Save()
+    End Set
+  End Property
   Public Sub New()
     If My.Computer.Registry.CurrentUser.OpenSubKey("Software").GetSubKeyNames.Contains(Application.CompanyName) Then
       If My.Computer.Registry.CurrentUser.OpenSubKey("Software\" & Application.CompanyName).GetSubKeyNames.Contains(Application.ProductName) Then
@@ -136,10 +156,27 @@
       c_x86WhiteList = Split(My.Settings.x86WhiteList, vbNewLine)
     End If
     If Hive.GetSubKeyNames.Contains("Display") Then
-      c_Position.X = Hive.OpenSubKey("Display").GetValue("Left", My.Settings.Position.X)
-      c_Position.Y = Hive.OpenSubKey("Display").GetValue("Top", My.Settings.Position.Y)
-      c_Size.Width = Hive.OpenSubKey("Display").GetValue("Width", My.Settings.Size.Width)
-      c_Size.Height = Hive.OpenSubKey("Display").GetValue("Height", My.Settings.Size.Height)
+      Dim disp As Microsoft.Win32.RegistryKey = Hive.OpenSubKey("Display")
+      If disp.GetValueNames.Contains("Left") Then
+        c_Position.X = Hive.OpenSubKey("Display").GetValue("Left", My.Settings.Position.X)
+      Else
+        c_Position.X = My.Settings.Position.X
+      End If
+      If disp.GetValueNames.Contains("Top") Then
+        c_Position.Y = Hive.OpenSubKey("Display").GetValue("Top", My.Settings.Position.Y)
+      Else
+        c_Position.Y = My.Settings.Position.Y
+      End If
+      If disp.GetValueNames.Contains("Width") Then
+        c_Size.Width = Hive.OpenSubKey("Display").GetValue("Width", My.Settings.Size.Width)
+      Else
+        c_Size.Width = My.Settings.Size.Width
+      End If
+      If disp.GetValueNames.Contains("Height") Then
+        c_Size.Height = Hive.OpenSubKey("Display").GetValue("Height", My.Settings.Size.Height)
+      Else
+        c_Size.Height = My.Settings.Size.Height
+      End If
     Else
       c_Position = My.Settings.Position
       c_Size = My.Settings.Size
@@ -174,6 +211,18 @@
     Else
       c_LastUpdate = My.Settings.LastUpdate
     End If
+    If Hive.GetSubKeyNames.Contains("Alert") Then
+      Dim alert As Microsoft.Win32.RegistryKey = Hive.OpenSubKey("Alert")
+      c_PlayAlertNoise = (alert.GetValue(String.Empty, "N") = "Y")
+      If alert.GetValueNames.Contains("Path") Then
+        c_AlertNoisePath = alert.GetValue("Path", String.Empty)
+      Else
+        c_AlertNoisePath = String.Empty
+      End If
+    Else
+      c_PlayAlertNoise = False
+      c_AlertNoisePath = String.Empty
+    End If
   End Sub
   Private Sub ReadLegacy()
     c_TempDir = My.Settings.TempDir
@@ -187,6 +236,8 @@
     c_DefaultSplit = My.Settings.DefaultSplit
     c_SplitVal = My.Settings.SplitVal
     c_LastUpdate = My.Settings.LastUpdate
+    c_PlayAlertNoise = False
+    c_AlertNoisePath = String.Empty
     Save()
   End Sub
   Public Sub Save()
@@ -207,5 +258,8 @@
     ActiveHive.SetValue("Default Split", c_DefaultSplit, Microsoft.Win32.RegistryValueKind.DWord)
     ActiveHive.SetValue("Split Value", c_SplitVal, Microsoft.Win32.RegistryValueKind.String)
     ActiveHive.SetValue("Last Update", c_LastUpdate.ToBinary, Microsoft.Win32.RegistryValueKind.QWord)
+    If Not ActiveHive.GetSubKeyNames.Contains("Alert") Then ActiveHive.CreateSubKey("Alert")
+    ActiveHive.OpenSubKey("Alert", True).SetValue(String.Empty, IIf(c_PlayAlertNoise, "Y", "N"))
+    ActiveHive.OpenSubKey("Alert", True).SetValue("Path", c_AlertNoisePath)
   End Sub
 End Class
