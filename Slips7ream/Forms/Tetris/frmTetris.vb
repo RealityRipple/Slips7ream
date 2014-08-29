@@ -156,8 +156,8 @@
           effect2.Dispose()
           effect2 = Nothing
 
-          My.Computer.FileSystem.DeleteFile(sPath1)
-          My.Computer.FileSystem.DeleteFile(sPath2)
+          IO.File.Delete(sPath1)
+          IO.File.Delete(sPath2)
         End If
       End If
       Me.disposedValue = True
@@ -264,7 +264,7 @@
     End If
     If My.Computer.FileSystem.FileExists(AppData & IO.Path.DirectorySeparatorChar & "shoot_em.ogg") Then
       Try
-        My.Computer.FileSystem.DeleteFile(AppData & IO.Path.DirectorySeparatorChar & "shoot_em.ogg")
+        IO.File.Delete(AppData & IO.Path.DirectorySeparatorChar & "shoot_em.ogg")
       Catch ex As Exception
       End Try
     End If

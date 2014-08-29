@@ -17,6 +17,7 @@ Namespace Extraction
     Private ReadOnly m_archive As FileInfo
     Private current As FileInfo
     Private format As Guid
+    Private comment As String
     Public Shared ReadOnly AllFormats As New ReadOnlyCollection(Of ArchiveFormat.KnownSevenZipFormat)(New List(Of ArchiveFormat.KnownSevenZipFormat)() From {
       ArchiveFormat.KnownSevenZipFormat.Udf,
       ArchiveFormat.KnownSevenZipFormat.Cab,
@@ -76,6 +77,11 @@ Namespace Extraction
     Public ReadOnly Property Archive() As FileInfo Implements IArchiveFile.Archive
       Get
         Return m_archive
+      End Get
+    End Property
+    Public ReadOnly Property ArchiveComment As String
+      Get
+        Return comment
       End Get
     End Property
     Public ReadOnly Property ItemCount() As Integer Implements IArchiveFile.ItemCount
@@ -209,6 +215,7 @@ Namespace Extraction
                   minIndex = i
                 End If
               Next
+              comment = ar.GetArchiveProperty(ItemPropId.Comment).GetString
             End Using
           Catch generatedExceptionName As IndexOutOfRangeException
             Throw New ArchiveException("Open Failed")
