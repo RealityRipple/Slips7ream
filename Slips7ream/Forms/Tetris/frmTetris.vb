@@ -110,7 +110,7 @@
       If Not My.Computer.FileSystem.DirectoryExists(AppData) Then My.Computer.FileSystem.CreateDirectory(AppData)
       sPath1 = AppData & IO.Path.DirectorySeparatorChar & id & "1.wav"
       sPath2 = AppData & IO.Path.DirectorySeparatorChar & id & "2.wav"
-      If Not My.Computer.FileSystem.FileExists(sPath1) Or Not My.Computer.FileSystem.FileExists(sPath2) Then
+      If Not IO.File.Exists(sPath1) Or Not IO.File.Exists(sPath2) Then
         Dim streamData(stream.Length - 1) As Byte
         stream.Read(streamData, 0, stream.Length)
         My.Computer.FileSystem.WriteAllBytes(sPath1, streamData, False)
@@ -262,7 +262,7 @@
       song.Dispose()
       song = Nothing
     End If
-    If My.Computer.FileSystem.FileExists(AppData & IO.Path.DirectorySeparatorChar & "shoot_em.ogg") Then
+    If IO.File.Exists(AppData & IO.Path.DirectorySeparatorChar & "shoot_em.ogg") Then
       Try
         IO.File.Delete(AppData & IO.Path.DirectorySeparatorChar & "shoot_em.ogg")
       Catch ex As Exception

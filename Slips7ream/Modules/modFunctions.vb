@@ -21,7 +21,7 @@ Module modFunctions
     Public Sub New(Location As String)
       Path = Location
       Failure = Nothing
-      If My.Computer.FileSystem.FileExists(Location) Then
+      If IO.File.Exists(Location) Then
         Select Case GetUpdateType(Location)
           Case UpdateType.MSU
             Dim MSUPath As String = WorkDir & "UpdateMSU_Extract" & IO.Path.DirectorySeparatorChar
@@ -66,7 +66,7 @@ Module modFunctions
               Failure = exRet
               Exit Sub
             End If
-            If My.Computer.FileSystem.FileExists(CABPath & "update.mum") Then
+            If IO.File.Exists(CABPath & "update.mum") Then
               Dim xMUM As XElement = XElement.Load(CABPath & "update.mum")
               DisplayName = xMUM.Attribute("displayName")
               SupportLink = xMUM.Attribute("supportInformation")
@@ -92,7 +92,7 @@ Module modFunctions
               Failure = exRet
               Exit Sub
             End If
-            If My.Computer.FileSystem.FileExists(LPPath & "update.mum") Then
+            If IO.File.Exists(LPPath & "update.mum") Then
               Dim xMUM As XElement = XElement.Load(LPPath & "update.mum")
               Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
               DisplayName = xAssemblyIdentity.Attribute("language").Value & " Multilingual User Interface Pack"
@@ -117,7 +117,7 @@ Module modFunctions
               Failure = exRet
               Exit Sub
             End If
-            If My.Computer.FileSystem.FileExists(MLCPath & "update.mum") Then
+            If IO.File.Exists(MLCPath & "update.mum") Then
               Dim xMUM As XElement = XElement.Load(MLCPath & "update.mum")
               Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
               DisplayName = xAssemblyIdentity.Attribute("language").Value & " Language Interface Pack"
@@ -142,7 +142,7 @@ Module modFunctions
               Failure = exRet
               Exit Sub
             End If
-            If My.Computer.FileSystem.FileExists(EXEPath & "update.mum") Then
+            If IO.File.Exists(EXEPath & "update.mum") Then
               Dim xMUM As XElement = XElement.Load(EXEPath & "update.mum")
               Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
               DisplayName = xAssemblyIdentity.Attribute("language").Value & " Multilingual User Interface Pack"
