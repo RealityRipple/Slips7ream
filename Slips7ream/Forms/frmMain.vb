@@ -1592,9 +1592,9 @@
         WriteToOutput("Deleting """ & MergeWork & """...")
         SlowDeleteDirectory(MergeWork, FileIO.DeleteDirectoryOption.DeleteAllContents)
       End If
-      My.Computer.FileSystem.CreateDirectory(MergeWork)
+      IO.Directory.CreateDirectory(MergeWork)
       Dim MergeWorkExtract As String = MergeWork & "Extract" & IO.Path.DirectorySeparatorChar
-      If Not IO.Directory.Exists(MergeWorkExtract) Then My.Computer.FileSystem.CreateDirectory(MergeWorkExtract)
+      If Not IO.Directory.Exists(MergeWorkExtract) Then IO.Directory.CreateDirectory(MergeWorkExtract)
       If IO.Path.GetExtension(MergeFile).ToLower = ".iso" Then
         SetProgress(0, 1)
         SetStatus("Extracting Merge Image from ISO...")
@@ -1844,7 +1844,7 @@
       Dim ISODir As String = Work & "ISO" & IO.Path.DirectorySeparatorChar
       Dim ISODDir As String = Work & "ISOD%n" & IO.Path.DirectorySeparatorChar
 
-      If Not IO.Directory.Exists(ISODir) Then My.Computer.FileSystem.CreateDirectory(ISODir)
+      If Not IO.Directory.Exists(ISODir) Then IO.Directory.CreateDirectory(ISODir)
       SetProgress(0, 1)
       SetStatus("Extracting ISO contents...")
       WriteToOutput("Extracting ""INSTALL.WIM"" from """ & ISOFile & """ to """ & ISODir & """...")
@@ -2011,8 +2011,8 @@
                   ElseIf IO.Path.GetFileNameWithoutExtension(File).ToLower.Contains("install") Then
                     WIMNumber += 1
                     Dim sIDir As String = ISODDir.Replace("%n", DiscNumber)
-                    If Not IO.Directory.Exists(sIDir) Then My.Computer.FileSystem.CreateDirectory(sIDir)
-                    If Not IO.Directory.Exists(sIDir & "sources" & IO.Path.DirectorySeparatorChar) Then My.Computer.FileSystem.CreateDirectory(sIDir & "sources" & IO.Path.DirectorySeparatorChar)
+                    If Not IO.Directory.Exists(sIDir) Then IO.Directory.CreateDirectory(sIDir)
+                    If Not IO.Directory.Exists(sIDir & "sources" & IO.Path.DirectorySeparatorChar) Then IO.Directory.CreateDirectory(sIDir & "sources" & IO.Path.DirectorySeparatorChar)
                     SetProgress(0, 1)
                     Dim sNewFile As String = sIDir & IO.Path.DirectorySeparatorChar & "sources" & IO.Path.DirectorySeparatorChar & IO.Path.GetFileName(File)
                     WriteToOutput("Copying """ & File & """ to """ & sNewFile & """...")
@@ -2107,8 +2107,8 @@
                   ElseIf IO.Path.GetFileNameWithoutExtension(File).ToLower.Contains("install") Then
                     Dim discNo As String = IO.Path.GetFileNameWithoutExtension(File).Substring(7)
                     Dim sIDir As String = ISODDir.Replace("%n", discNo)
-                    If Not IO.Directory.Exists(sIDir) Then My.Computer.FileSystem.CreateDirectory(sIDir)
-                    If Not IO.Directory.Exists(sIDir & "sources" & IO.Path.DirectorySeparatorChar) Then My.Computer.FileSystem.CreateDirectory(sIDir & "sources" & IO.Path.DirectorySeparatorChar)
+                    If Not IO.Directory.Exists(sIDir) Then IO.Directory.CreateDirectory(sIDir)
+                    If Not IO.Directory.Exists(sIDir & "sources" & IO.Path.DirectorySeparatorChar) Then IO.Directory.CreateDirectory(sIDir & "sources" & IO.Path.DirectorySeparatorChar)
                     SetProgress(0, 1)
                     Dim sNewFile As String = sIDir & IO.Path.DirectorySeparatorChar & "sources" & IO.Path.DirectorySeparatorChar & IO.Path.GetFileName(File)
                     WriteToOutput("Copying """ & File & """ to """ & sNewFile & """...")
@@ -2191,8 +2191,8 @@
                 For Each File As String In FilesInOrder
                   If IO.Path.GetFileNameWithoutExtension(File).ToLower = "install" Then
                     Dim sIDir As String = ISODDir.Replace("%n", "1")
-                    If Not IO.Directory.Exists(sIDir) Then My.Computer.FileSystem.CreateDirectory(sIDir)
-                    If Not IO.Directory.Exists(sIDir & "sources" & IO.Path.DirectorySeparatorChar) Then My.Computer.FileSystem.CreateDirectory(sIDir & "sources" & IO.Path.DirectorySeparatorChar)
+                    If Not IO.Directory.Exists(sIDir) Then IO.Directory.CreateDirectory(sIDir)
+                    If Not IO.Directory.Exists(sIDir & "sources" & IO.Path.DirectorySeparatorChar) Then IO.Directory.CreateDirectory(sIDir & "sources" & IO.Path.DirectorySeparatorChar)
                     SetProgress(0, 1)
                     Dim sNewFile As String = sIDir & IO.Path.DirectorySeparatorChar & "sources" & IO.Path.DirectorySeparatorChar & "install.swm"
                     WriteToOutput("Copying """ & File & """ to """ & sNewFile & """...")
@@ -2254,8 +2254,8 @@
                   ElseIf IO.Path.GetFileNameWithoutExtension(File).ToLower.Contains("install") Then
                     Dim discNo As String = IO.Path.GetFileNameWithoutExtension(File).Substring(7)
                     Dim sIDir As String = ISODDir.Replace("%n", discNo)
-                    If Not IO.Directory.Exists(sIDir) Then My.Computer.FileSystem.CreateDirectory(sIDir)
-                    If Not IO.Directory.Exists(sIDir & "sources" & IO.Path.DirectorySeparatorChar) Then My.Computer.FileSystem.CreateDirectory(sIDir & "sources" & IO.Path.DirectorySeparatorChar)
+                    If Not IO.Directory.Exists(sIDir) Then IO.Directory.CreateDirectory(sIDir)
+                    If Not IO.Directory.Exists(sIDir & "sources" & IO.Path.DirectorySeparatorChar) Then IO.Directory.CreateDirectory(sIDir & "sources" & IO.Path.DirectorySeparatorChar)
                     SetProgress(0, 1)
                     Dim sNewFile As String = sIDir & IO.Path.DirectorySeparatorChar & "sources" & IO.Path.DirectorySeparatorChar & IO.Path.GetFileName(File)
                     WriteToOutput("Copying """ & File & """ to """ & sNewFile & """...")
@@ -2819,7 +2819,7 @@
       Return False
     End If
     Dim MountPath As String = WorkDir & "BOOT" & IO.Path.DirectorySeparatorChar
-    If Not IO.Directory.Exists(MountPath) Then My.Computer.FileSystem.CreateDirectory(MountPath)
+    If Not IO.Directory.Exists(MountPath) Then IO.Directory.CreateDirectory(MountPath)
     ReturnProgress = True
     sRet = RunWithReturn(AIKDir & "imagex", "/mountrw " & ShortenPath(SourcePath & "sources" & IO.Path.DirectorySeparatorChar & "boot.wim") & " 2 " & ShortenPath(MountPath))
     ReturnProgress = False
@@ -3906,8 +3906,8 @@
       WriteToOutput("Deleting """ & ParseWork & """...")
       SlowDeleteDirectory(ParseWork, FileIO.DeleteDirectoryOption.DeleteAllContents)
     End If
-    My.Computer.FileSystem.CreateDirectory(ParseWork)
-    My.Computer.FileSystem.CreateDirectory(ParseWorkWIM)
+    IO.Directory.CreateDirectory(ParseWork)
+    IO.Directory.CreateDirectory(ParseWorkWIM)
     Dim WIMFile As String = String.Empty
     SetTotal(0, 3)
     If IO.Path.GetExtension(sWIM).ToLower = ".iso" Then
@@ -3959,7 +3959,7 @@
     Dim sMerge As String = txtMerge.Text
     Dim ParseWork As String = Work & "PARSE" & IO.Path.DirectorySeparatorChar
     Dim ParseWorkMerge As String = ParseWork & "Merge" & IO.Path.DirectorySeparatorChar
-    My.Computer.FileSystem.CreateDirectory(ParseWorkMerge)
+    IO.Directory.CreateDirectory(ParseWorkMerge)
     If String.IsNullOrEmpty(sMerge) Then Exit Sub
     Dim MergeFile As String = String.Empty
     SetTotal(0, 3)
@@ -4040,21 +4040,21 @@
     Get
       Dim tempDir As String = mySettings.TempDir
       If String.IsNullOrEmpty(tempDir) Then tempDir = My.Computer.FileSystem.SpecialDirectories.Temp & IO.Path.DirectorySeparatorChar & "Slips7ream" & IO.Path.DirectorySeparatorChar
-      If Not IO.Directory.Exists(tempDir) Then My.Computer.FileSystem.CreateDirectory(tempDir)
+      If Not IO.Directory.Exists(tempDir) Then IO.Directory.CreateDirectory(tempDir)
       Return tempDir
     End Get
   End Property
   Private ReadOnly Property Work As String
     Get
       Dim sDir As String = WorkDir & "WORK" & IO.Path.DirectorySeparatorChar
-      If Not IO.Directory.Exists(sDir) Then My.Computer.FileSystem.CreateDirectory(sDir)
+      If Not IO.Directory.Exists(sDir) Then IO.Directory.CreateDirectory(sDir)
       Return sDir
     End Get
   End Property
   Private ReadOnly Property Mount As String
     Get
       Dim sDir As String = WorkDir & "MOUNT" & IO.Path.DirectorySeparatorChar
-      If Not IO.Directory.Exists(sDir) Then My.Computer.FileSystem.CreateDirectory(sDir)
+      If Not IO.Directory.Exists(sDir) Then IO.Directory.CreateDirectory(sDir)
       Return sDir
     End Get
   End Property
