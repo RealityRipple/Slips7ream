@@ -2690,17 +2690,17 @@
     Me.Height += HeightDifferentialA
     Me.MinimumSize = New Size(Me.MinimumSize.Width, Me.MinimumSize.Height + HeightDifferentialA)
     txtOutput.Visible = True
-    'If txtOutput.Text.Length > 0 Then
-    '  txtOutput.SelectionStart = txtOutput.Text.Length - 1
-    '  txtOutput.SelectionLength = 0
-    '  txtOutput.ScrollToCaret()
-    'End If
+    If txtOutput.Text.Length > 0 Then
+      txtOutput.SelectionStart = txtOutput.Text.Length - 1
+      txtOutput.SelectionLength = 0
+      txtOutput.ScrollToCaret()
+    End If
     txtOutputError.Visible = True
-    'If txtOutputError.Text.Length > 0 Then
-    '  txtOutputError.SelectionStart = txtOutputError.Text.Length - 1
-    '  txtOutputError.SelectionLength = 0
-    '  txtOutputError.ScrollToCaret()
-    'End If
+    If txtOutputError.Text.Length > 0 Then
+      txtOutputError.SelectionStart = txtOutputError.Text.Length - 1
+      txtOutputError.SelectionLength = 0
+      txtOutputError.ScrollToCaret()
+    End If
     pnlSlips7ream.ResumeLayout(True)
   End Sub
   Private Delegate Sub WriteToOutputCallBack(Message As String)
@@ -2709,11 +2709,6 @@
       Me.BeginInvoke(New WriteToOutputCallBack(AddressOf WriteToOutput), Message)
     Else
       txtOutput.AppendText(Message & vbNewLine)
-      'If txtOutput.Text.Length > 0 Then
-      '  txtOutput.SelectionStart = txtOutput.Text.Length - 1
-      '  txtOutput.SelectionLength = 0
-      '  txtOutput.ScrollToCaret()
-      'End If
     End If
   End Sub
   Private Sub WriteToError(Message As String)
@@ -2721,11 +2716,6 @@
       Me.BeginInvoke(New WriteToOutputCallBack(AddressOf WriteToError), Message)
     Else
       txtOutputError.AppendText(Message & vbNewLine)
-      'If txtOutputError.Text.Length > 0 Then
-      '  txtOutputError.SelectionStart = txtOutputError.Text.Length - 1
-      '  txtOutputError.SelectionLength = 0
-      '  txtOutputError.ScrollToCaret()
-      'End If
     End If
   End Sub
 #End Region
@@ -3700,11 +3690,13 @@
     Dim Extract64 As String = Work & "SP1" & IO.Path.DirectorySeparatorChar & "windows6.1-KB976932-X64.cab"
     If IO.File.Exists(Extract86) Then
       SetStatus("Extracting KB976932.cab...")
+      WriteToOutput("Extracting """ & Extract86 & """ to """ & Work & "SP1""...")
       ExtractAllFiles(Extract86, Work & "SP1")
       WriteToOutput("Deleting """ & Extract86 & """...")
       IO.File.Delete(Extract86)
     ElseIf IO.File.Exists(Extract64) Then
       SetStatus("Extracting KB976932.cab...")
+      WriteToOutput("Extracting """ & Extract64 & """ to """ & Work & "SP1""...")
       ExtractAllFiles(Extract64, Work & "SP1")
       WriteToOutput("Deleting """ & Extract64 & """...")
       IO.File.Delete(Extract64)
@@ -3721,6 +3713,7 @@
     Dim Extract As String = Work & "SP1" & IO.Path.DirectorySeparatorChar & "NestedMPPcontent.cab"
     If IO.File.Exists(Extract) Then
       SetStatus("Extracting NestedMPPcontent.cab...")
+      WriteToOutput("Extracting """ & Extract & """ to """ & Work & "SP1""...")
       ExtractAllFiles(Extract, Work & "SP1")
       WriteToOutput("Deleting """ & Extract & """...")
       IO.File.Delete(Extract)
@@ -3794,6 +3787,7 @@
       Extract = Work & "SP1" & IO.Path.DirectorySeparatorChar & "KB976933-LangsCab" & I.ToString.Trim & ".cab"
       If IO.File.Exists(Extract) Then
         SetStatus("Extracting Language CAB " & (I + 1).ToString.Trim & " of 7...")
+        WriteToOutput("Extracting """ & Extract & """ to """ & Work & "SP1""...")
         ExtractAllFiles(Extract, Work & "SP1")
         WriteToOutput("Deleting """ & Extract & """...")
         IO.File.Delete(Extract)
