@@ -25,7 +25,7 @@ Module modFunctions
         Select Case GetUpdateType(Location)
           Case UpdateType.MSU
             Dim MSUPath As String = WorkDir & "UpdateMSU_Extract" & IO.Path.DirectorySeparatorChar
-            If My.Computer.FileSystem.DirectoryExists(MSUPath) Then SlowDeleteDirectory(MSUPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If IO.Directory.Exists(MSUPath) Then SlowDeleteDirectory(MSUPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
             My.Computer.FileSystem.CreateDirectory(MSUPath)
             Dim exRet As String = ExtractAFile(Location, MSUPath, "pkgProperties.txt")
             If Not exRet = "OK" Then
@@ -56,10 +56,10 @@ Module modFunctions
             Else
               Failure = "File Not Found"
             End If
-            If My.Computer.FileSystem.DirectoryExists(MSUPath) Then SlowDeleteDirectory(MSUPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If IO.Directory.Exists(MSUPath) Then SlowDeleteDirectory(MSUPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           Case UpdateType.CAB
             Dim CABPath As String = WorkDir & "UpdateCAB_Extract" & IO.Path.DirectorySeparatorChar
-            If My.Computer.FileSystem.DirectoryExists(CABPath) Then SlowDeleteDirectory(CABPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If IO.Directory.Exists(CABPath) Then SlowDeleteDirectory(CABPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
             My.Computer.FileSystem.CreateDirectory(CABPath)
             Dim exRet As String = ExtractAFile(Location, CABPath, "update.mum")
             If Not exRet = "OK" Then
@@ -82,10 +82,10 @@ Module modFunctions
             Else
               Failure = "File Not Found"
             End If
-            If My.Computer.FileSystem.DirectoryExists(CABPath) Then SlowDeleteDirectory(CABPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If IO.Directory.Exists(CABPath) Then SlowDeleteDirectory(CABPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           Case UpdateType.LP
             Dim LPPath As String = WorkDir & "UpdateLP_Extract" & IO.Path.DirectorySeparatorChar
-            If My.Computer.FileSystem.DirectoryExists(LPPath) Then SlowDeleteDirectory(LPPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If IO.Directory.Exists(LPPath) Then SlowDeleteDirectory(LPPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
             My.Computer.FileSystem.CreateDirectory(LPPath)
             Dim exRet As String = ExtractAFile(Location, LPPath, "update.mum")
             If Not exRet = "OK" Then
@@ -107,10 +107,10 @@ Module modFunctions
             Else
               Failure = "File Not Found"
             End If
-            If My.Computer.FileSystem.DirectoryExists(LPPath) Then SlowDeleteDirectory(LPPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If IO.Directory.Exists(LPPath) Then SlowDeleteDirectory(LPPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           Case UpdateType.LIP
             Dim MLCPath As String = WorkDir & "UpdateMLC_Extract" & IO.Path.DirectorySeparatorChar
-            If My.Computer.FileSystem.DirectoryExists(MLCPath) Then SlowDeleteDirectory(MLCPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If IO.Directory.Exists(MLCPath) Then SlowDeleteDirectory(MLCPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
             My.Computer.FileSystem.CreateDirectory(MLCPath)
             Dim exRet As String = ExtractAFile(Location, MLCPath, "update.mum")
             If Not exRet = "OK" Then
@@ -132,10 +132,10 @@ Module modFunctions
             Else
               Failure = "File Not Found"
             End If
-            If My.Computer.FileSystem.DirectoryExists(MLCPath) Then SlowDeleteDirectory(MLCPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If IO.Directory.Exists(MLCPath) Then SlowDeleteDirectory(MLCPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           Case UpdateType.EXE
             Dim EXEPath As String = WorkDir & "UpdateEXE_Extract" & IO.Path.DirectorySeparatorChar
-            If My.Computer.FileSystem.DirectoryExists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
             My.Computer.FileSystem.CreateDirectory(EXEPath)
             Dim exRet As String = ExtractAFile(Location, EXEPath, "update.mum")
             If Not exRet = "OK" Then
@@ -157,7 +157,7 @@ Module modFunctions
             Else
               Failure = "File Not Found"
             End If
-            If My.Computer.FileSystem.DirectoryExists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           Case UpdateType.Other
             DisplayName = Nothing
             AppliesTo = Nothing
@@ -229,7 +229,7 @@ Module modFunctions
         Dim mySettings As New MySettings
         Dim tempDir As String = mySettings.TempDir
         If String.IsNullOrEmpty(tempDir) Then tempDir = My.Computer.FileSystem.SpecialDirectories.Temp & IO.Path.DirectorySeparatorChar & "Slips7ream" & IO.Path.DirectorySeparatorChar
-        If Not My.Computer.FileSystem.DirectoryExists(tempDir) Then My.Computer.FileSystem.CreateDirectory(tempDir)
+        If Not IO.Directory.Exists(tempDir) Then My.Computer.FileSystem.CreateDirectory(tempDir)
         Return tempDir
       End Get
     End Property

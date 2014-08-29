@@ -5,7 +5,7 @@
     If Not txtTemp.Text.EndsWith(IO.Path.DirectorySeparatorChar) Then txtTemp.Text &= IO.Path.DirectorySeparatorChar
     Dim sDir As String = IO.Path.GetDirectoryName(IO.Path.GetDirectoryName(txtTemp.Text))
 
-    If My.Computer.FileSystem.DirectoryExists(sDir) Then
+    If IO.Directory.Exists(sDir) Then
       mySettings.TempDir = txtTemp.Text
     Else
       txtTemp.Focus()
