@@ -526,6 +526,16 @@ Module modFunctions
     EXE
     Other
   End Enum
+  Public Function TypeToString(updateType As UpdateType) As String
+    Select Case updateType
+      Case modFunctions.UpdateType.MSU : Return "MSU"
+      Case modFunctions.UpdateType.CAB : Return "CAB"
+      Case modFunctions.UpdateType.LIP : Return "LIP"
+      Case modFunctions.UpdateType.LP : Return "LP"
+      Case modFunctions.UpdateType.EXE : Return "EXE"
+    End Select
+    Return Nothing
+  End Function
   Public Function GetUpdateType(Path As String) As UpdateType
     If IO.Path.GetFileName(Path).ToLower = "lp.cab" Then Return UpdateType.LP
     If IO.Path.GetExtension(Path).ToLower = ".cab" Then Return UpdateType.CAB
@@ -547,6 +557,126 @@ Module modFunctions
     Next
     FileList = FilesOutOfOrder
   End Sub
+  Public Function TickCount() As Long
+    Return (Stopwatch.GetTimestamp / Stopwatch.Frequency) * 1000
+  End Function
+  Public Function ConvertTime(ByVal lngMS As UInt64, Optional ByVal Abbreviated As Boolean = False, Optional ByVal Trimmed As Boolean = True) As String
+    Dim lngSeconds As UInt64 = lngMS \ 1000
+    Dim lngWeeks As UInt64 = lngSeconds \ (60 * 60 * 24 * 7)
+    lngSeconds = lngSeconds Mod (60 * 60 * 24 * 7)
+    Dim lngDays As UInt64 = lngSeconds \ (60 * 60 * 24)
+    lngSeconds = lngSeconds Mod (60 * 60 * 24)
+    Dim lngHours As UInt64 = lngSeconds \ (60 * 60)
+    lngSeconds = lngSeconds Mod (60 * 60)
+    Dim lngMins As UInt64 = lngSeconds \ 60
+    lngSeconds = lngSeconds Mod 60
+    If Abbreviated Then
+      If Trimmed Then
+        If lngWeeks > 0 Then
+          Return lngWeeks & "w " & lngDays & "d"
+        ElseIf lngDays > 0 Then
+          If lngHours > 20 Then
+            If lngDays >= 6 Then
+              Return "1 w"
+            Else
+              Return lngDays + 1 & " d"
+            End If
+          Else
+            Return lngDays & IIf(lngHours > 14, "¾ d", IIf(lngHours > 8, "½ d", IIf(lngHours > 2, "¼ d", " d")))
+          End If
+        ElseIf lngHours > 0 Then
+          If lngHours >= 22 Or (lngHours = 21 And lngMins > 50) Then
+            Return "1 d"
+          ElseIf lngMins > 50 Then
+            Return lngHours + 1 & " h"
+          Else
+            Return lngHours & IIf(lngMins > 35, "¾ h", IIf(lngMins > 20, "½ h", IIf(lngMins > 5, "¼ h", " h")))
+          End If
+        ElseIf lngMins > 0 Then
+          If lngMins >= 55 Or (lngMins = 54 And lngSeconds > 50) Then
+            Return "1 h"
+          ElseIf lngSeconds > 50 Then
+            Return lngMins + 1 & " m"
+          Else
+            Return lngMins & IIf(lngSeconds > 35, "¾ m", IIf(lngSeconds > 20, "½ m", IIf(lngSeconds > 5, "¼ m", " m")))
+          End If
+        Else
+          If lngSeconds > 55 Then
+            Return "1 m"
+          Else
+            Return lngSeconds & "s"
+          End If
+        End If
+      Else
+        If lngWeeks > 0 Then
+          Return lngWeeks & "w " & lngDays & "d " & lngHours & "h " & lngMins & "m " & lngSeconds & "s"
+        ElseIf lngDays > 0 Then
+          Return lngDays & "d " & lngHours & "h " & lngMins & "m " & lngSeconds & "s"
+        ElseIf lngHours > 0 Then
+          Return lngHours & "h " & lngMins & "m " & lngSeconds & "s"
+        ElseIf lngMins > 0 Then
+          Return lngMins & "m " & lngSeconds & "s"
+        Else
+          Return lngSeconds & "s"
+        End If
+      End If
+    Else
+      Dim strWeeks As String = IIf(lngWeeks = 1, vbNullString, "s")
+      Dim strDays As String = IIf(lngDays = 1, vbNullString, "s")
+      Dim strHours As String = IIf(lngHours = 1, vbNullString, "s")
+      Dim strMins As String = IIf(lngMins = 1, vbNullString, "s")
+      Dim strSeconds As String = IIf(lngSeconds = 1, vbNullString, "s")
+      If Trimmed Then
+        If lngWeeks > 0 Then
+          Return lngWeeks & " Week" & strWeeks & " and " & lngDays & " Day" & strDays
+        ElseIf lngDays > 0 Then
+          If lngHours > 20 Then
+            If lngDays >= 6 Then
+              Return "1 Week"
+            Else
+              Return lngDays + 1 & " Days"
+            End If
+          Else
+            Return lngDays & IIf(lngHours > 14, " and Three Quarter Days", IIf(lngHours > 8, " and a Half Days", IIf(lngHours > 2, " and a Quarter Days", " Day" & strDays)))
+          End If
+        ElseIf lngHours > 0 Then
+          If lngHours >= 22 Or (lngHours = 21 And lngMins > 50) Then
+            Return "1 Day"
+          ElseIf lngMins > 50 Then
+            Return lngHours + 1 & " Hours"
+          Else
+            Return lngHours & IIf(lngMins > 35, " and Three Quarter Hours", IIf(lngMins > 20, " and a Half Hours", IIf(lngMins > 5, " and a Quarter Hours", " Hour" & strHours)))
+          End If
+        ElseIf lngMins > 0 Then
+          If lngMins >= 55 Or (lngMins = 54 And lngSeconds > 55) Then
+            Return "1 Hour"
+          ElseIf lngSeconds > 50 Then
+            Return lngMins + 1 & " Minutes"
+          Else
+            Return lngMins & IIf(lngSeconds > 35, " and Three Quarter Minutes", IIf(lngSeconds > 20, " and a Half Minutes", IIf(lngSeconds > 5, " and a Quarter Minutes", " Minute" & strMins)))
+          End If
+        Else
+          If lngSeconds > 55 Then
+            Return "1 Minute"
+          Else
+            Return lngSeconds & "Second" & strSeconds
+          End If
+        End If
+      Else
+        If lngWeeks > 0 Then
+          Return lngWeeks & " Week" & strWeeks & ", " & lngDays & " Day" & strDays & ", " & lngHours & " Hour" & strHours & ", " & lngMins & " Minute" & strMins & ", and " & lngSeconds & " Second" & strSeconds
+        ElseIf lngDays > 0 Then
+          Return lngDays & " Day" & strDays & ", " & lngHours & " Hour" & strHours & ", " & lngMins & " Minute" & strMins & ", and " & lngSeconds & " Second" & strSeconds
+        ElseIf lngHours > 0 Then
+          Return lngHours & " Hour" & strHours & ", " & lngMins & " Minute" & strMins & ", and " & lngSeconds & " Second" & strSeconds
+        ElseIf lngMins > 0 Then
+          Return lngMins & " Minute" & strMins & " and " & lngSeconds & " Second" & strSeconds
+        Else
+          Return lngSeconds & " Second" & strSeconds
+        End If
+      End If
+    End If
+  End Function
 #Region "Task Dialogs"
   Public Function SelectionBox(owner As Form, newPath As String, newVer As Integer, oldPath As String, oldVer As Integer, ByRef Always As Boolean) As Boolean
     If TaskDialog.IsPlatformSupported Then

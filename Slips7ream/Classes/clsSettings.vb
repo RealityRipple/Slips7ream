@@ -263,3 +263,218 @@
     ActiveHive.OpenSubKey("Alert", True).SetValue("Path", c_AlertNoisePath)
   End Sub
 End Class
+
+Public Class SpeedStats
+  Public Shared Property WIM_ExtractFromISO(Size As String) As Long
+    Get
+      Return ReadField("WIM_ExtractFromISO_" & Size)
+    End Get
+    Set(value As Long)
+      WriteField("WIM_ExtractFromISO_" & Size, value)
+    End Set
+  End Property
+  Public Shared Property NOWIM_ExtractFromISO(Size As String) As Long
+    Get
+      Return ReadField("NOWIM_ExtractFromISO_" & Size)
+    End Get
+    Set(value As Long)
+      WriteField("NOWIM_ExtractFromISO_" & Size, value)
+    End Set
+  End Property
+  Public Shared Property WIM_ParseImage(Size As String) As Long
+    Get
+      Return ReadField("WIM_ParseImage_" & Size)
+    End Get
+    Set(value As Long)
+      WriteField("WIM_ParseImage_" & Size, value)
+    End Set
+  End Property
+  Public Shared Property WIM_MountImage(Architecture As String) As Long
+    Get
+      Return ReadField("WIM_MountImage_x" & Architecture)
+    End Get
+    Set(value As Long)
+      WriteField("WIM_MountImage_x" & Architecture, value)
+    End Set
+  End Property
+  Public Shared Property WIM_SaveImage(Architecture As String) As Long
+    Get
+      Return ReadField("WIM_SaveImage_x" & Architecture)
+    End Get
+    Set(value As Long)
+      WriteField("WIM_SaveImage_x" & Architecture, value)
+    End Set
+  End Property
+  Public Shared Property WIM_UnmountImage(Architecture As String) As Long
+    Get
+      Return ReadField("WIM_UnmountImage_x" & Architecture)
+    End Get
+    Set(value As Long)
+      WriteField("WIM_UnmountImage_x" & Architecture, value)
+    End Set
+  End Property
+  Public Shared Property WIM_MergeImage(First As String) As Long
+    Get
+      Return ReadField("WIM_MergeImage_" & First)
+    End Get
+    Set(value As Long)
+      WriteField("WIM_MergeImage_" & First, value)
+    End Set
+  End Property
+  Public Shared Property WIM_MergeAndCompressImage(First As String) As Long
+    Get
+      Return ReadField("WIM_MergeAndCompressImage_" & First)
+    End Get
+    Set(value As Long)
+      WriteField("WIM_MergeAndCompressImage_" & First, value)
+    End Set
+  End Property
+  Public Shared Property WIM_MoveImage(Size As String) As Long
+    Get
+      Return ReadField("WIM_MoveImage_" & Size)
+    End Get
+    Set(value As Long)
+      WriteField("WIM_MoveImage_" & Size, value)
+    End Set
+  End Property
+
+  Public Shared Property SP_Extract(Architecture As String) As Long
+    Get
+      Return ReadField("SP_Extract_x" & Architecture)
+    End Get
+    Set(value As Long)
+      WriteField("SP_Extract_x" & Architecture, value)
+    End Set
+  End Property
+  Public Shared Property SP_Integrate(Architecture As String) As Long
+    Get
+      Return ReadField("SP_Integrate_x" & Architecture)
+    End Get
+    Set(value As Long)
+      WriteField("SP_Integrate_x" & Architecture, value)
+    End Set
+  End Property
+
+  Public Shared Property Update_Parse([Type] As String, Architecture As String) As Long
+    Get
+      Return ReadField(Type & "_Parse_" & Architecture)
+    End Get
+    Set(value As Long)
+      WriteField(Type & "_Parse_" & Architecture, value)
+    End Set
+  End Property
+  Public Shared Property Update_Extract([Type] As String, Architecture As String) As Long
+    Get
+      Return ReadField(Type & "_Extract_" & Architecture)
+    End Get
+    Set(value As Long)
+      WriteField(Type & "_Extract_" & Architecture, value)
+    End Set
+  End Property
+  Public Shared Property Update_Integrate([Type] As String, Architecture As String, Size As String) As Long
+    Get
+      Return ReadField(Type & "_Integrate_x" & Architecture & "_" & Size)
+    End Get
+    Set(value As Long)
+      WriteField(Type & "_Integrate_x" & Architecture & "_" & Size, value)
+    End Set
+  End Property
+
+  Public Shared Property Clean_Temp As Long
+    Get
+      Return ReadField("Clean_Temp")
+    End Get
+    Set(value As Long)
+      WriteField("Clean_Temp", value)
+    End Set
+  End Property
+  Public Shared Property Clean_MOUNT As Long
+    Get
+      Return ReadField("Clean_MOUNT")
+    End Get
+    Set(value As Long)
+      WriteField("Clean_MOUNT", value)
+    End Set
+  End Property
+  Public Shared Property Clean_WORK As Long
+    Get
+      Return ReadField("Clean_WORK")
+    End Get
+    Set(value As Long)
+      WriteField("Clean_WORK", value)
+    End Set
+  End Property
+  Public Shared Property Clean_SP1(Architecture As String) As Long
+    Get
+      Return ReadField("Clean_SP1_x" & Architecture)
+    End Get
+    Set(value As Long)
+      WriteField("Clean_SP1_x" & Architecture, value)
+    End Set
+  End Property
+
+  Private Shared Sub WriteField(FieldName As String, NewValue As Long)
+    Dim newStr As String = Convert.ToString(NewValue, 16)
+    If Not My.Computer.Registry.CurrentUser.OpenSubKey("Software").GetSubKeyNames.Contains(Application.CompanyName) Then My.Computer.Registry.CurrentUser.OpenSubKey("Software", True).CreateSubKey(Application.CompanyName)
+    If Not My.Computer.Registry.CurrentUser.OpenSubKey("Software\" & Application.CompanyName).GetSubKeyNames.Contains(Application.ProductName) Then My.Computer.Registry.CurrentUser.OpenSubKey("Software\" & Application.CompanyName, True).CreateSubKey(Application.ProductName)
+    If Not My.Computer.Registry.CurrentUser.OpenSubKey("Software\" & Application.CompanyName & "\" & Application.ProductName).GetSubKeyNames.Contains("SpeedStats") Then My.Computer.Registry.CurrentUser.OpenSubKey("Software\" & Application.CompanyName & "\" & Application.ProductName, True).CreateSubKey("SpeedStats")
+    Dim ActiveHive As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.OpenSubKey("Software\" & Application.CompanyName & "\" & Application.ProductName & "\SpeedStats", True)
+    If ActiveHive.GetValueNames.Contains(FieldName) Then
+      Dim OldValues() As String = ActiveHive.GetValue(FieldName, {""})
+      If OldValues.Count = 1 AndAlso String.IsNullOrEmpty(OldValues(0)) Then
+        ActiveHive.SetValue(FieldName, {newStr}, Microsoft.Win32.RegistryValueKind.MultiString)
+      ElseIf OldValues.Count = 0 Then
+        ActiveHive.SetValue(FieldName, {newStr}, Microsoft.Win32.RegistryValueKind.MultiString)
+      ElseIf OldValues.Count = 10 Then
+        Dim NewValues(OldValues.Count - 1) As String
+        For I As Integer = 1 To OldValues.Count - 1
+          NewValues(I) = OldValues(I - 1)
+        Next
+        NewValues(0) = newStr
+        ActiveHive.SetValue(FieldName, NewValues, Microsoft.Win32.RegistryValueKind.MultiString)
+      Else
+        Dim NewValues(OldValues.Count) As String
+        For I As Integer = 0 To OldValues.Count - 1
+          NewValues(I + 1) = OldValues(I)
+        Next
+        NewValues(0) = newStr
+        ActiveHive.SetValue(FieldName, NewValues, Microsoft.Win32.RegistryValueKind.MultiString)
+      End If
+    Else
+      ActiveHive.SetValue(FieldName, {newStr}, Microsoft.Win32.RegistryValueKind.MultiString)
+    End If
+  End Sub
+
+  Private Shared Function ReadField(FieldName As String) As Long
+    If My.Computer.Registry.CurrentUser.OpenSubKey("Software").GetSubKeyNames.Contains(Application.CompanyName) Then
+      If My.Computer.Registry.CurrentUser.OpenSubKey("Software\" & Application.CompanyName).GetSubKeyNames.Contains(Application.ProductName) Then
+        If My.Computer.Registry.CurrentUser.OpenSubKey("Software\" & Application.CompanyName & "\" & Application.ProductName).GetSubKeyNames.Contains("SpeedStats") Then
+          Dim Hive As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.OpenSubKey("Software\" & Application.CompanyName & "\" & Application.ProductName & "\SpeedStats")
+          If Hive.GetValueNames.Contains(FieldName) Then
+            Dim Values() As String = Hive.GetValue(FieldName, {""})
+            If Values.Count = 1 AndAlso String.IsNullOrEmpty(Values(0)) Then
+              Return 0
+            ElseIf Values.Count = 0 Then
+              Return 0
+            Else
+              Dim total As Long = 0
+              For I As Integer = 0 To Values.Count - 1
+                total += Convert.ToInt64(Values(I), 16)
+              Next
+              total = total / Values.Count
+              Return total
+            End If
+          Else
+            Return 0
+          End If
+        Else
+          Return 0
+        End If
+      Else
+        Return 0
+      End If
+    Else
+      Return 0
+    End If
+  End Function
+End Class

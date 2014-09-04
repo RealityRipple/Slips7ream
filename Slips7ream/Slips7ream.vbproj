@@ -101,6 +101,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationEvents.vb" />
+    <Compile Include="Classes\clsLineBreak.Designer.vb">
+      <DependentUpon>clsLineBreak.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Classes\clsLineBreak.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Classes\clsLinkLabel.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -190,6 +196,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Classes\clsLineBreak.resx">
+      <DependentUpon>clsLineBreak.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\ctlExpander.resx">
       <DependentUpon>ctlExpander.vb</DependentUpon>
     </EmbeddedResource>
