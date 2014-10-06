@@ -6,7 +6,7 @@
   Private RunActivity As Byte = 0
   Private tLister As Threading.Thread
   Private tLister2 As Threading.Thread
-  Private Const HeightDifferentialA As Integer = 187
+  Private Const HeightDifferentialA As Integer = 207
   Private Const HeightDifferentialB As Integer = 22
   Private Const FrameInterval As UInteger = 3
   Private WithEvents cUpdate As clsUpdate
@@ -16,12 +16,19 @@
   Private sTitleText As String
   Private windowChangedSize As Boolean
   Private mySettings As MySettings
+  Private outputWindow As Boolean = False
   Private Enum MNGList
     Move
     Copy
     Delete
   End Enum
 #Region "GUI"
+  Private Sub frmMain_Activated(sender As Object, e As System.EventArgs) Handles Me.Activated
+    redrawCaption()
+  End Sub
+  Private Sub frmMain_Deactivate(sender As Object, e As System.EventArgs) Handles Me.Deactivate
+    redrawCaption()
+  End Sub
   Private Sub frmMain_Load(sender As Object, e As System.EventArgs) Handles Me.Load
     Me.Tag = "LOADING"
     mySettings = New MySettings
@@ -321,15 +328,38 @@
     End If
   End Sub
   Private Sub RedoColumns()
-    If lvMSU.Columns.Count = 0 Then Exit Sub
-    Dim msuSize As Integer = lvMSU.ClientSize.Width - lvMSU.Columns(1).Width - 1
-    If Not lvMSU.Columns(0).Width = msuSize Then lvMSU.Columns(0).Width = msuSize
-    Dim imagesSize As Integer = lvImages.ClientSize.Width - (lvImages.Columns(0).Width + lvImages.Columns(2).Width) - 1
-    If Not lvImages.Columns(1).Width = imagesSize Then lvImages.Columns(1).Width = imagesSize
+    If Not lvMSU.Columns.Count = 0 Then
+      Dim msuSize As Integer = lvMSU.ClientSize.Width - lvMSU.Columns(1).Width - 1
+      If Not lvMSU.Columns(0).Width = msuSize Then lvMSU.Columns(0).Width = msuSize
+    End If
+    If Not lvImages.Columns.Count = 0 Then
+      Dim imagesSize As Integer = lvImages.ClientSize.Width - (lvImages.Columns(0).Width + lvImages.Columns(2).Width) - 1
+      If Not lvImages.Columns(1).Width = imagesSize Then lvImages.Columns(1).Width = imagesSize
+    End If
     If cmdAddMSU.Enabled Then
       If Not cmdRemMSU.Enabled = (lvMSU.SelectedItems.Count > 0) Then cmdRemMSU.Enabled = (lvMSU.SelectedItems.Count > 0)
       If Not cmdClearMSU.Enabled = (lvMSU.Items.Count > 0) Then cmdClearMSU.Enabled = (lvMSU.Items.Count > 0)
     End If
+    If pctOutputTear.Visible Then redrawCaption()
+  End Sub
+  Private Sub redrawCaption()
+    Using bTitle As New Bitmap(pctOutputTear.Width, pctOutputTear.Height)
+      Using g As Graphics = Graphics.FromImage(bTitle)
+        g.Clear(Color.Transparent)
+        g.SmoothingMode = Drawing2D.SmoothingMode.AntiAlias
+        If ActiveForm Is Me Then
+          g.FillRectangle(New Drawing2D.LinearGradientBrush(New Point(0, 0), New Point(pctOutputTear.Width, 0), SystemColors.ActiveCaption, SystemColors.GradientActiveCaption), pctOutputTear.DisplayRectangle)
+        Else
+          g.FillRectangle(New Drawing2D.LinearGradientBrush(New Point(0, 0), New Point(pctOutputTear.Width, 0), SystemColors.InactiveCaption, SystemColors.GradientInactiveCaption), pctOutputTear.DisplayRectangle)
+        End If
+
+
+        g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
+        g.DrawString("SLIPS7REAM Output Consoles", SystemFonts.SmallCaptionFont, SystemBrushes.ActiveCaptionText, New RectangleF(3, 1, pctOutputTear.Width - 6, pctOutputTear.Height - 2), New StringFormat(StringFormatFlags.NoWrap Or StringFormatFlags.NoClip))
+
+      End Using
+      pctOutputTear.Image = bTitle.Clone
+    End Using
   End Sub
   Private Delegate Sub ToggleInputsInvoker(Enabled As Boolean)
   Private Sub ToggleInputs(Enabled As Boolean)
@@ -1651,12 +1681,14 @@
   Private Function CalculateCompatibleSize(fromFile As String) As String
     If String.IsNullOrEmpty(fromFile) Then Return Nothing
     If Not IO.File.Exists(fromFile) Then Return Nothing
-    Dim fileSize As Long = New IO.FileInfo(fromFile).Length
-    If fileSize > 1024L * 1024L Then
-      If fileSize > 1024L * 1024L * 1024L Then
-        Return Math.Round(fileSize / 1024 / 1024 / 1024, 1, MidpointRounding.ToEven) & "GB"
+    Return CalculateCompatibleSizeVal(New IO.FileInfo(fromFile).Length)
+  End Function
+  Private Function CalculateCompatibleSizeVal(fromSize As Long) As String
+    If fromSize > 1024L * 1024L Then
+      If fromSize > 1024L * 1024L * 1024L Then
+        Return Math.Round(fromSize / 1024 / 1024 / 1024, 1, MidpointRounding.ToEven) & "GB"
       Else
-        Return Math.Ceiling(fileSize / 1024 / 1024) & "MB"
+        Return Math.Ceiling(fromSize / 1024 / 1024) & "MB"
       End If
     Else
       Return "1MB"
@@ -1686,6 +1718,7 @@
     End If
     Dim imageCount32 As Integer = 0
     Dim imageCount64 As Integer = 0
+    Dim imageCountAll As Integer = 0
     If lvImages.Items.Count > 0 Then
       For Each row As ListViewItem In lvImages.Items
         If row.Checked Then
@@ -1696,13 +1729,13 @@
           End If
         End If
       Next
-      Dim imageCountAll As Integer = imageCount32 + imageCount64
+      imageCountAll = imageCount32 + imageCount64
       If imageCountAll > 0 Then
-        lTotalTime += SpeedStats.WIM_MergeImage("First") '                                                      Merge first Package at beginning
-        lTotalTime += SpeedStats.WIM_MergeAndCompressImage("First") '                                           Merge and compress first Package at End
+        lTotalTime += SpeedStats.WIM_MergeImage("First") '                                                          Merge first Package at beginning
+        'lTotalTime += SpeedStats.WIM_MergeAndCompressImage("First") '                                               Merge and compress first Package at End
         If imageCountAll > 1 Then
-          lTotalTime += SpeedStats.WIM_MergeImage("Additional") * (imageCountAll - 1) '                         Merge each additonal Package 
-          lTotalTime += SpeedStats.WIM_MergeAndCompressImage("Additional") * (imageCountAll - 1) '              Merge and compresseach additonal Package 
+          lTotalTime += SpeedStats.WIM_MergeImage("Additional") * (imageCountAll - 1) '                             Merge each additonal Package 
+          'lTotalTime += SpeedStats.WIM_MergeAndCompressImage("Additional") * (imageCountAll - 1) '                  Merge and compresseach additonal Package 
         End If
       End If
     End If
@@ -1757,20 +1790,20 @@
         If row.SubItems(1).Text.Contains("x86") Then
           hasx86 = True
           Select Case GetUpdateType(row.Tag)
-            Case UpdateType.MSU : lTotalTime += SpeedStats.Update_Integrate("MSU", "86", fileSize) * imageCount32 '          Merge Each 32-bit MSU Update
-            Case UpdateType.LIP : lTotalTime += SpeedStats.Update_Integrate("LIP", "86", fileSize) * imageCount32 '          Merge Each 32-bit LIP Update
-            Case UpdateType.LP : lTotalTime += SpeedStats.Update_Integrate("LP", "86", fileSize) * imageCount32 '            Merge Each 32-bit LP Update
-            Case UpdateType.EXE : lTotalTime += SpeedStats.Update_Integrate("EXE", "86", fileSize) * imageCount32 '          Merge Each 32-bit EXE Update
-            Case UpdateType.CAB : lTotalTime += SpeedStats.Update_Integrate("CAB", "86", fileSize) * imageCount32 '          Merge Each 32-bit CAB Update
+            Case UpdateType.MSU : lTotalTime += SpeedStats.Update_Integrate("MSU", "86", fileSize) * imageCount32 ' Merge Each 32-bit MSU Update
+            Case UpdateType.LIP : lTotalTime += SpeedStats.Update_Integrate("LIP", "86", fileSize) * imageCount32 ' Merge Each 32-bit LIP Update
+            Case UpdateType.LP : lTotalTime += SpeedStats.Update_Integrate("LP", "86", fileSize) * imageCount32 '   Merge Each 32-bit LP Update
+            Case UpdateType.EXE : lTotalTime += SpeedStats.Update_Integrate("EXE", "86", fileSize) * imageCount32 ' Merge Each 32-bit EXE Update
+            Case UpdateType.CAB : lTotalTime += SpeedStats.Update_Integrate("CAB", "86", fileSize) * imageCount32 ' Merge Each 32-bit CAB Update
           End Select
         ElseIf row.SubItems(1).Text.Contains("x64") Then
           hasx64 = True
           Select Case GetUpdateType(row.Tag)
-            Case UpdateType.MSU : lTotalTime += SpeedStats.Update_Integrate("MSU", "64", fileSize) * imageCount64  '               Merge Each 64-bit MSU Update
-            Case UpdateType.LIP : lTotalTime += SpeedStats.Update_Integrate("LIP", "64", fileSize) * imageCount64 '               Merge Each 64-bit LIP Update
-            Case UpdateType.LP : lTotalTime += SpeedStats.Update_Integrate("LP", "64", fileSize) * imageCount64 '                  Merge Each 64-bit LP Update
-            Case UpdateType.EXE : lTotalTime += SpeedStats.Update_Integrate("EXE", "64", fileSize) * imageCount64 '               Merge Each 64-bit EXE Update
-            Case UpdateType.CAB : lTotalTime += SpeedStats.Update_Integrate("CAB", "64", fileSize) * imageCount64 '               Merge Each 64-bit CAB Update
+            Case UpdateType.MSU : lTotalTime += SpeedStats.Update_Integrate("MSU", "64", fileSize) * imageCount64 ' Merge Each 64-bit MSU Update
+            Case UpdateType.LIP : lTotalTime += SpeedStats.Update_Integrate("LIP", "64", fileSize) * imageCount64 ' Merge Each 64-bit LIP Update
+            Case UpdateType.LP : lTotalTime += SpeedStats.Update_Integrate("LP", "64", fileSize) * imageCount64 '   Merge Each 64-bit LP Update
+            Case UpdateType.EXE : lTotalTime += SpeedStats.Update_Integrate("EXE", "64", fileSize) * imageCount64 ' Merge Each 64-bit EXE Update
+            Case UpdateType.CAB : lTotalTime += SpeedStats.Update_Integrate("CAB", "64", fileSize) * imageCount64 ' Merge Each 64-bit CAB Update
           End Select
         End If
       Next
@@ -1789,8 +1822,76 @@
       If Not String.IsNullOrEmpty(txtISO.Text) Then
         Dim sISOSize As String = CalculateCompatibleSize(txtISO.Text)
         lTotalTime += SpeedStats.NOWIM_ExtractFromISO(sISOSize) '                                                   Extract all files except INSTALL.WIM from ISO
-        'time to extract iso contents
-        'time to put ISO together
+        If imageCountAll > 0 Then
+          For I As Integer = 1 To imageCountAll
+            lTotalTime += SpeedStats.WIM_MergeAndCompressImage(IIf(I = 1, "First", "Additional")) '                 Merge and compress all images into a new INSTALL.WIM
+          Next
+        End If
+        If cmbLimitType.SelectedIndex > 0 Then
+          Dim splUEFI As Boolean = chkUEFI.Checked
+          Dim limVal As String = cmbLimit.Text
+          If limVal.Contains("(") Then limVal = limVal.Substring(0, limVal.IndexOf("("))
+          Dim splFileSize As Long = NumericVal(limVal)
+          If IO.File.Exists(txtWIM.Text) Then
+            Dim splWIMSize As Long = New IO.FileInfo(txtWIM.Text).Length 'sWIMSize
+            If IO.Path.GetExtension(txtWIM.Text).ToLower = ".iso" Then splWIMSize -= 351
+            Dim splISOSize As Long = splWIMSize + 351
+            Dim sEstWIMSize As String = CalculateCompatibleSizeVal(splWIMSize)
+            Dim sEstWIMSizePlus As String = CalculateCompatibleSizeVal(splWIMSize + (1024 * 1024 * 1024))
+            If cmbLimitType.SelectedIndex = 2 Then
+              If splISOSize > splFileSize Then
+                Dim ISOSplit As Long = splFileSize
+                Dim WIMSplit As Long = ISOSplit - 351
+                If splUEFI And (WIMSplit > 4095) Then WIMSplit = 4095
+                Dim lSplitTime As Long = SpeedStats.WIM_SplitImage(sEstWIMSize, WIMSplit & "MB")
+                If lSplitTime < 1 Then lSplitTime = SpeedStats.WIM_SplitImage(sEstWIMSizePlus, WIMSplit & "MB")
+                lTotalTime += lSplitTime '                                                                          Split WIM into WIMSplit MB chunks
+                If Math.Floor(ISOSplit / WIMSplit) > 1 Then
+                  lTotalTime += SpeedStats.ISO_Make * (Math.Ceiling(splWIMSize / WIMSplit) / (Math.Floor(ISOSplit / WIMSplit))) ' Make ISOs for each WIM
+                ElseIf Math.Floor(ISOSplit / WIMSplit) = 1 Then
+                  lTotalTime += SpeedStats.ISO_Make * Math.Ceiling(splWIMSize / WIMSplit) '                         Make ISOs for each WIM
+                Else
+                  lTotalTime += SpeedStats.ISO_Make * Math.Ceiling(splWIMSize / WIMSplit) '                         Make ISOs for each WIM
+                End If
+              ElseIf splUEFI And splWIMSize > 4095 Then
+                Dim lSplitTime As Long = SpeedStats.WIM_SplitImage(sEstWIMSize, "4095MB")
+                If lSplitTime < 1 Then lSplitTime = SpeedStats.WIM_SplitImage(sEstWIMSizePlus, "4095MB")
+                lTotalTime += lSplitTime '                                                                          Split WIM into 4095 MB chunks
+              End If
+            Else
+              If splWIMSize > splFileSize Then
+                Dim lSplitTime As Long = SpeedStats.WIM_SplitImage(sEstWIMSize, splFileSize & "MB")
+                If lSplitTime < 1 Then lSplitTime = SpeedStats.WIM_SplitImage(sEstWIMSizePlus, splFileSize & "MB")
+                lTotalTime += lSplitTime '                                                                          Split WIM into 4095 MB chunks
+              End If
+            End If
+          End If
+        End If
+        'SlowCopyFile(ISOFile, ISOFile & ".del", True)
+        lTotalTime += SpeedStats.ISO_Make '                                                                         Make the main ISO
+      End If
+    Else
+      'SlowCopyFile(WIMFile, OldWIM, True)
+      If imageCountAll > 0 Then
+        For I As Integer = 1 To imageCountAll
+          lTotalTime += SpeedStats.WIM_MergeAndCompressImage(IIf(I = 1, "First", "Additional")) '                   Merge and compress all images into a new INSTALL.WIM
+        Next
+      End If
+      If cmbLimitType.SelectedIndex > 0 Then
+        Dim limVal As String = cmbLimit.Text
+        If limVal.Contains("(") Then limVal = limVal.Substring(0, limVal.IndexOf("("))
+        Dim splFileSize As Long = NumericVal(limVal)
+        If IO.File.Exists(txtWIM.Text) Then
+          Dim splWIMSize As Long = New IO.FileInfo(txtWIM.Text).Length
+          If IO.Path.GetExtension(txtWIM.Text).ToLower = ".iso" Then splWIMSize -= 351
+          If splWIMSize > splFileSize Then
+            Dim sEstWIMSize As String = CalculateCompatibleSizeVal(splWIMSize)
+            Dim sEstWIMSizePlus As String = CalculateCompatibleSizeVal(splWIMSize + (1024 * 1024 * 1024))
+            Dim lSplitTime As Long = SpeedStats.WIM_SplitImage(sEstWIMSize, splFileSize & "MB")
+            If lSplitTime < 1 Then lSplitTime = SpeedStats.WIM_SplitImage(sEstWIMSizePlus, splFileSize & "MB")
+            lTotalTime += lSplitTime '                                                                              Split WIM into splFileSize MB chunks
+          End If
+        End If
       End If
     End If
     Return lTotalTime
@@ -2335,8 +2436,11 @@
             If Math.Floor(ISOSplit / WIMSplit) > 1 Then
               REM Split WIM to WIMSplit size, put 1 WIM on first, and Math.Floor(ISOSplit / WIMSplit) per ISO afterward
               SetProgress(0, 0)
+              SetProgressTime(SpeedStats.WIM_SplitImage(CalculateCompatibleSize(ISOWIMFile), WIMSplit & "MB"))
               SetStatus("Splitting WIM into " & ByteSize(WIMSplit * 1024 * 1024) & " Chunks...")
+              Dim startSplit As Long = TickCount()
               If SplitWIM(ISOWIMFile, IO.Path.ChangeExtension(ISOWIMFile, ".swm"), WIMSplit) Then
+                SpeedStats.WIM_SplitImage(CalculateCompatibleSize(ISOWIMFile), WIMSplit & "MB") = TickCount() - startSplit
                 If IO.File.Exists(ISOWIMFile) Then
                   WriteToOutput("Deleting """ & ISOWIMFile & """...")
                   IO.File.Delete(ISOWIMFile)
@@ -2415,7 +2519,10 @@
                           Case 6 : isoFormat = "-u1 -udfver102"
                           Case 5 : isoFormat = "-u2 -udfver102"
                         End Select
+                        SetProgressTime(SpeedStats.ISO_Make)
+                        Dim startMake As Long = TickCount()
                         MakeISO(sIDir, isoLabel, Nothing, isoFormat, ISODFile)
+                        SpeedStats.ISO_Make = TickCount() - startMake
                       Catch ex As Exception
 
                       End Try
@@ -2433,8 +2540,11 @@
             ElseIf Math.Floor(ISOSplit / WIMSplit) = 1 Then
               REM Split WIM to WIMSplit size, put 1 WIM on each ISO including first
               SetProgress(0, 0)
+              SetProgressTime(SpeedStats.WIM_SplitImage(CalculateCompatibleSize(ISOWIMFile), WIMSplit & "MB"))
               SetStatus("Splitting WIM into " & ByteSize(WIMSplit * 1024 * 1024) & " Chunks...")
+              Dim startSplit As Long = TickCount()
               If SplitWIM(ISOWIMFile, IO.Path.ChangeExtension(ISOWIMFile, ".swm"), WIMSplit) Then
+                SpeedStats.WIM_SplitImage(CalculateCompatibleSize(ISOWIMFile), WIMSplit & "MB") = TickCount() - startSplit
                 If IO.File.Exists(ISOWIMFile) Then
                   WriteToOutput("Deleting """ & ISOWIMFile & """...")
                   IO.File.Delete(ISOWIMFile)
@@ -2506,7 +2616,10 @@
                         Case 6 : isoFormat = "-u1 -udfver102"
                         Case 5 : isoFormat = "-u2 -udfver102"
                       End Select
+                      SetProgressTime(SpeedStats.ISO_Make)
+                      Dim startMake As Long = TickCount()
                       MakeISO(sIDir, isoLabel, Nothing, isoFormat, ISODFile)
+                      SpeedStats.ISO_Make = TickCount() - startMake
                     Catch ex As Exception
 
                     End Try
@@ -2520,8 +2633,11 @@
             Else
               REM Split WIM to WIMSplit size, put no WIMs on first ISO, one per ISO afterward
               SetProgress(0, 0)
+              SetProgressTime(SpeedStats.WIM_SplitImage(CalculateCompatibleSize(ISOWIMFile), WIMSplit & "MB"))
               SetStatus("Splitting WIM into " & ByteSize(WIMSplit * 1024 * 1024) & " Chunks...")
+              Dim startSplit As Long = TickCount()
               If SplitWIM(ISOWIMFile, IO.Path.ChangeExtension(ISOWIMFile, ".swm"), WIMSplit) Then
+                SpeedStats.WIM_SplitImage(CalculateCompatibleSize(ISOWIMFile), WIMSplit & "MB") = TickCount() - startSplit
                 If IO.File.Exists(ISOWIMFile) Then
                   WriteToOutput("Deleting """ & ISOWIMFile & """...")
                   IO.File.Delete(ISOWIMFile)
@@ -2590,7 +2706,10 @@
                         Case 6 : isoFormat = "-u1 -udfver102"
                         Case 5 : isoFormat = "-u2 -udfver102"
                       End Select
+                      SetProgressTime(SpeedStats.ISO_Make)
+                      Dim startMake As Long = TickCount()
                       MakeISO(sIDir, isoLabel, Nothing, isoFormat, ISODFile)
+                      SpeedStats.ISO_Make = TickCount() - startMake
                     Catch ex As Exception
 
                     End Try
@@ -2653,7 +2772,10 @@
                         Case 6 : isoFormat = "-u1 -udfver102"
                         Case 5 : isoFormat = "-u2 -udfver102"
                       End Select
+                      SetProgressTime(SpeedStats.ISO_Make)
+                      Dim startMake As Long = TickCount()
                       MakeISO(sIDir, isoLabel, Nothing, isoFormat, ISODFile)
+                      SpeedStats.ISO_Make = TickCount() - startMake
                     Catch ex As Exception
 
                     End Try
@@ -2668,8 +2790,11 @@
           ElseIf splUEFI And splWIMSize > 4095 Then
             REM Split WIM to 4095 MB size
             SetProgress(0, 0)
+            SetProgressTime(SpeedStats.WIM_SplitImage(CalculateCompatibleSize(ISOWIMFile), "4095MB"))
             SetStatus("Splitting WIM into 4095 MB Chunks...")
+            Dim startSplit As Long = TickCount()
             If SplitWIM(ISOWIMFile, IO.Path.ChangeExtension(ISOWIMFile, ".swm"), 4095) Then
+              SpeedStats.WIM_SplitImage(CalculateCompatibleSize(ISOWIMFile), "4095MB") = TickCount() - startSplit
               If IO.File.Exists(ISOWIMFile) Then
                 WriteToOutput("Deleting """ & ISOWIMFile & """...")
                 IO.File.Delete(ISOWIMFile)
@@ -2684,8 +2809,11 @@
           If splWIMSize > splFileSize Then
             REM Split WIM to FileSize size
             SetProgress(0, 0)
+            SetProgressTime(SpeedStats.WIM_SplitImage(CalculateCompatibleSize(ISOWIMFile), splFileSize & "MB"))
             SetStatus("Splitting WIM into " & ByteSize(splFileSize * 1024 * 1024) & " Chunks...")
+            Dim startSplit As Long = TickCount()
             If SplitWIM(ISOWIMFile, IO.Path.ChangeExtension(ISOWIMFile, ".swm"), splFileSize) Then
+              SpeedStats.WIM_SplitImage(CalculateCompatibleSize(ISOWIMFile), splFileSize & "MB") = TickCount() - startSplit
               If IO.File.Exists(ISOWIMFile) Then
                 WriteToOutput("Deleting """ & ISOWIMFile & """...")
                 IO.File.Delete(ISOWIMFile)
@@ -2765,7 +2893,10 @@
           Case 6 : isoFormat = "-u1 -udfver102"
           Case 5 : isoFormat = "-u2 -udfver102"
         End Select
+        SetProgressTime(SpeedStats.ISO_Make)
+        Dim startMake As Long = TickCount()
         Saved = MakeISO(ISODir, isoLabel, BootOrder, isoFormat, ISOFile)
+        SpeedStats.ISO_Make = TickCount() - startMake
       Catch ex As Exception
         Saved = False
       End Try
@@ -2836,8 +2967,11 @@
           Dim splWIMSize As Long = My.Computer.FileSystem.GetFileInfo(WIMFile).Length
           If splWIMSize > splFileSize Then
             REM Split WIMs to FileSize size
+            SetProgressTime(SpeedStats.WIM_SplitImage(CalculateCompatibleSize(WIMFile), splFileSize & "MB"))
             SetStatus("Splitting WIM into " & ByteSize(splFileSize * 1024 * 1024) & " Chunks...")
+            Dim startSplit As Long = TickCount()
             If SplitWIM(WIMFile, IO.Path.ChangeExtension(WIMFile, ".swm"), splFileSize) Then
+              SpeedStats.WIM_SplitImage(CalculateCompatibleSize(WIMFile), splFileSize & "MB") = TickCount() - startSplit
               WriteToOutput("Deleting """ & WIMFile & """...")
               IO.File.Delete(WIMFile)
             Else
@@ -3075,48 +3209,80 @@
     End If
   End Sub
   Private Sub expOutput_Closed(sender As Object, e As System.EventArgs) Handles expOutput.Closed
-    pnlSlips7ream.SuspendLayout()
     ttInfo.SetTooltip(expOutput, "Show Output consoles.")
     ttInfo.SetTooltip(expOutput.pctExpander, "Show Output consoles.")
-    txtOutput.Visible = False
-    txtOutputError.Visible = False
-    Me.MinimumSize = New Size(Me.MinimumSize.Width, Me.MinimumSize.Height - HeightDifferentialA)
-    Me.Height -= HeightDifferentialA
-    pnlSlips7ream.ResumeLayout(True)
+    If outputWindow Then
+      frmOutput.Hide()
+    Else
+      pnlSlips7ream.SuspendLayout()
+      pctOutputTear.Visible = False
+      txtOutput.Visible = False
+      txtOutputError.Visible = False
+      Me.MinimumSize = New Size(Me.MinimumSize.Width, Me.MinimumSize.Height - HeightDifferentialA)
+      Me.Height -= HeightDifferentialA
+      pnlSlips7ream.ResumeLayout(True)
+    End If
   End Sub
   Private Sub expOutput_Opened(sender As System.Object, e As System.EventArgs) Handles expOutput.Opened
-    pnlSlips7ream.SuspendLayout()
     ttInfo.SetTooltip(expOutput, "Hide Output consoles.")
     ttInfo.SetTooltip(expOutput.pctExpander, "Hide Output consoles.")
-    Me.Height += HeightDifferentialA
-    Me.MinimumSize = New Size(Me.MinimumSize.Width, Me.MinimumSize.Height + HeightDifferentialA)
-    txtOutput.Visible = True
-    If txtOutput.Text.Length > 0 Then
-      txtOutput.SelectionStart = txtOutput.Text.Length - 1
-      txtOutput.SelectionLength = 0
-      txtOutput.ScrollToCaret()
+    If outputWindow Then
+      frmOutput.Show(Me)
+      frmOutput.Location = New Point(Me.Left, Me.Bottom)
+      frmOutput.txtOutput.Text = txtOutput.Text
+      If frmOutput.txtOutput.Text.Length > 0 Then
+        frmOutput.txtOutput.SelectionStart = frmOutput.txtOutput.Text.Length - 1
+        frmOutput.txtOutput.SelectionLength = 0
+        frmOutput.txtOutput.ScrollToCaret()
+      End If
+      frmOutput.txtOutputError.Text = txtOutputError.Text
+      If frmOutput.txtOutputError.Text.Length > 0 Then
+        frmOutput.txtOutputError.SelectionStart = frmOutput.txtOutputError.Text.Length - 1
+        frmOutput.txtOutputError.SelectionLength = 0
+        frmOutput.txtOutputError.ScrollToCaret()
+      End If
+    Else
+      pnlSlips7ream.SuspendLayout()
+      Me.Height += HeightDifferentialA
+      Me.MinimumSize = New Size(Me.MinimumSize.Width, Me.MinimumSize.Height + HeightDifferentialA)
+      pctOutputTear.Visible = True
+      txtOutput.Visible = True
+      If txtOutput.Text.Length > 0 Then
+        txtOutput.SelectionStart = txtOutput.Text.Length - 1
+        txtOutput.SelectionLength = 0
+        txtOutput.ScrollToCaret()
+      End If
+      txtOutputError.Visible = True
+      If txtOutputError.Text.Length > 0 Then
+        txtOutputError.SelectionStart = txtOutputError.Text.Length - 1
+        txtOutputError.SelectionLength = 0
+        txtOutputError.ScrollToCaret()
+      End If
+      pnlSlips7ream.ResumeLayout(True)
+      redrawCaption()
     End If
-    txtOutputError.Visible = True
-    If txtOutputError.Text.Length > 0 Then
-      txtOutputError.SelectionStart = txtOutputError.Text.Length - 1
-      txtOutputError.SelectionLength = 0
-      txtOutputError.ScrollToCaret()
-    End If
-    pnlSlips7ream.ResumeLayout(True)
   End Sub
   Private Delegate Sub WriteToOutputCallBack(Message As String)
   Private Sub WriteToOutput(Message As String)
     If Me.InvokeRequired Then
       Me.BeginInvoke(New WriteToOutputCallBack(AddressOf WriteToOutput), Message)
     Else
-      txtOutput.AppendText(Message & vbNewLine)
+      If outputWindow Then
+        frmOutput.txtOutput.AppendText(Message & vbNewLine)
+      Else
+        txtOutput.AppendText(Message & vbNewLine)
+      End If
     End If
   End Sub
   Private Sub WriteToError(Message As String)
     If Me.InvokeRequired Then
       Me.BeginInvoke(New WriteToOutputCallBack(AddressOf WriteToError), Message)
     Else
-      txtOutputError.AppendText(Message & vbNewLine)
+      If outputWindow Then
+        frmOutput.txtOutputError.AppendText(Message & vbNewLine)
+      Else
+        txtOutputError.AppendText(Message & vbNewLine)
+      End If
     End If
   End Sub
 #End Region
@@ -4121,13 +4287,13 @@
     Dim Extract86 As String = Work & "SP1" & IO.Path.DirectorySeparatorChar & "windows6.1-KB976932-X86.cab"
     Dim Extract64 As String = Work & "SP1" & IO.Path.DirectorySeparatorChar & "windows6.1-KB976932-X64.cab"
     If IO.File.Exists(Extract86) Then
-      SetStatus("Extracting KB976932.cab...")
+      SetStatus("Preparing Service Pack (Extracting KB976932.cab)...")
       WriteToOutput("Extracting """ & Extract86 & """ to """ & Work & "SP1""...")
       ExtractAllFiles(Extract86, Work & "SP1") '                                                                    Extract Service Pack Files (Part 2 [32-bit])
       WriteToOutput("Deleting """ & Extract86 & """...")
       IO.File.Delete(Extract86)
     ElseIf IO.File.Exists(Extract64) Then
-      SetStatus("Extracting KB976932.cab...")
+      SetStatus("Preparing Service Pack (Extracting KB976932.cab)...")
       WriteToOutput("Extracting """ & Extract64 & """ to """ & Work & "SP1""...")
       ExtractAllFiles(Extract64, Work & "SP1") '                                                                    Extract Service Pack Files (Part 2 [64-bit])
       WriteToOutput("Deleting """ & Extract64 & """...")
@@ -4144,7 +4310,7 @@
     End If
     Dim Extract As String = Work & "SP1" & IO.Path.DirectorySeparatorChar & "NestedMPPcontent.cab"
     If IO.File.Exists(Extract) Then
-      SetStatus("Extracting NestedMPPcontent.cab...")
+      SetStatus("Preparing Service Pack (Extracting NestedMPPcontent.cab)...")
       WriteToOutput("Extracting """ & Extract & """ to """ & Work & "SP1""...")
       ExtractAllFiles(Extract, Work & "SP1") '                                                                      Extract Service Pack Files (Part 3)
       WriteToOutput("Deleting """ & Extract & """...")
@@ -4161,7 +4327,7 @@
     SetProgress(3, pbMax)
     Dim Update As String = Work & "SP1" & IO.Path.DirectorySeparatorChar & "update.ses"
     If IO.File.Exists(Update) Then
-      SetStatus("Modifying update.ses...")
+      SetStatus("Preparing Service Pack (Modifying update.ses)...")
       UpdateSES(Update) '                                                                                           Extract Service Pack Files (Part 4)
     Else
       ToggleInputs(True)
@@ -4175,7 +4341,7 @@
     SetProgress(4, pbMax)
     Update = Work & "SP1" & IO.Path.DirectorySeparatorChar & "update.mum"
     If IO.File.Exists(Update) Then
-      SetStatus("Modifying update.mum...")
+      SetStatus("Preparing Service Pack (Modifying update.mum)...")
       UpdateMUM(Update) '                                                                                           Extract Service Pack Files (Part 5)
     Else
       ToggleInputs(True)
@@ -4190,10 +4356,10 @@
     Dim Update86 As String = Work & "SP1" & IO.Path.DirectorySeparatorChar & "Windows7SP1-KB976933~31bf3856ad364e35~x86~~6.1.1.17514.mum"
     Dim Update64 As String = Work & "SP1" & IO.Path.DirectorySeparatorChar & "Windows7SP1-KB976933~31bf3856ad364e35~amd64~~6.1.1.17514.mum"
     If IO.File.Exists(Update86) Then
-      SetStatus("Modifying KB976933.mum...")
+      SetStatus("Preparing Service Pack (Modifying KB976933.mum)...")
       UpdateMUM(Update86) '                                                                                         Extract Service Pack Files (Part 6 [32-bit])
     ElseIf IO.File.Exists(Update64) Then
-      SetStatus("Modifying KB976933.mum...")
+      SetStatus("Preparing Service Pack (Modifying KB976933.mum)...")
       UpdateMUM(Update64) '                                                                                         Extract Service Pack Files (Part 6 [64-bit])
     Else
       ToggleInputs(True)
@@ -4218,7 +4384,7 @@
     For I As Integer = 0 To 6
       Extract = Work & "SP1" & IO.Path.DirectorySeparatorChar & "KB976933-LangsCab" & I.ToString.Trim & ".cab"
       If IO.File.Exists(Extract) Then
-        SetStatus("Extracting Language CAB " & (I + 1).ToString.Trim & " of 7...")
+        SetStatus("Preparing Service Pack (Extracting Language CAB " & (I + 1).ToString.Trim & " of 7)...")
         WriteToOutput("Extracting """ & Extract & """ to """ & Work & "SP1""...")
         ExtractAllFiles(Extract, Work & "SP1") '                                                                    Extract Service Pack Files (Parts 7 through 14)
         WriteToOutput("Deleting """ & Extract & """...")
@@ -4253,7 +4419,7 @@
         End Try
         iRunCount += 1
         SetProgress(iProg, pbMax)
-        SetStatus("Loading Image Package """ & dismData.Name & """...")
+        SetStatus("Integrating Service Pack (Loading " & dismData.Name & ")...")
         If Not InitDISM(WIMPath, I, Mount) Then
           DiscardDISM(Mount)
           ToggleInputs(True)
@@ -4281,7 +4447,7 @@
         End If
         iProg += 1
         SetProgress(iProg, pbMax)
-        SetStatus("Saving Image Package """ & dismData.Name & """...")
+        SetStatus("Integrating Service Pack (Saving " & dismData.Name & ")...")
         If Not SaveDISM(Mount) Then
           DiscardDISM(Mount)
           ToggleInputs(True)
@@ -4583,4 +4749,99 @@
     SetStatus("Downloading New Version - " & ByteSize(e.BytesReceived) & " of " & ByteSize(e.TotalBytesToReceive) & "... (" & e.ProgressPercentage & "%)")
   End Sub
 #End Region
+
+  Private tearFrom As Point = Point.Empty
+  Private moving As Boolean = False
+  Private Sub pctOutputTear_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles pctOutputTear.MouseDown
+    If e.Button = Windows.Forms.MouseButtons.Left Then
+      tearFrom = e.Location
+    End If
+  End Sub
+
+  Private Sub pctOutputTear_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles pctOutputTear.MouseMove
+    If moving Then
+      Dim newX As Integer = MousePosition.X - tearFrom.X
+      Dim newY As Integer = MousePosition.Y - tearFrom.Y
+      frmOutput.Location = New Point(newX, newY)
+    End If
+    If outputWindow Then Exit Sub
+    If e.Button = Windows.Forms.MouseButtons.Left Then
+      If Not pctOutputTear.DisplayRectangle.Contains(e.Location) Then
+
+        outputWindow = True
+        moving = True
+        pnlSlips7ream.SuspendLayout()
+        pctOutputTear.Visible = False
+        txtOutput.Visible = False
+        txtOutputError.Visible = False
+        Me.MinimumSize = New Size(Me.MinimumSize.Width, Me.MinimumSize.Height - HeightDifferentialA)
+        Me.Height -= HeightDifferentialA
+        pnlSlips7ream.ResumeLayout(True)
+        frmOutput.Show(Me)
+        Dim newX As Integer = MousePosition.X - tearFrom.X
+        Dim newY As Integer = MousePosition.Y - tearFrom.Y
+
+        frmOutput.Location = New Point(newX, newY)
+
+        frmOutput.Activate()
+        frmOutput.txtOutput.Text = txtOutput.Text
+        If frmOutput.txtOutput.Text.Length > 0 Then
+          frmOutput.txtOutput.SelectionStart = frmOutput.txtOutput.Text.Length - 1
+          frmOutput.txtOutput.SelectionLength = 0
+          frmOutput.txtOutput.ScrollToCaret()
+        End If
+        frmOutput.txtOutputError.Text = txtOutputError.Text
+        If frmOutput.txtOutputError.Text.Length > 0 Then
+          frmOutput.txtOutputError.SelectionStart = frmOutput.txtOutputError.Text.Length - 1
+          frmOutput.txtOutputError.SelectionLength = 0
+          frmOutput.txtOutputError.ScrollToCaret()
+        End If
+      End If
+    End If
+  End Sub
+
+  Private Sub pctOutputTear_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles pctOutputTear.MouseUp
+    If Not tearFrom.IsEmpty Then
+      moving = False
+      tearFrom = Point.Empty
+      frmOutput.DoResize()
+    End If
+  End Sub
+
+  Public Sub ReturnOutput()
+    If Me.InvokeRequired Then
+      Me.Invoke(New MethodInvoker(AddressOf ReturnOutput))
+    Else
+      'If moving Then Exit Sub
+      moving = False
+      tearFrom = Point.Empty
+      If Not outputWindow Then Exit Sub
+      outputWindow = False
+      pnlSlips7ream.SuspendLayout()
+      Me.Height += HeightDifferentialA
+      Me.MinimumSize = New Size(Me.MinimumSize.Width, Me.MinimumSize.Height + HeightDifferentialA)
+      pctOutputTear.Visible = True
+      txtOutput.Visible = True
+      txtOutput.Text = frmOutput.txtOutput.Text
+      If txtOutput.Text.Length > 0 Then
+        txtOutput.SelectionStart = txtOutput.Text.Length - 1
+        txtOutput.SelectionLength = 0
+        txtOutput.ScrollToCaret()
+      End If
+      txtOutputError.Visible = True
+      txtOutputError.Text = frmOutput.txtOutputError.Text
+      If txtOutputError.Text.Length > 0 Then
+        txtOutputError.SelectionStart = txtOutputError.Text.Length - 1
+        txtOutputError.SelectionLength = 0
+        txtOutputError.ScrollToCaret()
+      End If
+      pnlSlips7ream.ResumeLayout(True)
+      frmOutput.Hide()
+      'Me.Activate()
+    End If
+  End Sub
+
+  Private Sub frmMain_LocationChanged(sender As Object, e As System.EventArgs) Handles Me.LocationChanged
+    If outputWindow Then frmOutput.RePosition()
+  End Sub
 End Class
