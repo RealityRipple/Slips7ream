@@ -54,6 +54,16 @@ Public Class Expander
     DrawExpander(IIf(c_Open, EXP_OPEN, EXP_CLOSED) Or EXP_NORM)
   End Sub
 
+  Public Sub PerformClick()
+    c_Open = Not c_Open
+    If c_Open Then
+      RaiseEvent Opened(Me, New EventArgs)
+    Else
+      RaiseEvent Closed(Me, New EventArgs)
+    End If
+    DrawExpander(IIf(c_Open, EXP_OPEN, EXP_CLOSED))
+  End Sub
+
   Private Sub pctExpander_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles pctExpander.MouseDown
     DrawExpander(EXP_DOWN)
   End Sub
