@@ -337,6 +337,14 @@ Public Class SpeedStats
       WriteField("WIM_MoveImage_" & Size, value)
     End Set
   End Property
+  Public Shared Property WIM_SplitImage(Size As String, ChunkSize As String) As Long
+    Get
+      Return ReadField("WIM_SplitImage_" & Size & "_to_" & ChunkSize)
+    End Get
+    Set(value As Long)
+      WriteField("WIM_SplitImage_" & Size & "_to_" & ChunkSize, value)
+    End Set
+  End Property
 
   Public Shared Property SP_Extract(Architecture As String) As Long
     Get
@@ -377,6 +385,15 @@ Public Class SpeedStats
     End Get
     Set(value As Long)
       WriteField(Type & "_Integrate_x" & Architecture & "_" & Size, value)
+    End Set
+  End Property
+
+  Public Shared Property ISO_Make() As Long
+    Get
+      Return ReadField("ISO_Make")
+    End Get
+    Set(value As Long)
+      WriteField("ISO_Make", value)
     End Set
   End Property
 
