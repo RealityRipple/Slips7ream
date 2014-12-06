@@ -430,6 +430,7 @@ Public Class SpeedStats
     End Set
   End Property
 
+  Private Const MAXHIST As Integer = 3
   Private Shared Sub WriteField(FieldName As String, NewValue As Long)
     Dim newStr As String = Convert.ToString(NewValue, 16)
     If Not My.Computer.Registry.CurrentUser.OpenSubKey("Software").GetSubKeyNames.Contains(Application.CompanyName) Then My.Computer.Registry.CurrentUser.OpenSubKey("Software", True).CreateSubKey(Application.CompanyName)
@@ -442,9 +443,9 @@ Public Class SpeedStats
         ActiveHive.SetValue(FieldName, {newStr}, Microsoft.Win32.RegistryValueKind.MultiString)
       ElseIf OldValues.Count = 0 Then
         ActiveHive.SetValue(FieldName, {newStr}, Microsoft.Win32.RegistryValueKind.MultiString)
-      ElseIf OldValues.Count = 10 Then
-        Dim NewValues(OldValues.Count - 1) As String
-        For I As Integer = 1 To OldValues.Count - 1
+      ElseIf OldValues.Count >= MAXHIST Then
+        Dim NewValues(MAXHIST - 1) As String
+        For I As Integer = 1 To MAXHIST - 1
           NewValues(I) = OldValues(I - 1)
         Next
         NewValues(0) = newStr
