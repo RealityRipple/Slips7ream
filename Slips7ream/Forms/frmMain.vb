@@ -130,6 +130,9 @@
     FreshDraw()
     Me.Tag = Nothing
   End Sub
+  Private Sub frmMain_LocationChanged(sender As Object, e As System.EventArgs) Handles Me.LocationChanged
+    If outputWindow Then frmOutput.RePosition()
+  End Sub
   Private Sub frmMain_ResizeBegin(sender As Object, e As System.EventArgs) Handles Me.ResizeBegin
     windowChangedSize = False
   End Sub
@@ -159,6 +162,7 @@
         Me.Height -= 1
       End If
     End If
+    If outputWindow Then frmOutput.RePosition()
   End Sub
   Private Sub frmMain_ResizeEnd(sender As Object, e As System.EventArgs) Handles Me.ResizeEnd
     If Not windowStateSaved = Me.WindowState Then windowChangedSize = True
@@ -1542,6 +1546,14 @@
       FreshDraw()
     End If
   End Sub
+  Private Sub lvImages_ItemChecked(sender As Object, e As System.Windows.Forms.ItemCheckedEventArgs) Handles lvImages.ItemChecked
+    If lblActivity.Text = "Idle" Or lblActivity.Text.Contains("Estimated Time") Then
+      Dim runTime As Long = CalculateRunTime()
+      If runTime > 0 Then
+        lblActivity.Text = "Estimated Time: " & ConvertTime(runTime, True, True)
+      End If
+    End If
+  End Sub
 #End Region
 #Region "UEFI"
   Private Sub chkUEFI_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles chkUEFI.CheckedChanged
@@ -1678,22 +1690,990 @@
     frmConfig.ShowDialog(Me)
     mySettings = New MySettings
   End Sub
-  Private Function CalculateCompatibleSize(fromFile As String) As String
-    If String.IsNullOrEmpty(fromFile) Then Return Nothing
-    If Not IO.File.Exists(fromFile) Then Return Nothing
-    Return CalculateCompatibleSizeVal(New IO.FileInfo(fromFile).Length)
-  End Function
-  Private Function CalculateCompatibleSizeVal(fromSize As Long) As String
-    If fromSize > 1024L * 1024L Then
-      If fromSize > 1024L * 1024L * 1024L Then
-        Return Math.Round(fromSize / 1024 / 1024 / 1024, 1, MidpointRounding.ToEven) & "GB"
-      Else
-        Return Math.Ceiling(fromSize / 1024 / 1024) & "MB"
-      End If
+  Private Sub cmdBegin_Click(sender As System.Object, e As System.EventArgs) Handles cmdBegin.Click
+    Slipstream()
+  End Sub
+  Private Sub cmdClose_Click(sender As System.Object, e As System.EventArgs) Handles cmdClose.Click
+    If cmdClose.Text = "&Close" Then
+      Me.Close()
     Else
-      Return "1MB"
+      If RunActivity > 0 Then
+        Dim sActivity As String = "doing work"
+        Dim sProc As String = "current"
+        Dim sTitle As String = "Working"
+        Select Case RunActivity
+          Case 1
+            sActivity = "slipstreaming updates and packages"
+            sProc = "update integration"
+            sTitle = "Integrating"
+          Case 2
+            sActivity = "extracting and reading Image Package data"
+            sProc = "extraction"
+            sTitle = "Loading Package Data"
+          Case 3
+            sActivity = "extracting and reading Update data"
+            sProc = "update parsing"
+            sTitle = "Loading Updates"
+        End Select
+        If MsgDlg(Me, "Do you want to cancel the " & sProc & " proceess?", "SLIPS7REAM is busy " & sActivity & ".", "Stop " & sTitle & "?", MessageBoxButtons.YesNo, TaskDialogIcon.Question, MessageBoxDefaultButton.Button2) = Windows.Forms.DialogResult.No Then
+          Exit Sub
+        End If
+      End If
+      StopRun = True
+      cmdClose.Enabled = False
+      Application.DoEvents()
+    End If
+  End Sub
+#End Region
+#Region "Status"
+  Private Delegate Function GetStatusInvoker() As String
+  Private Function GetStatus() As String
+    If Me.InvokeRequired Then
+      Return Me.Invoke(New GetStatusInvoker(AddressOf GetStatus))
+    Else
+      Return lblActivity.Text
     End If
   End Function
+  Private Delegate Sub SetStatusInvoker(Message As String)
+  Private Sub SetStatus(Message As String)
+    If Me.InvokeRequired Then
+      Me.BeginInvoke(New SetStatusInvoker(AddressOf SetStatus), Message)
+    Else
+      lblActivity.Text = Message
+      If Message.Contains("...") And cmdBegin.Visible Then
+        lblWIM.Enabled = False
+        txtWIM.Enabled = False
+        cmdWIM.Enabled = False
+        cmdBegin.Visible = False
+        chkMerge.Enabled = False
+        txtMerge.Enabled = False
+        cmdMerge.Enabled = False
+      ElseIf Not Message.Contains("...") And Not cmdBegin.Visible Then
+        lblWIM.Enabled = True
+        txtWIM.Enabled = True
+        cmdWIM.Enabled = True
+        cmdBegin.Visible = True
+        chkMerge.Enabled = True
+        txtMerge.Enabled = chkMerge.Checked
+        cmdMerge.Enabled = chkMerge.Checked
+      End If
+      If Message = "Idle" Then
+        Dim runTime As Long = CalculateRunTime()
+        If runTime > 0 Then
+          lblActivity.Text = "Estimated Time: " & ConvertTime(runTime, True, True)
+        End If
+      End If
+      Application.DoEvents()
+    End If
+  End Sub
+  Private Delegate Sub SetTitleInvoker(Title As String, Tooltip As String)
+  Private Sub SetTitle(Title As String, Tooltip As String)
+    If Me.InvokeRequired Then
+      Me.Invoke(New SetTitleInvoker(AddressOf SetTitle), Title, Tooltip)
+    Else
+      sTitleText = Title
+      If String.IsNullOrWhiteSpace(Tooltip) Then
+        ttInfo.SetTooltip(pctTitle, Nothing)
+      Else
+        ttInfo.SetTooltip(pctTitle, Tooltip)
+      End If
+    End If
+  End Sub
+  Private Delegate Sub SetProgressInvoker(Value As Integer, Maximum As Integer)
+  Public Sub SetProgress(Value As Integer, Maximum As Integer)
+    If Me.InvokeRequired Then
+      Me.BeginInvoke(New SetProgressInvoker(AddressOf SetProgress), Value, Maximum)
+    Else
+      If Value = 0 And Maximum = 0 Then
+        pbIndividual.Style = ProgressBarStyle.Marquee
+        pbIndividual.Value = 0
+        pbIndividual.Maximum = 1
+      ElseIf Value <= Maximum Then
+        pbIndividual.Style = ProgressBarStyle.Continuous
+        If pbIndividual.Value > Maximum Then
+          pbIndividual.Value = Value
+          pbIndividual.Maximum = Maximum
+        Else
+          pbIndividual.Maximum = Maximum
+          pbIndividual.Value = Value
+        End If
+      Else
+        pbIndividual.Style = ProgressBarStyle.Continuous
+        pbIndividual.Value = 0
+        pbIndividual.Maximum = Maximum
+      End If
+    End If
+  End Sub
+  Private Delegate Sub SetTimeInvoker(Time As Long)
+  Private timeInd As Long
+  Public Sub SetProgressTime(Time As Long)
+    If Me.InvokeRequired Then
+      Me.Invoke(New SetTimeInvoker(AddressOf SetProgressTime), Time)
+    Else
+      If Time < 1 Then
+        lblIndividualTime.Text = "finishing"
+        timeInd = 0
+        If lblTotalTime.Text = "finishing" Then tmrCountdown.Enabled = False
+      Else
+        lblIndividualTime.Text = ConvertTime(Time, True, True)
+        lblIndividualTime.Visible = True
+        timeInd = Time
+        tmrCountdown.Enabled = True
+      End If
+    End If
+  End Sub
+  Public Sub SetTotal(Value As Integer, Maximum As Integer)
+    If Me.InvokeRequired Then
+      Me.BeginInvoke(New SetProgressInvoker(AddressOf SetTotal), Value, Maximum)
+    Else
+      pbTotal.Maximum = Maximum
+      If Value > pbTotal.Maximum Then
+        pbTotal.Value = pbTotal.Maximum
+        If taskBar IsNot Nothing Then taskBar.SetProgressState(Me.Handle, TaskbarLib.TBPFLAG.TBPF_NOPROGRESS)
+      Else
+        pbTotal.Value = Value
+        If taskBar IsNot Nothing Then
+          taskBar.SetProgressState(Me.Handle, TaskbarLib.TBPFLAG.TBPF_NORMAL)
+          taskBar.SetProgressValue(Me.Handle, Value, Maximum)
+        End If
+      End If
+    End If
+  End Sub
+  Private timeTot As Long
+  Public Sub SetTotalTime(Time As Long)
+    If Me.InvokeRequired Then
+      Me.Invoke(New SetTimeInvoker(AddressOf SetTotalTime), Time)
+    Else
+      If Time < 1 Then
+        lblTotalTime.Text = "finishing"
+        timeTot = 0
+        If lblIndividualTime.Text = "finishing" Then tmrCountdown.Enabled = False
+      Else
+        lblTotalTime.Text = ConvertTime(Time, True, True)
+        lblTotalTime.Visible = True
+        timeTot = Time
+        tmrCountdown.Enabled = True
+      End If
+    End If
+  End Sub
+  Private Sub tmrCountdown_Tick(sender As System.Object, e As System.EventArgs) Handles tmrCountdown.Tick
+    If timeInd > 0 Then
+      timeInd -= 1000
+      SetProgressTime(timeInd)
+    Else
+      SetProgressTime(-1)
+    End If
+    If timeTot > 0 Then
+      timeTot -= 1000
+      SetTotalTime(timeTot)
+    Else
+      SetTotalTime(-1)
+    End If
+  End Sub
+  Private Sub expOutput_Closed(sender As Object, e As System.EventArgs) Handles expOutput.Closed
+    ttInfo.SetTooltip(expOutput, "Show Output consoles.")
+    ttInfo.SetTooltip(expOutput.pctExpander, "Show Output consoles.")
+    If outputWindow Then
+      frmOutput.Hide()
+      outputWindow = False
+    Else
+      pnlSlips7ream.SuspendLayout()
+      pctOutputTear.Visible = False
+      txtOutput.Visible = False
+      txtOutputError.Visible = False
+      Me.MinimumSize = New Size(Me.MinimumSize.Width, Me.MinimumSize.Height - HeightDifferentialA)
+      Me.Height -= HeightDifferentialA
+      pnlSlips7ream.ResumeLayout(True)
+    End If
+  End Sub
+  Private Sub expOutput_Opened(sender As System.Object, e As System.EventArgs) Handles expOutput.Opened
+    ttInfo.SetTooltip(expOutput, "Hide Output consoles.")
+    ttInfo.SetTooltip(expOutput.pctExpander, "Hide Output consoles.")
+    If outputWindow Then
+      frmOutput.Show(Me)
+      frmOutput.Location = New Point(Me.Left, Me.Bottom)
+      frmOutput.txtOutput.Text = txtOutput.Text
+      If frmOutput.txtOutput.Text.Length > 0 Then
+        frmOutput.txtOutput.SelectionStart = frmOutput.txtOutput.Text.Length - 1
+        frmOutput.txtOutput.SelectionLength = 0
+        frmOutput.txtOutput.ScrollToCaret()
+      End If
+      frmOutput.txtOutputError.Text = txtOutputError.Text
+      If frmOutput.txtOutputError.Text.Length > 0 Then
+        frmOutput.txtOutputError.SelectionStart = frmOutput.txtOutputError.Text.Length - 1
+        frmOutput.txtOutputError.SelectionLength = 0
+        frmOutput.txtOutputError.ScrollToCaret()
+      End If
+    Else
+      pnlSlips7ream.SuspendLayout()
+      Me.Height += HeightDifferentialA
+      Me.MinimumSize = New Size(Me.MinimumSize.Width, Me.MinimumSize.Height + HeightDifferentialA)
+      pctOutputTear.Visible = True
+      txtOutput.Visible = True
+      If txtOutput.Text.Length > 0 Then
+        txtOutput.SelectionStart = txtOutput.Text.Length - 1
+        txtOutput.SelectionLength = 0
+        txtOutput.ScrollToCaret()
+      End If
+      txtOutputError.Visible = True
+      If txtOutputError.Text.Length > 0 Then
+        txtOutputError.SelectionStart = txtOutputError.Text.Length - 1
+        txtOutputError.SelectionLength = 0
+        txtOutputError.ScrollToCaret()
+      End If
+      pnlSlips7ream.ResumeLayout(True)
+      redrawCaption()
+    End If
+  End Sub
+  Private Delegate Sub WriteToOutputCallBack(Message As String)
+  Private Sub WriteToOutput(Message As String)
+    If Me.InvokeRequired Then
+      Me.BeginInvoke(New WriteToOutputCallBack(AddressOf WriteToOutput), Message)
+    Else
+      If outputWindow Then
+        frmOutput.txtOutput.AppendText(Message & vbNewLine)
+      Else
+        txtOutput.AppendText(Message & vbNewLine)
+      End If
+    End If
+  End Sub
+  Private Sub WriteToError(Message As String)
+    If Me.InvokeRequired Then
+      Me.BeginInvoke(New WriteToOutputCallBack(AddressOf WriteToError), Message)
+    Else
+      If outputWindow Then
+        frmOutput.txtOutputError.AppendText(Message & vbNewLine)
+      Else
+        txtOutputError.AppendText(Message & vbNewLine)
+      End If
+    End If
+  End Sub
+  Private tearFrom As Point = Point.Empty
+  Private moving As Boolean = False
+  Private Sub pctOutputTear_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles pctOutputTear.MouseDown
+    If e.Button = Windows.Forms.MouseButtons.Left Then
+      tearFrom = e.Location
+    End If
+  End Sub
+  Private Sub pctOutputTear_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles pctOutputTear.MouseMove
+    If moving Then
+      Dim newX As Integer = MousePosition.X - tearFrom.X
+      Dim newY As Integer = MousePosition.Y - tearFrom.Y
+      frmOutput.Location = New Point(newX, newY)
+    End If
+    If outputWindow Then Exit Sub
+    If e.Button = Windows.Forms.MouseButtons.Left Then
+      If Not pctOutputTear.DisplayRectangle.Contains(e.Location) Then
+
+        outputWindow = True
+        moving = True
+        pnlSlips7ream.SuspendLayout()
+        pctOutputTear.Visible = False
+        txtOutput.Visible = False
+        txtOutputError.Visible = False
+        Me.MinimumSize = New Size(Me.MinimumSize.Width, Me.MinimumSize.Height - HeightDifferentialA)
+        Me.Height -= HeightDifferentialA
+        pnlSlips7ream.ResumeLayout(True)
+        frmOutput.Show(Me)
+        Dim newX As Integer = MousePosition.X - tearFrom.X
+        Dim newY As Integer = MousePosition.Y - tearFrom.Y
+
+        frmOutput.Location = New Point(newX, newY)
+
+        frmOutput.Activate()
+        frmOutput.txtOutput.Text = txtOutput.Text
+        If frmOutput.txtOutput.Text.Length > 0 Then
+          frmOutput.txtOutput.SelectionStart = frmOutput.txtOutput.Text.Length - 1
+          frmOutput.txtOutput.SelectionLength = 0
+          frmOutput.txtOutput.ScrollToCaret()
+        End If
+        frmOutput.txtOutputError.Text = txtOutputError.Text
+        If frmOutput.txtOutputError.Text.Length > 0 Then
+          frmOutput.txtOutputError.SelectionStart = frmOutput.txtOutputError.Text.Length - 1
+          frmOutput.txtOutputError.SelectionLength = 0
+          frmOutput.txtOutputError.ScrollToCaret()
+        End If
+      End If
+    End If
+  End Sub
+  Private Sub pctOutputTear_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles pctOutputTear.MouseUp
+    If Not tearFrom.IsEmpty Then
+      moving = False
+      tearFrom = Point.Empty
+      frmOutput.DoResize()
+    End If
+  End Sub
+  Public Sub ReturnOutput()
+    If Me.InvokeRequired Then
+      Me.Invoke(New MethodInvoker(AddressOf ReturnOutput))
+    Else
+      'If moving Then Exit Sub
+      moving = False
+      tearFrom = Point.Empty
+      If Not outputWindow Then Exit Sub
+      outputWindow = False
+      pnlSlips7ream.SuspendLayout()
+      Me.Height += HeightDifferentialA
+      Me.MinimumSize = New Size(Me.MinimumSize.Width, Me.MinimumSize.Height + HeightDifferentialA)
+      pctOutputTear.Visible = True
+      txtOutput.Visible = True
+      txtOutput.Text = frmOutput.txtOutput.Text
+      If txtOutput.Text.Length > 0 Then
+        txtOutput.SelectionStart = txtOutput.Text.Length - 1
+        txtOutput.SelectionLength = 0
+        txtOutput.ScrollToCaret()
+      End If
+      txtOutputError.Visible = True
+      txtOutputError.Text = frmOutput.txtOutputError.Text
+      If txtOutputError.Text.Length > 0 Then
+        txtOutputError.SelectionStart = txtOutputError.Text.Length - 1
+        txtOutputError.SelectionLength = 0
+        txtOutputError.ScrollToCaret()
+      End If
+      pnlSlips7ream.ResumeLayout(True)
+      frmOutput.Hide()
+      'Me.Activate()
+    End If
+  End Sub
+#End Region
+#End Region
+#Region "Command Calls"
+  Private Function CleanMounts() As Boolean
+    SetProgressTime(SpeedStats.Clean_MOUNT)
+    Dim mountStart As Long = TickCount()
+    Try
+      Dim DISMInfo As String = RunWithReturn(DismPath, "/Get-MountedWimInfo /English", True)
+      Dim mFindA As String = WorkDir.Substring(0, WorkDir.Length - 1).ToLower
+      Dim mFindB As String = ShortenPath(mFindA).ToLower
+      If Not DISMInfo.Contains("No mounted images found.") Then
+        SetStatus("Cleaning Old DISM Mounts...")
+        Dim sLines() As String = Split(DISMInfo, vbNewLine)
+        For Each line In sLines
+          If line.Contains("Mount Dir : ") Then
+            Dim tmpPath As String = line.Substring(line.IndexOf(":") + 2)
+            If line.ToLower.Contains(mFindA) Or line.ToLower.Contains(mFindB) Then RunHidden(DismPath, "/Unmount-Wim /MountDir:" & ShortenPath(tmpPath) & " /discard /English")
+          End If
+        Next
+      End If
+      RunHidden(DismPath, "/cleanup-wim")
+      Dim ImageXInfo As String = RunWithReturn(AIKDir & "imagex", "/unmount", True)
+      If Not ImageXInfo.Contains("Number of Mounted Images: 0") Then
+        SetStatus("Cleaning Old ImageX Mounts...")
+        Dim sLines() As String = Split(ImageXInfo, vbNewLine)
+        For Each line In sLines
+          If line.Contains("Mount Path") Then
+            Dim tmpPath As String = line.Substring(line.IndexOf("[") + 1)
+            tmpPath = tmpPath.Substring(0, tmpPath.IndexOf("]"))
+            If tmpPath.ToLower.Contains(mFindA) Or tmpPath.ToLower.Contains(mFindB) Then RunHidden(AIKDir & "imagex", "/unmount " & ShortenPath(tmpPath))
+          End If
+        Next
+      End If
+      RunHidden(AIKDir & "imagex", "/cleanup")
+      WriteToOutput("Deleting """ & WorkDir & "MOUNT" & IO.Path.DirectorySeparatorChar & """...")
+      SlowDeleteDirectory(WorkDir & "MOUNT" & IO.Path.DirectorySeparatorChar, FileIO.DeleteDirectoryOption.DeleteAllContents)
+      If IO.Directory.Exists(WorkDir & "MOUNT" & IO.Path.DirectorySeparatorChar) Then Return False
+      Return True
+    Catch ex As Exception
+      Return False
+    Finally
+      SpeedStats.Clean_MOUNT = TickCount() - mountStart
+    End Try
+  End Function
+#Region "DISM"
+  Private Function InitDISM(WIMFile As String, WIMIndex As Integer, MountPath As String) As Boolean
+    Dim sRet As String = RunWithReturn(DismPath, "/Mount-Wim /WimFile:" & ShortenPath(WIMFile) & " /index:" & WIMIndex.ToString.Trim & " /MountDir:" & ShortenPath(MountPath) & " /English")
+    Return sRet.Contains("The operation completed successfully.")
+  End Function
+  Private Function GetDISMPackages(WIMFile As String) As Integer
+    Dim PackageList As String = RunWithReturn(DismPath, "/Get-WimInfo /WimFile:" & ShortenPath(WIMFile) & " /English")
+    Dim PackageRows() As String = Split(PackageList, vbNewLine)
+    Dim Indexes As Integer = 0
+    For Each row In PackageRows
+      If row.StartsWith("Index : ") Then
+        Indexes += 1
+      End If
+    Next
+    Return Indexes
+  End Function
+  Private Function GetDISMPackageData(WIMFile As String, Index As Integer) As PackageInfoEx
+    Dim PackageList As String = RunWithReturn(DismPath, "/Get-WimInfo /WimFile:" & ShortenPath(WIMFile) & " /index:" & Index & " /English")
+    Dim Info As New PackageInfoEx(PackageList)
+    Return Info
+  End Function
+  Private Function AddToDism(MountPath As String, AddPath As String) As Boolean
+    Dim sRet As String = RunWithReturn(DismPath, "/Image:" & ShortenPath(MountPath) & " /Add-Package /PackagePath:" & ShortenPath(AddPath) & " /English")
+    Return sRet.Contains("The operation completed successfully.")
+  End Function
+  Private Function SaveDISM(MountPath As String) As Boolean
+    Dim sRet As String = RunWithReturn(DismPath, "/Unmount-Wim /MountDir:" & ShortenPath(MountPath) & " /commit" & " /English")
+    Return sRet.Contains("The operation completed successfully.")
+  End Function
+  Private Function DiscardDISM(MountPath As String) As Boolean
+    Dim sRet As String = RunWithReturn(DismPath, "/Unmount-Wim /MountDir:" & ShortenPath(MountPath) & " /discard /English")
+    Return sRet.Contains("The operation completed successfully.")
+  End Function
+#End Region
+#Region "IMAGEX"
+  Private Function SplitWIM(SourceWIM As String, DestSWM As String, Size As Integer) As Boolean
+    Dim sRet As String = RunWithReturn(AIKDir & "imagex", "/split " & SourceWIM & " " & DestSWM & " " & Size)
+    Return sRet.Contains("Successfully split")
+  End Function
+  Private Function ExportWIM(SourceWIM As String, SourceIndex As Integer, DestWIM As String, DestName As String) As Boolean
+    ReturnProgress = True
+    Dim sRet As String = RunWithReturn(AIKDir & "imagex", "/export """ & SourceWIM & """ " & SourceIndex & " """ & DestWIM & """ """ & DestName & """ /compress maximum")
+    ReturnProgress = False
+    Return sRet.Contains("Successfully exported image")
+  End Function
+  Private Function UpdateLang(SourcePath As String) As Boolean
+    Dim sRet As String = RunWithReturn(AIKDir & "intlcfg", "-genlangini -dist:" & ShortenPath(SourcePath) & " -image:" & ShortenPath(Mount) & " -f") '-all:la-ng
+    If Not sRet.Contains("A new Lang.ini file has been generated") Then
+      Return False
+    End If
+    Dim MountPath As String = WorkDir & "BOOT" & IO.Path.DirectorySeparatorChar
+    If Not IO.Directory.Exists(MountPath) Then IO.Directory.CreateDirectory(MountPath)
+    ReturnProgress = True
+    sRet = RunWithReturn(AIKDir & "imagex", "/mountrw " & ShortenPath(SourcePath & "sources" & IO.Path.DirectorySeparatorChar & "boot.wim") & " 2 " & ShortenPath(MountPath))
+    ReturnProgress = False
+    If Not sRet.Contains("Successfully mounted image.") Then
+      SetStatus("Failed to mount boot.wim!")
+      Return False
+    End If
+    If IO.File.Exists(SourcePath & "sources" & IO.Path.DirectorySeparatorChar & "lang.ini") Then
+      WriteToOutput("Copying """ & SourcePath & "sources" & IO.Path.DirectorySeparatorChar & "lang.ini"" to """ & MountPath & "sources" & IO.Path.DirectorySeparatorChar & "lang.ini""...")
+      My.Computer.FileSystem.CopyFile(SourcePath & "sources" & IO.Path.DirectorySeparatorChar & "lang.ini", MountPath & "sources" & IO.Path.DirectorySeparatorChar & "lang.ini", True)
+    End If
+    ReturnProgress = True
+    sRet = RunWithReturn(AIKDir & "imagex", "/unmount /commit " & ShortenPath(MountPath))
+    ReturnProgress = False
+    If Not sRet.Contains("Successfully unmounted image.") Then
+      SetStatus("Failed to unmount boot.wim!")
+      Return False
+    End If
+    WriteToOutput("Deleting """ & MountPath & """...")
+    SlowDeleteDirectory(MountPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+    Return True
+  End Function
+#End Region
+#Region "OSCDIMG"
+  Private Function MakeISO(FromDir As String, Label As String, BootOrderFile As String, FileSystem As String, DestISO As String) As Boolean
+    ReturnProgress = True
+    Dim sRet As String
+    If String.IsNullOrEmpty(BootOrderFile) Then
+      sRet = RunWithReturn(AIKDir & "oscdimg", "-m " & FileSystem & " " & ShortenPath(FromDir.Substring(0, FromDir.Length - 1)) & " " & ShortenPath(DestISO) & " -l" & Label)
+    Else
+      sRet = RunWithReturn(AIKDir & "oscdimg", "-m " & FileSystem & " -yo" & ShortenPath(BootOrderFile) & " -b" & ShortenPath(FromDir & "boot" & IO.Path.DirectorySeparatorChar & "etfsboot.com") & " " & ShortenPath(FromDir.Substring(0, FromDir.Length - 1)) & " " & ShortenPath(DestISO) & " -l" & Label)
+    End If
+    ReturnProgress = False
+    Return sRet.Contains("Done.")
+  End Function
+#End Region
+#Region "7-Zip"
+  Private WithEvents Extractor As Extraction.ArchiveFile
+  Private c_ExtractRet As New Collections.Generic.List(Of String)
+  Private Delegate Sub ExtractAllFilesInvoker(Source As String, Destination As String)
+  Private Sub ExtractAllFiles(Source As String, Destination As String)
+    If Me.InvokeRequired Then
+      Me.Invoke(New ExtractAllFilesInvoker(AddressOf ExtractAllFiles), Source, Destination)
+    Else
+      Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractAllFiles))
+      Dim cIndex As Integer = c_ExtractRet.Count
+      c_ExtractRet.Add(Nothing)
+      tRunWithReturn.Start({Source, Destination, cIndex})
+      Do While String.IsNullOrEmpty(c_ExtractRet(cIndex))
+        Application.DoEvents()
+        Threading.Thread.Sleep(1)
+      Loop
+      Dim sRet As String = c_ExtractRet(cIndex)
+      c_ExtractRet(cIndex) = Nothing
+      Select Case sRet
+        Case "OK"
+
+        Case "CRC Error"
+          MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        Case "Data Error"
+          MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        Case "Unsupported Method"
+          MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        Case "File Not Found"
+          MsgDlg(Me, "Unable to find files in " & IO.Path.GetFileName(Source) & "!", "The files were not found.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        Case Else
+          MsgDlg(Me, sRet, "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+      End Select
+    End If
+  End Sub
+  Private Sub AsyncExtractAllFiles(Obj As Object)
+    Dim Source, Destination As String, cIndex As UInteger
+    Source = Obj(0)
+    Destination = Obj(1)
+    cIndex = Obj(2)
+    Dim sStatus As String = GetStatus()
+    If sStatus.EndsWith("...") Then sStatus = sStatus.Substring(0, sStatus.Length - 3)
+    If sStatus.Contains(" (File ") Then sStatus = sStatus.Substring(0, sStatus.IndexOf(" (File"))
+    If Not Destination.EndsWith(IO.Path.DirectorySeparatorChar) Then Destination &= IO.Path.DirectorySeparatorChar
+    Extractor = New Extraction.ArchiveFile(New IO.FileInfo(Source))
+    Try
+      Extractor.Open()
+    Catch ex As Exception
+      Extractor.Dispose()
+      Extractor = Nothing
+      c_ExtractRet(cIndex) = "Error Opening: " & ex.Message
+    End Try
+    For Each file In Extractor
+      file.Destination = New IO.FileInfo(Destination & file.Name)
+    Next
+    Try
+      Extractor.Extract()
+      Extractor.Dispose()
+      Extractor = Nothing
+    Catch ex As Exception
+      Extractor.Dispose()
+      Extractor = Nothing
+      c_ExtractRet(cIndex) = "Error Extracting: " & ex.Message
+    End Try
+    SetProgress(0, 1000)
+    c_ExtractRet(cIndex) = "OK"
+  End Sub
+  Private Delegate Sub ExtractFilesInvoker(Source As String, Destination As String, Except As String)
+  Private Sub ExtractFiles(Source As String, Destination As String, Except As String)
+    If Me.InvokeRequired Then
+      Me.Invoke(New ExtractFilesInvoker(AddressOf ExtractFiles), Source, Destination, Except)
+    Else
+      Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractFiles))
+      Dim cIndex As Integer = c_ExtractRet.Count
+      c_ExtractRet.Add(Nothing)
+      tRunWithReturn.Start({Source, Destination, Except, cIndex})
+      Do While String.IsNullOrEmpty(c_ExtractRet(cIndex))
+        Application.DoEvents()
+        Threading.Thread.Sleep(1)
+      Loop
+      Dim sRet As String = c_ExtractRet(cIndex)
+      c_ExtractRet(cIndex) = Nothing
+      Select Case sRet
+        Case "OK"
+
+        Case "CRC Error"
+          MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        Case "Data Error"
+          MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        Case "Unsupported Method"
+          MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        Case "File Not Found"
+          MsgDlg(Me, "Unable to find files in " & IO.Path.GetFileName(Source) & "!", "The files were not found.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        Case Else
+          MsgDlg(Me, sRet, "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+      End Select
+    End If
+  End Sub
+  Private Sub AsyncExtractFiles(Obj As Object)
+    Dim Source, Destination, Except As String, cIndex As UInteger
+    Source = Obj(0)
+    Destination = Obj(1)
+    Except = Obj(2)
+    cIndex = Obj(3)
+    Dim sStatus As String = GetStatus()
+    If sStatus.EndsWith("...") Then sStatus = sStatus.Substring(0, sStatus.Length - 3)
+    If sStatus.Contains(" (File ") Then sStatus = sStatus.Substring(0, sStatus.IndexOf(" (File"))
+    If Not Destination.EndsWith(IO.Path.DirectorySeparatorChar) Then Destination &= IO.Path.DirectorySeparatorChar
+    Extractor = New Extraction.ArchiveFile(New IO.FileInfo(Source))
+    Try
+      Extractor.Open()
+    Catch ex As Exception
+      Extractor.Dispose()
+      Extractor = Nothing
+      c_ExtractRet(cIndex) = "Error Opening: " & ex.Message
+    End Try
+    For Each file In Extractor
+      If Not file.Name.ToLower.EndsWith(Except.ToLower) Then
+        file.Destination = New IO.FileInfo(Destination & file.Name)
+      End If
+    Next
+    Try
+      Extractor.Extract()
+      Extractor.Dispose()
+      Extractor = Nothing
+    Catch ex As Exception
+      Extractor.Dispose()
+      Extractor = Nothing
+      c_ExtractRet(cIndex) = "Error Extracting: " & ex.Message
+    End Try
+    SetProgress(0, 1000)
+    c_ExtractRet(cIndex) = "OK"
+  End Sub
+  Private Delegate Sub ExtractAFileInvoker(Source As String, Destination As String, File As String)
+  Private Sub ExtractAFile(Source As String, Destination As String, File As String)
+    If Me.InvokeRequired Then
+      Me.Invoke(New ExtractAFileInvoker(AddressOf ExtractAFile), Source, Destination, File)
+    Else
+      Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractAFile))
+      Dim cIndex As Integer = c_ExtractRet.Count
+      c_ExtractRet.Add(Nothing)
+      tRunWithReturn.Start({Source, Destination, File, cIndex})
+      Do While String.IsNullOrEmpty(c_ExtractRet(cIndex))
+        Application.DoEvents()
+        Threading.Thread.Sleep(1)
+      Loop
+      Dim sRet As String = c_ExtractRet(cIndex)
+      c_ExtractRet(cIndex) = Nothing
+      Select Case sRet
+        Case "OK"
+
+        Case "CRC Error"
+          MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to extract """ & File & """!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        Case "Data Error"
+          MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to extract """ & File & """!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        Case "Unsupported Method"
+          MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to extract """ & File & """!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        Case "File Not Found"
+          MsgDlg(Me, "Unable to find """ & File & """ in " & IO.Path.GetFileName(Source) & "!", "The file was not found.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        Case Else
+          MsgDlg(Me, sRet, "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+      End Select
+    End If
+  End Sub
+  Private Sub AsyncExtractAFile(Obj As Object)
+    Dim Source, Destination, Find As String
+    Source = Obj(0)
+    Destination = Obj(1)
+    Find = Obj(2)
+    Dim cIndex As UInteger = Obj(3)
+    Dim bFound As Boolean = False
+    If Not Destination.EndsWith(IO.Path.DirectorySeparatorChar) Then Destination &= IO.Path.DirectorySeparatorChar
+
+    Extractor = New Extraction.ArchiveFile(New IO.FileInfo(Source))
+    Try
+      Extractor.Open()
+    Catch ex As Exception
+      Extractor.Dispose()
+      Extractor = Nothing
+      c_ExtractRet(cIndex) = "Error Opening: " & ex.Message
+    End Try
+    For Each File In Extractor
+      If File.Name.ToLower.EndsWith(Find.ToLower) Then
+        File.Destination = New IO.FileInfo(Destination & IO.Path.GetFileName(File.Name))
+        bFound = True
+        Exit For
+      End If
+    Next
+    Try
+      Extractor.Extract()
+      Extractor.Dispose()
+      Extractor = Nothing
+    Catch ex As Exception
+      Extractor.Dispose()
+      Extractor = Nothing
+      c_ExtractRet(cIndex) = "Error Extracting: " & ex.Message
+    End Try
+    SetProgress(0, 1000)
+    If bFound Then
+      c_ExtractRet(cIndex) = "OK"
+    Else
+      c_ExtractRet(cIndex) = "File Not Found"
+    End If
+  End Sub
+  Private Delegate Function ExtractFilesListInvoker(Source As String) As String()
+  Private Function ExtractFilesList(Source As String) As String()
+    If Me.InvokeRequired Then
+      Return Me.Invoke(New ExtractFilesListInvoker(AddressOf ExtractFilesList), Source)
+    Else
+      Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractFilesList))
+      Dim cIndex As Integer = c_ExtractRet.Count
+      c_ExtractRet.Add(Nothing)
+      tRunWithReturn.Start({Source, cIndex})
+      Do While String.IsNullOrEmpty(c_ExtractRet(cIndex))
+        Application.DoEvents()
+        Threading.Thread.Sleep(1)
+      Loop
+      Dim sRet As String = c_ExtractRet(cIndex)
+      c_ExtractRet(cIndex) = Nothing
+      If sRet.Contains("|") Then
+        Return Split(sRet, "|")
+      Else
+        Select Case sRet
+          Case "CRC Error"
+            MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to read the file!", "There was an error while reading.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+          Case "Data Error"
+            MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to read the file!", "There was an error while reading.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+          Case "Unsupported Method"
+            MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to read the file!", "There was an error while extracting.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+          Case "File Not Found"
+            MsgDlg(Me, "Unable to find any files in " & IO.Path.GetFileName(Source) & "!", "No files were found.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+          Case Else
+            MsgDlg(Me, sRet, "There was an error while reading.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        End Select
+        Return Nothing
+      End If
+    End If
+  End Function
+  Private Sub AsyncExtractFilesList(Obj As Object)
+    Dim Source As String
+    Source = Obj(0)
+    Dim cIndex As UInteger = Obj(1)
+    Extractor = New Extraction.ArchiveFile(New IO.FileInfo(Source))
+    Try
+      Extractor.Open()
+    Catch ex As Exception
+      Extractor.Dispose()
+      Extractor = Nothing
+      c_ExtractRet(cIndex) = "Error Opening: " & ex.Message
+    End Try
+    Dim sList As New List(Of String)
+    For Each File In Extractor
+      sList.Add(File.Name)
+    Next
+    If sList.Count > 0 Then
+      c_ExtractRet(cIndex) = Join(sList.ToArray, "|")
+    Else
+      c_ExtractRet(cIndex) = "File Not Found"
+    End If
+  End Sub
+  Private Function ExtractComment(Source As String) As String
+    Extractor = New Extraction.ArchiveFile(New IO.FileInfo(Source))
+    Try
+      Extractor.Open()
+      Return Extractor.ArchiveComment
+    Catch ex As Exception
+      Extractor.Dispose()
+      Extractor = Nothing
+      Return Nothing
+    End Try
+  End Function
+
+  Private Sub Extractor_ExtractFile(sender As Object, e As Extraction.COM.ExtractFileEventArgs) Handles Extractor.ExtractFile
+    If StopRun Then e.ContinueOperation = False
+    If Extractor.ExtractionCount() > 1 Then
+      If e.Stage = Extraction.COM.ExtractionStage.Done Then
+        SetProgress(e.Item.Index, Extractor.ItemCount)
+        Application.DoEvents()
+      End If
+    End If
+  End Sub
+  Private Sub Extractor_ExtractProgress(sender As Object, e As Extraction.COM.ExtractProgressEventArgs) Handles Extractor.ExtractProgress
+    If Extractor.ExtractionCount = 1 AndAlso e.Total > 1048576 * 64 Then
+      If StopRun Then e.ContinueOperation = False
+      Dim iMax As Integer = pbIndividual.Width
+      Dim iVal As Integer = (e.Written / e.Total) * iMax
+      If pbIndividual.Value = iVal AndAlso pbIndividual.Maximum = iMax Then Exit Sub
+      SetProgress(iVal, iMax)
+      Application.DoEvents()
+    End If
+  End Sub
+  Private Function ExtractFailureAlert(Message As String) As Boolean
+    If String.IsNullOrEmpty(Message) Then Return False
+    If Message = "OK" Then
+      Return False
+    ElseIf Message.StartsWith("CRC Error") Then
+      MsgDlg(Me, "CRC Error in compressed file!" & vbNewLine & Message.Substring(Message.IndexOf("|") + 1), "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+    ElseIf Message.StartsWith("Data Error") Then
+      MsgDlg(Me, "Data Error in compressed file!" & vbNewLine & Message.Substring(Message.IndexOf("|") + 1), "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+    ElseIf Message.StartsWith("Unsupported Method") Then
+      MsgDlg(Me, "Unsupported Method in compressed file!" & vbNewLine & Message.Substring(Message.IndexOf("|") + 1), "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+    ElseIf Message.StartsWith("File Not Found") Then
+      MsgDlg(Me, "Unable to find expected file in compressed file!" & vbNewLine & Message.Substring(Message.IndexOf("|") + 1), "The file was not found.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+    Else
+      MsgDlg(Me, Message, "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+    End If
+    Return True
+  End Function
+#End Region
+#Region "EXE2CAB"
+  Private Function EXE2CAB(Source As String, Destination As String) As Boolean
+    Dim ExeToCab As String = AIKDir & "exe2cab.exe"
+    RunHidden(ExeToCab, """" & Source & """ -q """ & Destination & """")
+    Return IO.File.Exists(Destination)
+  End Function
+#End Region
+#Region "Caller Functions"
+  Private ReturnProgress As Boolean
+#Region "Run With Return"
+  Private c_RunWithReturnRet As New Collections.Generic.List(Of String)
+  Private Function RunWithReturn(Filename As String, Arguments As String, Optional IgnoreStopRun As Boolean = False) As String
+    Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncRunWithReturn))
+    Dim cIndex As Integer = c_RunWithReturnRet.Count
+    c_RunWithReturnRet.Add(Nothing)
+    c_RunWithReturnAccumulation.Add(Nothing)
+    c_RunWithReturnErrorAccumulation.Add(Nothing)
+    tRunWithReturn.Start({Filename, Arguments, cIndex, Process.GetCurrentProcess.PriorityClass})
+    Do While c_RunWithReturnRet(cIndex) Is Nothing
+      Application.DoEvents()
+      Threading.Thread.Sleep(1)
+      If Not IgnoreStopRun AndAlso StopRun Then
+        Try
+          tRunWithReturn.Abort()
+        Catch ex As Exception
+        End Try
+        Return ""
+      End If
+    Loop
+    Dim sRet As String = c_RunWithReturnRet(cIndex)
+    c_RunWithReturnRet(cIndex) = Nothing
+    Return sRet
+  End Function
+  Private Delegate Sub RunWithReturnRetCallBack(Index As Integer, Output As String)
+  Private Sub RunWithReturnRet(Index As Integer, Output As String)
+    If Me.InvokeRequired Then
+      Me.BeginInvoke(New RunWithReturnRetCallBack(AddressOf RunWithReturnRet), Index, Output)
+    Else
+      If Output.StartsWith("!" & vbNewLine) Then
+        Output = Output.Substring(3)
+      Else
+        WriteToOutput(Output)
+      End If
+      c_RunWithReturnRet(Index) = Output
+    End If
+  End Sub
+  Private Sub AsyncRunWithReturn(Obj As Object)
+    Dim Filename As String = Obj(0)
+    Dim Arguments As String = Obj(1)
+    Dim Index As Integer = Obj(2)
+    Dim Priority As Diagnostics.ProcessPriorityClass = Obj(3)
+    Dim PkgList As New Process
+    PkgList.StartInfo.FileName = Filename
+    PkgList.StartInfo.Arguments = Arguments
+    PkgList.StartInfo.UseShellExecute = False
+    PkgList.StartInfo.RedirectStandardInput = True
+    PkgList.StartInfo.RedirectStandardOutput = True
+    PkgList.StartInfo.RedirectStandardError = True
+    PkgList.StartInfo.CreateNoWindow = True
+    PkgList.StartInfo.EnvironmentVariables.Add("RUNNING_INDEX", Index)
+    AddHandler PkgList.OutputDataReceived, AddressOf RunWithReturnOutputHandler
+    AddHandler PkgList.ErrorDataReceived, AddressOf RunWithReturnErrorHandler
+    PkgList.Start()
+    Try
+      PkgList.BeginErrorReadLine()
+      PkgList.BeginOutputReadLine()
+      PkgList.PriorityClass = Priority
+      If mySettings.Timeout > 0 Then
+        PkgList.WaitForExit(mySettings.Timeout)
+      Else
+        PkgList.WaitForExit()
+      End If
+    Catch ex As Exception
+      RunWithReturnRet(Index, ex.Message)
+      Err.Clear()
+    End Try
+  End Sub
+  Private c_RunWithReturnAccumulation As New Collections.Generic.List(Of String)
+  Private c_RunWithReturnErrorAccumulation As New Collections.Generic.List(Of String)
+  Private Sub AsyncRunWithReturnRet(Index As Integer, Output As String)
+    If Me.InvokeRequired Then
+      Me.BeginInvoke(New RunWithReturnRetCallBack(AddressOf AsyncRunWithReturnRet), Index, Output)
+    Else
+      If Output Is Nothing Then
+        c_RunWithReturnRet(Index) = "!" & vbNewLine & c_RunWithReturnAccumulation(Index)
+        c_RunWithReturnAccumulation(Index) = Nothing
+      Else
+        If ReturnProgress Then
+          If Output.Contains(" ] Exporting progress") Or Output.Contains(" ] Mounting progress") Or Output.Contains(" ] Committing Image progress") Or Output.Contains(" ] Unmounting progress") Or Output.Contains(" ] Mount cleanup progress") Then
+            Dim ProgI As String = Output.Substring(2)
+            ProgI = ProgI.Substring(0, ProgI.IndexOf("%"))
+            SetProgress(Val(ProgI), 100)
+          End If
+        End If
+        c_RunWithReturnAccumulation(Index) &= Output & vbNewLine
+        WriteToOutput(Output)
+      End If
+    End If
+  End Sub
+  Private Sub AsyncRunWithReturnErrorRet(Index As Integer, Output As String)
+    If Me.InvokeRequired Then
+      Me.BeginInvoke(New RunWithReturnRetCallBack(AddressOf AsyncRunWithReturnErrorRet), Index, Output)
+    Else
+      If Output IsNot Nothing And ReturnProgress Then
+        If Output.Contains("% complete") Then
+          Dim ProgI As String = Output.Substring(0, Output.IndexOf("%"))
+          SetProgress(Val(ProgI), 100)
+        End If
+      End If
+      WriteToError(Output)
+    End If
+  End Sub
+  Private Sub RunWithReturnOutputHandler(sender As Object, e As DataReceivedEventArgs)
+    Dim tmpData As String = e.Data
+    Dim pkgData As Process = sender
+    Dim Index As Integer = pkgData.StartInfo.EnvironmentVariables("RUNNING_INDEX")
+    AsyncRunWithReturnRet(Index, tmpData)
+  End Sub
+  Private Sub RunWithReturnErrorHandler(sender As Object, e As DataReceivedEventArgs)
+    Dim tmpData As String = e.Data
+    If Not tmpData Is Nothing Then
+      Dim pkgData As Process = sender
+      Dim Index As Integer = pkgData.StartInfo.EnvironmentVariables("RUNNING_INDEX")
+      AsyncRunWithReturnErrorRet(Index, tmpData)
+    End If
+  End Sub
+#End Region
+#Region "Run Hidden"
+  Private c_RunHiddenRet As New Collections.Generic.List(Of Boolean)
+  Private Sub RunHidden(Filename As String, Arguments As String)
+    Dim tRunHidden As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncRunHidden))
+    Dim cIndex As Integer = c_RunHiddenRet.Count
+    c_RunHiddenRet.Add(False)
+    tRunHidden.Start({Filename, Arguments, cIndex, Process.GetCurrentProcess.PriorityClass})
+    Do Until c_RunHiddenRet(cIndex)
+      Application.DoEvents()
+      Threading.Thread.Sleep(1)
+      If StopRun And Not Arguments.ToLower.Contains("unmount") Then
+        Try
+          tRunHidden.Abort()
+        Catch ex As Exception
+        End Try
+        Exit Sub
+      End If
+    Loop
+    c_RunHiddenRet(cIndex) = False
+  End Sub
+  Private Delegate Sub RunHiddenCallBack(Index As Integer)
+  Private Sub RunHiddenRet(Index As Integer)
+    If Me.InvokeRequired Then
+      Me.BeginInvoke(New RunHiddenCallBack(AddressOf RunHiddenRet), Index)
+    Else
+      c_RunHiddenRet(Index) = True
+    End If
+  End Sub
+  Private Sub AsyncRunHidden(Obj As Object)
+    Dim Filename As String = Obj(0)
+    Dim Arguments As String = Obj(1)
+    Dim Index As Integer = Obj(2)
+    Dim Priority As Diagnostics.ProcessPriorityClass = Obj(3)
+    Dim PkgList As New Process
+    PkgList.StartInfo.FileName = Filename
+    PkgList.StartInfo.Arguments = Arguments
+    PkgList.StartInfo.UseShellExecute = True
+    PkgList.StartInfo.WindowStyle = ProcessWindowStyle.Hidden
+    PkgList.Start()
+    Try
+      PkgList.PriorityClass = Priority
+      If mySettings.Timeout > 0 Then
+        PkgList.WaitForExit(mySettings.Timeout)
+      Else
+        PkgList.WaitForExit()
+      End If
+      RunHiddenRet(Index)
+    Catch ex As Exception
+      Err.Clear()
+      RunHiddenRet(Index)
+    End Try
+  End Sub
+#End Region
+  Private Sub ListCleanup(ByRef List As Collections.IList)
+    Dim isEmpty As Boolean = True
+    For Each item In List
+      If item.GetType = GetType(String) AndAlso item Is Nothing Then
+        REM ok
+      ElseIf item.GetType = GetType(Boolean) AndAlso item = False Then
+        REM ok
+      Else
+        isEmpty = False
+        Exit For
+      End If
+    Next
+    If isEmpty Then
+      List.Clear()
+    End If
+  End Sub
+#End Region
+#End Region
+#Region "Integration"
   Private Function CalculateRunTime() As Long
     Dim lTotalTime As Long = 0
     Dim sWIMSize As String = CalculateCompatibleSize(txtWIM.Text)
@@ -1732,10 +2712,8 @@
       imageCountAll = imageCount32 + imageCount64
       If imageCountAll > 0 Then
         lTotalTime += SpeedStats.WIM_MergeImage("First") '                                                          Merge first Package at beginning
-        'lTotalTime += SpeedStats.WIM_MergeAndCompressImage("First") '                                               Merge and compress first Package at End
         If imageCountAll > 1 Then
           lTotalTime += SpeedStats.WIM_MergeImage("Additional") * (imageCountAll - 1) '                             Merge each additonal Package 
-          'lTotalTime += SpeedStats.WIM_MergeAndCompressImage("Additional") * (imageCountAll - 1) '                  Merge and compresseach additonal Package 
         End If
       End If
     End If
@@ -1743,15 +2721,11 @@
       If Not String.IsNullOrEmpty(txtSP.Text) Then
         If Not String.IsNullOrEmpty(txtSP64.Text) Then '                                                            If 32 and 64 bit Service Packs are listed:
           lTotalTime += SpeedStats.SP_Extract("86")  '                                                                Extract 32-bit Service Pack
-          lTotalTime += SpeedStats.WIM_MountImage("86") * imageCount32 '                                              Mount 32-bit Image
           lTotalTime += SpeedStats.SP_Integrate("86") * imageCount32 '                                                Integrate 32-bit Service Pack
-          lTotalTime += SpeedStats.WIM_SaveImage("86") * imageCount32 '                                               Save 32-bit Image
           lTotalTime += SpeedStats.Clean_SP1("86") '                                                                  Clean the Work Directory Afterward
 
           lTotalTime += SpeedStats.SP_Extract("64")  '                                                                Extract 64-bit Service Pack
-          lTotalTime += SpeedStats.WIM_MountImage("64") * imageCount64 '                                              Mount 64-bit Image
           lTotalTime += SpeedStats.SP_Integrate("64") * imageCount64 '                                                Integratae 64-bit Service Pack
-          lTotalTime += SpeedStats.WIM_SaveImage("64") * imageCount64 '                                               Save 64-bit Image
           lTotalTime += SpeedStats.Clean_SP1("64")  '                                                                 Clean the Work Directory Afterward
 
           If IO.Directory.Exists(Work & "Merge" & IO.Path.DirectorySeparatorChar) Then
@@ -1767,15 +2741,11 @@
           Next
           If isx64 Then '                                                                                           If 64-bit Image found, 64-bit Service Pack is assumed:
             lTotalTime += SpeedStats.SP_Extract("64")  '                                                              Extract 64-bit Service Pack
-            lTotalTime += SpeedStats.WIM_MountImage("64") * imageCount64 '                                            Mount 64-bit Image
             lTotalTime += SpeedStats.SP_Integrate("64") * imageCount64 '                                              Integrate 64-bit Service Pack
-            lTotalTime += SpeedStats.WIM_SaveImage("64") * imageCount64 '                                             Save 64-bit Image
             lTotalTime += SpeedStats.Clean_SP1("64") '                                                                Clean the Work Directory Afterward
           Else '                                                                                                    Else 32-bit Service Pack:
             lTotalTime += SpeedStats.SP_Extract("86")  '                                                              Extract 32-bit Service Pack
-            lTotalTime += SpeedStats.WIM_MountImage("86") * imageCount32 '                                            Mount 32-bit Image
-            lTotalTime += SpeedStats.SP_Integrate("x86") * imageCount32 '                                             Integrate 32-bit Service Pack
-            lTotalTime += SpeedStats.WIM_SaveImage("86") * imageCount32 '                                             Save 32-bit Image
+            lTotalTime += SpeedStats.SP_Integrate("86") * imageCount32 '                                              Integrate 32-bit Service Pack
             lTotalTime += SpeedStats.Clean_SP1("86") '                                                                Clean the Work Directory Afterward
           End If
         End If
@@ -1796,7 +2766,7 @@
             Case UpdateType.EXE : lTotalTime += SpeedStats.Update_Integrate("EXE", "86", fileSize) * imageCount32 ' Merge Each 32-bit EXE Update
             Case UpdateType.CAB : lTotalTime += SpeedStats.Update_Integrate("CAB", "86", fileSize) * imageCount32 ' Merge Each 32-bit CAB Update
           End Select
-        ElseIf row.SubItems(1).Text.Contains("x64") Then
+        ElseIf row.SubItems(1).Text.Contains("x64") Or row.SubItems(1).Text.Contains("amd64") Then
           hasx64 = True
           Select Case GetUpdateType(row.Tag)
             Case UpdateType.MSU : lTotalTime += SpeedStats.Update_Integrate("MSU", "64", fileSize) * imageCount64 ' Merge Each 64-bit MSU Update
@@ -1896,8 +2866,7 @@
     End If
     Return lTotalTime
   End Function
-
-  Private Sub cmdBegin_Click(sender As System.Object, e As System.EventArgs) Handles cmdBegin.Click
+  Private Sub Slipstream()
     RunComplete = False
     StopRun = False
     LangChange = False
@@ -3031,899 +4000,6 @@
         Me.Close()
     End Select
   End Sub
-  Private Sub cmdClose_Click(sender As System.Object, e As System.EventArgs) Handles cmdClose.Click
-    If cmdClose.Text = "&Close" Then
-      Me.Close()
-    Else
-      If RunActivity > 0 Then
-        Dim sActivity As String = "doing work"
-        Dim sProc As String = "current"
-        Dim sTitle As String = "Working"
-        Select Case RunActivity
-          Case 1
-            sActivity = "slipstreaming updates and packages"
-            sProc = "update integration"
-            sTitle = "Integrating"
-          Case 2
-            sActivity = "extracting and reading Image Package data"
-            sProc = "extraction"
-            sTitle = "Loading Package Data"
-          Case 3
-            sActivity = "extracting and reading Update data"
-            sProc = "update parsing"
-            sTitle = "Loading Updates"
-        End Select
-        If MsgDlg(Me, "Do you want to cancel the " & sProc & " proceess?", "SLIPS7REAM is busy " & sActivity & ".", "Stop " & sTitle & "?", MessageBoxButtons.YesNo, TaskDialogIcon.Question, MessageBoxDefaultButton.Button2) = Windows.Forms.DialogResult.No Then
-          Exit Sub
-        End If
-      End If
-      StopRun = True
-      cmdClose.Enabled = False
-      Application.DoEvents()
-    End If
-  End Sub
-#End Region
-#Region "Status"
-  Private Delegate Function GetStatusInvoker() As String
-  Private Function GetStatus() As String
-    If Me.InvokeRequired Then
-      Return Me.Invoke(New GetStatusInvoker(AddressOf GetStatus))
-    Else
-      Return lblActivity.Text
-    End If
-  End Function
-  Private Delegate Sub SetStatusInvoker(Message As String)
-  Private Sub SetStatus(Message As String)
-    If Me.InvokeRequired Then
-      Me.BeginInvoke(New SetStatusInvoker(AddressOf SetStatus), Message)
-    Else
-      lblActivity.Text = Message
-      If Message.Contains("...") And cmdBegin.Visible Then
-        lblWIM.Enabled = False
-        txtWIM.Enabled = False
-        cmdWIM.Enabled = False
-        cmdBegin.Visible = False
-        chkMerge.Enabled = False
-        txtMerge.Enabled = False
-        cmdMerge.Enabled = False
-      ElseIf Not Message.Contains("...") And Not cmdBegin.Visible Then
-        lblWIM.Enabled = True
-        txtWIM.Enabled = True
-        cmdWIM.Enabled = True
-        cmdBegin.Visible = True
-        chkMerge.Enabled = True
-        txtMerge.Enabled = chkMerge.Checked
-        cmdMerge.Enabled = chkMerge.Checked
-      End If
-      If Message = "Idle" Then
-        Dim runTime As Long = CalculateRunTime()
-        If runTime > 0 Then
-          lblActivity.Text = "Estimated Time: " & ConvertTime(runTime, True, True)
-        End If
-      End If
-      Application.DoEvents()
-    End If
-  End Sub
-  Private Delegate Sub SetTitleInvoker(Title As String, Tooltip As String)
-  Private Sub SetTitle(Title As String, Tooltip As String)
-    If Me.InvokeRequired Then
-      Me.Invoke(New SetTitleInvoker(AddressOf SetTitle), Title, Tooltip)
-    Else
-      sTitleText = Title
-      If String.IsNullOrWhiteSpace(Tooltip) Then
-        ttInfo.SetTooltip(pctTitle, Nothing)
-      Else
-        ttInfo.SetTooltip(pctTitle, Tooltip)
-      End If
-    End If
-  End Sub
-  Private Delegate Sub SetProgressInvoker(Value As Integer, Maximum As Integer)
-  Public Sub SetProgress(Value As Integer, Maximum As Integer)
-    If Me.InvokeRequired Then
-      Me.BeginInvoke(New SetProgressInvoker(AddressOf SetProgress), Value, Maximum)
-    Else
-      If Value = 0 And Maximum = 0 Then
-        pbIndividual.Style = ProgressBarStyle.Marquee
-        pbIndividual.Value = 0
-        pbIndividual.Maximum = 1
-      ElseIf Value <= Maximum Then
-        pbIndividual.Style = ProgressBarStyle.Continuous
-        If pbIndividual.Value > Maximum Then
-          pbIndividual.Value = Value
-          pbIndividual.Maximum = Maximum
-        Else
-          pbIndividual.Maximum = Maximum
-          pbIndividual.Value = Value
-        End If
-      Else
-        pbIndividual.Style = ProgressBarStyle.Continuous
-        pbIndividual.Value = 0
-        pbIndividual.Maximum = Maximum
-      End If
-    End If
-  End Sub
-  Private Delegate Sub SetTimeInvoker(Time As Long)
-  Private timeInd As Long
-  Public Sub SetProgressTime(Time As Long)
-    If Me.InvokeRequired Then
-      Me.Invoke(New SetTimeInvoker(AddressOf SetProgressTime), Time)
-    Else
-      If Time < 1 Then
-        lblIndividualTime.Text = "finishing"
-        timeInd = 0
-        If lblTotalTime.Text = "finishing" Then tmrCountdown.Enabled = False
-      Else
-        lblIndividualTime.Text = ConvertTime(Time, True, True)
-        lblIndividualTime.Visible = True
-        timeInd = Time
-        tmrCountdown.Enabled = True
-      End If
-    End If
-  End Sub
-  Public Sub SetTotal(Value As Integer, Maximum As Integer)
-    If Me.InvokeRequired Then
-      Me.BeginInvoke(New SetProgressInvoker(AddressOf SetTotal), Value, Maximum)
-    Else
-      pbTotal.Maximum = Maximum
-      If Value > pbTotal.Maximum Then
-        pbTotal.Value = pbTotal.Maximum
-        If taskBar IsNot Nothing Then taskBar.SetProgressState(Me.Handle, TaskbarLib.TBPFLAG.TBPF_NOPROGRESS)
-      Else
-        pbTotal.Value = Value
-        If taskBar IsNot Nothing Then
-          taskBar.SetProgressState(Me.Handle, TaskbarLib.TBPFLAG.TBPF_NORMAL)
-          taskBar.SetProgressValue(Me.Handle, Value, Maximum)
-        End If
-      End If
-    End If
-  End Sub
-  Private timeTot As Long
-  Public Sub SetTotalTime(Time As Long)
-    If Me.InvokeRequired Then
-      Me.Invoke(New SetTimeInvoker(AddressOf SetTotalTime), Time)
-    Else
-      If Time < 1 Then
-        lblTotalTime.Text = "finishing"
-        timeTot = 0
-        If lblIndividualTime.Text = "finishing" Then tmrCountdown.Enabled = False
-      Else
-        lblTotalTime.Text = ConvertTime(Time, True, True)
-        lblTotalTime.Visible = True
-        timeTot = Time
-        tmrCountdown.Enabled = True
-      End If
-    End If
-  End Sub
-  Private Sub tmrCountdown_Tick(sender As System.Object, e As System.EventArgs) Handles tmrCountdown.Tick
-    If timeInd > 0 Then
-      timeInd -= 1000
-      SetProgressTime(timeInd)
-    Else
-      SetProgressTime(-1)
-    End If
-    If timeTot > 0 Then
-      timeTot -= 1000
-      SetTotalTime(timeTot)
-    Else
-      SetTotalTime(-1)
-    End If
-  End Sub
-  Private Sub expOutput_Closed(sender As Object, e As System.EventArgs) Handles expOutput.Closed
-    ttInfo.SetTooltip(expOutput, "Show Output consoles.")
-    ttInfo.SetTooltip(expOutput.pctExpander, "Show Output consoles.")
-    If outputWindow Then
-      frmOutput.Hide()
-    Else
-      pnlSlips7ream.SuspendLayout()
-      pctOutputTear.Visible = False
-      txtOutput.Visible = False
-      txtOutputError.Visible = False
-      Me.MinimumSize = New Size(Me.MinimumSize.Width, Me.MinimumSize.Height - HeightDifferentialA)
-      Me.Height -= HeightDifferentialA
-      pnlSlips7ream.ResumeLayout(True)
-    End If
-  End Sub
-  Private Sub expOutput_Opened(sender As System.Object, e As System.EventArgs) Handles expOutput.Opened
-    ttInfo.SetTooltip(expOutput, "Hide Output consoles.")
-    ttInfo.SetTooltip(expOutput.pctExpander, "Hide Output consoles.")
-    If outputWindow Then
-      frmOutput.Show(Me)
-      frmOutput.Location = New Point(Me.Left, Me.Bottom)
-      frmOutput.txtOutput.Text = txtOutput.Text
-      If frmOutput.txtOutput.Text.Length > 0 Then
-        frmOutput.txtOutput.SelectionStart = frmOutput.txtOutput.Text.Length - 1
-        frmOutput.txtOutput.SelectionLength = 0
-        frmOutput.txtOutput.ScrollToCaret()
-      End If
-      frmOutput.txtOutputError.Text = txtOutputError.Text
-      If frmOutput.txtOutputError.Text.Length > 0 Then
-        frmOutput.txtOutputError.SelectionStart = frmOutput.txtOutputError.Text.Length - 1
-        frmOutput.txtOutputError.SelectionLength = 0
-        frmOutput.txtOutputError.ScrollToCaret()
-      End If
-    Else
-      pnlSlips7ream.SuspendLayout()
-      Me.Height += HeightDifferentialA
-      Me.MinimumSize = New Size(Me.MinimumSize.Width, Me.MinimumSize.Height + HeightDifferentialA)
-      pctOutputTear.Visible = True
-      txtOutput.Visible = True
-      If txtOutput.Text.Length > 0 Then
-        txtOutput.SelectionStart = txtOutput.Text.Length - 1
-        txtOutput.SelectionLength = 0
-        txtOutput.ScrollToCaret()
-      End If
-      txtOutputError.Visible = True
-      If txtOutputError.Text.Length > 0 Then
-        txtOutputError.SelectionStart = txtOutputError.Text.Length - 1
-        txtOutputError.SelectionLength = 0
-        txtOutputError.ScrollToCaret()
-      End If
-      pnlSlips7ream.ResumeLayout(True)
-      redrawCaption()
-    End If
-  End Sub
-  Private Delegate Sub WriteToOutputCallBack(Message As String)
-  Private Sub WriteToOutput(Message As String)
-    If Me.InvokeRequired Then
-      Me.BeginInvoke(New WriteToOutputCallBack(AddressOf WriteToOutput), Message)
-    Else
-      If outputWindow Then
-        frmOutput.txtOutput.AppendText(Message & vbNewLine)
-      Else
-        txtOutput.AppendText(Message & vbNewLine)
-      End If
-    End If
-  End Sub
-  Private Sub WriteToError(Message As String)
-    If Me.InvokeRequired Then
-      Me.BeginInvoke(New WriteToOutputCallBack(AddressOf WriteToError), Message)
-    Else
-      If outputWindow Then
-        frmOutput.txtOutputError.AppendText(Message & vbNewLine)
-      Else
-        txtOutputError.AppendText(Message & vbNewLine)
-      End If
-    End If
-  End Sub
-#End Region
-#End Region
-#Region "Command Calls"
-  Private Function CleanMounts() As Boolean
-    SetProgressTime(SpeedStats.Clean_MOUNT)
-    Dim mountStart As Long = TickCount()
-    Try
-      Dim DISMInfo As String = RunWithReturn(DismPath, "/Get-MountedWimInfo /English", True)
-      Dim mFindA As String = WorkDir.Substring(0, WorkDir.Length - 1).ToLower
-      Dim mFindB As String = ShortenPath(mFindA).ToLower
-      If Not DISMInfo.Contains("No mounted images found.") Then
-        SetStatus("Cleaning Old DISM Mounts...")
-        Dim sLines() As String = Split(DISMInfo, vbNewLine)
-        For Each line In sLines
-          If line.Contains("Mount Dir : ") Then
-            Dim tmpPath As String = line.Substring(line.IndexOf(":") + 2)
-            If line.ToLower.Contains(mFindA) Or line.ToLower.Contains(mFindB) Then RunHidden(DismPath, "/Unmount-Wim /MountDir:" & ShortenPath(tmpPath) & " /discard /English")
-          End If
-        Next
-      End If
-      RunHidden(DismPath, "/cleanup-wim")
-      Dim ImageXInfo As String = RunWithReturn(AIKDir & "imagex", "/unmount", True)
-      If Not ImageXInfo.Contains("Number of Mounted Images: 0") Then
-        SetStatus("Cleaning Old ImageX Mounts...")
-        Dim sLines() As String = Split(ImageXInfo, vbNewLine)
-        For Each line In sLines
-          If line.Contains("Mount Path") Then
-            Dim tmpPath As String = line.Substring(line.IndexOf("[") + 1)
-            tmpPath = tmpPath.Substring(0, tmpPath.IndexOf("]"))
-            If tmpPath.ToLower.Contains(mFindA) Or tmpPath.ToLower.Contains(mFindB) Then RunHidden(AIKDir & "imagex", "/unmount " & ShortenPath(tmpPath))
-          End If
-        Next
-      End If
-      RunHidden(AIKDir & "imagex", "/cleanup")
-      WriteToOutput("Deleting """ & WorkDir & "MOUNT" & IO.Path.DirectorySeparatorChar & """...")
-      SlowDeleteDirectory(WorkDir & "MOUNT" & IO.Path.DirectorySeparatorChar, FileIO.DeleteDirectoryOption.DeleteAllContents)
-      If IO.Directory.Exists(WorkDir & "MOUNT" & IO.Path.DirectorySeparatorChar) Then Return False
-      Return True
-    Catch ex As Exception
-      Return False
-    Finally
-      SpeedStats.Clean_MOUNT = TickCount() - mountStart
-    End Try
-  End Function
-#Region "DISM"
-  Private Function InitDISM(WIMFile As String, WIMIndex As Integer, MountPath As String) As Boolean
-    Dim sRet As String = RunWithReturn(DismPath, "/Mount-Wim /WimFile:" & ShortenPath(WIMFile) & " /index:" & WIMIndex.ToString.Trim & " /MountDir:" & ShortenPath(MountPath) & " /English")
-    Return sRet.Contains("The operation completed successfully.")
-  End Function
-  Private Function GetDISMPackages(WIMFile As String) As Integer
-    Dim PackageList As String = RunWithReturn(DismPath, "/Get-WimInfo /WimFile:" & ShortenPath(WIMFile) & " /English")
-    Dim PackageRows() As String = Split(PackageList, vbNewLine)
-    Dim Indexes As Integer = 0
-    For Each row In PackageRows
-      If row.StartsWith("Index : ") Then
-        Indexes += 1
-      End If
-    Next
-    Return Indexes
-  End Function
-  Private Function GetDISMPackageData(WIMFile As String, Index As Integer) As PackageInfoEx
-    Dim PackageList As String = RunWithReturn(DismPath, "/Get-WimInfo /WimFile:" & ShortenPath(WIMFile) & " /index:" & Index & " /English")
-    Dim Info As New PackageInfoEx(PackageList)
-    Return Info
-  End Function
-  Private Function AddToDism(MountPath As String, AddPath As String) As Boolean
-    Dim sRet As String = RunWithReturn(DismPath, "/Image:" & ShortenPath(MountPath) & " /Add-Package /PackagePath:" & ShortenPath(AddPath) & " /English")
-    Return sRet.Contains("The operation completed successfully.")
-  End Function
-  Private Function SaveDISM(MountPath As String) As Boolean
-    Dim sRet As String = RunWithReturn(DismPath, "/Unmount-Wim /MountDir:" & ShortenPath(MountPath) & " /commit" & " /English")
-    Return sRet.Contains("The operation completed successfully.")
-  End Function
-  Private Function DiscardDISM(MountPath As String) As Boolean
-    Dim sRet As String = RunWithReturn(DismPath, "/Unmount-Wim /MountDir:" & ShortenPath(MountPath) & " /discard /English")
-    Return sRet.Contains("The operation completed successfully.")
-  End Function
-#End Region
-#Region "IMAGEX"
-  Private Function SplitWIM(SourceWIM As String, DestSWM As String, Size As Integer) As Boolean
-    Dim sRet As String = RunWithReturn(AIKDir & "imagex", "/split " & SourceWIM & " " & DestSWM & " " & Size)
-    Return sRet.Contains("Successfully split")
-  End Function
-  Private Function ExportWIM(SourceWIM As String, SourceIndex As Integer, DestWIM As String, DestName As String) As Boolean
-    ReturnProgress = True
-    Dim sRet As String = RunWithReturn(AIKDir & "imagex", "/export """ & SourceWIM & """ " & SourceIndex & " """ & DestWIM & """ """ & DestName & """ /compress maximum")
-    ReturnProgress = False
-    Return sRet.Contains("Successfully exported image")
-  End Function
-  Private Function UpdateLang(SourcePath As String) As Boolean
-    Dim sRet As String = RunWithReturn(AIKDir & "intlcfg", "-genlangini -dist:" & ShortenPath(SourcePath) & " -image:" & ShortenPath(Mount) & " -f") '-all:la-ng
-    If Not sRet.Contains("A new Lang.ini file has been generated") Then
-      Return False
-    End If
-    Dim MountPath As String = WorkDir & "BOOT" & IO.Path.DirectorySeparatorChar
-    If Not IO.Directory.Exists(MountPath) Then IO.Directory.CreateDirectory(MountPath)
-    ReturnProgress = True
-    sRet = RunWithReturn(AIKDir & "imagex", "/mountrw " & ShortenPath(SourcePath & "sources" & IO.Path.DirectorySeparatorChar & "boot.wim") & " 2 " & ShortenPath(MountPath))
-    ReturnProgress = False
-    If Not sRet.Contains("Successfully mounted image.") Then
-      SetStatus("Failed to mount boot.wim!")
-      Return False
-    End If
-    If IO.File.Exists(SourcePath & "sources" & IO.Path.DirectorySeparatorChar & "lang.ini") Then
-      WriteToOutput("Copying """ & SourcePath & "sources" & IO.Path.DirectorySeparatorChar & "lang.ini"" to """ & MountPath & "sources" & IO.Path.DirectorySeparatorChar & "lang.ini""...")
-      My.Computer.FileSystem.CopyFile(SourcePath & "sources" & IO.Path.DirectorySeparatorChar & "lang.ini", MountPath & "sources" & IO.Path.DirectorySeparatorChar & "lang.ini", True)
-    End If
-    ReturnProgress = True
-    sRet = RunWithReturn(AIKDir & "imagex", "/unmount /commit " & ShortenPath(MountPath))
-    ReturnProgress = False
-    If Not sRet.Contains("Successfully unmounted image.") Then
-      SetStatus("Failed to unmount boot.wim!")
-      Return False
-    End If
-    WriteToOutput("Deleting """ & MountPath & """...")
-    SlowDeleteDirectory(MountPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
-    Return True
-  End Function
-#End Region
-#Region "OSCDIMG"
-  Private Function MakeISO(FromDir As String, Label As String, BootOrderFile As String, FileSystem As String, DestISO As String) As Boolean
-    ReturnProgress = True
-    Dim sRet As String
-    If String.IsNullOrEmpty(BootOrderFile) Then
-      sRet = RunWithReturn(AIKDir & "oscdimg", "-m " & FileSystem & " " & ShortenPath(FromDir.Substring(0, FromDir.Length - 1)) & " " & ShortenPath(DestISO) & " -l" & Label)
-    Else
-      sRet = RunWithReturn(AIKDir & "oscdimg", "-m " & FileSystem & " -yo" & ShortenPath(BootOrderFile) & " -b" & ShortenPath(FromDir & "boot" & IO.Path.DirectorySeparatorChar & "etfsboot.com") & " " & ShortenPath(FromDir.Substring(0, FromDir.Length - 1)) & " " & ShortenPath(DestISO) & " -l" & Label)
-    End If
-    ReturnProgress = False
-    Return sRet.Contains("Done.")
-  End Function
-#End Region
-#Region "7-Zip"
-  Private WithEvents Extractor As Extraction.ArchiveFile
-  Private c_ExtractRet As New Collections.Generic.List(Of String)
-  Private Delegate Sub ExtractAllFilesInvoker(Source As String, Destination As String)
-  Private Sub ExtractAllFiles(Source As String, Destination As String)
-    If Me.InvokeRequired Then
-      Me.Invoke(New ExtractAllFilesInvoker(AddressOf ExtractAllFiles), Source, Destination)
-    Else
-      Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractAllFiles))
-      Dim cIndex As Integer = c_ExtractRet.Count
-      c_ExtractRet.Add(Nothing)
-      tRunWithReturn.Start({Source, Destination, cIndex})
-      Do While String.IsNullOrEmpty(c_ExtractRet(cIndex))
-        Application.DoEvents()
-        Threading.Thread.Sleep(1)
-      Loop
-      Dim sRet As String = c_ExtractRet(cIndex)
-      c_ExtractRet(cIndex) = Nothing
-      Select Case sRet
-        Case "OK"
-
-        Case "CRC Error"
-          MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-        Case "Data Error"
-          MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-        Case "Unsupported Method"
-          MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-        Case "File Not Found"
-          MsgDlg(Me, "Unable to find files in " & IO.Path.GetFileName(Source) & "!", "The files were not found.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-        Case Else
-          MsgDlg(Me, sRet, "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-      End Select
-    End If
-  End Sub
-  Private Sub AsyncExtractAllFiles(Obj As Object)
-    Dim Source, Destination As String, cIndex As UInteger
-    Source = Obj(0)
-    Destination = Obj(1)
-    cIndex = Obj(2)
-    Dim sStatus As String = GetStatus()
-    If sStatus.EndsWith("...") Then sStatus = sStatus.Substring(0, sStatus.Length - 3)
-    If sStatus.Contains(" (File ") Then sStatus = sStatus.Substring(0, sStatus.IndexOf(" (File"))
-    If Not Destination.EndsWith(IO.Path.DirectorySeparatorChar) Then Destination &= IO.Path.DirectorySeparatorChar
-    Extractor = New Extraction.ArchiveFile(New IO.FileInfo(Source))
-    Try
-      Extractor.Open()
-    Catch ex As Exception
-      Extractor.Dispose()
-      Extractor = Nothing
-      c_ExtractRet(cIndex) = "Error Opening: " & ex.Message
-    End Try
-    For Each file In Extractor
-      file.Destination = New IO.FileInfo(Destination & file.Name)
-    Next
-    Try
-      Extractor.Extract()
-      Extractor.Dispose()
-      Extractor = Nothing
-    Catch ex As Exception
-      Extractor.Dispose()
-      Extractor = Nothing
-      c_ExtractRet(cIndex) = "Error Extracting: " & ex.Message
-    End Try
-    SetProgress(0, 1000)
-    c_ExtractRet(cIndex) = "OK"
-  End Sub
-  Private Delegate Sub ExtractFilesInvoker(Source As String, Destination As String, Except As String)
-  Private Sub ExtractFiles(Source As String, Destination As String, Except As String)
-    If Me.InvokeRequired Then
-      Me.Invoke(New ExtractFilesInvoker(AddressOf ExtractFiles), Source, Destination, Except)
-    Else
-      Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractFiles))
-      Dim cIndex As Integer = c_ExtractRet.Count
-      c_ExtractRet.Add(Nothing)
-      tRunWithReturn.Start({Source, Destination, Except, cIndex})
-      Do While String.IsNullOrEmpty(c_ExtractRet(cIndex))
-        Application.DoEvents()
-        Threading.Thread.Sleep(1)
-      Loop
-      Dim sRet As String = c_ExtractRet(cIndex)
-      c_ExtractRet(cIndex) = Nothing
-      Select Case sRet
-        Case "OK"
-
-        Case "CRC Error"
-          MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-        Case "Data Error"
-          MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-        Case "Unsupported Method"
-          MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-        Case "File Not Found"
-          MsgDlg(Me, "Unable to find files in " & IO.Path.GetFileName(Source) & "!", "The files were not found.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-        Case Else
-          MsgDlg(Me, sRet, "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-      End Select
-    End If
-  End Sub
-  Private Sub AsyncExtractFiles(Obj As Object)
-    Dim Source, Destination, Except As String, cIndex As UInteger
-    Source = Obj(0)
-    Destination = Obj(1)
-    Except = Obj(2)
-    cIndex = Obj(3)
-    Dim sStatus As String = GetStatus()
-    If sStatus.EndsWith("...") Then sStatus = sStatus.Substring(0, sStatus.Length - 3)
-    If sStatus.Contains(" (File ") Then sStatus = sStatus.Substring(0, sStatus.IndexOf(" (File"))
-    If Not Destination.EndsWith(IO.Path.DirectorySeparatorChar) Then Destination &= IO.Path.DirectorySeparatorChar
-    Extractor = New Extraction.ArchiveFile(New IO.FileInfo(Source))
-    Try
-      Extractor.Open()
-    Catch ex As Exception
-      Extractor.Dispose()
-      Extractor = Nothing
-      c_ExtractRet(cIndex) = "Error Opening: " & ex.Message
-    End Try
-    For Each file In Extractor
-      If Not file.Name.ToLower.EndsWith(Except.ToLower) Then
-        file.Destination = New IO.FileInfo(Destination & file.Name)
-      End If
-    Next
-    Try
-      Extractor.Extract()
-      Extractor.Dispose()
-      Extractor = Nothing
-    Catch ex As Exception
-      Extractor.Dispose()
-      Extractor = Nothing
-      c_ExtractRet(cIndex) = "Error Extracting: " & ex.Message
-    End Try
-    SetProgress(0, 1000)
-    c_ExtractRet(cIndex) = "OK"
-  End Sub
-  Private Delegate Sub ExtractAFileInvoker(Source As String, Destination As String, File As String)
-  Private Sub ExtractAFile(Source As String, Destination As String, File As String)
-    If Me.InvokeRequired Then
-      Me.Invoke(New ExtractAFileInvoker(AddressOf ExtractAFile), Source, Destination, File)
-    Else
-      Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractAFile))
-      Dim cIndex As Integer = c_ExtractRet.Count
-      c_ExtractRet.Add(Nothing)
-      tRunWithReturn.Start({Source, Destination, File, cIndex})
-      Do While String.IsNullOrEmpty(c_ExtractRet(cIndex))
-        Application.DoEvents()
-        Threading.Thread.Sleep(1)
-      Loop
-      Dim sRet As String = c_ExtractRet(cIndex)
-      c_ExtractRet(cIndex) = Nothing
-      Select Case sRet
-        Case "OK"
-
-        Case "CRC Error"
-          MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to extract """ & File & """!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-        Case "Data Error"
-          MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to extract """ & File & """!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-        Case "Unsupported Method"
-          MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to extract """ & File & """!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-        Case "File Not Found"
-          MsgDlg(Me, "Unable to find """ & File & """ in " & IO.Path.GetFileName(Source) & "!", "The file was not found.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-        Case Else
-          MsgDlg(Me, sRet, "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-      End Select
-    End If
-  End Sub
-  Private Sub AsyncExtractAFile(Obj As Object)
-    Dim Source, Destination, Find As String
-    Source = Obj(0)
-    Destination = Obj(1)
-    Find = Obj(2)
-    Dim cIndex As UInteger = Obj(3)
-    Dim bFound As Boolean = False
-    If Not Destination.EndsWith(IO.Path.DirectorySeparatorChar) Then Destination &= IO.Path.DirectorySeparatorChar
-
-    Extractor = New Extraction.ArchiveFile(New IO.FileInfo(Source))
-    Try
-      Extractor.Open()
-    Catch ex As Exception
-      Extractor.Dispose()
-      Extractor = Nothing
-      c_ExtractRet(cIndex) = "Error Opening: " & ex.Message
-    End Try
-    For Each File In Extractor
-      If File.Name.ToLower.EndsWith(Find.ToLower) Then
-        File.Destination = New IO.FileInfo(Destination & IO.Path.GetFileName(File.Name))
-        bFound = True
-        Exit For
-      End If
-    Next
-    Try
-      Extractor.Extract()
-      Extractor.Dispose()
-      Extractor = Nothing
-    Catch ex As Exception
-      Extractor.Dispose()
-      Extractor = Nothing
-      c_ExtractRet(cIndex) = "Error Extracting: " & ex.Message
-    End Try
-    SetProgress(0, 1000)
-    If bFound Then
-      c_ExtractRet(cIndex) = "OK"
-    Else
-      c_ExtractRet(cIndex) = "File Not Found"
-    End If
-  End Sub
-  Private Delegate Function ExtractFilesListInvoker(Source As String) As String()
-  Private Function ExtractFilesList(Source As String) As String()
-    If Me.InvokeRequired Then
-      Return Me.Invoke(New ExtractFilesListInvoker(AddressOf ExtractFilesList), Source)
-    Else
-      Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractFilesList))
-      Dim cIndex As Integer = c_ExtractRet.Count
-      c_ExtractRet.Add(Nothing)
-      tRunWithReturn.Start({Source, cIndex})
-      Do While String.IsNullOrEmpty(c_ExtractRet(cIndex))
-        Application.DoEvents()
-        Threading.Thread.Sleep(1)
-      Loop
-      Dim sRet As String = c_ExtractRet(cIndex)
-      c_ExtractRet(cIndex) = Nothing
-      If sRet.Contains("|") Then
-        Return Split(sRet, "|")
-      Else
-        Select Case sRet
-          Case "CRC Error"
-            MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to read the file!", "There was an error while reading.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-          Case "Data Error"
-            MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to read the file!", "There was an error while reading.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-          Case "Unsupported Method"
-            MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to read the file!", "There was an error while extracting.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-          Case "File Not Found"
-            MsgDlg(Me, "Unable to find any files in " & IO.Path.GetFileName(Source) & "!", "No files were found.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-          Case Else
-            MsgDlg(Me, sRet, "There was an error while reading.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-        End Select
-        Return Nothing
-      End If
-    End If
-  End Function
-  Private Sub AsyncExtractFilesList(Obj As Object)
-    Dim Source As String
-    Source = Obj(0)
-    Dim cIndex As UInteger = Obj(1)
-    Extractor = New Extraction.ArchiveFile(New IO.FileInfo(Source))
-    Try
-      Extractor.Open()
-    Catch ex As Exception
-      Extractor.Dispose()
-      Extractor = Nothing
-      c_ExtractRet(cIndex) = "Error Opening: " & ex.Message
-    End Try
-    Dim sList As New List(Of String)
-    For Each File In Extractor
-      sList.Add(File.Name)
-    Next
-    If sList.Count > 0 Then
-      c_ExtractRet(cIndex) = Join(sList.ToArray, "|")
-    Else
-      c_ExtractRet(cIndex) = "File Not Found"
-    End If
-  End Sub
-  Private Function ExtractComment(Source As String) As String
-    Extractor = New Extraction.ArchiveFile(New IO.FileInfo(Source))
-    Try
-      Extractor.Open()
-      Return Extractor.ArchiveComment
-    Catch ex As Exception
-      Extractor.Dispose()
-      Extractor = Nothing
-      Return Nothing
-    End Try
-  End Function
-
-  Private Sub Extractor_ExtractFile(sender As Object, e As Extraction.COM.ExtractFileEventArgs) Handles Extractor.ExtractFile
-    If StopRun Then e.ContinueOperation = False
-    If Extractor.ExtractionCount() > 1 Then
-      If e.Stage = Extraction.COM.ExtractionStage.Done Then
-        SetProgress(e.Item.Index, Extractor.ItemCount)
-        Application.DoEvents()
-      End If
-    End If
-  End Sub
-  Private Sub Extractor_ExtractProgress(sender As Object, e As Extraction.COM.ExtractProgressEventArgs) Handles Extractor.ExtractProgress
-    If Extractor.ExtractionCount = 1 AndAlso e.Total > 1048576 * 64 Then
-      If StopRun Then e.ContinueOperation = False
-      Dim iMax As Integer = pbIndividual.Width
-      Dim iVal As Integer = (e.Written / e.Total) * iMax
-      If pbIndividual.Value = iVal AndAlso pbIndividual.Maximum = iMax Then Exit Sub
-      SetProgress(iVal, iMax)
-      Application.DoEvents()
-    End If
-  End Sub
-  Private Function ExtractFailureAlert(Message As String) As Boolean
-    If String.IsNullOrEmpty(Message) Then Return False
-    If Message = "OK" Then
-      Return False
-    ElseIf Message.StartsWith("CRC Error") Then
-      MsgDlg(Me, "CRC Error in compressed file!" & vbNewLine & Message.Substring(Message.IndexOf("|") + 1), "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-    ElseIf Message.StartsWith("Data Error") Then
-      MsgDlg(Me, "Data Error in compressed file!" & vbNewLine & Message.Substring(Message.IndexOf("|") + 1), "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-    ElseIf Message.StartsWith("Unsupported Method") Then
-      MsgDlg(Me, "Unsupported Method in compressed file!" & vbNewLine & Message.Substring(Message.IndexOf("|") + 1), "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-    ElseIf Message.StartsWith("File Not Found") Then
-      MsgDlg(Me, "Unable to find expected file in compressed file!" & vbNewLine & Message.Substring(Message.IndexOf("|") + 1), "The file was not found.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-    Else
-      MsgDlg(Me, Message, "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
-    End If
-    Return True
-  End Function
-#End Region
-#Region "EXE2CAB"
-  Private Function EXE2CAB(Source As String, Destination As String) As Boolean
-    Dim ExeToCab As String = AIKDir & "exe2cab.exe"
-    RunHidden(ExeToCab, """" & Source & """ -q """ & Destination & """")
-    Return IO.File.Exists(Destination)
-  End Function
-#End Region
-#Region "Caller Functions"
-  Private ReturnProgress As Boolean
-#Region "Run With Return"
-  Private c_RunWithReturnRet As New Collections.Generic.List(Of String)
-  Private Function RunWithReturn(Filename As String, Arguments As String, Optional IgnoreStopRun As Boolean = False) As String
-    Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncRunWithReturn))
-    Dim cIndex As Integer = c_RunWithReturnRet.Count
-    c_RunWithReturnRet.Add(Nothing)
-    c_RunWithReturnAccumulation.Add(Nothing)
-    c_RunWithReturnErrorAccumulation.Add(Nothing)
-    tRunWithReturn.Start({Filename, Arguments, cIndex, Process.GetCurrentProcess.PriorityClass})
-    Do While c_RunWithReturnRet(cIndex) Is Nothing
-      Application.DoEvents()
-      Threading.Thread.Sleep(1)
-      If Not IgnoreStopRun AndAlso StopRun Then
-        Try
-          tRunWithReturn.Abort()
-        Catch ex As Exception
-        End Try
-        Return ""
-      End If
-    Loop
-    Dim sRet As String = c_RunWithReturnRet(cIndex)
-    c_RunWithReturnRet(cIndex) = Nothing
-    Return sRet
-  End Function
-  Private Delegate Sub RunWithReturnRetCallBack(Index As Integer, Output As String)
-  Private Sub RunWithReturnRet(Index As Integer, Output As String)
-    If Me.InvokeRequired Then
-      Me.BeginInvoke(New RunWithReturnRetCallBack(AddressOf RunWithReturnRet), Index, Output)
-    Else
-      If Output.StartsWith("!" & vbNewLine) Then
-        Output = Output.Substring(3)
-      Else
-        WriteToOutput(Output)
-      End If
-      c_RunWithReturnRet(Index) = Output
-    End If
-  End Sub
-  Private Sub AsyncRunWithReturn(Obj As Object)
-    Dim Filename As String = Obj(0)
-    Dim Arguments As String = Obj(1)
-    Dim Index As Integer = Obj(2)
-    Dim Priority As Diagnostics.ProcessPriorityClass = Obj(3)
-    Dim PkgList As New Process
-    PkgList.StartInfo.FileName = Filename
-    PkgList.StartInfo.Arguments = Arguments
-    PkgList.StartInfo.UseShellExecute = False
-    PkgList.StartInfo.RedirectStandardInput = True
-    PkgList.StartInfo.RedirectStandardOutput = True
-    PkgList.StartInfo.RedirectStandardError = True
-    PkgList.StartInfo.CreateNoWindow = True
-    PkgList.StartInfo.EnvironmentVariables.Add("RUNNING_INDEX", Index)
-    AddHandler PkgList.OutputDataReceived, AddressOf RunWithReturnOutputHandler
-    AddHandler PkgList.ErrorDataReceived, AddressOf RunWithReturnErrorHandler
-    PkgList.Start()
-    Try
-      PkgList.BeginErrorReadLine()
-      PkgList.BeginOutputReadLine()
-      PkgList.PriorityClass = Priority
-      If mySettings.Timeout > 0 Then
-        PkgList.WaitForExit(mySettings.Timeout)
-      Else
-        PkgList.WaitForExit()
-      End If
-    Catch ex As Exception
-      RunWithReturnRet(Index, ex.Message)
-      Err.Clear()
-    End Try
-  End Sub
-  Private c_RunWithReturnAccumulation As New Collections.Generic.List(Of String)
-  Private c_RunWithReturnErrorAccumulation As New Collections.Generic.List(Of String)
-  Private Sub AsyncRunWithReturnRet(Index As Integer, Output As String)
-    If Me.InvokeRequired Then
-      Me.BeginInvoke(New RunWithReturnRetCallBack(AddressOf AsyncRunWithReturnRet), Index, Output)
-    Else
-      If Output Is Nothing Then
-        c_RunWithReturnRet(Index) = "!" & vbNewLine & c_RunWithReturnAccumulation(Index)
-        c_RunWithReturnAccumulation(Index) = Nothing
-      Else
-        If ReturnProgress Then
-          If Output.Contains(" ] Exporting progress") Or Output.Contains(" ] Mounting progress") Or Output.Contains(" ] Committing Image progress") Or Output.Contains(" ] Unmounting progress") Or Output.Contains(" ] Mount cleanup progress") Then
-            Dim ProgI As String = Output.Substring(2)
-            ProgI = ProgI.Substring(0, ProgI.IndexOf("%"))
-            SetProgress(Val(ProgI), 100)
-          End If
-        End If
-        c_RunWithReturnAccumulation(Index) &= Output & vbNewLine
-        WriteToOutput(Output)
-      End If
-    End If
-  End Sub
-  Private Sub AsyncRunWithReturnErrorRet(Index As Integer, Output As String)
-    If Me.InvokeRequired Then
-      Me.BeginInvoke(New RunWithReturnRetCallBack(AddressOf AsyncRunWithReturnErrorRet), Index, Output)
-    Else
-      If Output IsNot Nothing And ReturnProgress Then
-        If Output.Contains("% complete") Then
-          Dim ProgI As String = Output.Substring(0, Output.IndexOf("%"))
-          SetProgress(Val(ProgI), 100)
-        End If
-      End If
-      WriteToError(Output)
-    End If
-  End Sub
-  Private Sub RunWithReturnOutputHandler(sender As Object, e As DataReceivedEventArgs)
-    Dim tmpData As String = e.Data
-    Dim pkgData As Process = sender
-    Dim Index As Integer = pkgData.StartInfo.EnvironmentVariables("RUNNING_INDEX")
-    AsyncRunWithReturnRet(Index, tmpData)
-  End Sub
-  Private Sub RunWithReturnErrorHandler(sender As Object, e As DataReceivedEventArgs)
-    Dim tmpData As String = e.Data
-    If Not tmpData Is Nothing Then
-      Dim pkgData As Process = sender
-      Dim Index As Integer = pkgData.StartInfo.EnvironmentVariables("RUNNING_INDEX")
-      AsyncRunWithReturnErrorRet(Index, tmpData)
-    End If
-  End Sub
-#End Region
-#Region "Run Hidden"
-  Private c_RunHiddenRet As New Collections.Generic.List(Of Boolean)
-  Private Sub RunHidden(Filename As String, Arguments As String)
-    Dim tRunHidden As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncRunHidden))
-    Dim cIndex As Integer = c_RunHiddenRet.Count
-    c_RunHiddenRet.Add(False)
-    tRunHidden.Start({Filename, Arguments, cIndex, Process.GetCurrentProcess.PriorityClass})
-    Do Until c_RunHiddenRet(cIndex)
-      Application.DoEvents()
-      Threading.Thread.Sleep(1)
-      If StopRun And Not Arguments.ToLower.Contains("unmount") Then
-        Try
-          tRunHidden.Abort()
-        Catch ex As Exception
-        End Try
-        Exit Sub
-      End If
-    Loop
-    c_RunHiddenRet(cIndex) = False
-  End Sub
-  Private Delegate Sub RunHiddenCallBack(Index As Integer)
-  Private Sub RunHiddenRet(Index As Integer)
-    If Me.InvokeRequired Then
-      Me.BeginInvoke(New RunHiddenCallBack(AddressOf RunHiddenRet), Index)
-    Else
-      c_RunHiddenRet(Index) = True
-    End If
-  End Sub
-  Private Sub AsyncRunHidden(Obj As Object)
-    Dim Filename As String = Obj(0)
-    Dim Arguments As String = Obj(1)
-    Dim Index As Integer = Obj(2)
-    Dim Priority As Diagnostics.ProcessPriorityClass = Obj(3)
-    Dim PkgList As New Process
-    PkgList.StartInfo.FileName = Filename
-    PkgList.StartInfo.Arguments = Arguments
-    PkgList.StartInfo.UseShellExecute = True
-    PkgList.StartInfo.WindowStyle = ProcessWindowStyle.Hidden
-    PkgList.Start()
-    Try
-      PkgList.PriorityClass = Priority
-      If mySettings.Timeout > 0 Then
-        PkgList.WaitForExit(mySettings.Timeout)
-      Else
-        PkgList.WaitForExit()
-      End If
-      RunHiddenRet(Index)
-    Catch ex As Exception
-      Err.Clear()
-      RunHiddenRet(Index)
-    End Try
-  End Sub
-#End Region
-  Private Sub ListCleanup(ByRef List As Collections.IList)
-    Dim isEmpty As Boolean = True
-    For Each item In List
-      If item.GetType = GetType(String) AndAlso item Is Nothing Then
-        REM ok
-      ElseIf item.GetType = GetType(Boolean) AndAlso item = False Then
-        REM ok
-      Else
-        isEmpty = False
-        Exit For
-      End If
-    Next
-    If isEmpty Then
-      List.Clear()
-    End If
-  End Sub
-#End Region
-#End Region
-#Region "Integration"
   Private Function IntegrateFiles(WIMPath As String, MSUPaths() As UpdateInfo) As Boolean
     Dim PackageCount As Integer = GetDISMPackages(WIMPath)
     If PackageCount > 0 Then
@@ -4498,6 +4574,22 @@
 #End Region
 #End Region
 #Region "Useful Functions"
+  Private Function CalculateCompatibleSize(fromFile As String) As String
+    If String.IsNullOrEmpty(fromFile) Then Return Nothing
+    If Not IO.File.Exists(fromFile) Then Return Nothing
+    Return CalculateCompatibleSizeVal(New IO.FileInfo(fromFile).Length)
+  End Function
+  Private Function CalculateCompatibleSizeVal(fromSize As Long) As String
+    If fromSize > 1024L * 1024L Then
+      If fromSize > 1024L * 1024L * 1024L Then
+        Return Math.Round(fromSize / 1024 / 1024 / 1024, 1, MidpointRounding.ToEven) & "GB"
+      Else
+        Return Math.Ceiling(fromSize / 1024 / 1024) & "MB"
+      End If
+    Else
+      Return "1MB"
+    End If
+  End Function
   Private Sub ParseMainWIM()
     Dim sWIM As String = txtWIM.Text
     If String.IsNullOrEmpty(sWIM) Then Exit Sub
@@ -4749,99 +4841,4 @@
     SetStatus("Downloading New Version - " & ByteSize(e.BytesReceived) & " of " & ByteSize(e.TotalBytesToReceive) & "... (" & e.ProgressPercentage & "%)")
   End Sub
 #End Region
-
-  Private tearFrom As Point = Point.Empty
-  Private moving As Boolean = False
-  Private Sub pctOutputTear_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles pctOutputTear.MouseDown
-    If e.Button = Windows.Forms.MouseButtons.Left Then
-      tearFrom = e.Location
-    End If
-  End Sub
-
-  Private Sub pctOutputTear_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles pctOutputTear.MouseMove
-    If moving Then
-      Dim newX As Integer = MousePosition.X - tearFrom.X
-      Dim newY As Integer = MousePosition.Y - tearFrom.Y
-      frmOutput.Location = New Point(newX, newY)
-    End If
-    If outputWindow Then Exit Sub
-    If e.Button = Windows.Forms.MouseButtons.Left Then
-      If Not pctOutputTear.DisplayRectangle.Contains(e.Location) Then
-
-        outputWindow = True
-        moving = True
-        pnlSlips7ream.SuspendLayout()
-        pctOutputTear.Visible = False
-        txtOutput.Visible = False
-        txtOutputError.Visible = False
-        Me.MinimumSize = New Size(Me.MinimumSize.Width, Me.MinimumSize.Height - HeightDifferentialA)
-        Me.Height -= HeightDifferentialA
-        pnlSlips7ream.ResumeLayout(True)
-        frmOutput.Show(Me)
-        Dim newX As Integer = MousePosition.X - tearFrom.X
-        Dim newY As Integer = MousePosition.Y - tearFrom.Y
-
-        frmOutput.Location = New Point(newX, newY)
-
-        frmOutput.Activate()
-        frmOutput.txtOutput.Text = txtOutput.Text
-        If frmOutput.txtOutput.Text.Length > 0 Then
-          frmOutput.txtOutput.SelectionStart = frmOutput.txtOutput.Text.Length - 1
-          frmOutput.txtOutput.SelectionLength = 0
-          frmOutput.txtOutput.ScrollToCaret()
-        End If
-        frmOutput.txtOutputError.Text = txtOutputError.Text
-        If frmOutput.txtOutputError.Text.Length > 0 Then
-          frmOutput.txtOutputError.SelectionStart = frmOutput.txtOutputError.Text.Length - 1
-          frmOutput.txtOutputError.SelectionLength = 0
-          frmOutput.txtOutputError.ScrollToCaret()
-        End If
-      End If
-    End If
-  End Sub
-
-  Private Sub pctOutputTear_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles pctOutputTear.MouseUp
-    If Not tearFrom.IsEmpty Then
-      moving = False
-      tearFrom = Point.Empty
-      frmOutput.DoResize()
-    End If
-  End Sub
-
-  Public Sub ReturnOutput()
-    If Me.InvokeRequired Then
-      Me.Invoke(New MethodInvoker(AddressOf ReturnOutput))
-    Else
-      'If moving Then Exit Sub
-      moving = False
-      tearFrom = Point.Empty
-      If Not outputWindow Then Exit Sub
-      outputWindow = False
-      pnlSlips7ream.SuspendLayout()
-      Me.Height += HeightDifferentialA
-      Me.MinimumSize = New Size(Me.MinimumSize.Width, Me.MinimumSize.Height + HeightDifferentialA)
-      pctOutputTear.Visible = True
-      txtOutput.Visible = True
-      txtOutput.Text = frmOutput.txtOutput.Text
-      If txtOutput.Text.Length > 0 Then
-        txtOutput.SelectionStart = txtOutput.Text.Length - 1
-        txtOutput.SelectionLength = 0
-        txtOutput.ScrollToCaret()
-      End If
-      txtOutputError.Visible = True
-      txtOutputError.Text = frmOutput.txtOutputError.Text
-      If txtOutputError.Text.Length > 0 Then
-        txtOutputError.SelectionStart = txtOutputError.Text.Length - 1
-        txtOutputError.SelectionLength = 0
-        txtOutputError.ScrollToCaret()
-      End If
-      pnlSlips7ream.ResumeLayout(True)
-      frmOutput.Hide()
-      'Me.Activate()
-    End If
-  End Sub
-
-  Private Sub frmMain_LocationChanged(sender As Object, e As System.EventArgs) Handles Me.LocationChanged
-    If outputWindow Then frmOutput.RePosition()
-  End Sub
 End Class

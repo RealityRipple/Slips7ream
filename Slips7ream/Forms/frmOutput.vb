@@ -117,7 +117,10 @@ Public Class frmOutput
     MyBase.WndProc(m)
   End Sub
   Private Sub frmOutput_FormClosing(sender As Object, e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
-    frmMain.expOutput.PerformClick()
+    If e.CloseReason = CloseReason.UserClosing Then
+      e.Cancel = True
+      frmMain.expOutput.PerformClick()
+    End If
   End Sub
   Private Sub frmOutput_Load(sender As Object, e As System.EventArgs) Handles Me.Load
     txtOutput.ContextMenu = mnuOutput
