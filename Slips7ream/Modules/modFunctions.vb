@@ -139,23 +139,58 @@ Module modFunctions
             IO.Directory.CreateDirectory(EXEPath)
             Dim exRet As String = ExtractAFile(Location, EXEPath, "update.mum")
             If Not exRet = "OK" Then
-              Failure = exRet
-              Exit Sub
-            End If
-            If IO.File.Exists(EXEPath & "update.mum") Then
-              Dim xMUM As XElement = XElement.Load(EXEPath & "update.mum")
-              Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
-              DisplayName = xAssemblyIdentity.Attribute("language").Value & " Multilingual User Interface Pack"
-              SupportLink = Nothing
-              Architecture = xAssemblyIdentity.Attribute("processorArchitecture")
-              Dim xPackage As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}package")
-              KBArticle = Nothing
-              Dim xParent As XElement = xPackage.Element("{urn:schemas-microsoft-com:asm.v3}parent")
-              Dim xParentAssemblyIdentity As XElement = xParent.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
-              AppliesTo = xParentAssemblyIdentity.Attribute("name")
-              BuildDate = Nothing
+              Dim exRet2 As String = ExtractAFile(Location, EXEPath, "WUA-Win7SP1.exe")
+              If exRet2 = "OK" Then
+                exRet2 = ExtractAFile(EXEPath & "WUA-Win7SP1.exe", EXEPath, "WUClient-SelfUpdate-ActiveX.cab")
+                If exRet2 = "OK" Then
+                  exRet2 = ExtractAFile(EXEPath & "WUClient-SelfUpdate-ActiveX.cab", EXEPath, "update.mum")
+                  If exRet2 = "OK" Then
+                    If IO.File.Exists(EXEPath & "update.mum") Then
+                      Dim xMUM As XElement = XElement.Load(EXEPath & "update.mum")
+                      DisplayName = xMUM.Attribute("displayName")
+                      If DisplayName.Contains("Microsoft Windows Update Client SelfUpdate ActiveX") Then
+                        DisplayName = "Windows Update Agent"
+                      End If
+                      SupportLink = "http://support.microsoft.com?kbid=949104"
+                      Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
+                      Architecture = xAssemblyIdentity.Attribute("processorArchitecture")
+                      Dim xPackage As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}package")
+                      KBArticle = "949104"
+                      Dim xParent As XElement = xPackage.Element("{urn:schemas-microsoft-com:asm.v3}parent")
+                      Dim xParentAssemblyIdentity As XElement = xParent.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
+                      AppliesTo = xParentAssemblyIdentity.Attribute("name")
+                      BuildDate = Nothing
+                    Else
+                      Failure = "File Not Found"
+                    End If
+                  Else
+                    Failure = exRet
+                    Exit Sub
+                  End If
+                Else
+                  Failure = exRet
+                  Exit Sub
+                End If
+              Else
+                Failure = exRet
+                Exit Sub
+              End If
             Else
-              Failure = "File Not Found"
+              If IO.File.Exists(EXEPath & "update.mum") Then
+                Dim xMUM As XElement = XElement.Load(EXEPath & "update.mum")
+                Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
+                DisplayName = xAssemblyIdentity.Attribute("language").Value & " Multilingual User Interface Pack"
+                SupportLink = Nothing
+                Architecture = xAssemblyIdentity.Attribute("processorArchitecture")
+                Dim xPackage As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}package")
+                KBArticle = Nothing
+                Dim xParent As XElement = xPackage.Element("{urn:schemas-microsoft-com:asm.v3}parent")
+                Dim xParentAssemblyIdentity As XElement = xParent.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
+                AppliesTo = xParentAssemblyIdentity.Attribute("name")
+                BuildDate = Nothing
+              Else
+                Failure = "File Not Found"
+              End If
             End If
             If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           Case UpdateType.Other
