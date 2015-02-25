@@ -53,6 +53,59 @@ Module modFunctions
                   SupportLink = GetMSUValue(sLine)
                 End If
               Next
+              If KBArticle = "2841134" Or KBArticle = "2718695" Then
+                Dim CABfile As String = IO.Path.GetFileName(sFile).Replace("-pkgProperties.txt", ".cab")
+                exRet = ExtractAFile(Location, MSUPath, CABfile)
+                If Not exRet = "OK" Then
+                  Failure = exRet
+                  Exit Sub
+                End If
+                If My.Computer.FileSystem.FileExists(MSUPath & CABfile) Then
+                  Dim MSUCABPath As String = WorkDir & "UpdateMSU_Extract" & IO.Path.DirectorySeparatorChar & "CAB" & IO.Path.DirectorySeparatorChar
+                  If IO.Directory.Exists(MSUCABPath) Then SlowDeleteDirectory(MSUCABPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+                  IO.Directory.CreateDirectory(MSUCABPath)
+                  exRet = ExtractAFile(MSUPath & CABfile, MSUCABPath, "update.mum")
+                  If Not exRet = "OK" Then
+                    Failure = exRet
+                    Exit Sub
+                  End If
+                  If IO.File.Exists(MSUCABPath & "update.mum") Then
+                    Dim xMUM As XElement = XElement.Load(MSUCABPath & "update.mum")
+                    Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
+                    If KBArticle = "2718695" Then
+                      DisplayName = xAssemblyIdentity.Attribute("language").Value & " IE10 Language Pack"
+                      If Architecture = "x86" Then
+                        AppliesTo = "Internet Explorer 10 x86"
+                      ElseIf Architecture = "amd64" Then
+                        AppliesTo = "Internet Explorer 10 x64"
+                      Else
+                        AppliesTo = "Internet Explorer 10 " & Architecture
+                      End If
+                    Else
+                      DisplayName = xAssemblyIdentity.Attribute("language").Value & " IE11 Language Pack"
+                      If Architecture = "x86" Then
+                        AppliesTo = "Internet Explorer 11 x86"
+                      ElseIf Architecture = "amd64" Then
+                        AppliesTo = "Internet Explorer 11 x64"
+                      Else
+                        AppliesTo = "Internet Explorer 11 " & Architecture
+                      End If
+                    End If
+                    'Architecture = xAssemblyIdentity.Attribute("processorArchitecture")
+
+                    'Dim xPackage As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}package")
+                    'Dim xParent As XElement = xPackage.Element("{urn:schemas-microsoft-com:asm.v3}parent")
+                    'Dim xParentAssemblyIdentity As XElement = xParent.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
+                    'AppliesTo = xParentAssemblyIdentity.Attribute("name")
+                    'BuildDate = Nothing
+
+                  Else
+                    Failure = "File Not Found"
+                  End If
+                Else
+                  Failure = "File Not Found"
+                End If
+              End If
             Else
               Failure = "File Not Found"
             End If
@@ -431,10 +484,14 @@ Module modFunctions
       If IO.Directory.GetFileSystemEntries(Directory).Count > 0 Then Exit Sub
       IO.Directory.Delete(Directory, False)
     Else
+      Dim doProg As Boolean = True
+      If frmMain.pbTotal.Value > 0 Then doProg = False
       Dim sDirs() As String = IO.Directory.GetDirectories(Directory)
       Dim sFiles() As String = IO.Directory.GetFiles(Directory)
       For I As Integer = 0 To sDirs.Count - 1
-        frmMain.SetTotal(I, sDirs.Count - 1)
+        If sDirs.Count > 1 Then
+          If doProg Then frmMain.SetTotal(I, sDirs.Count - 1)
+        End If
         SlowDeleteDirectory(sDirs(I), OnDirectoryNotEmpty)
         If I Mod 25 = 0 Then
           If frmMain.StopRun Then Exit Sub
