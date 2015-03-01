@@ -178,7 +178,7 @@
   Private Sub frmMain_FormClosing(sender As Object, e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
     If e.CloseReason = CloseReason.WindowsShutDown Then
       StopRun = True
-      Exit Sub
+      Return
     End If
     If RunActivity > 0 Then
       Dim sActivity As String = "doing work"
@@ -200,7 +200,7 @@
       End Select
       If MsgDlg(Me, "Do you want to cancel the " & sProc & " proceess and close SLIPS7REAM?", "SLIPS7REAM is busy " & sActivity & ".", "Stop " & sTitle & " and Close?", MessageBoxButtons.YesNo, TaskDialogIcon.Question, MessageBoxDefaultButton.Button2) = Windows.Forms.DialogResult.No Then
         e.Cancel = True
-        Exit Sub
+        Return
       End If
     End If
     StopRun = True
@@ -557,7 +557,7 @@
     TextBoxDragOverEvent(sender, e, {".wim", ".iso"})
   End Sub
   Private Sub txtWIM_TextChanged(sender As System.Object, e As System.EventArgs) Handles txtWIM.TextChanged
-    If Not IO.File.Exists(txtWIM.Text) Then Exit Sub
+    If Not IO.File.Exists(txtWIM.Text) Then Return
     RunComplete = False
     StopRun = False
     RunActivity = 2
@@ -699,7 +699,7 @@
           For Each Form In OwnedForms
             If Form.Tag = msuData.DisplayName Then
               Form.Focus()
-              Exit Sub
+              Return
             End If
           Next
           Dim props As New frmUpdateProps
@@ -848,7 +848,7 @@
           If StopRun Then
             SetProgress(0, 1)
             ToggleInputs(True)
-            Exit Sub
+            Return
           End If
         End If
         Dim lStart As Long = TickCount()
@@ -1084,7 +1084,7 @@
             If StopRun Then
               SetProgress(0, 1)
               ToggleInputs(True)
-              Exit Sub
+              Return
             End If
           End If
           Dim lStart As Long = TickCount()
@@ -1526,7 +1526,7 @@
     TextBoxDragOverEvent(sender, e, {".wim", ".iso"})
   End Sub
   Private Sub txtMerge_TextChanged(sender As System.Object, e As System.EventArgs) Handles txtMerge.TextChanged
-    If Not IO.File.Exists(txtMerge.Text) Then Exit Sub
+    If Not IO.File.Exists(txtMerge.Text) Then Return
     StopRun = False
     RunActivity = 2
     If tLister2 Is Nothing Then
@@ -1710,7 +1710,7 @@
           iLimit = NumericVal(limVal)
           If iLimit > 0 And cmbLimit.Text.ToLower.Contains(iLimit & " mb") Then
             mySettings.SplitVal = cmbLimit.Text
-            Exit Sub
+            Return
           End If
         ElseIf cmbLimit.Text.ToLower.Contains("kb") Then
           iLimit = Math.Ceiling(CSng(NumericVal(cmbLimit.Text)) / 1024.0F)
@@ -1799,7 +1799,7 @@
             sTitle = "Loading Updates"
         End Select
         If MsgDlg(Me, "Do you want to cancel the " & sProc & " proceess?", "SLIPS7REAM is busy " & sActivity & ".", "Stop " & sTitle & "?", MessageBoxButtons.YesNo, TaskDialogIcon.Question, MessageBoxDefaultButton.Button2) = Windows.Forms.DialogResult.No Then
-          Exit Sub
+          Return
         End If
       End If
       StopRun = True
@@ -2066,7 +2066,7 @@
       Dim newY As Integer = MousePosition.Y - tearFrom.Y
       frmOutput.Location = New Point(newX, newY)
     End If
-    If outputWindow Then Exit Sub
+    If outputWindow Then Return
     If e.Button = Windows.Forms.MouseButtons.Left Then
       If Not pctOutputTear.DisplayRectangle.Contains(e.Location) Then
 
@@ -2114,7 +2114,7 @@
     Else
       moving = False
       tearFrom = Point.Empty
-      If Not outputWindow Then Exit Sub
+      If Not outputWindow Then Return
       outputWindow = False
       pnlSlips7ream.SuspendLayout()
       Me.Height += HeightDifferentialA
@@ -2555,7 +2555,7 @@
       If StopRun Then e.ContinueOperation = False
       Dim iMax As Integer = pbIndividual.Width
       Dim iVal As Integer = (e.Written / e.Total) * iMax
-      If pbIndividual.Value = iVal AndAlso pbIndividual.Maximum = iMax Then Exit Sub
+      If pbIndividual.Value = iVal AndAlso pbIndividual.Maximum = iMax Then Return
       SetProgress(iVal, iMax)
       Application.DoEvents()
     End If
@@ -2720,7 +2720,7 @@
           tRunHidden.Abort()
         Catch ex As Exception
         End Try
-        Exit Sub
+        Return
       End If
     Loop
     c_RunHiddenRet(cIndex) = False
@@ -2783,7 +2783,7 @@
     Dim sMergeSize As String = CalculateCompatibleSize(txtMerge.Text)
     If IO.Path.GetExtension(txtWIM.Text).ToLower = ".iso" Then
       If IO.File.Exists(txtWIM.Text) Then
-        lTotalTime += SpeedStats.WIM_ExtractFromISO(sWIMSize)  
+        lTotalTime += SpeedStats.WIM_ExtractFromISO(sWIMSize)
         Using isoExtract As New Extraction.ArchiveFile(New IO.FileInfo(txtWIM.Text))
           Dim bOpen As Boolean = False
           Try
@@ -3005,7 +3005,7 @@
       SetStatus("Spaces are not allowed in the ISO Label!")
       txtISOLabel.Text = Replace(txtISOLabel.Text, " ", "_")
       txtISOLabel.Focus()
-      Exit Sub
+      Return
     End If
     Dim workEstim, workStart, workSpeed As Long
 
@@ -3021,7 +3021,7 @@
         cmdConfig.Focus()
         Beep()
         MsgDlg(Me, "The selected Temp directory has an active mount that could not be removed. Please restart your computer or change your Temp directory before continuing.", "Active mount has been detected.", "Unable to Begin Slipstream Process", MessageBoxButtons.OK, TaskDialogIcon.DriveLocked)
-        Exit Sub
+        Return
       End If
       SetStatus("Clearing Old Data...")
       Try
@@ -3058,7 +3058,7 @@
       SetStatus("Missing WIM File!")
       txtWIM.Focus()
       Beep()
-      Exit Sub
+      Return
     Else
       SetStatus("Calculating Time...")
       SetTotalTime(CalculateRunTime)
@@ -3082,7 +3082,7 @@
     End If
     If StopRun Then
       ToggleInputs(True)
-      Exit Sub
+      Return
     End If
     SetDisp(MNGList.Delete)
     SetTitle("Merging Image Packages", "Merging all WIM packages into single WIM...")
@@ -3095,7 +3095,7 @@
         SetStatus("Missing Merge File!")
         txtSP.Focus()
         Beep()
-        Exit Sub
+        Return
       Else
         MergeFile = txtMerge.Text
       End If
@@ -3140,7 +3140,7 @@
     End If
     If StopRun Then
       ToggleInputs(True)
-      Exit Sub
+      Return
     End If
 
     SetProgress(0, 100)
@@ -3172,12 +3172,12 @@
         Else
           ToggleInputs(True)
           SetStatus("Failed to Merge WIM """ & RowName & """")
-          Exit Sub
+          Return
         End If
       End If
       If StopRun Then
         ToggleInputs(True)
-        Exit Sub
+        Return
       End If
     Next
     If IO.Directory.Exists(MergeWork) Then
@@ -3205,7 +3205,7 @@
     If Not SlowCopyFile(WIMFile, BakWIM, True) Then
       ToggleInputs(True)
       SetStatus("Failed to back up Install WIM!")
-      Exit Sub
+      Return
     End If
     workSpeed = TickCount() - workStart
     If workSpeed > 500 Then SpeedStats.WIM_MoveImage(wimCopySize) = workSpeed
@@ -3225,7 +3225,7 @@
         ToggleInputs(True)
         SetStatus("Generated WIM Move Failed! Original WIM Restored.")
       End If
-      Exit Sub
+      Return
     End If
     workSpeed = TickCount() - workStart
     If workSpeed > 500 Then SpeedStats.WIM_MoveImage(wimCopySize) = workSpeed
@@ -3238,7 +3238,7 @@
     Application.DoEvents()
     If StopRun Then
       ToggleInputs(True)
-      Exit Sub
+      Return
     End If
     SetDisp(MNGList.Move)
     SetTitle("Preparing Files", "Checking updates and Service Packs to integrate...")
@@ -3251,7 +3251,7 @@
         SetStatus("Missing Service Pack File!")
         txtSP.Focus()
         Beep()
-        Exit Sub
+        Return
       Else
         SPFile = txtSP.Text
       End If
@@ -3267,7 +3267,7 @@
         SetStatus("Missing x64 Service Pack File!")
         txtSP64.Focus()
         Beep()
-        Exit Sub
+        Return
       Else
         SP64File = txtSP64.Text
       End If
@@ -3283,7 +3283,7 @@
         SetStatus("Missing ISO File!")
         txtISO.Focus()
         Beep()
-        Exit Sub
+        Return
       Else
         ISOFile = txtISO.Text
       End If
@@ -3300,7 +3300,7 @@
     End If
     If StopRun Then
       ToggleInputs(True)
-      Exit Sub
+      Return
     End If
     SetDisp(MNGList.Copy)
     SetTitle("Adding Service Packs", "Integrating Service Pack data into WIM packages...")
@@ -3316,11 +3316,11 @@
           Dim sMsg As String = lblActivity.Text
           ToggleInputs(True)
           lblActivity.Text = sMsg
-          Exit Sub
+          Return
         End If
         If StopRun Then
           ToggleInputs(True)
-          Exit Sub
+          Return
         End If
       Else
         SetStatus("Integrating x86 Service Pack...")
@@ -3332,11 +3332,11 @@
           Dim sMsg As String = lblActivity.Text
           ToggleInputs(True)
           lblActivity.Text = sMsg
-          Exit Sub
+          Return
         End If
         If StopRun Then
           ToggleInputs(True)
-          Exit Sub
+          Return
         End If
         SetStatus("Integrating x64 Service Pack...")
         If IntegrateSP(WIMFile, SP64File, "64") Then
@@ -3347,11 +3347,11 @@
           Dim sMsg As String = lblActivity.Text
           ToggleInputs(True)
           lblActivity.Text = sMsg
-          Exit Sub
+          Return
         End If
         If StopRun Then
           ToggleInputs(True)
-          Exit Sub
+          Return
         End If
       End If
     End If
@@ -3369,12 +3369,12 @@
         Dim sMsg As String = lblActivity.Text
         ToggleInputs(True)
         lblActivity.Text = sMsg
-        Exit Sub
+        Return
       End If
       If StopRun Then
         DiscardDISM(Mount)
         ToggleInputs(True)
-        Exit Sub
+        Return
       End If
     Else
       If chkUEFI.Checked Then
@@ -3448,13 +3448,13 @@
           If Not NoMount Then DiscardDISM(Mount)
           ToggleInputs(True)
           lblActivity.Text = sMsg
-          Exit Sub
+          Return
         End If
         SetStatus("Updated Language INIs!")
         If StopRun Then
           If Not NoMount Then DiscardDISM(Mount)
           ToggleInputs(True)
-          Exit Sub
+          Return
         End If
       End If
       If chkUEFI.Checked Then
@@ -3499,7 +3499,7 @@
           DiscardDISM(Mount)
           ToggleInputs(True)
           SetStatus("Failed to Save Final Image Package!")
-          Exit Sub
+          Return
         End If
         workSpeed = TickCount() - workStart
         SpeedStats.WIM_SaveImage(IIf(hasx64, "64", "86")) = workSpeed
@@ -3528,11 +3528,11 @@
         Else
           ToggleInputs(True)
           SetStatus("Failed to Integrate WIM Package """ & RowName & """")
-          Exit Sub
+          Return
         End If
         If StopRun Then
           ToggleInputs(True)
-          Exit Sub
+          Return
         End If
       Next
       SetProgress(0, 1)
@@ -3586,7 +3586,7 @@
                     If Not SlowCopyFile(File, sNewFile, True) Then
                       ToggleInputs(True)
                       SetStatus("Failed to move Install WIM #" & WIMNumber & "!")
-                      Exit Sub
+                      Return
                     End If
                     If WIMNumber = Math.Floor(ISOSplit / WIMSplit) Or I = FilesInOrder.Count - 1 Then
                       WriteToOutput("Extracting Files from """ & Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip"" to """ & sIDir & """...")
@@ -3609,7 +3609,7 @@
                                 REM STOP
                                 ToggleInputs(True)
                                 SetStatus("ISO creation cancelled by user!")
-                                Exit Sub
+                                Return
                             End Select
                           End Using
                         End If
@@ -3657,7 +3657,7 @@
               Else
                 ToggleInputs(True)
                 SetStatus("Failed to Split WIM!")
-                Exit Sub
+                Return
               End If
             ElseIf Math.Floor(ISOSplit / WIMSplit) = 1 Then
               REM Split WIM to WIMSplit size, put 1 WIM on each ISO including first
@@ -3692,7 +3692,7 @@
                     If Not SlowCopyFile(File, sNewFile, True) Then
                       ToggleInputs(True)
                       SetStatus("Failed to move Install WIM #" & discNo & "!")
-                      Exit Sub
+                      Return
                     End If
                     WriteToOutput("Extracting Files from """ & Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip"" to """ & sIDir & """...")
                     ExtractAllFiles(Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip", sIDir)
@@ -3714,7 +3714,7 @@
                               REM STOP
                               ToggleInputs(True)
                               SetStatus("ISO creation cancelled by user!")
-                              Exit Sub
+                              Return
                           End Select
                         End Using
                       End If
@@ -3754,7 +3754,7 @@
               Else
                 ToggleInputs(True)
                 SetStatus("Failed to Split WIM!")
-                Exit Sub
+                Return
               End If
             Else
               REM Split WIM to WIMSplit size, put no WIMs on first ISO, one per ISO afterward
@@ -3786,7 +3786,7 @@
                     If Not SlowCopyFile(File, sNewFile, True) Then
                       ToggleInputs(True)
                       SetStatus("Failed to move Primary Install WIM!")
-                      Exit Sub
+                      Return
                     End If
                     WriteToOutput("Extracting Files from """ & Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip"" to """ & sIDir & """...")
                     ExtractAllFiles(Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip", sIDir)
@@ -3808,7 +3808,7 @@
                               REM STOP
                               ToggleInputs(True)
                               SetStatus("ISO creation cancelled by user!")
-                              Exit Sub
+                              Return
                           End Select
                         End Using
                       End If
@@ -3854,7 +3854,7 @@
                     If Not SlowCopyFile(File, sNewFile, True) Then
                       ToggleInputs(True)
                       SetStatus("Failed to move Install WIM #" & discNo & "!")
-                      Exit Sub
+                      Return
                     End If
                     WriteToOutput("Extracting Files from """ & Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip"" to """ & sIDir & """...")
                     ExtractAllFiles(Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip", sIDir)
@@ -3876,7 +3876,7 @@
                               REM STOP
                               ToggleInputs(True)
                               SetStatus("ISO creation cancelled by user!")
-                              Exit Sub
+                              Return
                           End Select
                         End Using
                       End If
@@ -3916,7 +3916,7 @@
               Else
                 ToggleInputs(True)
                 SetStatus("Failed to Split WIM!")
-                Exit Sub
+                Return
               End If
             End If
           ElseIf splUEFI And splWIMSize > 4095 Then
@@ -3936,7 +3936,7 @@
             Else
               ToggleInputs(True)
               SetStatus("Failed to Split WIM!")
-              Exit Sub
+              Return
             End If
           End If
         Else
@@ -3957,7 +3957,7 @@
             Else
               ToggleInputs(True)
               SetStatus("Failed to Split WIM!")
-              Exit Sub
+              Return
             End If
           End If
         End If
@@ -3980,7 +3980,7 @@
                   REM STOP
                   ToggleInputs(True)
                   SetStatus("ISO creation cancelled by user!")
-                  Exit Sub
+                  Return
               End Select
             End Using
           End If
@@ -4008,7 +4008,7 @@
       If Not SlowCopyFile(ISOFile, ISOFile & ".del", True) Then
         ToggleInputs(True)
         SetStatus("Failed to back up ISO!")
-        Exit Sub
+        Return
       End If
       iTotalVal += 1
       SetTotal(iTotalVal, iTotalMax)
@@ -4051,7 +4051,7 @@
           ToggleInputs(True)
           SetStatus("ISO Build and backup ISO restore failed!")
         End If
-        Exit Sub
+        Return
       End If
     Else
       SetTitle("Generating WIM", "Preparing WIMs and file structure...")
@@ -4065,7 +4065,7 @@
           DiscardDISM(Mount)
           ToggleInputs(True)
           SetStatus("Failed to Save Final Image Package!")
-          Exit Sub
+          Return
         End If
         workSpeed = TickCount() - workStart
         SpeedStats.WIM_SaveImage(IIf(hasx64, "64", "86")) = workSpeed
@@ -4077,7 +4077,7 @@
       If Not SlowCopyFile(WIMFile, OldWIM, True) Then
         ToggleInputs(True)
         SetStatus("Failed to back up Install WIM!")
-        Exit Sub
+        Return
       End If
       Dim NewWIMPackageCount As Integer = GetDISMPackages(OldWIM)
       For I As Integer = 1 To NewWIMPackageCount
@@ -4095,11 +4095,11 @@
         Else
           ToggleInputs(True)
           SetStatus("Failed to Compress WIM """ & RowName & """")
-          Exit Sub
+          Return
         End If
         If StopRun Then
           ToggleInputs(True)
-          Exit Sub
+          Return
         End If
       Next
       WriteToOutput("Deleting """ & OldWIM & """...")
@@ -4124,7 +4124,7 @@
             Else
               ToggleInputs(True)
               SetStatus("Failed to Split WIM!")
-              Exit Sub
+              Return
             End If
           End If
         End If
@@ -4253,7 +4253,7 @@
             workEstim = SpeedStats.WIM_MountImage("86")
             SetProgressTime(workEstim)
             workStart = TickCount()
-            If Not InitDISM(WIMPath, tmpDISM.Index, Mount) Then 
+            If Not InitDISM(WIMPath, tmpDISM.Index, Mount) Then
               DiscardDISM(Mount)
               ToggleInputs(True)
               SetStatus("Failed to Load Image Package """ & tmpDISM.Name & """!")
@@ -5034,7 +5034,7 @@
   End Function
   Private Sub ParseMainWIM()
     Dim sWIM As String = txtWIM.Text
-    If String.IsNullOrEmpty(sWIM) Then Exit Sub
+    If String.IsNullOrEmpty(sWIM) Then Return
     Dim ParseWork As String = Work & "PARSE" & IO.Path.DirectorySeparatorChar
     Dim ParseWorkWIM As String = ParseWork & "WIM" & IO.Path.DirectorySeparatorChar
     If IO.File.Exists(ParseWork) Then
@@ -5071,7 +5071,7 @@
         SetProgressTime(0)
         Dim Package As PackageInfoEx = GetDISMPackageData(WIMFile, I)
         Dim lvItem As New ListViewItem(Package.Index)
-        If Package.Equals(New PackageInfoEx) Then Exit Sub
+        If Package.Equals(New PackageInfoEx) Then Return
         If Package.Architecture = "x64" And Not Package.Name.Contains("64") Then Package.Name &= " x64"
         lvItem.Checked = True
         lvItem.SubItems.Add(Package.Name)
@@ -5103,7 +5103,7 @@
     Dim ParseWork As String = Work & "PARSE" & IO.Path.DirectorySeparatorChar
     Dim ParseWorkMerge As String = ParseWork & "Merge" & IO.Path.DirectorySeparatorChar
     IO.Directory.CreateDirectory(ParseWorkMerge)
-    If String.IsNullOrEmpty(sMerge) Then Exit Sub
+    If String.IsNullOrEmpty(sMerge) Then Return
     Dim MergeFile As String = String.Empty
     SetTotal(0, 3)
     Dim imgSize As String = CalculateCompatibleSize(sMerge)
@@ -5132,7 +5132,7 @@
         SetProgressTime(0)
         Dim Package As PackageInfoEx = GetDISMPackageData(MergeFile, I)
         Dim lvItem As New ListViewItem(Package.Index)
-        If Package.Equals(New PackageInfoEx) Then Exit Sub
+        If Package.Equals(New PackageInfoEx) Then Return
         If Package.Architecture = "x64" And Not Package.Name.Contains("64") Then Package.Name &= " x64"
         lvItem.Checked = True
         lvItem.SubItems.Add(Package.Name)
@@ -5212,7 +5212,7 @@
 #End Region
 #Region "Update Check"
   Private Sub tmrUpdateCheck_Tick(sender As System.Object, e As System.EventArgs) Handles tmrUpdateCheck.Tick
-    If mySettings Is Nothing Then Exit Sub
+    If mySettings Is Nothing Then Return
     tmrUpdateCheck.Stop()
     If mySettings.LastUpdate.Year = 1970 Then mySettings.LastUpdate = Today
     If DateDiff(DateInterval.Day, mySettings.LastUpdate, Today) > 13 Then

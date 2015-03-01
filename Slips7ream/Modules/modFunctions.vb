@@ -30,7 +30,7 @@ Module modFunctions
             Dim exRet As String = ExtractAFile(Location, MSUPath, "pkgProperties.txt")
             If Not exRet = "OK" Then
               Failure = exRet
-              Exit Sub
+              Return
             End If
             Dim filePath() As String = My.Computer.FileSystem.GetFiles(MSUPath, FileIO.SearchOption.SearchTopLevelOnly).ToArray
             If filePath.Count >= 1 Then
@@ -58,7 +58,7 @@ Module modFunctions
                 exRet = ExtractAFile(Location, MSUPath, CABfile)
                 If Not exRet = "OK" Then
                   Failure = exRet
-                  Exit Sub
+                  Return
                 End If
                 If My.Computer.FileSystem.FileExists(MSUPath & CABfile) Then
                   Dim MSUCABPath As String = WorkDir & "UpdateMSU_Extract" & IO.Path.DirectorySeparatorChar & "CAB" & IO.Path.DirectorySeparatorChar
@@ -67,7 +67,7 @@ Module modFunctions
                   exRet = ExtractAFile(MSUPath & CABfile, MSUCABPath, "update.mum")
                   If Not exRet = "OK" Then
                     Failure = exRet
-                    Exit Sub
+                    Return
                   End If
                   If IO.File.Exists(MSUCABPath & "update.mum") Then
                     Dim xMUM As XElement = XElement.Load(MSUCABPath & "update.mum")
@@ -117,7 +117,7 @@ Module modFunctions
             Dim exRet As String = ExtractAFile(Location, CABPath, "update.mum")
             If Not exRet = "OK" Then
               Failure = exRet
-              Exit Sub
+              Return
             End If
             If IO.File.Exists(CABPath & "update.mum") Then
               Dim xMUM As XElement = XElement.Load(CABPath & "update.mum")
@@ -143,7 +143,7 @@ Module modFunctions
             Dim exRet As String = ExtractAFile(Location, LPPath, "update.mum")
             If Not exRet = "OK" Then
               Failure = exRet
-              Exit Sub
+              Return
             End If
             If IO.File.Exists(LPPath & "update.mum") Then
               Dim xMUM As XElement = XElement.Load(LPPath & "update.mum")
@@ -168,7 +168,7 @@ Module modFunctions
             Dim exRet As String = ExtractAFile(Location, MLCPath, "update.mum")
             If Not exRet = "OK" Then
               Failure = exRet
-              Exit Sub
+              Return
             End If
             If IO.File.Exists(MLCPath & "update.mum") Then
               Dim xMUM As XElement = XElement.Load(MLCPath & "update.mum")
@@ -218,15 +218,15 @@ Module modFunctions
                     End If
                   Else
                     Failure = exRet
-                    Exit Sub
+                    Return
                   End If
                 Else
                   Failure = exRet
-                  Exit Sub
+                  Return
                 End If
               Else
                 Failure = exRet
-                Exit Sub
+                Return
               End If
             Else
               If IO.File.Exists(EXEPath & "update.mum") Then
@@ -479,9 +479,9 @@ Module modFunctions
     Return 0
   End Function
   Public Sub SlowDeleteDirectory(Directory As String, OnDirectoryNotEmpty As FileIO.DeleteDirectoryOption)
-    If Not IO.Directory.Exists(Directory) Then Exit Sub
+    If Not IO.Directory.Exists(Directory) Then Return
     If OnDirectoryNotEmpty = FileIO.DeleteDirectoryOption.ThrowIfDirectoryNonEmpty Then
-      If IO.Directory.GetFileSystemEntries(Directory).Count > 0 Then Exit Sub
+      If IO.Directory.GetFileSystemEntries(Directory).Count > 0 Then Return
       IO.Directory.Delete(Directory, False)
     Else
       Dim doProg As Boolean = True
@@ -494,7 +494,7 @@ Module modFunctions
         End If
         SlowDeleteDirectory(sDirs(I), OnDirectoryNotEmpty)
         If I Mod 25 = 0 Then
-          If frmMain.StopRun Then Exit Sub
+          If frmMain.StopRun Then Return
           Application.DoEvents()
         End If
       Next
@@ -506,7 +506,7 @@ Module modFunctions
           Catch ex As Exception
           End Try
           If I Mod 25 = 0 Then
-            If frmMain.StopRun Then Exit Sub
+            If frmMain.StopRun Then Return
             Application.DoEvents()
           End If
         Next
@@ -562,7 +562,7 @@ Module modFunctions
         Using ioSource As New IO.FileStream(File, IO.FileMode.Open, IO.FileAccess.Read, IO.FileShare.Read, iChunkSize * 4, True)
           If ioSource.Length > destFreeSpace Then
             c_SlowCopyRet(cIndex) = "Not Enough Space on Drive " & Destination(0) & ":\"
-            Exit Sub
+            Return
           End If
           Using ioReader As New IO.BinaryReader(ioSource)
             Using ioDest As New IO.FileStream(Destination, IO.FileMode.Create, IO.FileAccess.Write, IO.FileShare.None, iChunkSize * 4, True)

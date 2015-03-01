@@ -133,7 +133,7 @@
     If My.Computer.Registry.CurrentUser.OpenSubKey("Software").GetSubKeyNames.Contains(Application.CompanyName) Then
       If My.Computer.Registry.CurrentUser.OpenSubKey("Software\" & Application.CompanyName).GetSubKeyNames.Contains(Application.ProductName) Then
         ReadRegistry()
-        Exit Sub
+        Return
       End If
     End If
     ReadLegacy()

@@ -83,7 +83,7 @@ Public Class SplitContainerEx
   End Sub
   Protected Overrides Sub OnParentCursorChanged(e As System.EventArgs)
     MyBase.OnParentCursorChanged(e)
-    If MyBase.Cursor = Cursors.VSplit Or MyBase.Cursor = Cursors.HSplit Then Exit Sub
+    If MyBase.Cursor = Cursors.VSplit Or MyBase.Cursor = Cursors.HSplit Then Return
     MyBase.Cursor = ParentForm.Cursor
   End Sub
   Protected Overrides Sub OnKeyDown(e As System.Windows.Forms.KeyEventArgs)

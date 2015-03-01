@@ -43,7 +43,7 @@ Public Class frmOutput
         Dim NewPosition As WINDOWPOS = CType(Runtime.InteropServices.Marshal.PtrToStructure(m.LParam, GetType(WINDOWPOS)), WINDOWPOS)
         If NewPosition.y = 0 And NewPosition.cy = 0 And NewPosition.x = 0 And NewPosition.cx = 0 Then
           MyBase.WndProc(m)
-          Exit Sub
+          Return
         End If
         Dim mainBounds = frmMain.Bounds
         If Not ((NewPosition.flags And SWP.NoSize) = SWP.NoSize And (NewPosition.flags And SWP.NoMove) = SWP.NoMove) Then

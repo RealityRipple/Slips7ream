@@ -44,11 +44,11 @@
         If wsVer IsNot Nothing Then
           If wsVer.IsBusy Then
             wsVer.CancelAsync()
-            'If wsVer Is Nothing Then Exit Sub
+            'If wsVer Is Nothing Then Return
             'Do While wsVer.IsBusy
             '  Application.DoEvents()
             '  Threading.Thread.Sleep(10)
-            '  If wsVer Is Nothing Then Exit Sub
+            '  If wsVer Is Nothing Then Return
             'Loop
           End If
           wsVer.Dispose()
