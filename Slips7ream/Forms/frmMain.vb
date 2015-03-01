@@ -737,12 +737,59 @@
   End Sub
 
 #Region "Drag/Drop"
+  Private Function GetFileCountFromDir(Path As String) As Integer
+    Dim iCount As Integer = 0
+    For Each sFile As String In IO.Directory.EnumerateFiles(Path)
+      Select Case IO.Path.GetExtension(sFile).ToLower
+        Case ".msu", ".cab", ".mlc", ".exe"
+          iCount += 1
+      End Select
+    Next
+    For Each sDirectory As String In IO.Directory.EnumerateDirectories(Path)
+      iCount += GetFileCountFromDir(sDirectory)
+    Next
+    Return iCount
+  End Function
+
+  Private Function GetFilesFromDir(Path As String) As String()
+    Dim sFiles As New Collections.Generic.List(Of String)
+    For Each sFile As String In IO.Directory.EnumerateFiles(Path)
+      sFiles.Add(sFile)
+    Next
+    For Each sDirectory As String In IO.Directory.EnumerateDirectories(Path)
+      Dim sChildren() As String = GetFilesFromDir(sDirectory)
+      If Not sChildren Is Nothing AndAlso sChildren.Count > 0 Then sFiles.AddRange(sChildren)
+    Next
+    Return sFiles.ToArray
+  End Function
+
   Public Sub DragDropEvent(sender As Object, e As DragEventArgs)
     ReplaceAllOldUpdates = TriState.UseDefault
     ReplaceAllNewUpdates = TriState.UseDefault
     If e.Data.GetFormats(True).Contains("FileDrop") Then
-      Dim Data = e.Data.GetData("FileDrop")
-      Dim FileCount As Integer = Data.Length
+      Dim Data() As String = e.Data.GetData("FileDrop")
+      Dim FileCount As Integer
+      Dim ReplaceData As Boolean = False
+      For Each Path In Data
+        If IO.File.Exists(Path) Then
+          FileCount += 1
+        ElseIf IO.Directory.Exists(Path) Then
+          FileCount += GetFileCountFromDir(Path)
+          ReplaceData = True
+        End If
+      Next
+      If ReplaceData Then
+        Dim newData As New Collections.Generic.List(Of String)
+        For Each Path In Data
+          If IO.File.Exists(Path) Then
+            newData.Add(Path)
+          ElseIf IO.Directory.Exists(Path) Then
+            Dim sChildren() As String = GetFilesFromDir(Path)
+            If Not sChildren Is Nothing AndAlso sChildren.Count > 0 Then newData.AddRange(sChildren)
+          End If
+        Next
+        Data = newData.ToArray
+      End If
       If FileCount > 2 Then
         RunActivity = 3
         StopRun = False
@@ -860,14 +907,19 @@
   End Sub
   Public Sub DragOverEvent(sender As Object, e As DragEventArgs)
     If e.Data.GetFormats(True).Contains("FileDrop") Then
-      Dim Data = e.Data.GetData("FileDrop")
+      Dim Data() As String = e.Data.GetData("FileDrop")
       Dim hasUpdate As Boolean = False
       For Each file In Data
-        Select Case IO.Path.GetExtension(file).ToLower
-          Case ".msu", ".cab", ".mlc", ".exe"
-            hasUpdate = True
-            Exit For
-        End Select
+        If IO.File.Exists(file) Then
+          Select Case IO.Path.GetExtension(file).ToLower
+            Case ".msu", ".cab", ".mlc", ".exe"
+              hasUpdate = True
+              Exit For
+          End Select
+        ElseIf IO.Directory.Exists(file) Then
+          hasUpdate = True
+          Exit For
+        End If
       Next
       If hasUpdate Then
         e.Effect = DragDropEffects.Copy
@@ -1105,8 +1157,10 @@
       Dim msuData As New UpdateInfoEx(sUpdate)
       If Not String.IsNullOrEmpty(msuData.Failure) Then Return New AddResult(False, msuData.Failure)
       If String.IsNullOrEmpty(msuData.DisplayName) Then Return New AddResult(False, "Unable to parse information.")
+      Dim msuType As String = msuData.Architecture & " " & IO.Path.GetExtension(sUpdate).Substring(1).ToUpper
+      If msuData.DisplayName = "Windows Update Agent" Then msuType = msuData.Architecture & " CAB"
       For Each item As ListViewItem In lvMSU.Items
-        If item.SubItems(1).Text = msuData.Architecture & " " & IO.Path.GetExtension(sUpdate).Substring(1).ToUpper Then
+        If item.SubItems(1).Text = msuType Then
           If item.Text = msuData.DisplayName Then
             Return New AddResult(False, "Update already added.")
           ElseIf msuData.DisplayName.Contains("-v") Or item.Text.Contains("-v") Then
