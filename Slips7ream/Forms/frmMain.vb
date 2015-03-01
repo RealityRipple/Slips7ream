@@ -1157,8 +1157,25 @@
       Dim msuData As New UpdateInfoEx(sUpdate)
       If Not String.IsNullOrEmpty(msuData.Failure) Then Return New AddResult(False, msuData.Failure)
       If String.IsNullOrEmpty(msuData.DisplayName) Then Return New AddResult(False, "Unable to parse information.")
-      Dim msuType As String = msuData.Architecture & " " & IO.Path.GetExtension(sUpdate).Substring(1).ToUpper
-      If msuData.DisplayName = "Windows Update Agent" Then msuType = msuData.Architecture & " CAB"
+      Dim msuType As String
+      Select Case GetUpdateType(sUpdate)
+        Case UpdateType.MSU : msuType = msuData.Architecture & " MSU"
+        Case UpdateType.CAB : msuType = msuData.Architecture & " CAB"
+        Case UpdateType.LP : msuType = msuData.Architecture & " MUI"
+        Case UpdateType.LIP : msuType = msuData.Architecture & " LIP"
+        Case UpdateType.EXE
+          If msuData.DisplayName = "Windows Update Agent" Then
+            msuType = msuData.Architecture & " CAB"
+          Else
+            msuType = msuData.Architecture & " MUI"
+          End If
+        Case Else
+          If String.IsNullOrEmpty(IO.Path.GetExtension(sUpdate)) Then
+            Return New AddResult(False, "Unknown Update Type.")
+          Else
+            Return New AddResult(False, "Unknown Update Type: """ & IO.Path.GetExtension(sUpdate).Substring(1).ToUpper & """.")
+          End If
+      End Select
       For Each item As ListViewItem In lvMSU.Items
         If item.SubItems(1).Text = msuType Then
           If item.Text = msuData.DisplayName Then
@@ -1316,7 +1333,11 @@
           End If
           Return New AddResult(True)
       End Select
-      Return New AddResult(False, "Unknown Update Type: """ & IO.Path.GetExtension(sUpdate).ToUpper & """.")
+      If String.IsNullOrEmpty(IO.Path.GetExtension(sUpdate)) Then
+        Return New AddResult(False, "Unknown Update Type.")
+      Else
+        Return New AddResult(False, "Unknown Update Type: """ & IO.Path.GetExtension(sUpdate).Substring(1).ToUpper & """.")
+      End If
     Else
       Return New AddResult(False, "File doesn't exist.")
     End If
