@@ -1907,7 +1907,6 @@
       Else
         lblIndividualTime.Text = ConvertTime(left, True, True)
         lblIndividualTime.Visible = True
-        'timeInd = Time
         tmrCountdown.Enabled = True
       End If
     End If
@@ -1948,20 +1947,17 @@
       Else
         lblTotalTime.Text = ConvertTime(left, True, True)
         lblTotalTime.Visible = True
-        'timeTot = Time
         tmrCountdown.Enabled = True
       End If
     End If
   End Sub
   Private Sub tmrCountdown_Tick(sender As System.Object, e As System.EventArgs) Handles tmrCountdown.Tick
     If timeInd >= 0 Then
-      'timeInd -= 1000
       SetProgressTime()
     Else
       SetProgressTime(0)
     End If
     If timeTot >= 0 Then
-      'timeTot -= 1000
       SetTotalTime()
     Else
       SetTotalTime(0)
@@ -2116,7 +2112,6 @@
     If Me.InvokeRequired Then
       Me.Invoke(New MethodInvoker(AddressOf ReturnOutput))
     Else
-      'If moving Then Exit Sub
       moving = False
       tearFrom = Point.Empty
       If Not outputWindow Then Exit Sub
@@ -2141,7 +2136,6 @@
       End If
       pnlSlips7ream.ResumeLayout(True)
       frmOutput.Hide()
-      'Me.Activate()
     End If
   End Sub
 #End Region
@@ -2234,7 +2228,7 @@
     Return sRet.Contains("Successfully exported image")
   End Function
   Private Function UpdateLang(SourcePath As String) As Boolean
-    Dim sRet As String = RunWithReturn(AIKDir & "intlcfg", "-genlangini -dist:" & ShortenPath(SourcePath) & " -image:" & ShortenPath(Mount) & " -f") '-all:la-ng
+    Dim sRet As String = RunWithReturn(AIKDir & "intlcfg", "-genlangini -dist:" & ShortenPath(SourcePath) & " -image:" & ShortenPath(Mount) & " -f")
     If Not sRet.Contains("A new Lang.ini file has been generated") Then
       Return False
     End If
@@ -2787,10 +2781,9 @@
     Dim lTotalTime As Long = 0
     Dim sWIMSize As String = CalculateCompatibleSize(txtWIM.Text)
     Dim sMergeSize As String = CalculateCompatibleSize(txtMerge.Text)
-    If IO.Path.GetExtension(txtWIM.Text).ToLower = ".iso" Then '                                                    If Primary WIM is an ISO
+    If IO.Path.GetExtension(txtWIM.Text).ToLower = ".iso" Then
       If IO.File.Exists(txtWIM.Text) Then
-        lTotalTime += SpeedStats.WIM_ExtractFromISO(sWIMSize)  '                                                     Extract Primary WIM from ISO
-        Debug.Print("EST: WIM_ExtractFromISO(" & sWIMSize & ") = " & SpeedStats.WIM_ExtractFromISO(sWIMSize))
+        lTotalTime += SpeedStats.WIM_ExtractFromISO(sWIMSize)  
         Using isoExtract As New Extraction.ArchiveFile(New IO.FileInfo(txtWIM.Text))
           Dim bOpen As Boolean = False
           Try
@@ -2805,7 +2798,6 @@
               If item.Name.ToLower.Contains("install") And (ext = ".wim" Or ext = ".swm") Then
                 Dim wimCopySize As String = Math.Round(item.Size / 1024 / 1024 / 1024, 1, MidpointRounding.ToEven) & "GB"
                 lTotalTime += SpeedStats.WIM_MoveImage(wimCopySize)
-                Debug.Print("EST: WIM_MoveImage(" & wimCopySize & ") = " & SpeedStats.WIM_MoveImage(wimCopySize))
               End If
             Next
           End If
@@ -2814,10 +2806,9 @@
     End If
     If chkMerge.Checked Then
       If Not String.IsNullOrEmpty(txtMerge.Text) Then
-        If IO.Path.GetExtension(txtMerge.Text).ToLower = ".iso" Then '                                              If Merge WIM is an ISO
+        If IO.Path.GetExtension(txtMerge.Text).ToLower = ".iso" Then
           If IO.File.Exists(txtMerge.Text) Then
-            lTotalTime += SpeedStats.WIM_ExtractFromISO(sMergeSize) '                                                Extract Merge WIM from ISO
-            Debug.Print("EST: WIM_ExtractFromISO(" & sMergeSize & ") = " & SpeedStats.WIM_ExtractFromISO(sMergeSize))
+            lTotalTime += SpeedStats.WIM_ExtractFromISO(sMergeSize)
             Using isoExtract As New Extraction.ArchiveFile(New IO.FileInfo(txtMerge.Text))
               Dim bOpen As Boolean = False
               Try
@@ -2832,17 +2823,12 @@
                   If item.Name.ToLower.Contains("install") And (ext = ".wim" Or ext = ".swm") Then
                     Dim wimCopySize As String = Math.Round(item.Size / 1024 / 1024 / 1024, 1, MidpointRounding.ToEven) & "GB"
                     lTotalTime += SpeedStats.WIM_MoveImage(wimCopySize)
-                    Debug.Print("EST: WIM_MoveImage(" & wimCopySize & ") = " & SpeedStats.WIM_MoveImage(wimCopySize))
                   End If
                 Next
               End If
             End Using
-            If IO.Directory.Exists(Work & "Merge" & IO.Path.DirectorySeparatorChar) Then '                           If Merge Work Directory exists
-              lTotalTime += SpeedStats.Clean_WORK '                                                                   Clean it
-              Debug.Print("EST: Clean_WORK = " & SpeedStats.Clean_WORK)
-            End If
-            lTotalTime += SpeedStats.Clean_WORK '                                                                    Clean it anyway
-            Debug.Print("EST: Clean_WORK = " & SpeedStats.Clean_WORK)
+            If IO.Directory.Exists(Work & "Merge" & IO.Path.DirectorySeparatorChar) Then lTotalTime += SpeedStats.Clean_WORK
+            lTotalTime += SpeedStats.Clean_WORK
           End If
         End If
       End If
@@ -2862,38 +2848,22 @@
       Next
       imageCountAll = imageCount32 + imageCount64
       If imageCountAll > 0 Then
-        lTotalTime += SpeedStats.WIM_MergeImage("First") '                                                          Merge first Package at beginning
-        Debug.Print("EST: WIM_MergeImage(First) = " & SpeedStats.WIM_MergeImage("First"))
-        If imageCountAll > 1 Then
-          lTotalTime += SpeedStats.WIM_MergeImage("Additional") * (imageCountAll - 1) '                             Merge each additonal Package 
-          Debug.Print("EST: WIM_MergeImage(Additional) = " & SpeedStats.WIM_MergeImage("Additional") & " * " & (imageCountAll - 1))
-        End If
+        lTotalTime += SpeedStats.WIM_MergeImage("First")
+        If imageCountAll > 1 Then lTotalTime += SpeedStats.WIM_MergeImage("Additional") * (imageCountAll - 1)
       End If
     End If
 
-
-
     If chkSP.Checked Then
       If Not String.IsNullOrEmpty(txtSP.Text) Then
-        If Not String.IsNullOrEmpty(txtSP64.Text) Then '                                                            If 32 and 64 bit Service Packs are listed:
-          lTotalTime += SpeedStats.SP_Extract("86")  '                                                                Extract 32-bit Service Pack
-          Debug.Print("EST: SP_Extract(86) = " & SpeedStats.SP_Extract("86"))
-          lTotalTime += SpeedStats.SP_Integrate("86") * imageCount32 '                                                Integrate 32-bit Service Pack
-          Debug.Print("EST: SP_Integrate(86) = " & SpeedStats.SP_Integrate("86") & " * " & imageCount32)
-          lTotalTime += SpeedStats.Clean_SP1("86") '                                                                  Clean the Work Directory Afterward
-          Debug.Print("EST: Clean_SP1(86) = " & SpeedStats.Clean_SP1("86"))
+        If Not String.IsNullOrEmpty(txtSP64.Text) Then
+          lTotalTime += SpeedStats.SP_Extract("86")
+          lTotalTime += SpeedStats.SP_Integrate("86") * imageCount32
+          lTotalTime += SpeedStats.Clean_SP1("86")
+          lTotalTime += SpeedStats.SP_Extract("64")
+          lTotalTime += SpeedStats.SP_Integrate("64") * imageCount64
+          lTotalTime += SpeedStats.Clean_SP1("64")
 
-          lTotalTime += SpeedStats.SP_Extract("64")  '                                                                Extract 64-bit Service Pack
-          Debug.Print("EST: SP_Extract(64) = " & SpeedStats.SP_Extract("64"))
-          lTotalTime += SpeedStats.SP_Integrate("64") * imageCount64 '                                                Integratae 64-bit Service Pack
-          Debug.Print("EST: SP_Integrate(64) = " & SpeedStats.SP_Integrate("64") & " * " & imageCount64)
-          lTotalTime += SpeedStats.Clean_SP1("64")  '                                                                 Clean the Work Directory Afterward
-          Debug.Print("EST: Clean_SP1(64) = " & SpeedStats.Clean_SP1("64"))
-
-          If IO.Directory.Exists(Work & "Merge" & IO.Path.DirectorySeparatorChar) Then
-            lTotalTime += SpeedStats.Clean_WORK '                                                                     Clean the Work Directory Beforehand
-            Debug.Print("EST: Clean_WORK = " & SpeedStats.Clean_WORK)
-          End If
+          If IO.Directory.Exists(Work & "Merge" & IO.Path.DirectorySeparatorChar) Then lTotalTime += SpeedStats.Clean_WORK
         Else
           Dim isx64 As Boolean = False
           For Each row As ListViewItem In lvImages.Items
@@ -2902,20 +2872,14 @@
               Exit For
             End If
           Next
-          If isx64 Then '                                                                                           If 64-bit Image found, 64-bit Service Pack is assumed:
-            lTotalTime += SpeedStats.SP_Extract("64")  '                                                              Extract 64-bit Service Pack
-            Debug.Print("EST: SP_Extract(64) = " & SpeedStats.SP_Extract("64"))
-            lTotalTime += SpeedStats.SP_Integrate("64") * imageCount64 '                                              Integrate 64-bit Service Pack
-            Debug.Print("EST: SP_Integrate(64) = " & SpeedStats.SP_Integrate("64") & " * " & imageCount64)
-            lTotalTime += SpeedStats.Clean_SP1("64") '                                                                Clean the Work Directory Afterward
-            Debug.Print("EST: Clean_SP1(64) = " & SpeedStats.Clean_SP1("64"))
-          Else '                                                                                                    Else 32-bit Service Pack:
-            lTotalTime += SpeedStats.SP_Extract("86")  '                                                              Extract 32-bit Service Pack
-            Debug.Print("EST: SP_Extract(86) = " & SpeedStats.SP_Extract("86"))
-            lTotalTime += SpeedStats.SP_Integrate("86") * imageCount32 '                                              Integrate 32-bit Service Pack
-            Debug.Print("EST: SP_Integrate(86) = " & SpeedStats.SP_Integrate("86") & " * " & imageCount32)
-            lTotalTime += SpeedStats.Clean_SP1("86") '                                                                Clean the Work Directory Afterward
-            Debug.Print("EST: Clean_SP1(86) = " & SpeedStats.Clean_SP1("86"))
+          If isx64 Then
+            lTotalTime += SpeedStats.SP_Extract("64")
+            lTotalTime += SpeedStats.SP_Integrate("64") * imageCount64
+            lTotalTime += SpeedStats.Clean_SP1("64")
+          Else
+            lTotalTime += SpeedStats.SP_Extract("86")
+            lTotalTime += SpeedStats.SP_Integrate("86") * imageCount32
+            lTotalTime += SpeedStats.Clean_SP1("86")
           End If
         End If
       End If
@@ -2929,67 +2893,40 @@
         If row.SubItems(1).Text.Contains("x86") Then
           hasx86 = True
           Select Case GetUpdateType(row.Tag)
-            Case UpdateType.MSU
-              lTotalTime += SpeedStats.Update_Integrate("MSU", "86", fileSize) * imageCount32 '                     Merge Each 32-bit MSU Update
-              Debug.Print("EST: Update_Integrate(MSU, 86, " & fileSize & ") = " & SpeedStats.Update_Integrate("MSU", "86", fileSize) & " * " & imageCount32)
-            Case UpdateType.LIP
-              lTotalTime += SpeedStats.Update_Integrate("LIP", "86", fileSize) * imageCount32 '                     Merge Each 32-bit LIP Update
-              Debug.Print("EST: Update_Integrate(LIP, 86, " & fileSize & ") = " & SpeedStats.Update_Integrate("LIP", "86", fileSize) & " * " & imageCount32)
-            Case UpdateType.LP
-              lTotalTime += SpeedStats.Update_Integrate("LP", "86", fileSize) * imageCount32 '                      Merge Each 32-bit LP Update
-              Debug.Print("EST: Update_Integrate(LP, 86, " & fileSize & ") = " & SpeedStats.Update_Integrate("LP", "86", fileSize) & " * " & imageCount32)
-            Case UpdateType.EXE
-              lTotalTime += SpeedStats.Update_Integrate("EXE", "86", fileSize) * imageCount32 '                     Merge Each 32-bit EXE Update
-              Debug.Print("EST: Update_Integrate(EXE, 86, " & fileSize & ") = " & SpeedStats.Update_Integrate("EXE", "86", fileSize) & " * " & imageCount32)
-            Case UpdateType.CAB
-              lTotalTime += SpeedStats.Update_Integrate("CAB", "86", fileSize) * imageCount32 '                     Merge Each 32-bit CAB Update
-              Debug.Print("EST: Update_Integrate(CAB, 86, " & fileSize & ") = " & SpeedStats.Update_Integrate("CAB", "86", fileSize) & " * " & imageCount32)
+            Case UpdateType.MSU : lTotalTime += SpeedStats.Update_Integrate("MSU", "86", fileSize) * imageCount32
+            Case UpdateType.LIP : lTotalTime += SpeedStats.Update_Integrate("LIP", "86", fileSize) * imageCount32
+            Case UpdateType.LP : lTotalTime += SpeedStats.Update_Integrate("LP", "86", fileSize) * imageCount32
+            Case UpdateType.EXE : lTotalTime += SpeedStats.Update_Integrate("EXE", "86", fileSize) * imageCount32
+            Case UpdateType.CAB : lTotalTime += SpeedStats.Update_Integrate("CAB", "86", fileSize) * imageCount32
           End Select
         ElseIf row.SubItems(1).Text.Contains("x64") Or row.SubItems(1).Text.Contains("amd64") Then
           hasx64 = True
           Select Case GetUpdateType(row.Tag)
-            Case UpdateType.MSU
-              lTotalTime += SpeedStats.Update_Integrate("MSU", "64", fileSize) * imageCount64 '                     Merge Each 64-bit MSU Update
-              Debug.Print("EST: Update_Integrate(MSU, 64, " & fileSize & ") = " & SpeedStats.Update_Integrate("MSU", "64", fileSize) & " * " & imageCount64)
-            Case UpdateType.LIP
-              lTotalTime += SpeedStats.Update_Integrate("LIP", "64", fileSize) * imageCount64 '                     Merge Each 64-bit LIP Update
-              Debug.Print("EST: Update_Integrate(LIP, 64, " & fileSize & ") = " & SpeedStats.Update_Integrate("LIP", "64", fileSize) & " * " & imageCount64)
-            Case UpdateType.LP
-              lTotalTime += SpeedStats.Update_Integrate("LP", "64", fileSize) * imageCount64 '                      Merge Each 64-bit LP Update
-              Debug.Print("EST: Update_Integrate(LP, 64, " & fileSize & ") = " & SpeedStats.Update_Integrate("LP", "64", fileSize) & " * " & imageCount64)
-            Case UpdateType.EXE
-              lTotalTime += SpeedStats.Update_Integrate("EXE", "64", fileSize) * imageCount64 '                     Merge Each 64-bit EXE Update
-              Debug.Print("EST: Update_Integrate(EXE, 64, " & fileSize & ") = " & SpeedStats.Update_Integrate("EXE", "64", fileSize) & " * " & imageCount64)
-            Case UpdateType.CAB
-              lTotalTime += SpeedStats.Update_Integrate("CAB", "64", fileSize) * imageCount64 '                     Merge Each 64-bit CAB Update
-              Debug.Print("EST: Update_Integrate(CAB, 64, " & fileSize & ") = " & SpeedStats.Update_Integrate("CAB", "64", fileSize) & " * " & imageCount64)
+            Case UpdateType.MSU : lTotalTime += SpeedStats.Update_Integrate("MSU", "64", fileSize) * imageCount64
+            Case UpdateType.LIP : lTotalTime += SpeedStats.Update_Integrate("LIP", "64", fileSize) * imageCount64
+            Case UpdateType.LP : lTotalTime += SpeedStats.Update_Integrate("LP", "64", fileSize) * imageCount64
+            Case UpdateType.EXE : lTotalTime += SpeedStats.Update_Integrate("EXE", "64", fileSize) * imageCount64
+            Case UpdateType.CAB : lTotalTime += SpeedStats.Update_Integrate("CAB", "64", fileSize) * imageCount64
           End Select
         End If
       Next
       If hasx86 Then
-        lTotalTime += SpeedStats.WIM_MountImage("86") * imageCount32 '                                              Mount 32-bit Image for Update
-        Debug.Print("EST: WIM_MountImage(86) = " & SpeedStats.WIM_MountImage("86") & " * " & imageCount32)
-        lTotalTime += SpeedStats.WIM_SaveImage("86") * imageCount32 '                                               Save 32-bit Image
-        Debug.Print("EST: WIM_SaveImage(86) = " & SpeedStats.WIM_SaveImage("86") & " * " & imageCount32)
+        lTotalTime += SpeedStats.WIM_MountImage("86") * imageCount32
+        lTotalTime += SpeedStats.WIM_SaveImage("86") * imageCount32
       End If
       If hasx64 Then
-        lTotalTime += SpeedStats.WIM_MountImage("64") * imageCount64 '                                              Mount 64-bit Image for Update
-        Debug.Print("EST: WIM_MountImage(64) = " & SpeedStats.WIM_MountImage("64") & " * " & imageCount64)
-        lTotalTime += SpeedStats.WIM_SaveImage("64") * imageCount64 '                                               Save 32-bit Image
-        Debug.Print("EST: WIM_SaveImage(64) = " & SpeedStats.WIM_SaveImage("64") & " * " & imageCount64)
+        lTotalTime += SpeedStats.WIM_MountImage("64") * imageCount64
+        lTotalTime += SpeedStats.WIM_SaveImage("64") * imageCount64
       End If
     End If
 
-    'time to compress all the images one last time
     If chkISO.Checked Then
       If Not String.IsNullOrEmpty(txtISO.Text) Then
         Dim sISOSize As String = CalculateCompatibleSize(txtISO.Text)
-        lTotalTime += SpeedStats.NOWIM_ExtractFromISO(sISOSize) '                                                   Extract all files except INSTALL.WIM from ISO
-        Debug.Print("EST: NOWIM_ExtractFromISO(" & sISOSize & ") = " & SpeedStats.NOWIM_ExtractFromISO(sISOSize))
+        lTotalTime += SpeedStats.NOWIM_ExtractFromISO(sISOSize)
         If imageCountAll > 0 Then
           For I As Integer = 1 To imageCountAll
-            lTotalTime += SpeedStats.WIM_MergeAndCompressImage(IIf(I = 1, "First", "Additional")) '                 Merge and compress all images into a new INSTALL.WIM
-            Debug.Print("EST: WIM_MergeAndCompressImage(" & IIf(I = 1, "First", "Additional") & ") = " & SpeedStats.WIM_MergeAndCompressImage(IIf(I = 1, "First", "Additional")))
+            lTotalTime += SpeedStats.WIM_MergeAndCompressImage(IIf(I = 1, "First", "Additional"))
           Next
         End If
         If cmbLimitType.SelectedIndex > 0 Then
@@ -2998,7 +2935,7 @@
           If limVal.Contains("(") Then limVal = limVal.Substring(0, limVal.IndexOf("("))
           Dim splFileSize As Long = NumericVal(limVal)
           If IO.File.Exists(txtWIM.Text) Then
-            Dim splWIMSize As Long = New IO.FileInfo(txtWIM.Text).Length 'sWIMSize
+            Dim splWIMSize As Long = New IO.FileInfo(txtWIM.Text).Length
             If IO.Path.GetExtension(txtWIM.Text).ToLower = ".iso" Then splWIMSize -= 351
             Dim splISOSize As Long = splWIMSize + 351
             Dim sEstWIMSize As String = CalculateCompatibleSizeVal(splWIMSize)
@@ -3009,57 +2946,35 @@
                 Dim WIMSplit As Long = ISOSplit - 351
                 If splUEFI And (WIMSplit > 4095) Then WIMSplit = 4095
                 Dim lSplitTime As Long = SpeedStats.WIM_SplitImage(sEstWIMSize, WIMSplit & "MB")
-                If lSplitTime < 1 Then
-                  lSplitTime = SpeedStats.WIM_SplitImage(sEstWIMSizePlus, WIMSplit & "MB")
-                  Debug.Print("EST: WIM_SplitImage(" & sEstWIMSizePlus & "," & WIMSplit & "MB) = " & lSplitTime)
-                Else
-                  Debug.Print("EST: WIM_SplitImage(" & sEstWIMSize & "," & WIMSplit & "MB) = " & lSplitTime)
-                End If
-                lTotalTime += lSplitTime '                                                                          Split WIM into WIMSplit MB chunks
+                If lSplitTime < 1 Then lSplitTime = SpeedStats.WIM_SplitImage(sEstWIMSizePlus, WIMSplit & "MB")
+                lTotalTime += lSplitTime
                 If Math.Floor(ISOSplit / WIMSplit) > 1 Then
-                  lTotalTime += SpeedStats.ISO_Make * (Math.Ceiling(splWIMSize / WIMSplit) / (Math.Floor(ISOSplit / WIMSplit))) ' Make ISOs for each WIM
-                  Debug.Print("EST: ISO_Make = " & SpeedStats.ISO_Make & " * " & (Math.Ceiling(splWIMSize / WIMSplit) / (Math.Floor(ISOSplit / WIMSplit))))
+                  lTotalTime += SpeedStats.ISO_Make * (Math.Ceiling(splWIMSize / WIMSplit) / (Math.Floor(ISOSplit / WIMSplit)))
                 ElseIf Math.Floor(ISOSplit / WIMSplit) = 1 Then
-                  lTotalTime += SpeedStats.ISO_Make * Math.Ceiling(splWIMSize / WIMSplit) '                         Make ISOs for each WIM
-                  Debug.Print("EST: ISO_Make = " & SpeedStats.ISO_Make & " * " & Math.Ceiling(splWIMSize / WIMSplit))
+                  lTotalTime += SpeedStats.ISO_Make * Math.Ceiling(splWIMSize / WIMSplit)
                 Else
-                  lTotalTime += SpeedStats.ISO_Make * Math.Ceiling(splWIMSize / WIMSplit) '                         Make ISOs for each WIM
-                  Debug.Print("EST: ISO_Make = " & SpeedStats.ISO_Make & " * " & Math.Ceiling(splWIMSize / WIMSplit))
+                  lTotalTime += SpeedStats.ISO_Make * Math.Ceiling(splWIMSize / WIMSplit)
                 End If
               ElseIf splUEFI And splWIMSize > 4095 Then
                 Dim lSplitTime As Long = SpeedStats.WIM_SplitImage(sEstWIMSize, "4095MB")
-                If lSplitTime < 1 Then
-                  lSplitTime = SpeedStats.WIM_SplitImage(sEstWIMSizePlus, "4095MB")
-                  Debug.Print("EST: WIM_SplitImage(" & sEstWIMSizePlus & ",4095MB) = " & lSplitTime)
-                Else
-                  Debug.Print("EST: WIM_SplitImage(" & sEstWIMSize & ",4095MB) = " & lSplitTime)
-                End If
-                lTotalTime += lSplitTime '                                                                          Split WIM into 4095 MB chunks
+                If lSplitTime < 1 Then lSplitTime = SpeedStats.WIM_SplitImage(sEstWIMSizePlus, "4095MB")
+                lTotalTime += lSplitTime
               End If
             Else
               If splWIMSize > splFileSize Then
                 Dim lSplitTime As Long = SpeedStats.WIM_SplitImage(sEstWIMSize, splFileSize & "MB")
-                If lSplitTime < 1 Then
-                  lSplitTime = SpeedStats.WIM_SplitImage(sEstWIMSizePlus, splFileSize & "MB")
-                  Debug.Print("EST: WIM_SplitImage(" & sEstWIMSizePlus & "," & splFileSize & "MB) = " & lSplitTime)
-                Else
-                  Debug.Print("EST: WIM_SplitImage(" & sEstWIMSize & "," & splFileSize & "MB) = " & lSplitTime)
-                End If
-                lTotalTime += lSplitTime '                                                                          Split WIM into 4095 MB chunks
+                If lSplitTime < 1 Then lSplitTime = SpeedStats.WIM_SplitImage(sEstWIMSizePlus, splFileSize & "MB")
+                lTotalTime += lSplitTime
               End If
             End If
           End If
         End If
-        'SlowCopyFile(ISOFile, ISOFile & ".del", True)
-        lTotalTime += SpeedStats.ISO_Make '                                                                         Make the main ISO
-        Debug.Print("EST: ISO_Make = " & SpeedStats.ISO_Make)
+        lTotalTime += SpeedStats.ISO_Make
       End If
     Else
-      'SlowCopyFile(WIMFile, OldWIM, True)
       If imageCountAll > 0 Then
         For I As Integer = 1 To imageCountAll
-          lTotalTime += SpeedStats.WIM_MergeAndCompressImage(IIf(I = 1, "First", "Additional")) '                   Merge and compress all images into a new INSTALL.WIM
-          Debug.Print("EST: WIM_MergeAndCompressImage(" & IIf(I = 1, "First", "Additional") & ") = " & SpeedStats.WIM_MergeAndCompressImage(IIf(I = 1, "First", "Additional")))
+          lTotalTime += SpeedStats.WIM_MergeAndCompressImage(IIf(I = 1, "First", "Additional"))
         Next
       End If
       If cmbLimitType.SelectedIndex > 0 Then
@@ -3073,13 +2988,8 @@
             Dim sEstWIMSize As String = CalculateCompatibleSizeVal(splWIMSize)
             Dim sEstWIMSizePlus As String = CalculateCompatibleSizeVal(splWIMSize + (1024 * 1024 * 1024))
             Dim lSplitTime As Long = SpeedStats.WIM_SplitImage(sEstWIMSize, splFileSize & "MB")
-            If lSplitTime < 1 Then
-              lSplitTime = SpeedStats.WIM_SplitImage(sEstWIMSizePlus, splFileSize & "MB")
-              Debug.Print("EST: WIM_SplitImage(" & sEstWIMSizePlus & "," & splFileSize & "MB) = " & lSplitTime)
-            Else
-              Debug.Print("EST: WIM_SplitImage(" & sEstWIMSize & "," & splFileSize & "MB) = " & lSplitTime)
-            End If
-            lTotalTime += lSplitTime '                                                                              Split WIM into splFileSize MB chunks
+            If lSplitTime < 1 Then lSplitTime = SpeedStats.WIM_SplitImage(sEstWIMSizePlus, splFileSize & "MB")
+            lTotalTime += lSplitTime
           End If
         End If
       End If
@@ -3118,12 +3028,9 @@
         WriteToOutput("Deleting """ & WorkDir & """...")
         workEstim = SpeedStats.Clean_WORK
         SetProgressTime(workEstim)
-        Debug.Print("RUN: Clean_WORK = " & workEstim)
         workStart = TickCount()
         SlowDeleteDirectory(WorkDir, FileIO.DeleteDirectoryOption.DeleteAllContents)
         workSpeed = TickCount() - workStart
-        Debug.Print("RAN: Clean_WORK = " & workSpeed)
-        Debug.Print("Off by " & (workSpeed - workEstim))
         SpeedStats.Clean_WORK = workSpeed
         Application.DoEvents()
       Catch ex As Exception
@@ -3162,12 +3069,9 @@
         Dim wimSize As String = CalculateCompatibleSize(txtWIM.Text)
         workEstim = SpeedStats.WIM_ExtractFromISO(wimSize)
         SetProgressTime(workEstim)
-        Debug.Print("RUN: WIM_ExtractFromISO(" & wimSize & ") = " & workEstim)
         workStart = TickCount()
-        ExtractAFile(txtWIM.Text, Work, "INSTALL.WIM") '                                                            Extract Primary WIM from ISO
+        ExtractAFile(txtWIM.Text, Work, "INSTALL.WIM")
         workSpeed = TickCount() - workStart
-        Debug.Print("RAN: WIM_ExtractFromISO(" & wimSize & ") = " & workSpeed)
-        Debug.Print("Off by " & (workSpeed - workEstim))
         SpeedStats.WIM_ExtractFromISO(wimSize) = workSpeed
         iTotalVal += 1
         SetTotal(iTotalVal, iTotalMax)
@@ -3206,15 +3110,12 @@
         WriteToOutput("Deleting """ & MergeWork & """...")
         workEstim = SpeedStats.Clean_WORK
         SetProgressTime(workEstim)
-        Debug.Print("RUN: Clean_WORK = " & workEstim)
         workStart = TickCount()
         Try
-          SlowDeleteDirectory(MergeWork, FileIO.DeleteDirectoryOption.DeleteAllContents) '                          Clean Work Directory before Merge
+          SlowDeleteDirectory(MergeWork, FileIO.DeleteDirectoryOption.DeleteAllContents)
         Catch ex As Exception
         End Try
         workSpeed = TickCount() - workStart
-        Debug.Print("RAN: Clean_WORK = " & workSpeed)
-        Debug.Print("Off by " & (workSpeed - workEstim))
         SpeedStats.Clean_WORK = workSpeed
       End If
       IO.Directory.CreateDirectory(MergeWork)
@@ -3227,12 +3128,9 @@
         Dim wimSize As String = CalculateCompatibleSize(MergeFile)
         workEstim = SpeedStats.WIM_ExtractFromISO(wimSize)
         SetProgressTime(workEstim)
-        Debug.Print("RUN: WIM_ExtractFromISO(" & wimSize & ") = " & workEstim)
         workStart = TickCount()
-        ExtractAFile(MergeFile, MergeWorkExtract, "INSTALL.WIM")  '                                                Extract Merge WIM from ISO
+        ExtractAFile(MergeFile, MergeWorkExtract, "INSTALL.WIM")
         workSpeed = TickCount() - workStart
-        Debug.Print("RAN: WIM_ExtractFromISO(" & wimSize & ") = " & workSpeed)
-        Debug.Print("Off by " & (workSpeed - workEstim))
         SpeedStats.WIM_ExtractFromISO(wimSize) = workSpeed
         Application.DoEvents()
         MergeWIM = MergeWorkExtract & "INSTALL.WIM"
@@ -3266,12 +3164,9 @@
         If IO.File.Exists(NewWIM) Then sFirst = "Additional"
         workEstim = SpeedStats.WIM_MergeImage(sFirst)
         SetProgressTime(workEstim)
-        Debug.Print("RUN: WIM_MergeImage(" & sFirst & ") = " & workEstim)
         workStart = TickCount()
-        If ExportWIM(RowImage, RowIndex, NewWIM, RowName) Then '                                                    Merge each Image into a new WIM
+        If ExportWIM(RowImage, RowIndex, NewWIM, RowName) Then
           workSpeed = TickCount() - workStart
-          Debug.Print("RAN: WIM_MergeImage(" & sFirst & ") = " & workSpeed)
-          Debug.Print("Off by " & (workSpeed - workEstim))
           SpeedStats.WIM_MergeImage(sFirst) = workSpeed
           Continue For
         Else
@@ -3289,15 +3184,12 @@
       WriteToOutput("Deleting """ & MergeWork & """...")
       workEstim = SpeedStats.Clean_WORK
       SetProgressTime(workEstim)
-      Debug.Print("RUN: Clean_WORK = " & workEstim)
       workStart = TickCount()
       Try
-        SlowDeleteDirectory(MergeWork, FileIO.DeleteDirectoryOption.DeleteAllContents) '                            Clean Work Directory after Merge
+        SlowDeleteDirectory(MergeWork, FileIO.DeleteDirectoryOption.DeleteAllContents)
       Catch ex As Exception
       End Try
       workSpeed = TickCount() - workStart
-      Debug.Print("RAN: Clean_WORK = " & workSpeed)
-      Debug.Print("Off by " & (workSpeed - workEstim))
       SpeedStats.Clean_WORK = workSpeed
     End If
     SetProgress(0, 1)
@@ -3309,23 +3201,19 @@
     Dim wimCopySize As String = Math.Round(New IO.FileInfo(WIMFile).Length / 1024 / 1024 / 1024, 1, MidpointRounding.ToEven) & "GB"
     workEstim = SpeedStats.WIM_MoveImage(wimCopySize)
     SetProgressTime(workEstim)
-    Debug.Print("RUN: WIM_MoveImage(" & wimCopySize & ") = " & workEstim)
     workStart = TickCount()
-    If Not SlowCopyFile(WIMFile, BakWIM, True) Then '                                                               Create Backup of Old WIM
+    If Not SlowCopyFile(WIMFile, BakWIM, True) Then
       ToggleInputs(True)
       SetStatus("Failed to back up Install WIM!")
       Exit Sub
     End If
     workSpeed = TickCount() - workStart
-    Debug.Print("RAN: WIM_MoveImage(" & wimCopySize & ") = " & workSpeed)
-    Debug.Print("Off by " & (workSpeed - workEstim))
     If workSpeed > 500 Then SpeedStats.WIM_MoveImage(wimCopySize) = workSpeed
     SetStatus("Moving Generated WIM...")
     WriteToOutput("Copying """ & NewWIM & """ to """ & WIMFile & """...")
     wimCopySize = Math.Round(New IO.FileInfo(NewWIM).Length / 1024 / 1024 / 1024, 1, MidpointRounding.ToEven) & "GB"
     workEstim = SpeedStats.WIM_MoveImage(wimCopySize)
     SetProgressTime(workEstim)
-    Debug.Print("RUN: WIM_MoveImage(" & wimCopySize & ") = " & workEstim)
     workStart = TickCount()
     If Not SlowCopyFile(NewWIM, WIMFile, True) Then
       SetStatus("Generated WIM Move Failed! Reverting to Old WIM...")
@@ -3340,8 +3228,6 @@
       Exit Sub
     End If
     workSpeed = TickCount() - workStart
-    Debug.Print("RAN: WIM_MoveImage(" & wimCopySize & ") = " & workSpeed)
-    Debug.Print("Off by " & (workSpeed - workEstim))
     If workSpeed > 500 Then SpeedStats.WIM_MoveImage(wimCopySize) = workSpeed
     If IO.File.Exists(BakWIM) Then
       SetStatus("Cleaning Up Backup WIM...")
@@ -3511,12 +3397,9 @@
       Dim isoSize As String = CalculateCompatibleSize(ISOFile)
       workEstim = SpeedStats.NOWIM_ExtractFromISO(isoSize)
       SetProgressTime(workEstim)
-      Debug.Print("RUN: NOWIM_ExtractFromISO(" & isoSize & ") = " & workEstim)
       workStart = TickCount()
-      ExtractFiles(ISOFile, ISODir, "install.wim") '                                                                Extract all files except INSTALL.WIM from ISO
+      ExtractFiles(ISOFile, ISODir, "install.wim")
       workSpeed = TickCount() - workStart
-      Debug.Print("RAN: NOWIM_ExtractFromISO(" & isoSize & ") = " & workSpeed)
-      Debug.Print("Off by " & (workSpeed - workEstim))
       SpeedStats.NOWIM_ExtractFromISO(isoSize) = workSpeed
       iTotalVal += 1
       SetTotal(iTotalVal, iTotalMax)
@@ -3591,7 +3474,6 @@
               Else
                 SetStatus("Failed to copy UEFI file!")
               End If
-              'My.Computer.FileSystem.CopyFile(sEFIFile, sUEFIFile, True)
             Else
               WriteToOutput("Deleting """ & sUEFIBootDir & """...")
               SlowDeleteDirectory(sUEFIBootDir, FileIO.DeleteDirectoryOption.DeleteAllContents)
@@ -3611,7 +3493,6 @@
         Dim hasx64 As Boolean = lvImages.Items(lvImages.Items.Count - 1).SubItems(1).Text.Contains("x64")
         workEstim = SpeedStats.WIM_SaveImage(IIf(hasx64, "64", "86"))
         SetProgressTime(workEstim)
-        Debug.Print("RUN: WIM_SaveImage(" & IIf(hasx64, "64", "86") & ") = " & workEstim)
         workStart = TickCount()
         SetStatus("Saving Final Image Package...")
         If Not SaveDISM(Mount) Then
@@ -3621,8 +3502,6 @@
           Exit Sub
         End If
         workSpeed = TickCount() - workStart
-        Debug.Print("RAN: WIM_SaveImage(" & IIf(hasx64, "64", "86") & ") = " & workSpeed)
-        Debug.Print("Off by " & (workSpeed - workEstim))
         SpeedStats.WIM_SaveImage(IIf(hasx64, "64", "86")) = workSpeed
       End If
       SetProgress(0, 1)
@@ -3641,12 +3520,9 @@
         SetProgress(0, 100)
         workEstim = SpeedStats.WIM_MergeAndCompressImage(IIf(I = 1, "First", "Additional"))
         SetProgressTime(workEstim)
-        Debug.Print("RUN: WIM_MergeAndCompressImage(" & IIf(I = 1, "First", "Additional") & ") = " & workEstim)
         workStart = TickCount()
-        If ExportWIM(WIMFile, RowIndex, ISOWIMFile, RowName) Then '                                                 Compress WIM Images
+        If ExportWIM(WIMFile, RowIndex, ISOWIMFile, RowName) Then
           workSpeed = TickCount() - workStart
-          Debug.Print("RAN: WIM_MergeAndCompressImage(" & IIf(I = 1, "First", "Additional") & ") = " & workSpeed)
-          Debug.Print("Off by " & (workSpeed - workEstim))
           SpeedStats.WIM_MergeAndCompressImage(IIf(I = 1, "First", "Additional")) = workSpeed
           Continue For
         Else
@@ -3680,13 +3556,10 @@
               SetProgress(0, 0)
               workEstim = SpeedStats.WIM_SplitImage(CalculateCompatibleSize(ISOWIMFile), WIMSplit & "MB")
               SetProgressTime(workEstim)
-              Debug.Print("RUN: WIM_SplitImage(" & CalculateCompatibleSize(ISOWIMFile) & ", " & WIMSplit & "MB) = " & workEstim)
               SetStatus("Splitting WIM into " & ByteSize(WIMSplit * 1024 * 1024) & " Chunks...")
               workStart = TickCount()
               If SplitWIM(ISOWIMFile, IO.Path.ChangeExtension(ISOWIMFile, ".swm"), WIMSplit) Then
                 workSpeed = TickCount() - workStart
-                Debug.Print("RAN: WIM_SplitImage(" & CalculateCompatibleSize(ISOWIMFile) & ", " & WIMSplit & "MB) = " & workSpeed)
-                Debug.Print("Off by " & (workSpeed - workEstim))
                 SpeedStats.WIM_SplitImage(CalculateCompatibleSize(ISOWIMFile), WIMSplit & "MB") = workSpeed
                 If IO.File.Exists(ISOWIMFile) Then
                   WriteToOutput("Deleting """ & ISOWIMFile & """...")
@@ -3768,12 +3641,9 @@
                         End Select
                         workEstim = SpeedStats.ISO_Make
                         SetProgressTime(workEstim)
-                        Debug.Print("RUN: ISO_Make = " & workEstim)
                         workStart = TickCount()
                         MakeISO(sIDir, isoLabel, Nothing, isoFormat, ISODFile)
                         workSpeed = TickCount() - workStart
-                        Debug.Print("RAN: ISO_Make = " & workSpeed)
-                        Debug.Print("Off by " & (workSpeed - workEstim))
                         SpeedStats.ISO_Make = workSpeed
                       Catch ex As Exception
 
@@ -3794,13 +3664,10 @@
               SetProgress(0, 0)
               workEstim = SpeedStats.WIM_SplitImage(CalculateCompatibleSize(ISOWIMFile), WIMSplit & "MB")
               SetProgressTime(workEstim)
-              Debug.Print("RUN: WIM_SplitImage(" & CalculateCompatibleSize(ISOWIMFile) & "," & WIMSplit & "MB) = " & workEstim)
               SetStatus("Splitting WIM into " & ByteSize(WIMSplit * 1024 * 1024) & " Chunks...")
               workStart = TickCount()
               If SplitWIM(ISOWIMFile, IO.Path.ChangeExtension(ISOWIMFile, ".swm"), WIMSplit) Then
                 workSpeed = TickCount() - workStart
-                Debug.Print("RAN: WIM_SplitImage(" & CalculateCompatibleSize(ISOWIMFile) & ", " & WIMSplit & "MB) = " & workSpeed)
-                Debug.Print("Off by " & (workSpeed - workEstim))
                 SpeedStats.WIM_SplitImage(CalculateCompatibleSize(ISOWIMFile), WIMSplit & "MB") = workSpeed
                 If IO.File.Exists(ISOWIMFile) Then
                   WriteToOutput("Deleting """ & ISOWIMFile & """...")
@@ -3875,12 +3742,9 @@
                       End Select
                       workEstim = SpeedStats.ISO_Make
                       SetProgressTime(workEstim)
-                      Debug.Print("RUN: ISO_Make = " & workEstim)
                       workStart = TickCount()
                       MakeISO(sIDir, isoLabel, Nothing, isoFormat, ISODFile)
                       workSpeed = TickCount() - workStart
-                      Debug.Print("RAN: ISO_Make = " & workSpeed)
-                      Debug.Print("Off by " & (workSpeed - workEstim))
                       SpeedStats.ISO_Make = workSpeed
                     Catch ex As Exception
 
@@ -3897,13 +3761,10 @@
               SetProgress(0, 0)
               workEstim = SpeedStats.WIM_SplitImage(CalculateCompatibleSize(ISOWIMFile), WIMSplit & "MB")
               SetProgressTime(workEstim)
-              Debug.Print("RUN: WIM_SplitImage(" & CalculateCompatibleSize(ISOWIMFile) & "," & WIMSplit & "MB) = " & workEstim)
               SetStatus("Splitting WIM into " & ByteSize(WIMSplit * 1024 * 1024) & " Chunks...")
               workStart = TickCount()
               If SplitWIM(ISOWIMFile, IO.Path.ChangeExtension(ISOWIMFile, ".swm"), WIMSplit) Then
                 workSpeed = TickCount() - workStart
-                Debug.Print("RAN: WIM_SplitImage(" & CalculateCompatibleSize(ISOWIMFile) & ", " & WIMSplit & "MB) = " & workSpeed)
-                Debug.Print("Off by " & (workSpeed - workEstim))
                 SpeedStats.WIM_SplitImage(CalculateCompatibleSize(ISOWIMFile), WIMSplit & "MB") = workSpeed
                 If IO.File.Exists(ISOWIMFile) Then
                   WriteToOutput("Deleting """ & ISOWIMFile & """...")
@@ -3975,12 +3836,9 @@
                       End Select
                       workEstim = SpeedStats.ISO_Make
                       SetProgressTime(workEstim)
-                      Debug.Print("RUN: ISO_Make = " & workEstim)
                       workStart = TickCount()
                       MakeISO(sIDir, isoLabel, Nothing, isoFormat, ISODFile)
                       workSpeed = TickCount() - workStart
-                      Debug.Print("RAN: ISO_Make = " & workSpeed)
-                      Debug.Print("Off by " & (workSpeed - workEstim))
                       SpeedStats.ISO_Make = workSpeed
                     Catch ex As Exception
 
@@ -4046,12 +3904,9 @@
                       End Select
                       workEstim = SpeedStats.ISO_Make
                       SetProgressTime(workEstim)
-                      Debug.Print("RUN: ISO_Make = " & workEstim)
                       workStart = TickCount()
                       MakeISO(sIDir, isoLabel, Nothing, isoFormat, ISODFile)
                       workSpeed = TickCount() - workStart
-                      Debug.Print("RAN: ISO_Make = " & workSpeed)
-                      Debug.Print("Off by " & (workSpeed - workEstim))
                       SpeedStats.ISO_Make = workSpeed
                     Catch ex As Exception
 
@@ -4069,13 +3924,10 @@
             SetProgress(0, 0)
             workEstim = SpeedStats.WIM_SplitImage(CalculateCompatibleSize(ISOWIMFile), "4095MB")
             SetProgressTime(workEstim)
-            Debug.Print("RUN: WIM_SplitImage(" & CalculateCompatibleSize(ISOWIMFile) & ", 4095MB) = " & workEstim)
             SetStatus("Splitting WIM into 4095 MB Chunks...")
             workStart = TickCount()
             If SplitWIM(ISOWIMFile, IO.Path.ChangeExtension(ISOWIMFile, ".swm"), 4095) Then
               workSpeed = TickCount() - workStart
-              Debug.Print("RAN: WIM_SplitImage(" & CalculateCompatibleSize(ISOWIMFile) & ", 4095MB) = " & workSpeed)
-              Debug.Print("Off by " & (workSpeed - workEstim))
               SpeedStats.WIM_SplitImage(CalculateCompatibleSize(ISOWIMFile), "4095MB") = workSpeed
               If IO.File.Exists(ISOWIMFile) Then
                 WriteToOutput("Deleting """ & ISOWIMFile & """...")
@@ -4093,13 +3945,10 @@
             SetProgress(0, 0)
             workEstim = SpeedStats.WIM_SplitImage(CalculateCompatibleSize(ISOWIMFile), splFileSize & "MB")
             SetProgressTime(workEstim)
-            Debug.Print("RUN: WIM_SplitImage(" & CalculateCompatibleSize(ISOWIMFile) & ", " & splFileSize & "MB) = " & workEstim)
             SetStatus("Splitting WIM into " & ByteSize(splFileSize * 1024 * 1024) & " Chunks...")
             workStart = TickCount()
             If SplitWIM(ISOWIMFile, IO.Path.ChangeExtension(ISOWIMFile, ".swm"), splFileSize) Then
               workSpeed = TickCount() - workStart
-              Debug.Print("RAN: WIM_SplitImage(" & CalculateCompatibleSize(ISOWIMFile) & ", " & splFileSize & "MB) = " & workSpeed)
-              Debug.Print("Off by " & (workSpeed - workEstim))
               SpeedStats.WIM_SplitImage(CalculateCompatibleSize(ISOWIMFile), splFileSize & "MB") = workSpeed
               If IO.File.Exists(ISOWIMFile) Then
                 WriteToOutput("Deleting """ & ISOWIMFile & """...")
@@ -4182,12 +4031,9 @@
         End Select
         workEstim = SpeedStats.ISO_Make
         SetProgressTime(workEstim)
-        Debug.Print("RUN: ISO_Make = " & workEstim)
         workStart = TickCount()
         Saved = MakeISO(ISODir, isoLabel, BootOrder, isoFormat, ISOFile)
         workSpeed = TickCount() - workStart
-        Debug.Print("RAN: ISO_Make = " & workSpeed)
-        Debug.Print("Off by " & (workSpeed - workEstim))
         SpeedStats.ISO_Make = workSpeed
       Catch ex As Exception
         Saved = False
@@ -4214,7 +4060,6 @@
         Dim hasx64 As Boolean = lvImages.Items(lvImages.Items.Count - 1).SubItems(1).Text.Contains("x64")
         workEstim = SpeedStats.WIM_SaveImage(IIf(hasx64, "64", "86"))
         SetProgressTime(workEstim)
-        Debug.Print("RUN: WIM_SaveImage(" & IIf(hasx64, "64", "86") & ") = " & workEstim)
         workStart = TickCount()
         If Not SaveDISM(Mount) Then
           DiscardDISM(Mount)
@@ -4223,8 +4068,6 @@
           Exit Sub
         End If
         workSpeed = TickCount() - workStart
-        Debug.Print("RAN: WIM_SaveImage(" & IIf(hasx64, "64", "86") & ") = " & workSpeed)
-        Debug.Print("Off by " & (workSpeed - workEstim))
         SpeedStats.WIM_SaveImage(IIf(hasx64, "64", "86")) = workSpeed
       End If
       SetStatus("Compressing INSTALL.WIM...")
@@ -4244,12 +4087,9 @@
         SetProgress(0, 100)
         workEstim = SpeedStats.WIM_MergeAndCompressImage(IIf(I = 1, "First", "Additional"))
         SetProgressTime(workEstim)
-        Debug.Print("RUN: WIM_MergeAndCompressImage(" & IIf(I = 1, "First", "Additional") & ") = " & workEstim)
         workStart = TickCount()
         If ExportWIM(OldWIM, RowIndex, WIMFile, RowName) Then
           workSpeed = TickCount() - workStart
-          Debug.Print("RAN: WIM_MergeAndCompressImage(" & IIf(I = 1, "First", "Additional") & ") = " & workSpeed)
-          Debug.Print("Off by " & (workSpeed - workEstim))
           SpeedStats.WIM_MergeAndCompressImage(IIf(I = 1, "First", "Additional")) = workSpeed
           Continue For
         Else
@@ -4274,13 +4114,10 @@
             REM Split WIMs to FileSize size
             workEstim = SpeedStats.WIM_SplitImage(CalculateCompatibleSize(WIMFile), splFileSize & "MB")
             SetProgressTime(workEstim)
-            Debug.Print("RUN: WIM_SplitImage(" & CalculateCompatibleSize(WIMFile) & "," & splFileSize & "MB) = " & workEstim)
             SetStatus("Splitting WIM into " & ByteSize(splFileSize * 1024 * 1024) & " Chunks...")
             workStart = TickCount()
             If SplitWIM(WIMFile, IO.Path.ChangeExtension(WIMFile, ".swm"), splFileSize) Then
               workSpeed = TickCount() - workStart
-              Debug.Print("RAN: WIM_SplitImage(" & CalculateCompatibleSize(WIMFile) & "," & splFileSize & "MB) = " & workSpeed)
-              Debug.Print("Off by " & (workSpeed - workEstim))
               SpeedStats.WIM_SplitImage(CalculateCompatibleSize(WIMFile), splFileSize & "MB") = workSpeed
               WriteToOutput("Deleting """ & WIMFile & """...")
               IO.File.Delete(WIMFile)
@@ -4356,7 +4193,6 @@
         Dim MSU_64 As New Collections.Generic.List(Of UpdateInfoEx)
         SetProgress(0, PackageCount)
         SetProgressTime(SpeedStats.Update_Parse("MSU", "x86"))
-        Debug.Print("RUN: Update_Parse(MSU,x86) = " & SpeedStats.Update_Parse("MSU", "x86"))
         For I As Integer = 1 To PackageCount
           SetProgress(I, PackageCount)
           SetStatus("Loading Image Package #" & I.ToString.Trim & " Data...")
@@ -4416,17 +4252,14 @@
             SetStatus("Loading Image Package """ & tmpDISM.Name & """...")
             workEstim = SpeedStats.WIM_MountImage("86")
             SetProgressTime(workEstim)
-            Debug.Print("RUN: WIM_MountImage(86) = " & workEstim)
             workStart = TickCount()
-            If Not InitDISM(WIMPath, tmpDISM.Index, Mount) Then '                                                   Mount 32-bit Image
+            If Not InitDISM(WIMPath, tmpDISM.Index, Mount) Then 
               DiscardDISM(Mount)
               ToggleInputs(True)
               SetStatus("Failed to Load Image Package """ & tmpDISM.Name & """!")
               Return False
             End If
             workSpeed = TickCount() - workStart
-            Debug.Print("RAN: WIM_MountImage(86) = " & workSpeed)
-            Debug.Print("Off by " & (workSpeed - workEstim))
             SpeedStats.WIM_MountImage("86") = workSpeed
             If StopRun Then
               DiscardDISM(Mount)
@@ -4448,7 +4281,6 @@
               Dim upType = GetUpdateType(tmpMSU.Path)
               workEstim = SpeedStats.Update_Integrate(TypeToString(upType), "86", fileSize)
               SetProgressTime(workEstim)
-              Debug.Print("RUN: Update_Integrate(" & TypeToString(upType) & ", 86, " & fileSize & ") = " & workEstim)
               workStart = TickCount()
               Select Case upType
                 Case UpdateType.MSU, UpdateType.CAB, UpdateType.LP
@@ -4635,8 +4467,6 @@
                   LangChange = True
               End Select
               workSpeed = TickCount() - workStart
-              Debug.Print("RAN: Update_Integrate(" & TypeToString(upType) & ", 86, " & fileSize & ") = " & workSpeed)
-              Debug.Print("Off by " & (workSpeed - workEstim))
               SpeedStats.Update_Integrate(TypeToString(upType), "86", fileSize) = workSpeed
               If StopRun Then
                 DiscardDISM(Mount)
@@ -4654,17 +4484,14 @@
               SetStatus("Saving Image Package """ & tmpDISM.Name & """...")
               workEstim = SpeedStats.WIM_SaveImage("86")
               SetProgressTime(workEstim)
-              Debug.Print("RUN: WIM_SaveImage(86) = " & workEstim)
               workStart = TickCount()
-              If Not SaveDISM(Mount) Then '                                                                         Save 32-bit Image
+              If Not SaveDISM(Mount) Then
                 DiscardDISM(Mount)
                 ToggleInputs(True)
                 SetStatus("Failed to Save Image Package """ & tmpDISM.Name & """!")
                 Return False
               End If
               workSpeed = TickCount() - workStart
-              Debug.Print("RAN: WIM_SaveImage(86) = " & workSpeed)
-              Debug.Print("Off by " & (workSpeed - workEstim))
               SpeedStats.WIM_SaveImage("86") = workSpeed
             End If
             If StopRun Then
@@ -4681,17 +4508,14 @@
             SetStatus("Loading Image Package """ & tmpDISM.Name & """...")
             workEstim = SpeedStats.WIM_MountImage("64")
             SetProgressTime(workEstim)
-            Debug.Print("RUN: WIM_MountImage(64) = " & workEstim)
             workStart = TickCount()
-            If Not InitDISM(WIMPath, tmpDISM.Index, Mount) Then '                                                   Mount 64-bit Image
+            If Not InitDISM(WIMPath, tmpDISM.Index, Mount) Then
               DiscardDISM(Mount)
               ToggleInputs(True)
               SetStatus("Failed to Load Image Package """ & tmpDISM.Name & """!")
               Return False
             End If
             workSpeed = TickCount() - workStart
-            Debug.Print("RAN: WIM_MountImage(64) = " & workSpeed)
-            Debug.Print("Off by " & (workSpeed - workEstim))
             SpeedStats.WIM_MountImage("64") = workSpeed
             If StopRun Then
               DiscardDISM(Mount)
@@ -4713,7 +4537,6 @@
               Dim upType = GetUpdateType(tmpMSU.Path)
               workEstim = SpeedStats.Update_Integrate(TypeToString(upType), "64", fileSize)
               SetProgressTime(workEstim)
-              Debug.Print("RUN: Update_Integrate(" & TypeToString(upType) & ", 64, " & fileSize & ") = " & workEstim)
               workStart = TickCount()
               Select Case upType
                 Case UpdateType.MSU, UpdateType.CAB, UpdateType.LP
@@ -4899,8 +4722,6 @@
                   LangChange = True
               End Select
               workSpeed = TickCount() - workStart
-              Debug.Print("RAN: Update_Integrate(" & TypeToString(upType) & ", 64, " & fileSize & ") = " & workSpeed)
-              Debug.Print("Off by " & (workSpeed - workEstim))
               SpeedStats.Update_Integrate(TypeToString(upType), "64", fileSize) = workSpeed
               If StopRun Then
                 DiscardDISM(Mount)
@@ -4916,17 +4737,14 @@
               SetStatus("Saving Image Package """ & tmpDISM.Name & """...")
               workEstim = SpeedStats.WIM_SaveImage("64")
               SetProgressTime(workEstim)
-              Debug.Print("RUN: WIM_SaveImage(64) = " & workEstim)
               Dim saveStart As Long = TickCount()
-              If Not SaveDISM(Mount) Then '                                                                         Save 64-bit Image
+              If Not SaveDISM(Mount) Then
                 DiscardDISM(Mount)
                 ToggleInputs(True)
                 SetStatus("Failed to Save Image Package """ & tmpDISM.Name & """!")
                 Return False
               End If
               workSpeed = TickCount() - workStart
-              Debug.Print("RAN: WIM_SaveImage(64) = " & workSpeed)
-              Debug.Print("Off by " & (workSpeed - workEstim))
               SpeedStats.WIM_SaveImage("64") = workSpeed
             End If
             If StopRun Then
@@ -4972,9 +4790,8 @@
     Dim workEstim, workStart, workSpeed As Long
     workEstim = SpeedStats.SP_Extract(activeArch)
     SetProgressTime(workEstim)
-    Debug.Print("RUN: SP_Extract(" & activeArch & ") = " & workEstim)
     workStart = TickCount()
-    RunHidden(SPPath, "/x:""" & Work & "SP1""") '                                                                   Extract Service Pack Files (Part 1)
+    RunHidden(SPPath, "/x:""" & Work & "SP1""")
     SetProgress(1, pbMax)
     If StopRun Then
       ToggleInputs(True)
@@ -4985,13 +4802,13 @@
     If IO.File.Exists(Extract86) Then
       SetStatus("Preparing Service Pack (Extracting KB976932.cab)...")
       WriteToOutput("Extracting """ & Extract86 & """ to """ & Work & "SP1""...")
-      ExtractAllFiles(Extract86, Work & "SP1") '                                                                    Extract Service Pack Files (Part 2 [32-bit])
+      ExtractAllFiles(Extract86, Work & "SP1")
       WriteToOutput("Deleting """ & Extract86 & """...")
       IO.File.Delete(Extract86)
     ElseIf IO.File.Exists(Extract64) Then
       SetStatus("Preparing Service Pack (Extracting KB976932.cab)...")
       WriteToOutput("Extracting """ & Extract64 & """ to """ & Work & "SP1""...")
-      ExtractAllFiles(Extract64, Work & "SP1") '                                                                    Extract Service Pack Files (Part 2 [64-bit])
+      ExtractAllFiles(Extract64, Work & "SP1")
       WriteToOutput("Deleting """ & Extract64 & """...")
       IO.File.Delete(Extract64)
     Else
@@ -5008,7 +4825,7 @@
     If IO.File.Exists(Extract) Then
       SetStatus("Preparing Service Pack (Extracting NestedMPPcontent.cab)...")
       WriteToOutput("Extracting """ & Extract & """ to """ & Work & "SP1""...")
-      ExtractAllFiles(Extract, Work & "SP1") '                                                                      Extract Service Pack Files (Part 3)
+      ExtractAllFiles(Extract, Work & "SP1")
       WriteToOutput("Deleting """ & Extract & """...")
       IO.File.Delete(Extract)
     Else
@@ -5024,7 +4841,7 @@
     Dim Update As String = Work & "SP1" & IO.Path.DirectorySeparatorChar & "update.ses"
     If IO.File.Exists(Update) Then
       SetStatus("Preparing Service Pack (Modifying update.ses)...")
-      UpdateSES(Update) '                                                                                           Extract Service Pack Files (Part 4)
+      UpdateSES(Update)
     Else
       ToggleInputs(True)
       SetStatus("No update.ses to modify!")
@@ -5038,7 +4855,7 @@
     Update = Work & "SP1" & IO.Path.DirectorySeparatorChar & "update.mum"
     If IO.File.Exists(Update) Then
       SetStatus("Preparing Service Pack (Modifying update.mum)...")
-      UpdateMUM(Update) '                                                                                           Extract Service Pack Files (Part 5)
+      UpdateMUM(Update)
     Else
       ToggleInputs(True)
       SetStatus("No update.mum to modify!")
@@ -5053,10 +4870,10 @@
     Dim Update64 As String = Work & "SP1" & IO.Path.DirectorySeparatorChar & "Windows7SP1-KB976933~31bf3856ad364e35~amd64~~6.1.1.17514.mum"
     If IO.File.Exists(Update86) Then
       SetStatus("Preparing Service Pack (Modifying KB976933.mum)...")
-      UpdateMUM(Update86) '                                                                                         Extract Service Pack Files (Part 6 [32-bit])
+      UpdateMUM(Update86)
     ElseIf IO.File.Exists(Update64) Then
       SetStatus("Preparing Service Pack (Modifying KB976933.mum)...")
-      UpdateMUM(Update64) '                                                                                         Extract Service Pack Files (Part 6 [64-bit])
+      UpdateMUM(Update64)
     Else
       ToggleInputs(True)
       SetStatus("No KB976933.mum to modify!")
@@ -5082,7 +4899,7 @@
       If IO.File.Exists(Extract) Then
         SetStatus("Preparing Service Pack (Extracting Language CAB " & (I + 1).ToString.Trim & " of 7)...")
         WriteToOutput("Extracting """ & Extract & """ to """ & Work & "SP1""...")
-        ExtractAllFiles(Extract, Work & "SP1") '                                                                    Extract Service Pack Files (Parts 7 through 14)
+        ExtractAllFiles(Extract, Work & "SP1")
         WriteToOutput("Deleting """ & Extract & """...")
         IO.File.Delete(Extract)
       Else
@@ -5097,15 +4914,12 @@
       End If
     Next
     workSpeed = TickCount() - workStart
-    Debug.Print("RAN: SP_Extract(" & activeArch & ") = " & workSpeed)
-    Debug.Print("Off by " & (workSpeed - workEstim))
     SpeedStats.SP_Extract(activeArch) = workSpeed
     SetProgress(14, pbMax)
     Dim iProg As Integer = 14
     If PackageCount > 0 Then
       workEstim = SpeedStats.SP_Integrate(activeArch)
       SetProgressTime(workEstim * PackageCount)
-      Debug.Print("RUN: SP_Integrate(" & activeArch & ") = " & workEstim & " * " & PackageCount)
       Dim iRunCount As Integer = 0
       workStart = TickCount()
       For I As Integer = 1 To PackageCount
@@ -5135,7 +4949,7 @@
         iProg += 1
         SetProgress(iProg, pbMax)
         SetStatus("Integrating Service Pack into " & dismData.Name & "...")
-        If Not AddToDism(Mount, Work & "SP1") Then '                                                                Integrate Service Pack
+        If Not AddToDism(Mount, Work & "SP1") Then
           DiscardDISM(Mount)
           ToggleInputs(True)
           SetStatus("Failed to Add Service Pack to Image Package """ & dismData.Name & """!")
@@ -5163,8 +4977,6 @@
         SetProgress(iProg, pbMax)
       Next
       workSpeed = (TickCount() - workStart) / iRunCount
-      Debug.Print("RAN: SP_Integrate(" & activeArch & ") = " & workSpeed & " * " & PackageCount)
-      Debug.Print("Off by " & (workSpeed - workEstim))
       SpeedStats.SP_Integrate(activeArch) = workSpeed
     Else
       ToggleInputs(True)
@@ -5176,12 +4988,9 @@
     WriteToOutput("Deleting """ & Work & "SP1""...")
     workEstim = SpeedStats.Clean_SP1(activeArch)
     SetProgressTime(workEstim)
-    Debug.Print("RUN: Clean_SP1(" & activeArch & ") = " & workEstim)
     workStart = TickCount()
     SlowDeleteDirectory(Work & "SP1", FileIO.DeleteDirectoryOption.DeleteAllContents)
     workSpeed = TickCount() - workStart
-    Debug.Print("RUN: Clean_SP1(" & activeArch & ") = " & workSpeed)
-    Debug.Print("Off by " & (workSpeed - workEstim))
     SpeedStats.Clean_SP1(activeArch) = workSpeed
     Return True
   End Function
