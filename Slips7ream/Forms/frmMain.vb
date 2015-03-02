@@ -2320,8 +2320,10 @@
       Extractor.Dispose()
       Extractor = Nothing
       c_ExtractRet(cIndex) = "Error Opening: " & ex.Message
+      Return
     End Try
-    For Each file In Extractor
+    Dim eFiles() As Extraction.COM.IArchiveEntry = Extractor.ToArray
+    For Each file As Extraction.COM.IArchiveEntry In eFiles
       file.Destination = New IO.FileInfo(Destination & file.Name)
     Next
     Try
@@ -2332,6 +2334,7 @@
       Extractor.Dispose()
       Extractor = Nothing
       c_ExtractRet(cIndex) = "Error Extracting: " & ex.Message
+      Return
     End Try
     SetProgress(0, 1000)
     c_ExtractRet(cIndex) = "OK"
@@ -2384,8 +2387,10 @@
       Extractor.Dispose()
       Extractor = Nothing
       c_ExtractRet(cIndex) = "Error Opening: " & ex.Message
+      Return
     End Try
-    For Each file In Extractor
+    Dim eFiles() As Extraction.COM.IArchiveEntry = Extractor.ToArray
+    For Each file As Extraction.COM.IArchiveEntry In eFiles
       If Not file.Name.ToLower.EndsWith(Except.ToLower) Then
         file.Destination = New IO.FileInfo(Destination & file.Name)
       End If
@@ -2398,6 +2403,7 @@
       Extractor.Dispose()
       Extractor = Nothing
       c_ExtractRet(cIndex) = "Error Extracting: " & ex.Message
+      Return
     End Try
     SetProgress(0, 1000)
     c_ExtractRet(cIndex) = "OK"
@@ -2449,10 +2455,12 @@
       Extractor.Dispose()
       Extractor = Nothing
       c_ExtractRet(cIndex) = "Error Opening: " & ex.Message
+      Return
     End Try
-    For Each File In Extractor
-      If File.Name.ToLower.EndsWith(Find.ToLower) Then
-        File.Destination = New IO.FileInfo(Destination & IO.Path.GetFileName(File.Name))
+    Dim eFiles() As Extraction.COM.IArchiveEntry = Extractor.ToArray
+    For Each file As Extraction.COM.IArchiveEntry In eFiles
+      If file.Name.ToLower.EndsWith(Find.ToLower) Then
+        file.Destination = New IO.FileInfo(Destination & IO.Path.GetFileName(file.Name))
         bFound = True
         Exit For
       End If
@@ -2465,6 +2473,7 @@
       Extractor.Dispose()
       Extractor = Nothing
       c_ExtractRet(cIndex) = "Error Extracting: " & ex.Message
+      Return
     End Try
     SetProgress(0, 1000)
     If bFound Then
@@ -2518,10 +2527,12 @@
       Extractor.Dispose()
       Extractor = Nothing
       c_ExtractRet(cIndex) = "Error Opening: " & ex.Message
+      Return
     End Try
     Dim sList As New List(Of String)
-    For Each File In Extractor
-      sList.Add(File.Name)
+    Dim eFiles() As Extraction.COM.IArchiveEntry = Extractor.ToArray
+    For Each file As Extraction.COM.IArchiveEntry In eFiles
+      sList.Add(file.Name)
     Next
     If sList.Count > 0 Then
       c_ExtractRet(cIndex) = Join(sList.ToArray, "|")
@@ -2793,7 +2804,8 @@
             bOpen = False
           End Try
           If bOpen Then
-            For Each item In isoExtract
+            Dim eFiles() As Extraction.COM.IArchiveEntry = isoExtract.ToArray
+            For Each item As Extraction.COM.IArchiveEntry In eFiles
               Dim ext As String = IO.Path.GetExtension(item.Name).ToLower
               If item.Name.ToLower.Contains("install") And (ext = ".wim" Or ext = ".swm") Then
                 Dim wimCopySize As String = Math.Round(item.Size / 1024 / 1024 / 1024, 1, MidpointRounding.ToEven) & "GB"
@@ -2818,7 +2830,8 @@
                 bOpen = False
               End Try
               If bOpen Then
-                For Each item In isoExtract
+                Dim eFiles() As Extraction.COM.IArchiveEntry = isoExtract.ToArray
+                For Each item As Extraction.COM.IArchiveEntry In eFiles
                   Dim ext As String = IO.Path.GetExtension(item.Name).ToLower
                   If item.Name.ToLower.Contains("install") And (ext = ".wim" Or ext = ".swm") Then
                     Dim wimCopySize As String = Math.Round(item.Size / 1024 / 1024 / 1024, 1, MidpointRounding.ToEven) & "GB"

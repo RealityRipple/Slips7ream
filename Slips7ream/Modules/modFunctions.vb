@@ -257,7 +257,6 @@ Module modFunctions
         End Select
       End If
     End Sub
-    Private Extractor As Extraction.ArchiveFile
     Private Shared c_ExtractRet As New Collections.Generic.List(Of String)
 
     Private Function ExtractAFile(Source As String, Destination As String, File As String) As String
@@ -281,16 +280,17 @@ Module modFunctions
       Dim cIndex As UInteger = Obj(3)
       Dim bFound As Boolean = False
       If Not Destination.EndsWith(IO.Path.DirectorySeparatorChar) Then Destination &= IO.Path.DirectorySeparatorChar
-
       Using Extractor As New Extraction.ArchiveFile(New IO.FileInfo(Source))
         Try
           Extractor.Open()
         Catch ex As Exception
           c_ExtractRet(cIndex) = "Error Opening: " & ex.Message
+          Return
         End Try
-        For Each File In Extractor
-          If File.Name.ToLower.EndsWith(Find.ToLower) Then
-            File.Destination = New IO.FileInfo(Destination & File.Name)
+        Dim eFiles() As Extraction.COM.IArchiveEntry = Extractor.ToArray
+        For Each file As Extraction.COM.IArchiveEntry In eFiles
+          If file.Name.ToLower.EndsWith(Find.ToLower) Then
+            file.Destination = New IO.FileInfo(Destination & file.Name)
             bFound = True
             Exit For
           End If
@@ -299,6 +299,7 @@ Module modFunctions
           Extractor.Extract()
         Catch ex As Exception
           c_ExtractRet(cIndex) = "Error Extracting: " & ex.Message
+          Return
         End Try
       End Using
       If bFound Then
