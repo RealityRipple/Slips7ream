@@ -4284,10 +4284,10 @@
               pbVal += 1
               SetProgress(pbVal, pbMax)
               Dim DisplayName As String = IO.Path.GetFileNameWithoutExtension(tmpMSU.Path)
-              If Not String.IsNullOrEmpty(tmpMSU.KBArticle) Then
-                DisplayName = "KB" & tmpMSU.KBArticle
-              ElseIf Not String.IsNullOrEmpty(tmpMSU.DisplayName) Then
+              If Not String.IsNullOrEmpty(tmpMSU.DisplayName) Then
                 DisplayName = tmpMSU.DisplayName
+              ElseIf Not String.IsNullOrEmpty(tmpMSU.KBArticle) Then
+                DisplayName = "KB" & tmpMSU.KBArticle
               End If
               Dim fileSize As String = CalculateCompatibleSize(tmpMSU.Path)
               SetStatus((I + 1).ToString.Trim & "/" & MSU_32.Count.ToString & " - Integrating " & DisplayName & " into " & tmpDISM.Name & "...")
@@ -4540,10 +4540,10 @@
               pbVal += 1
               SetProgress(pbVal, pbMax)
               Dim DisplayName As String = IO.Path.GetFileNameWithoutExtension(tmpMSU.Path)
-              If Not String.IsNullOrEmpty(tmpMSU.KBArticle) Then
-                DisplayName = "KB" & tmpMSU.KBArticle
-              ElseIf Not String.IsNullOrEmpty(tmpMSU.DisplayName) Then
+              If Not String.IsNullOrEmpty(tmpMSU.DisplayName) Then
                 DisplayName = tmpMSU.DisplayName
+              ElseIf Not String.IsNullOrEmpty(tmpMSU.KBArticle) Then
+                DisplayName = "KB" & tmpMSU.KBArticle
               End If
               Dim fileSize As String = CalculateCompatibleSize(tmpMSU.Path)
               SetStatus((I + 1).ToString.Trim & "/" & MSU_64.Count.ToString & " - Integrating " & DisplayName & " into " & tmpDISM.Name & "...")
