@@ -289,20 +289,20 @@ Public Class SpeedStats
       WriteField("WIM_ParseImage_" & Size, value)
     End Set
   End Property
-  Public Shared Property WIM_MountImage(Architecture As String) As Long
+  Public Shared Property WIM_MountImage(Architecture As String, Size As String) As Long
     Get
-      Return ReadField("WIM_MountImage_x" & Architecture)
+      Return ReadField("WIM_MountImage_x" & Architecture & "_in_" & Size)
     End Get
     Set(value As Long)
-      WriteField("WIM_MountImage_x" & Architecture, value)
+      WriteField("WIM_MountImage_x" & Architecture & "_in_" & Size, value)
     End Set
   End Property
-  Public Shared Property WIM_SaveImage(Architecture As String) As Long
+  Public Shared Property WIM_SaveImage(Architecture As String, Size As String, Updates As String) As Long
     Get
-      Return ReadField("WIM_SaveImage_x" & Architecture)
+      Return ReadField("WIM_SaveImage_x" & Architecture & "_from_" & Size & "_with_" & Updates)
     End Get
     Set(value As Long)
-      WriteField("WIM_SaveImage_x" & Architecture, value)
+      WriteField("WIM_SaveImage_x" & Architecture & "_from_" & Size & "_with_" & Updates, value)
     End Set
   End Property
   Public Shared Property WIM_UnmountImage(Architecture As String) As Long
@@ -313,20 +313,20 @@ Public Class SpeedStats
       WriteField("WIM_UnmountImage_x" & Architecture, value)
     End Set
   End Property
-  Public Shared Property WIM_MergeImage(First As String) As Long
+  Public Shared Property WIM_MergeImage(First As String, Size As String) As Long
     Get
-      Return ReadField("WIM_MergeImage_" & First)
+      Return ReadField("WIM_MergeImage_" & First & "_in_" & Size)
     End Get
     Set(value As Long)
-      WriteField("WIM_MergeImage_" & First, value)
+      WriteField("WIM_MergeImage_" & First & "_in_" & Size, value)
     End Set
   End Property
-  Public Shared Property WIM_MergeAndCompressImage(First As String) As Long
+  Public Shared Property WIM_MergeAndCompressImage(First As String, Size As String) As Long
     Get
-      Return ReadField("WIM_MergeAndCompressImage_" & First)
+      Return ReadField("WIM_MergeAndCompressImage_" & First & "_in_" & Size)
     End Get
     Set(value As Long)
-      WriteField("WIM_MergeAndCompressImage_" & First, value)
+      WriteField("WIM_MergeAndCompressImage_" & First & "_in_" & Size, value)
     End Set
   End Property
   Public Shared Property WIM_MoveImage(Size As String) As Long

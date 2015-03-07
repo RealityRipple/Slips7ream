@@ -100,14 +100,14 @@ Module modFunctions
                     'BuildDate = Nothing
 
                   Else
-                    Failure = "File Not Found"
+                    Failure = "Description File Not Found"
                   End If
                 Else
-                  Failure = "File Not Found"
+                  Failure = "CAB File Not Found"
                 End If
               End If
             Else
-              Failure = "File Not Found"
+              Failure = "Properties File Not Found"
             End If
             If IO.Directory.Exists(MSUPath) Then SlowDeleteDirectory(MSUPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           Case UpdateType.CAB
@@ -133,7 +133,7 @@ Module modFunctions
               AppliesTo = xParentAssemblyIdentity.Attribute("name")
               BuildDate = Nothing
             Else
-              Failure = "File Not Found"
+              Failure = "Description File Not Found"
             End If
             If IO.Directory.Exists(CABPath) Then SlowDeleteDirectory(CABPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           Case UpdateType.LP
@@ -158,7 +158,7 @@ Module modFunctions
               AppliesTo = xParentAssemblyIdentity.Attribute("name")
               BuildDate = Nothing
             Else
-              Failure = "File Not Found"
+              Failure = "Description File Not Found"
             End If
             If IO.Directory.Exists(LPPath) Then SlowDeleteDirectory(LPPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           Case UpdateType.LIP
@@ -183,21 +183,53 @@ Module modFunctions
               AppliesTo = xParentAssemblyIdentity.Attribute("name")
               BuildDate = Nothing
             Else
-              Failure = "File Not Found"
+              Failure = "Description File Not Found"
             End If
             If IO.Directory.Exists(MLCPath) Then SlowDeleteDirectory(MLCPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           Case UpdateType.EXE
             Dim EXEPath As String = WorkDir & "UpdateEXE_Extract" & IO.Path.DirectorySeparatorChar
             If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
             IO.Directory.CreateDirectory(EXEPath)
-            Dim exRet As String = ExtractAFile(Location, EXEPath, "update.mum")
-            If Not exRet = "OK" Then
-              Dim exRet2 As String = ExtractAFile(Location, EXEPath, "WUA-Win7SP1.exe")
-              If exRet2 = "OK" Then
-                exRet2 = ExtractAFile(EXEPath & "WUA-Win7SP1.exe", EXEPath, "WUClient-SelfUpdate-ActiveX.cab")
-                If exRet2 = "OK" Then
-                  exRet2 = ExtractAFile(EXEPath & "WUClient-SelfUpdate-ActiveX.cab", EXEPath, "update.mum")
-                  If exRet2 = "OK" Then
+            Dim fInfo As FileVersionInfo = FileVersionInfo.GetVersionInfo(Location)
+            If fInfo.OriginalFilename = "iesetup.exe" And fInfo.ProductMajorPart > 9 Then
+              Dim iExtract As New Process With {.StartInfo = New ProcessStartInfo(Location, "/x:" & EXEPath)}
+              If iExtract.Start Then
+                iExtract.WaitForExit()
+                If IO.File.Exists(EXEPath & "IE-Win7.CAB") Then
+                  Dim exRet As String = ExtractAFile(EXEPath & "IE-Win7.CAB", EXEPath, "update.mum")
+                  If exRet = "OK" Then
+                    If IO.File.Exists(EXEPath & "update.mum") Then
+                      Dim xMUM As XElement = XElement.Load(EXEPath & "update.mum")
+                      DisplayName = xMUM.Attribute("displayName").Value & " with Spelling and Hyphenation"
+                      SupportLink = xMUM.Attribute("supportInformation").Value
+                      Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
+                      Architecture = xAssemblyIdentity.Attribute("processorArchitecture").Value
+                      Dim xPackage As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}package")
+                      KBArticle = xPackage.Attribute("identifier").Value
+                      If KBArticle.StartsWith("KB") Then KBArticle = KBArticle.Substring(2)
+                      Dim xParent As XElement = xPackage.Element("{urn:schemas-microsoft-com:asm.v3}parent")
+                      Dim xParentAssemblyIdentity As XElement = xParent.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
+                      AppliesTo = xParentAssemblyIdentity.Attribute("name").Value
+                      BuildDate = Nothing
+                    Else
+                      Failure = "Description File Not Found"
+                    End If
+                  Else
+                    Failure = exRet
+                  End If
+                Else
+                  Failure = "IE CAB File Not Found"
+                End If
+              Else
+                Failure = "Could not extract CABs from IE Setup EXE"
+              End If
+            ElseIf fInfo.OriginalFilename = "mergedwusetup.exe" Then
+              Dim exRet As String = ExtractAFile(Location, EXEPath, "WUA-Win7SP1.exe")
+              If exRet = "OK" Then
+                exRet = ExtractAFile(EXEPath & "WUA-Win7SP1.exe", EXEPath, "WUClient-SelfUpdate-ActiveX.cab")
+                If exRet = "OK" Then
+                  exRet = ExtractAFile(EXEPath & "WUClient-SelfUpdate-ActiveX.cab", EXEPath, "update.mum")
+                  If exRet = "OK" Then
                     If IO.File.Exists(EXEPath & "update.mum") Then
                       Dim xMUM As XElement = XElement.Load(EXEPath & "update.mum")
                       DisplayName = xMUM.Attribute("displayName")
@@ -214,46 +246,48 @@ Module modFunctions
                       AppliesTo = xParentAssemblyIdentity.Attribute("name")
                       BuildDate = Nothing
                     Else
-                      Failure = "File Not Found"
+                      Failure = "Description File Not Found"
                     End If
                   Else
                     Failure = exRet
-                    Return
                   End If
                 Else
                   Failure = exRet
-                  Return
                 End If
               Else
                 Failure = exRet
-                Return
               End If
             Else
-              If IO.File.Exists(EXEPath & "update.mum") Then
-                Dim xMUM As XElement = XElement.Load(EXEPath & "update.mum")
-                Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
-                DisplayName = xAssemblyIdentity.Attribute("language").Value & " Multilingual User Interface Pack"
-                SupportLink = Nothing
-                Architecture = xAssemblyIdentity.Attribute("processorArchitecture")
-                Dim xPackage As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}package")
-                KBArticle = Nothing
-                Dim xParent As XElement = xPackage.Element("{urn:schemas-microsoft-com:asm.v3}parent")
-                Dim xParentAssemblyIdentity As XElement = xParent.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
-                AppliesTo = xParentAssemblyIdentity.Attribute("name")
-                BuildDate = Nothing
+              Dim exRet As String = ExtractAFile(Location, EXEPath, "update.mum")
+              If exRet = "OK" Then
+                If IO.File.Exists(EXEPath & "update.mum") Then
+                  Dim xMUM As XElement = XElement.Load(EXEPath & "update.mum")
+                  Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
+                  DisplayName = xAssemblyIdentity.Attribute("language").Value & " Multilingual User Interface Pack"
+                  SupportLink = Nothing
+                  Architecture = xAssemblyIdentity.Attribute("processorArchitecture")
+                  Dim xPackage As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}package")
+                  KBArticle = Nothing
+                  Dim xParent As XElement = xPackage.Element("{urn:schemas-microsoft-com:asm.v3}parent")
+                  Dim xParentAssemblyIdentity As XElement = xParent.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
+                  AppliesTo = xParentAssemblyIdentity.Attribute("name")
+                  BuildDate = Nothing
+                Else
+                  Failure = "Description File Not Found"
+                End If
               Else
-                Failure = "File Not Found"
+                Failure = exRet
               End If
             End If
             If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           Case UpdateType.Other
-            DisplayName = Nothing
-            AppliesTo = Nothing
-            SupportLink = Nothing
-            Architecture = Nothing
-            KBArticle = Nothing
-            BuildDate = Nothing
-            Failure = "Unknown File Type"
+              DisplayName = Nothing
+              AppliesTo = Nothing
+              SupportLink = Nothing
+              Architecture = Nothing
+              KBArticle = Nothing
+              BuildDate = Nothing
+              Failure = "Unknown File Type"
         End Select
       End If
     End Sub
@@ -775,12 +809,16 @@ Module modFunctions
     If TaskDialog.IsPlatformSupported Then
       Dim newData As New UpdateInfoEx(newPath)
       Dim oldData As New UpdateInfoEx(oldPath)
+      Dim newName As String = "KB" & newData.KBArticle
+      If newData.DisplayName.Contains("Internet Explorer") Then newName = "Internet Explorer"
+      Dim oldName As String = "KB" & oldData.KBArticle
+      If oldData.DisplayName.Contains("Internet Explorer") Then oldName = "Internet Explorer"
       If newVer > oldVer Then
         Using dlgUpdate As New TaskDialog
           dlgUpdate.Cancelable = False
           dlgUpdate.StartupLocation = TaskDialogStartupLocation.CenterOwner
           dlgUpdate.Caption = "Replace Older Version?"
-          dlgUpdate.InstructionText = "There is already an older version of KB" & oldData.KBArticle & " in the Update List."
+          dlgUpdate.InstructionText = "There is already an older version of " & oldName & " in the Update List."
           dlgUpdate.StandardButtons = TaskDialogStandardButtons.None
           dlgUpdate.Text = "Click the version you want to keep"
           dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
@@ -790,10 +828,12 @@ Module modFunctions
           Dim sYes As String
           Dim newFInfo As New IO.FileInfo(newPath)
           If String.IsNullOrEmpty(newData.Failure) Then
+            Dim newDate As String = newData.BuildDate
+            If String.IsNullOrEmpty(newDate) Then newDate = newFInfo.LastWriteTime.ToShortDateString
             sYes = "Replace the update with this new version:" & vbNewLine &
               em & newData.DisplayName & vbNewLine &
               em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
-              em & "Built: " & newData.BuildDate
+              em & "Built: " & newDate
           Else
             sYes = "Replace the update with this new version:" & vbNewLine &
               em & IO.Path.GetFileNameWithoutExtension(newPath) & vbNewLine &
@@ -810,10 +850,12 @@ Module modFunctions
           Dim sNo As String
           Dim oldFInfo As New IO.FileInfo(oldPath)
           If String.IsNullOrEmpty(oldData.Failure) Then
+            Dim oldDate As String = oldData.BuildDate
+            If String.IsNullOrEmpty(oldDate) Then oldDate = oldFInfo.LastWriteTime.ToShortDateString
             sNo = "This update will not be replaced:" & vbNewLine &
               em & oldData.DisplayName & vbNewLine &
               em & "Size: " & ByteSize(oldFInfo.Length) & vbNewLine &
-              em & "Built: " & oldData.BuildDate
+              em & "Built: " & oldDate
           Else
             sNo = "This update will not be replaced:" & vbNewLine &
               em & IO.Path.GetFileNameWithoutExtension(oldPath) & vbNewLine &
@@ -838,7 +880,7 @@ Module modFunctions
           dlgUpdate.Cancelable = False
           dlgUpdate.StartupLocation = TaskDialogStartupLocation.CenterOwner
           dlgUpdate.Caption = "Replace Newer Version?"
-          dlgUpdate.InstructionText = "There is already a newer version of KB" & newData.KBArticle & " in the Update List."
+          dlgUpdate.InstructionText = "There is already a newer version of " & newName & " in the Update List."
           dlgUpdate.StandardButtons = TaskDialogStandardButtons.None
           dlgUpdate.Text = "Click the version you want to keep"
           dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
@@ -848,10 +890,12 @@ Module modFunctions
           Dim sYes As String
           Dim newFInfo As New IO.FileInfo(newPath)
           If String.IsNullOrEmpty(newData.Failure) Then
+            Dim newDate As String = newData.BuildDate
+            If String.IsNullOrEmpty(newDate) Then newDate = newFInfo.LastWriteTime.ToShortDateString
             sYes = "Replace the update with this old version:" & vbNewLine &
               em & newData.DisplayName & vbNewLine &
               em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
-              em & "Built: " & newData.BuildDate
+              em & "Built: " & newDate
           Else
             sYes = "Replace the update with this old version:" & vbNewLine &
               em & IO.Path.GetFileNameWithoutExtension(newPath) & vbNewLine &
@@ -866,10 +910,12 @@ Module modFunctions
           Dim sNo As String
           Dim oldFInfo As New IO.FileInfo(oldPath)
           If String.IsNullOrEmpty(oldData.Failure) Then
+            Dim oldDate As String = oldData.BuildDate
+            If String.IsNullOrEmpty(oldDate) Then oldDate = oldFInfo.LastWriteTime.ToShortDateString
             sNo = "This update will not be replaced:" & vbNewLine &
               em & oldData.DisplayName & vbNewLine &
               em & "Size: " & ByteSize(oldFInfo.Length) & vbNewLine &
-              em & "Built: " & oldData.BuildDate
+              em & "Built: " & oldDate
           Else
             sNo = "This update will not be replaced:" & vbNewLine &
               em & IO.Path.GetFileNameWithoutExtension(oldPath) & vbNewLine &

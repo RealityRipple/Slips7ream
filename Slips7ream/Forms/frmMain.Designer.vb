@@ -793,7 +793,7 @@ Partial Class frmMain
     '
     'tmrCountdown
     '
-    Me.tmrCountdown.Interval = 1000
+    Me.tmrCountdown.Interval = 300
     '
     'tmrQuickWait
     '

@@ -1166,6 +1166,8 @@
         Case UpdateType.EXE
           If msuData.DisplayName = "Windows Update Agent" Then
             msuType = msuData.Architecture & " CAB"
+          ElseIf msuData.DisplayName.Contains("Internet Explorer") Then
+            msuType = msuData.Architecture & " CAB"
           Else
             msuType = msuData.Architecture & " MUI"
           End If
@@ -1180,6 +1182,54 @@
         If item.SubItems(1).Text = msuType Then
           If item.Text = msuData.DisplayName Then
             Return New AddResult(False, "Update already added.")
+          ElseIf item.Text.Contains("Internet Explorer 10 with Spelling and Hyphenation") And (msuData.DisplayName = "Windows Internet Explorer 10" Or msuData.DisplayName = "Windows6.2-KB2764916-x86" Or msuData.DisplayName = "Windows6.2-KB2764913-x86") Then
+            Return New AddResult(False, "Update already added.")
+          ElseIf item.Text.Contains("Internet Explorer 11 with Spelling and Hyphenation") And (msuData.DisplayName = "Internet Explorer 11" Or msuData.DisplayName = "Windows6.3-KB2849696-x86" Or msuData.DisplayName = "Windows6.3-KB2849697-x86") Then
+            Return New AddResult(False, "Update already added.")
+          ElseIf item.Text.Contains("Internet Explorer") And msuData.DisplayName.Contains("Internet Explorer") Then
+            Dim newName As String = msuData.DisplayName
+            If newName.EndsWith(" with Spelling and Hyphenation") Then newName = newName.Substring(0, newName.Length - 30)
+            Dim AddingName As String = newName.Substring(0, newName.Length - 3)
+            Dim AddingVer As String = newName.Substring(newName.Length - 2)
+            Dim oldName As String = item.Text
+            If oldName.EndsWith(" with Spelling and Hyphenation") Then oldName = oldName.Substring(0, oldName.Length - 30)
+            Dim ItemName As String = oldName.Substring(0, oldName.Length - 3)
+            Dim ItemVer As String = oldName.Substring(oldName.Length - 2)
+            Dim aVer, iVer As Integer
+            If Not Integer.TryParse(AddingVer, aVer) Then aVer = 1
+            If Not Integer.TryParse(ItemVer, iVer) Then iVer = 1
+            Dim always As Boolean = False
+            If aVer > iVer Then
+              If ReplaceAllOldUpdates = TriState.True Then
+                item.Remove()
+              ElseIf ReplaceAllOldUpdates = TriState.False Then
+                Return New AddResult(True)
+              Else
+                If SelectionBox(Me, sUpdate, AddingVer, item.Tag, ItemVer, always) Then
+                  If always Then ReplaceAllOldUpdates = TriState.True
+                  item.Remove()
+                Else
+                  If always Then ReplaceAllOldUpdates = TriState.False
+                  Return New AddResult(True)
+                End If
+              End If
+            ElseIf aVer < iVer Then
+              If ReplaceAllNewUpdates = TriState.True Then
+                item.Remove()
+              ElseIf ReplaceAllNewUpdates = TriState.False Then
+                Return New AddResult(True)
+              Else
+                If SelectionBox(Me, sUpdate, AddingVer, item.Tag, ItemVer, always) Then
+                  If always Then ReplaceAllNewUpdates = TriState.True
+                  item.Remove()
+                Else
+                  If always Then ReplaceAllNewUpdates = TriState.False
+                  Return New AddResult(True)
+                End If
+              End If
+            Else
+              Return New AddResult(False, "Update already added.")
+            End If
           ElseIf msuData.DisplayName.Contains("-v") Or item.Text.Contains("-v") Then
             Dim AddingName As String = msuData.DisplayName
             Dim AddingVer As String = "1"
@@ -1237,6 +1287,10 @@
               End If
             End If
           End If
+        ElseIf item.Text.Contains("Internet Explorer 10 with Spelling and Hyphenation") And (msuData.DisplayName = "Windows6.2-KB2764916-x86" Or msuData.DisplayName = "Windows6.2-KB2764913-x86") Then
+          Return New AddResult(False, "Update already added.")
+        ElseIf item.Text.Contains("Internet Explorer 11 with Spelling and Hyphenation") And (msuData.DisplayName = "Windows6.3-KB2849696-x86" Or msuData.DisplayName = "Windows6.3-KB2849697-x86") Then
+          Return New AddResult(False, "Update already added.")
         End If
       Next
       If msuData.DisplayName.ToLower.Contains("-kb2533552-") Then Return New AddResult(False, "Update can't be integrated.")
@@ -1323,6 +1377,10 @@
           Return New AddResult(True)
         Case UpdateType.EXE
           If msuData.DisplayName = "Windows Update Agent" Then
+            lvItem.ImageKey = "CAB"
+            lvItem.SubItems.Add(msuData.Architecture & " CAB")
+            lvMSU.Items.Add(lvItem)
+          ElseIf msuData.DisplayName.Contains("Internet Explorer") Then
             lvItem.ImageKey = "CAB"
             lvItem.SubItems.Add(msuData.Architecture & " CAB")
             lvMSU.Items.Add(lvItem)
@@ -1900,7 +1958,7 @@
         timeInd = Time
       End If
       Dim left As Long = timeInd - (TickCount() - startProg)
-      If left < 1000 Then
+      If left < 0 Then
         lblIndividualTime.Text = "finishing"
         timeInd = 0
         If lblTotalTime.Text = "finishing" Then tmrCountdown.Enabled = False
@@ -1934,12 +1992,13 @@
       Me.Invoke(New SetTimeInvoker(AddressOf SetTotalTime), Time)
     Else
       If Time >= 0 Then
+        Debug.Print("Total time to complete: " & ConvertTime(Time, True, True))
         startTot = TickCount()
         timeTot = Time
       End If
       Dim left As Long = timeTot - (TickCount() - startTot)
 
-      If left < 1000 Then
+      If left < 0 Then
         lblTotalTime.Text = "finishing"
         timeTot = 0
         timeDone = TickCount()
@@ -2502,13 +2561,15 @@
       Else
         Select Case sRet
           Case "CRC Error"
-            MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to read the file!", "There was an error while reading.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+            MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to read the file list!", "There was an error while reading.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
           Case "Data Error"
-            MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to read the file!", "There was an error while reading.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+            MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to read the file list!", "There was an error while reading.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
           Case "Unsupported Method"
-            MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to read the file!", "There was an error while extracting.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+            MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to read the file list!", "There was an error while extracting.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
           Case "File Not Found"
-            MsgDlg(Me, "Unable to find any files in " & IO.Path.GetFileName(Source) & "!", "No files were found.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+            MsgDlg(Me, "Unable to read any files in " & IO.Path.GetFileName(Source) & "!", "Files were not found.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+          Case "File List Busy"
+            MsgDlg(Me, "Unable to read the file list in " & IO.Path.GetFileName(Source) & "!", "File list was busy.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
           Case Else
             MsgDlg(Me, sRet, "There was an error while reading.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
         End Select
@@ -2530,7 +2591,13 @@
       Return
     End Try
     Dim sList As New List(Of String)
-    Dim eFiles() As Extraction.COM.IArchiveEntry = Extractor.ToArray
+    Dim eFiles() As Extraction.COM.IArchiveEntry
+    Try
+      eFiles = Extractor.ToArray
+    Catch ex As Exception
+      c_ExtractRet(cIndex) = "File List Busy"
+      Return
+    End Try
     For Each file As Extraction.COM.IArchiveEntry In eFiles
       sList.Add(file.Name)
     Next
@@ -2591,9 +2658,64 @@
 #End Region
 #Region "EXE2CAB"
   Private Function EXE2CAB(Source As String, Destination As String) As Boolean
-    Dim ExeToCab As String = AIKDir & "exe2cab.exe"
-    RunHidden(ExeToCab, """" & Source & """ -q """ & Destination & """")
-    Return IO.File.Exists(Destination)
+    Try
+      Using eRead As New IO.FileStream(Source, IO.FileMode.Open, IO.FileAccess.Read)
+        Dim bFound As Boolean = False
+        Do Until eRead.Position >= eRead.Length
+          Dim bRead As Byte = eRead.ReadByte
+          If bRead = &H4D Then
+            If eRead.ReadByte = &H53 Then
+              If eRead.ReadByte = &H43 Then
+                If eRead.ReadByte = &H46 Then
+                  bFound = True
+                  eRead.Position -= 4
+                  Exit Do
+                Else
+                  eRead.Position -= 3
+                End If
+              Else
+                eRead.Position -= 2
+              End If
+            Else
+              eRead.Position -= 1
+            End If
+          End If
+        Loop
+        If bFound Then
+          Using cWrite As New IO.FileStream(Destination, IO.FileMode.OpenOrCreate, IO.FileAccess.Write)
+            cWrite.Position = 0
+            Dim lSize As Long = eRead.Length - eRead.Position
+            Dim maxSize As Long = Integer.MaxValue / 4
+            If lSize > maxSize Then
+              Dim lChunks As Long = Math.Floor(lSize / maxSize)
+              Dim lLastSize As Long = lSize Mod maxSize
+              For L As Long = 0 To lChunks - 1
+                Dim bData(maxSize - 1) As Byte
+                eRead.Read(bData, 0, maxSize)
+                cWrite.Write(bData, 0, maxSize)
+                Erase bData
+              Next
+              If lLastSize > 0 Then
+                Dim bLast(lLastSize - 1) As Byte
+                eRead.Read(bLast, 0, lLastSize)
+                cWrite.Write(bLast, 0, lLastSize)
+                Erase bLast
+              End If
+            Else
+              Dim bData(lSize - 1) As Byte
+              eRead.Read(bData, 0, lSize)
+              cWrite.Write(bData, 0, lSize)
+              Erase bData
+            End If
+          End Using
+          Return True
+        Else
+          Return False
+        End If
+      End Using
+    Catch ex As Exception
+      Return False
+    End Try
   End Function
 #End Region
 #Region "Caller Functions"
@@ -2790,6 +2912,25 @@
 #Region "Integration"
   Private Function CalculateRunTime() As Long
     Dim lTotalTime As Long = 0
+    Dim imageCount32 As Integer = 0
+    Dim imageCount64 As Integer = 0
+    Dim wimFileSize As String = Nothing
+    Dim thisTime As Long = CalculateStep1Time(imageCount32, imageCount64, wimFileSize)
+    Debug.Print("Extract and Merge should take " & ConvertTime(thisTime, True, True) & "...")
+    lTotalTime += thisTime
+    thisTime = CalculateStep2Time(imageCount32, imageCount64, wimFileSize)
+    Debug.Print("Service Pack Integration should take " & ConvertTime(thisTime, True, True) & "...")
+    lTotalTime += thisTime
+    thisTime = CalculateStep3Time(imageCount32, imageCount64, wimFileSize)
+    Debug.Print("Update Integration should take " & ConvertTime(thisTime, True, True) & "...")
+    lTotalTime += thisTime
+    thisTime = CalculateStep4Time(imageCount32, imageCount64, wimFileSize)
+    Debug.Print("Final Compression and ISO generation should take " & ConvertTime(thisTime, True, True) & "...")
+    lTotalTime += thisTime
+    Return lTotalTime
+  End Function
+  Private Function CalculateStep1Time(ByRef imageCount32 As Integer, ByRef imageCount64 As Integer, ByRef wimFileSize As String) As Long
+    Dim lTotalTime As Long = 0
     Dim sWIMSize As String = CalculateCompatibleSize(txtWIM.Text)
     Dim sMergeSize As String = CalculateCompatibleSize(txtMerge.Text)
     If IO.Path.GetExtension(txtWIM.Text).ToLower = ".iso" Then
@@ -2808,8 +2949,8 @@
             For Each item As Extraction.COM.IArchiveEntry In eFiles
               Dim ext As String = IO.Path.GetExtension(item.Name).ToLower
               If item.Name.ToLower.Contains("install") And (ext = ".wim" Or ext = ".swm") Then
-                Dim wimCopySize As String = Math.Round(item.Size / 1024 / 1024 / 1024, 1, MidpointRounding.ToEven) & "GB"
-                lTotalTime += SpeedStats.WIM_MoveImage(wimCopySize)
+                wimFileSize = Math.Round(item.Size / 1024 / 1024 / 1024, 1, MidpointRounding.ToEven) & "GB"
+                lTotalTime += SpeedStats.WIM_MoveImage(wimFileSize)
               End If
             Next
           End If
@@ -2834,8 +2975,8 @@
                 For Each item As Extraction.COM.IArchiveEntry In eFiles
                   Dim ext As String = IO.Path.GetExtension(item.Name).ToLower
                   If item.Name.ToLower.Contains("install") And (ext = ".wim" Or ext = ".swm") Then
-                    Dim wimCopySize As String = Math.Round(item.Size / 1024 / 1024 / 1024, 1, MidpointRounding.ToEven) & "GB"
-                    lTotalTime += SpeedStats.WIM_MoveImage(wimCopySize)
+                    Dim mergeCopySize As String = Math.Round(item.Size / 1024 / 1024 / 1024, 1, MidpointRounding.ToEven) & "GB"
+                    lTotalTime += SpeedStats.WIM_MoveImage(mergeCopySize)
                   End If
                 Next
               End If
@@ -2846,8 +2987,8 @@
         End If
       End If
     End If
-    Dim imageCount32 As Integer = 0
-    Dim imageCount64 As Integer = 0
+    imageCount32 = 0
+    imageCount64 = 0
     Dim imageCountAll As Integer = 0
     If lvImages.Items.Count > 0 Then
       For Each row As ListViewItem In lvImages.Items
@@ -2861,11 +3002,18 @@
       Next
       imageCountAll = imageCount32 + imageCount64
       If imageCountAll > 0 Then
-        lTotalTime += SpeedStats.WIM_MergeImage("First")
-        If imageCountAll > 1 Then lTotalTime += SpeedStats.WIM_MergeImage("Additional") * (imageCountAll - 1)
+        lTotalTime += SpeedStats.WIM_MergeImage("First", wimFileSize)
+        If imageCountAll > 1 Then lTotalTime += SpeedStats.WIM_MergeImage("Additional", wimFileSize) * (imageCountAll - 1)
       End If
     End If
-
+    Return lTotalTime
+  End Function
+  Private Function CalculateStep2Time(imageCount32 As Integer, imageCount64 As Integer, ByRef wimFileSize As String) As Long
+    Dim dFileSize As Double = 0
+    If Not String.IsNullOrEmpty(wimFileSize) Then
+      dFileSize = Val(wimFileSize.Substring(0, wimFileSize.Length - 2))
+    End If
+    Dim lTotalTime As Long = 0
     If chkSP.Checked Then
       If Not String.IsNullOrEmpty(txtSP.Text) Then
         If Not String.IsNullOrEmpty(txtSP64.Text) Then
@@ -2875,8 +3023,8 @@
           lTotalTime += SpeedStats.SP_Extract("64")
           lTotalTime += SpeedStats.SP_Integrate("64") * imageCount64
           lTotalTime += SpeedStats.Clean_SP1("64")
-
           If IO.Directory.Exists(Work & "Merge" & IO.Path.DirectorySeparatorChar) Then lTotalTime += SpeedStats.Clean_WORK
+          If dFileSize > 0 Then wimFileSize = (dFileSize + (0.11 * imageCount32) + (0.22 * imageCount64)) & "GB"
         Else
           Dim isx64 As Boolean = False
           For Each row As ListViewItem In lvImages.Items
@@ -2889,22 +3037,30 @@
             lTotalTime += SpeedStats.SP_Extract("64")
             lTotalTime += SpeedStats.SP_Integrate("64") * imageCount64
             lTotalTime += SpeedStats.Clean_SP1("64")
+            If dFileSize > 0 Then wimFileSize = (dFileSize + (0.22 * imageCount64)) & "GB"
           Else
             lTotalTime += SpeedStats.SP_Extract("86")
             lTotalTime += SpeedStats.SP_Integrate("86") * imageCount32
             lTotalTime += SpeedStats.Clean_SP1("86")
+            If dFileSize > 0 Then dFileSize += (dFileSize + (0.11 * imageCount32)) & "GB"
           End If
         End If
       End If
     End If
-
+    Return lTotalTime
+  End Function
+  Private Function CalculateStep3Time(imageCount32 As Integer, imageCount64 As Integer, wimFileSize As String) As Long
+    Dim lTotalTime As Long = 0
     If lvMSU.Items.Count > 0 Then
       Dim hasx86 As Boolean = False
       Dim hasx64 As Boolean = False
+      Dim x86Count As Integer = 0
+      Dim x64Count As Integer = 0
       For Each row As ListViewItem In lvMSU.Items
         Dim fileSize As String = CalculateCompatibleSize(row.Tag)
         If row.SubItems(1).Text.Contains("x86") Then
           hasx86 = True
+          x86Count += 1
           Select Case GetUpdateType(row.Tag)
             Case UpdateType.MSU : lTotalTime += SpeedStats.Update_Integrate("MSU", "86", fileSize) * imageCount32
             Case UpdateType.LIP : lTotalTime += SpeedStats.Update_Integrate("LIP", "86", fileSize) * imageCount32
@@ -2914,6 +3070,7 @@
           End Select
         ElseIf row.SubItems(1).Text.Contains("x64") Or row.SubItems(1).Text.Contains("amd64") Then
           hasx64 = True
+          x64Count += 1
           Select Case GetUpdateType(row.Tag)
             Case UpdateType.MSU : lTotalTime += SpeedStats.Update_Integrate("MSU", "64", fileSize) * imageCount64
             Case UpdateType.LIP : lTotalTime += SpeedStats.Update_Integrate("LIP", "64", fileSize) * imageCount64
@@ -2924,22 +3081,26 @@
         End If
       Next
       If hasx86 Then
-        lTotalTime += SpeedStats.WIM_MountImage("86") * imageCount32
-        lTotalTime += SpeedStats.WIM_SaveImage("86") * imageCount32
+        lTotalTime += SpeedStats.WIM_MountImage("86", wimFileSize) * imageCount32
+        lTotalTime += SpeedStats.WIM_SaveImage("86", wimFileSize, x86Count) * imageCount32
       End If
       If hasx64 Then
-        lTotalTime += SpeedStats.WIM_MountImage("64") * imageCount64
-        lTotalTime += SpeedStats.WIM_SaveImage("64") * imageCount64
+        lTotalTime += SpeedStats.WIM_MountImage("64", wimFileSize) * imageCount64
+        lTotalTime += SpeedStats.WIM_SaveImage("64", wimFileSize, x64Count) * imageCount64
       End If
     End If
-
+    Return lTotalTime
+  End Function
+  Private Function CalculateStep4Time(imageCount32 As Integer, imageCount64 As Integer, wimFileSize As String) As Long
+    Dim lTotalTime As Long = 0
+    Dim imageCountAll As Integer = imageCount32 + imageCount64
     If chkISO.Checked Then
       If Not String.IsNullOrEmpty(txtISO.Text) Then
         Dim sISOSize As String = CalculateCompatibleSize(txtISO.Text)
         lTotalTime += SpeedStats.NOWIM_ExtractFromISO(sISOSize)
         If imageCountAll > 0 Then
           For I As Integer = 1 To imageCountAll
-            lTotalTime += SpeedStats.WIM_MergeAndCompressImage(IIf(I = 1, "First", "Additional"))
+            lTotalTime += SpeedStats.WIM_MergeAndCompressImage(IIf(I = 1, "First", "Additional"), wimFileSize)
           Next
         End If
         If cmbLimitType.SelectedIndex > 0 Then
@@ -2987,7 +3148,7 @@
     Else
       If imageCountAll > 0 Then
         For I As Integer = 1 To imageCountAll
-          lTotalTime += SpeedStats.WIM_MergeAndCompressImage(IIf(I = 1, "First", "Additional"))
+          lTotalTime += SpeedStats.WIM_MergeAndCompressImage(IIf(I = 1, "First", "Additional"), wimFileSize)
         Next
       End If
       If cmbLimitType.SelectedIndex > 0 Then
@@ -3013,7 +3174,6 @@
     RunComplete = False
     StopRun = False
     LangChange = False
-    timeDone = 0
     If txtISOLabel.Enabled And txtISOLabel.Text.Contains(" ") Then
       SetStatus("Spaces are not allowed in the ISO Label!")
       txtISOLabel.Text = Replace(txtISOLabel.Text, " ", "_")
@@ -3050,6 +3210,7 @@
         Application.DoEvents()
       End Try
     End If
+    timeDone = 0
     Dim iTotalVal As Integer = 0
     Dim iTotalMax As Integer = 2
     If IO.Path.GetExtension(txtWIM.Text).ToLower = ".iso" Then iTotalMax += 1
@@ -3155,6 +3316,7 @@
       ToggleInputs(True)
       Return
     End If
+    Dim wimFileSize As String = Math.Round(New IO.FileInfo(WIMFile).Length / 1024 / 1024 / 1024, 1, MidpointRounding.ToEven) & "GB"
 
     SetProgress(0, 100)
     Dim NewWIM As String = Work & "newINSTALL.wim"
@@ -3175,12 +3337,12 @@
         SetProgress(0, 100)
         Dim sFirst As String = "First"
         If IO.File.Exists(NewWIM) Then sFirst = "Additional"
-        workEstim = SpeedStats.WIM_MergeImage(sFirst)
+        workEstim = SpeedStats.WIM_MergeImage(sFirst, wimFileSize)
         SetProgressTime(workEstim)
         workStart = TickCount()
         If ExportWIM(RowImage, RowIndex, NewWIM, RowName) Then
           workSpeed = TickCount() - workStart
-          SpeedStats.WIM_MergeImage(sFirst) = workSpeed
+          SpeedStats.WIM_MergeImage(sFirst, wimFileSize) = workSpeed
           Continue For
         Else
           ToggleInputs(True)
@@ -3211,8 +3373,7 @@
     SetStatus("Making Backup of Old WIM...")
     Dim BakWIM As String = WorkDir & IO.Path.DirectorySeparatorChar & IO.Path.GetFileNameWithoutExtension(WIMFile & "_BAK.WIM")
     WriteToOutput("Copying """ & WIMFile & """ to """ & BakWIM & """...")
-    Dim wimCopySize As String = Math.Round(New IO.FileInfo(WIMFile).Length / 1024 / 1024 / 1024, 1, MidpointRounding.ToEven) & "GB"
-    workEstim = SpeedStats.WIM_MoveImage(wimCopySize)
+    workEstim = SpeedStats.WIM_MoveImage(wimFileSize)
     SetProgressTime(workEstim)
     workStart = TickCount()
     If Not SlowCopyFile(WIMFile, BakWIM, True) Then
@@ -3221,11 +3382,11 @@
       Return
     End If
     workSpeed = TickCount() - workStart
-    If workSpeed > 500 Then SpeedStats.WIM_MoveImage(wimCopySize) = workSpeed
+    If workSpeed > 500 Then SpeedStats.WIM_MoveImage(wimFileSize) = workSpeed
     SetStatus("Moving Generated WIM...")
     WriteToOutput("Copying """ & NewWIM & """ to """ & WIMFile & """...")
-    wimCopySize = Math.Round(New IO.FileInfo(NewWIM).Length / 1024 / 1024 / 1024, 1, MidpointRounding.ToEven) & "GB"
-    workEstim = SpeedStats.WIM_MoveImage(wimCopySize)
+    Dim newWimFileSize As String = Math.Round(New IO.FileInfo(NewWIM).Length / 1024 / 1024 / 1024, 1, MidpointRounding.ToEven) & "GB"
+    workEstim = SpeedStats.WIM_MoveImage(newWimFileSize)
     SetProgressTime(workEstim)
     workStart = TickCount()
     If Not SlowCopyFile(NewWIM, WIMFile, True) Then
@@ -3241,7 +3402,7 @@
       Return
     End If
     workSpeed = TickCount() - workStart
-    If workSpeed > 500 Then SpeedStats.WIM_MoveImage(wimCopySize) = workSpeed
+    If workSpeed > 500 Then SpeedStats.WIM_MoveImage(newWimFileSize) = workSpeed
     If IO.File.Exists(BakWIM) Then
       SetStatus("Cleaning Up Backup WIM...")
       WriteToOutput("Deleting """ & BakWIM & """...")
@@ -3504,7 +3665,19 @@
       End If
       If Not NoMount Then
         Dim hasx64 As Boolean = lvImages.Items(lvImages.Items.Count - 1).SubItems(1).Text.Contains("x64")
-        workEstim = SpeedStats.WIM_SaveImage(IIf(hasx64, "64", "86"))
+        Dim UpdateCount As Integer = 0
+        For Each lvItem As ListViewItem In lvMSU.Items
+          If hasx64 Then
+            If lvItem.SubItems(1).Text.Contains("x64") Then
+              UpdateCount += 1
+            End If
+          Else
+            If Not lvItem.SubItems(1).Text.Contains("x64") Then
+              UpdateCount += 1
+            End If
+          End If
+        Next
+        workEstim = SpeedStats.WIM_SaveImage(IIf(hasx64, "64", "86"), wimFileSize, UpdateCount)
         SetProgressTime(workEstim)
         workStart = TickCount()
         SetStatus("Saving Final Image Package...")
@@ -3515,7 +3688,7 @@
           Return
         End If
         workSpeed = TickCount() - workStart
-        SpeedStats.WIM_SaveImage(IIf(hasx64, "64", "86")) = workSpeed
+        SpeedStats.WIM_SaveImage(IIf(hasx64, "64", "86"), wimFileSize, UpdateCount) = workSpeed
       End If
       SetProgress(0, 1)
       SetStatus("Integrating and Compressing INSTALL.WIM...")
@@ -3531,12 +3704,12 @@
         Dim RowName As String = NewWIMPackageInfo.Name
         SetStatus("Integrating and Compressing INSTALL.WIM Package """ & RowName & """...")
         SetProgress(0, 100)
-        workEstim = SpeedStats.WIM_MergeAndCompressImage(IIf(I = 1, "First", "Additional"))
+        workEstim = SpeedStats.WIM_MergeAndCompressImage(IIf(I = 1, "First", "Additional"), wimFileSize)
         SetProgressTime(workEstim)
         workStart = TickCount()
         If ExportWIM(WIMFile, RowIndex, ISOWIMFile, RowName) Then
           workSpeed = TickCount() - workStart
-          SpeedStats.WIM_MergeAndCompressImage(IIf(I = 1, "First", "Additional")) = workSpeed
+          SpeedStats.WIM_MergeAndCompressImage(IIf(I = 1, "First", "Additional"), wimFileSize) = workSpeed
           Continue For
         Else
           ToggleInputs(True)
@@ -4071,7 +4244,19 @@
       If Not NoMount Then
         SetStatus("Saving Final Image Package...")
         Dim hasx64 As Boolean = lvImages.Items(lvImages.Items.Count - 1).SubItems(1).Text.Contains("x64")
-        workEstim = SpeedStats.WIM_SaveImage(IIf(hasx64, "64", "86"))
+        Dim UpdateCount As Integer = 0
+        For Each lvItem As ListViewItem In lvMSU.Items
+          If hasx64 Then
+            If lvItem.SubItems(1).Text.Contains("x64") Then
+              UpdateCount += 1
+            End If
+          Else
+            If Not lvItem.SubItems(1).Text.Contains("x64") Then
+              UpdateCount += 1
+            End If
+          End If
+        Next
+        workEstim = SpeedStats.WIM_SaveImage(IIf(hasx64, "64", "86"), wimFileSize, UpdateCount)
         SetProgressTime(workEstim)
         workStart = TickCount()
         If Not SaveDISM(Mount) Then
@@ -4081,7 +4266,7 @@
           Return
         End If
         workSpeed = TickCount() - workStart
-        SpeedStats.WIM_SaveImage(IIf(hasx64, "64", "86")) = workSpeed
+        SpeedStats.WIM_SaveImage(IIf(hasx64, "64", "86"), wimFileSize, UpdateCount) = workSpeed
       End If
       SetStatus("Compressing INSTALL.WIM...")
       Dim OldWIM As String = IO.Path.GetDirectoryName(WIMFile) & IO.Path.DirectorySeparatorChar & IO.Path.GetFileNameWithoutExtension(WIMFile & "_OLD.WIM")
@@ -4098,12 +4283,12 @@
         Dim RowIndex As String = NewWIMPackageInfo.Index
         Dim RowName As String = NewWIMPackageInfo.Name
         SetProgress(0, 100)
-        workEstim = SpeedStats.WIM_MergeAndCompressImage(IIf(I = 1, "First", "Additional"))
+        workEstim = SpeedStats.WIM_MergeAndCompressImage(IIf(I = 1, "First", "Additional"), wimFileSize)
         SetProgressTime(workEstim)
         workStart = TickCount()
         If ExportWIM(OldWIM, RowIndex, WIMFile, RowName) Then
           workSpeed = TickCount() - workStart
-          SpeedStats.WIM_MergeAndCompressImage(IIf(I = 1, "First", "Additional")) = workSpeed
+          SpeedStats.WIM_MergeAndCompressImage(IIf(I = 1, "First", "Additional"), wimFileSize) = workSpeed
           Continue For
         Else
           ToggleInputs(True)
@@ -4197,6 +4382,7 @@
     End Select
   End Sub
   Private Function IntegrateFiles(WIMPath As String, MSUPaths() As UpdateInfo) As Boolean
+    Dim wimFileSize As String = Math.Round(New IO.FileInfo(WIMPath).Length / 1024 / 1024 / 1024, 1, MidpointRounding.ToEven) & "GB"
     Dim PackageCount As Integer = GetDISMPackages(WIMPath)
     If PackageCount > 0 Then
       If MSUPaths.Length > 0 Then
@@ -4263,7 +4449,7 @@
             pbVal += 1
             SetProgress(pbVal, pbMax)
             SetStatus("Loading Image Package """ & tmpDISM.Name & """...")
-            workEstim = SpeedStats.WIM_MountImage("86")
+            workEstim = SpeedStats.WIM_MountImage("86", wimfilesize)
             SetProgressTime(workEstim)
             workStart = TickCount()
             If Not InitDISM(WIMPath, tmpDISM.Index, Mount) Then
@@ -4273,7 +4459,7 @@
               Return False
             End If
             workSpeed = TickCount() - workStart
-            SpeedStats.WIM_MountImage("86") = workSpeed
+            SpeedStats.WIM_MountImage("86", wimfilesize) = workSpeed
             If StopRun Then
               DiscardDISM(Mount)
               ToggleInputs(True)
@@ -4305,38 +4491,213 @@
                   End If
                   If upType = UpdateType.LP Then LangChange = True
                 Case UpdateType.EXE
-                  Dim tmpCAB As String = WorkDir & "lp.cab"
-                  If IO.File.Exists(tmpCAB) Then
-                    WriteToOutput("Deleting """ & tmpCAB & """...")
-                    IO.File.Delete(tmpCAB)
-                  End If
-                  If Not EXE2CAB(tmpMSU.Path, tmpCAB) Then
+                  Dim fInfo As FileVersionInfo = FileVersionInfo.GetVersionInfo(tmpMSU.Path)
+                  If fInfo.OriginalFilename = "iesetup.exe" And fInfo.ProductMajorPart > 9 Then
+                    Dim EXEPath As String = WorkDir & "UpdateEXE_Extract" & IO.Path.DirectorySeparatorChar
+                    If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+                    IO.Directory.CreateDirectory(EXEPath)
+                    Dim iExtract As New Process With {.StartInfo = New ProcessStartInfo(tmpMSU.Path, "/x:" & EXEPath)}
+                    If iExtract.Start Then
+                      iExtract.WaitForExit()
+                      If IO.File.Exists(EXEPath & "IE-Win7.CAB") Then
+                        Dim Extracted() As String = IO.Directory.GetFiles(EXEPath)
+                        Dim sSpelling As String = Nothing, sHyphenation As String = Nothing
+                        For J As Integer = 0 To Extracted.Count - 1
+                          If IO.Path.GetFileName(Extracted(J)).ToLower.StartsWith("ie-spelling") And Extracted(J).ToLower.EndsWith(".msu") Then
+                            sSpelling = Extracted(J)
+                          End If
+                          If IO.Path.GetFileName(Extracted(J)).ToLower.StartsWith("ie-hyphenation") And Extracted(J).ToLower.EndsWith(".msu") Then
+                            sHyphenation = Extracted(J)
+                          End If
+                        Next
+                        If String.IsNullOrEmpty(sSpelling) Or String.IsNullOrEmpty(sHyphenation) Then
+                          If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+                          DiscardDISM(Mount)
+                          ToggleInputs(True)
+                          SetStatus("Failed to integrate " & DisplayName & " into " & tmpDISM.Name & "!")
+                          Return False
+                        End If
+                        If Not AddToDism(Mount, EXEPath & "IE-Win7.CAB") Then
+                          DiscardDISM(Mount)
+                          ToggleInputs(True)
+                          SetStatus("Failed to integrate " & DisplayName & " (IE-Win7.CAB) into " & tmpDISM.Name & "!")
+                          Return False
+                        End If
+                        Dim skipThese As Boolean = False
+                        For Each msuItem In MSU_32
+                          If tmpMSU.DisplayName.Contains("Internet Explorer 10") AndAlso msuItem.DisplayName.Contains("Windows6.2-KB2764916-x86") And msuItem.DisplayName.Contains("Windows6.2-2764913-x86") Then
+                            skipThese = True
+                            Exit For
+                          ElseIf tmpMSU.DisplayName.Contains("Internet Explorer 11") AndAlso msuItem.DisplayName.Contains("Windows6.3-KB2849696-x86") And msuItem.DisplayName.Contains("Windows6.3-KB2849697-x86") Then
+                            skipThese = True
+                            Exit For
+                          End If
+                        Next
+                        If Not skipThese And MSU_64 IsNot Nothing AndAlso MSU_64.Count > 0 Then
+                          For Each msuItem In MSU_64
+                            If tmpMSU.DisplayName.Contains("Internet Explorer 10") AndAlso msuItem.DisplayName.Contains("Windows6.2-KB2764916-x86") And msuItem.DisplayName.Contains("Windows6.2-2764913-x86") Then
+                              skipThese = True
+                              Exit For
+                            ElseIf tmpMSU.DisplayName.Contains("Internet Explorer 11") AndAlso msuItem.DisplayName.Contains("Windows6.3-KB2849696-x86") And msuItem.DisplayName.Contains("Windows6.3-KB2849697-x86") Then
+                              skipThese = True
+                              Exit For
+                            End If
+                          Next
+                        End If
+                        If Not skipThese Then
+                          If Not AddToDism(Mount, sSpelling) Then
+                            DiscardDISM(Mount)
+                            ToggleInputs(True)
+                            SetStatus("Failed to integrate " & DisplayName & " (" & IO.Path.GetFileName(sSpelling) & ") into " & tmpDISM.Name & "!")
+                            Return False
+                          End If
+                          If Not AddToDism(Mount, sHyphenation) Then
+                            DiscardDISM(Mount)
+                            ToggleInputs(True)
+                            SetStatus("Failed to integrate " & DisplayName & " (" & IO.Path.GetFileName(sHyphenation) & ") into " & tmpDISM.Name & "!")
+                            Return False
+                          End If
+                        End If
+                      Else
+                        If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+                        DiscardDISM(Mount)
+                        ToggleInputs(True)
+                        SetStatus("Failed to integrate " & DisplayName & " into " & tmpDISM.Name & "!")
+                        Return False
+                      End If
+                      If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+                    Else
+                      If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+                      DiscardDISM(Mount)
+                      ToggleInputs(True)
+                      SetStatus("Failed to integrate " & DisplayName & " into " & tmpDISM.Name & "!")
+                      Return False
+                    End If
+                  ElseIf fInfo.OriginalFilename = "mergedwusetup.exe" Then
+                    Dim tmpCAB As String = WorkDir & "wusetup.cab"
                     If IO.File.Exists(tmpCAB) Then
                       WriteToOutput("Deleting """ & tmpCAB & """...")
                       IO.File.Delete(tmpCAB)
                     End If
-                    DiscardDISM(Mount)
-                    ToggleInputs(True)
-                    SetStatus("Failed to extract " & DisplayName & " from EXE to CAB!")
-                    Return False
-                  End If
-                  Dim cabList() As String = ExtractFilesList(tmpCAB)
-                  If cabList.Contains("update.mum") Then
-                    If Not AddToDism(Mount, tmpCAB) Then
+                    If Not EXE2CAB(tmpMSU.Path, tmpCAB) Then
                       If IO.File.Exists(tmpCAB) Then
                         WriteToOutput("Deleting """ & tmpCAB & """...")
                         IO.File.Delete(tmpCAB)
                       End If
                       DiscardDISM(Mount)
                       ToggleInputs(True)
-                      SetStatus("Failed to integrate " & DisplayName & " into " & tmpDISM.Name & "!")
+                      SetStatus("Failed to extract " & DisplayName & " from EXE to CAB!")
                       Return False
                     End If
-                  ElseIf cabList.Contains("WUA-Downlevel.exe") And cabList.Contains("WUA-Win7SP1.exe") Then
-                    Dim useEXE As String = "WUA-Downlevel.exe"
-                    If chkSP.Checked Or tmpDISM.SPLevel > 0 Then useEXE = "WUA-Win7SP1.exe"
-                    ExtractAFile(tmpCAB, WorkDir, useEXE)
-                    If Not IO.File.Exists(WorkDir & useEXE) Then
+                    Dim cabList() As String = ExtractFilesList(tmpCAB)
+                    If cabList.Contains("WUA-Downlevel.exe") And cabList.Contains("WUA-Win7SP1.exe") Then
+                      Dim useEXE As String = "WUA-Downlevel.exe"
+                      If chkSP.Checked Or tmpDISM.SPLevel > 0 Then useEXE = "WUA-Win7SP1.exe"
+                      ExtractAFile(tmpCAB, WorkDir, useEXE)
+                      If Not IO.File.Exists(WorkDir & useEXE) Then
+                        If IO.File.Exists(tmpCAB) Then
+                          WriteToOutput("Deleting """ & tmpCAB & """...")
+                          IO.File.Delete(tmpCAB)
+                        End If
+                        DiscardDISM(Mount)
+                        ToggleInputs(True)
+                        SetStatus("Failed to integrate " & DisplayName & " into " & tmpDISM.Name & "!")
+                        Return False
+                      Else
+                        Dim useCab1 As String = "WUClient-SelfUpdate-ActiveX.cab"
+                        Dim useCab2 As String = "WUClient-SelfUpdate-Aux-TopLevel.cab"
+                        Dim useCab3 As String = "WUClient-SelfUpdate-Core-TopLevel.cab"
+                        ExtractAFile(WorkDir & useEXE, WorkDir, useCab1)
+                        ExtractAFile(WorkDir & useEXE, WorkDir, useCab2)
+                        ExtractAFile(WorkDir & useEXE, WorkDir, useCab3)
+
+                        If Not IO.File.Exists(WorkDir & useCab1) Then
+                          If IO.File.Exists(tmpCAB) Then
+                            WriteToOutput("Deleting """ & tmpCAB & """...")
+                            IO.File.Delete(tmpCAB)
+                          End If
+                          If IO.File.Exists(WorkDir & useEXE) Then
+                            WriteToOutput("Deleting """ & WorkDir & useEXE & """...")
+                            IO.File.Delete(WorkDir & useEXE)
+                          End If
+                          DiscardDISM(Mount)
+                          ToggleInputs(True)
+                          SetStatus("Failed to integrate " & DisplayName & " (" & useCab1 & ") into " & tmpDISM.Name & "!")
+                          Return False
+                        End If
+                        If Not IO.File.Exists(WorkDir & useCab2) Then
+                          If IO.File.Exists(tmpCAB) Then
+                            WriteToOutput("Deleting """ & tmpCAB & """...")
+                            IO.File.Delete(tmpCAB)
+                          End If
+                          If IO.File.Exists(WorkDir & useEXE) Then
+                            WriteToOutput("Deleting """ & WorkDir & useEXE & """...")
+                            IO.File.Delete(WorkDir & useEXE)
+                          End If
+                          DiscardDISM(Mount)
+                          ToggleInputs(True)
+                          SetStatus("Failed to integrate " & DisplayName & " (" & useCab2 & ") into " & tmpDISM.Name & "!")
+                          Return False
+                        End If
+                        If Not IO.File.Exists(WorkDir & useCab3) Then
+                          If IO.File.Exists(tmpCAB) Then
+                            WriteToOutput("Deleting """ & tmpCAB & """...")
+                            IO.File.Delete(tmpCAB)
+                          End If
+                          If IO.File.Exists(WorkDir & useEXE) Then
+                            WriteToOutput("Deleting """ & WorkDir & useEXE & """...")
+                            IO.File.Delete(WorkDir & useEXE)
+                          End If
+                          DiscardDISM(Mount)
+                          ToggleInputs(True)
+                          SetStatus("Failed to integrate " & DisplayName & " (" & useCab3 & ") into " & tmpDISM.Name & "!")
+                          Return False
+                        End If
+
+                        If Not AddToDism(Mount, WorkDir & useCab1) Then
+                          If IO.File.Exists(tmpCAB) Then
+                            WriteToOutput("Deleting """ & tmpCAB & """...")
+                            IO.File.Delete(tmpCAB)
+                          End If
+                          If IO.File.Exists(WorkDir & useEXE) Then
+                            WriteToOutput("Deleting """ & WorkDir & useEXE & """...")
+                            IO.File.Delete(WorkDir & useEXE)
+                          End If
+                          DiscardDISM(Mount)
+                          ToggleInputs(True)
+                          SetStatus("Failed to integrate " & DisplayName & " (" & useCab1 & ") into " & tmpDISM.Name & "!")
+                          Return False
+                        End If
+                        If Not AddToDism(Mount, WorkDir & useCab2) Then
+                          If IO.File.Exists(tmpCAB) Then
+                            WriteToOutput("Deleting """ & tmpCAB & """...")
+                            IO.File.Delete(tmpCAB)
+                          End If
+                          If IO.File.Exists(WorkDir & useEXE) Then
+                            WriteToOutput("Deleting """ & WorkDir & useEXE & """...")
+                            IO.File.Delete(WorkDir & useEXE)
+                          End If
+                          DiscardDISM(Mount)
+                          ToggleInputs(True)
+                          SetStatus("Failed to integrate " & DisplayName & " (" & useCab2 & ") into " & tmpDISM.Name & "!")
+                          Return False
+                        End If
+                        If Not AddToDism(Mount, WorkDir & useCab3) Then
+                          If IO.File.Exists(tmpCAB) Then
+                            WriteToOutput("Deleting """ & tmpCAB & """...")
+                            IO.File.Delete(tmpCAB)
+                          End If
+                          If IO.File.Exists(WorkDir & useEXE) Then
+                            WriteToOutput("Deleting """ & WorkDir & useEXE & """...")
+                            IO.File.Delete(WorkDir & useEXE)
+                          End If
+                          DiscardDISM(Mount)
+                          ToggleInputs(True)
+                          SetStatus("Failed to integrate " & DisplayName & " (" & useCab3 & ") into " & tmpDISM.Name & "!")
+                          Return False
+                        End If
+                      End If
+                    Else
                       If IO.File.Exists(tmpCAB) Then
                         WriteToOutput("Deleting """ & tmpCAB & """...")
                         IO.File.Delete(tmpCAB)
@@ -4344,117 +4705,54 @@
                       DiscardDISM(Mount)
                       ToggleInputs(True)
                       SetStatus("Failed to integrate " & DisplayName & " into " & tmpDISM.Name & "!")
-                      Return False
-                    Else
-                      Dim useCab1 As String = "WUClient-SelfUpdate-ActiveX.cab"
-                      Dim useCab2 As String = "WUClient-SelfUpdate-Aux-TopLevel.cab"
-                      Dim useCab3 As String = "WUClient-SelfUpdate-Core-TopLevel.cab"
-                      ExtractAFile(WorkDir & useEXE, WorkDir, useCab1)
-                      ExtractAFile(WorkDir & useEXE, WorkDir, useCab2)
-                      ExtractAFile(WorkDir & useEXE, WorkDir, useCab3)
-
-                      If Not IO.File.Exists(WorkDir & useCab1) Then
-                        If IO.File.Exists(tmpCAB) Then
-                          WriteToOutput("Deleting """ & tmpCAB & """...")
-                          IO.File.Delete(tmpCAB)
-                        End If
-                        If IO.File.Exists(WorkDir & useEXE) Then
-                          WriteToOutput("Deleting """ & WorkDir & useEXE & """...")
-                          IO.File.Delete(WorkDir & useEXE)
-                        End If
-                        DiscardDISM(Mount)
-                        ToggleInputs(True)
-                        SetStatus("Failed to integrate " & DisplayName & " (" & useCab1 & ") into " & tmpDISM.Name & "!")
-                        Return False
-                      End If
-                      If Not IO.File.Exists(WorkDir & useCab2) Then
-                        If IO.File.Exists(tmpCAB) Then
-                          WriteToOutput("Deleting """ & tmpCAB & """...")
-                          IO.File.Delete(tmpCAB)
-                        End If
-                        If IO.File.Exists(WorkDir & useEXE) Then
-                          WriteToOutput("Deleting """ & WorkDir & useEXE & """...")
-                          IO.File.Delete(WorkDir & useEXE)
-                        End If
-                        DiscardDISM(Mount)
-                        ToggleInputs(True)
-                        SetStatus("Failed to integrate " & DisplayName & " (" & useCab2 & ") into " & tmpDISM.Name & "!")
-                        Return False
-                      End If
-                      If Not IO.File.Exists(WorkDir & useCab3) Then
-                        If IO.File.Exists(tmpCAB) Then
-                          WriteToOutput("Deleting """ & tmpCAB & """...")
-                          IO.File.Delete(tmpCAB)
-                        End If
-                        If IO.File.Exists(WorkDir & useEXE) Then
-                          WriteToOutput("Deleting """ & WorkDir & useEXE & """...")
-                          IO.File.Delete(WorkDir & useEXE)
-                        End If
-                        DiscardDISM(Mount)
-                        ToggleInputs(True)
-                        SetStatus("Failed to integrate " & DisplayName & " (" & useCab3 & ") into " & tmpDISM.Name & "!")
-                        Return False
-                      End If
-
-                      If Not AddToDism(Mount, WorkDir & useCab1) Then
-                        If IO.File.Exists(tmpCAB) Then
-                          WriteToOutput("Deleting """ & tmpCAB & """...")
-                          IO.File.Delete(tmpCAB)
-                        End If
-                        If IO.File.Exists(WorkDir & useEXE) Then
-                          WriteToOutput("Deleting """ & WorkDir & useEXE & """...")
-                          IO.File.Delete(WorkDir & useEXE)
-                        End If
-                        DiscardDISM(Mount)
-                        ToggleInputs(True)
-                        SetStatus("Failed to integrate " & DisplayName & " (" & useCab1 & ") into " & tmpDISM.Name & "!")
-                        Return False
-                      End If
-                      If Not AddToDism(Mount, WorkDir & useCab2) Then
-                        If IO.File.Exists(tmpCAB) Then
-                          WriteToOutput("Deleting """ & tmpCAB & """...")
-                          IO.File.Delete(tmpCAB)
-                        End If
-                        If IO.File.Exists(WorkDir & useEXE) Then
-                          WriteToOutput("Deleting """ & WorkDir & useEXE & """...")
-                          IO.File.Delete(WorkDir & useEXE)
-                        End If
-                        DiscardDISM(Mount)
-                        ToggleInputs(True)
-                        SetStatus("Failed to integrate " & DisplayName & " (" & useCab2 & ") into " & tmpDISM.Name & "!")
-                        Return False
-                      End If
-                      If Not AddToDism(Mount, WorkDir & useCab3) Then
-                        If IO.File.Exists(tmpCAB) Then
-                          WriteToOutput("Deleting """ & tmpCAB & """...")
-                          IO.File.Delete(tmpCAB)
-                        End If
-                        If IO.File.Exists(WorkDir & useEXE) Then
-                          WriteToOutput("Deleting """ & WorkDir & useEXE & """...")
-                          IO.File.Delete(WorkDir & useEXE)
-                        End If
-                        DiscardDISM(Mount)
-                        ToggleInputs(True)
-                        SetStatus("Failed to integrate " & DisplayName & " (" & useCab3 & ") into " & tmpDISM.Name & "!")
-                        Return False
-                      End If
-
+                    End If
+                    If IO.File.Exists(tmpCAB) Then
+                      WriteToOutput("Deleting """ & tmpCAB & """...")
+                      IO.File.Delete(tmpCAB)
                     End If
                   Else
+                    Dim tmpCAB As String = WorkDir & "lp.cab"
                     If IO.File.Exists(tmpCAB) Then
                       WriteToOutput("Deleting """ & tmpCAB & """...")
                       IO.File.Delete(tmpCAB)
                     End If
-                    DiscardDISM(Mount)
-                    ToggleInputs(True)
-                    SetStatus("Failed to integrate " & DisplayName & " into " & tmpDISM.Name & "!")
+                    If Not EXE2CAB(tmpMSU.Path, tmpCAB) Then
+                      If IO.File.Exists(tmpCAB) Then
+                        WriteToOutput("Deleting """ & tmpCAB & """...")
+                        IO.File.Delete(tmpCAB)
+                      End If
+                      DiscardDISM(Mount)
+                      ToggleInputs(True)
+                      SetStatus("Failed to extract " & DisplayName & " from EXE to CAB!")
+                      Return False
+                    End If
+                    Dim cabList() As String = ExtractFilesList(tmpCAB)
+                    If cabList.Contains("update.mum") Then
+                      If Not AddToDism(Mount, tmpCAB) Then
+                        If IO.File.Exists(tmpCAB) Then
+                          WriteToOutput("Deleting """ & tmpCAB & """...")
+                          IO.File.Delete(tmpCAB)
+                        End If
+                        DiscardDISM(Mount)
+                        ToggleInputs(True)
+                        SetStatus("Failed to integrate " & DisplayName & " into " & tmpDISM.Name & "!")
+                        Return False
+                      End If
+                    Else
+                      If IO.File.Exists(tmpCAB) Then
+                        WriteToOutput("Deleting """ & tmpCAB & """...")
+                        IO.File.Delete(tmpCAB)
+                      End If
+                      DiscardDISM(Mount)
+                      ToggleInputs(True)
+                      SetStatus("Failed to integrate " & DisplayName & " into " & tmpDISM.Name & "!")
+                    End If
+                    If IO.File.Exists(tmpCAB) Then
+                      WriteToOutput("Deleting """ & tmpCAB & """...")
+                      IO.File.Delete(tmpCAB)
+                    End If
+                    LangChange = True
                   End If
-
-                  If IO.File.Exists(tmpCAB) Then
-                    WriteToOutput("Deleting """ & tmpCAB & """...")
-                    IO.File.Delete(tmpCAB)
-                  End If
-                  LangChange = True
                 Case UpdateType.LIP
                   Dim tmpCAB As String = WorkDir & "tmp" & IO.Path.GetFileNameWithoutExtension(tmpMSU.Path) & ".cab"
                   If IO.File.Exists(tmpCAB) Then
@@ -4495,7 +4793,7 @@
             End If
             If DoSave Then
               SetStatus("Saving Image Package """ & tmpDISM.Name & """...")
-              workEstim = SpeedStats.WIM_SaveImage("86")
+              workEstim = SpeedStats.WIM_SaveImage("86", wimFileSize, MSU_32.Count)
               SetProgressTime(workEstim)
               workStart = TickCount()
               If Not SaveDISM(Mount) Then
@@ -4505,7 +4803,7 @@
                 Return False
               End If
               workSpeed = TickCount() - workStart
-              SpeedStats.WIM_SaveImage("86") = workSpeed
+              SpeedStats.WIM_SaveImage("86", wimFileSize, MSU_32.Count) = workSpeed
             End If
             If StopRun Then
               ToggleInputs(True)
@@ -4519,7 +4817,7 @@
             pbVal += 1
             SetProgress(pbVal, pbMax)
             SetStatus("Loading Image Package """ & tmpDISM.Name & """...")
-            workEstim = SpeedStats.WIM_MountImage("64")
+            workEstim = SpeedStats.WIM_MountImage("64", wimFileSize)
             SetProgressTime(workEstim)
             workStart = TickCount()
             If Not InitDISM(WIMPath, tmpDISM.Index, Mount) Then
@@ -4529,7 +4827,7 @@
               Return False
             End If
             workSpeed = TickCount() - workStart
-            SpeedStats.WIM_MountImage("64") = workSpeed
+            SpeedStats.WIM_MountImage("64", wimFileSize) = workSpeed
             If StopRun Then
               DiscardDISM(Mount)
               ToggleInputs(True)
@@ -4561,38 +4859,190 @@
                   End If
                   If upType = UpdateType.LP Then LangChange = True
                 Case UpdateType.EXE
-                  Dim tmpCAB As String = WorkDir & "lp.cab"
-                  If IO.File.Exists(tmpCAB) Then
-                    WriteToOutput("Deleting """ & tmpCAB & """...")
-                    IO.File.Delete(tmpCAB)
-                  End If
-                  If Not EXE2CAB(tmpMSU.Path, tmpCAB) Then
+                  Dim fInfo As FileVersionInfo = FileVersionInfo.GetVersionInfo(tmpMSU.Path)
+                  If fInfo.OriginalFilename = "iesetup.exe" And fInfo.ProductMajorPart > 9 Then
+                    Dim EXEPath As String = WorkDir & "UpdateEXE_Extract" & IO.Path.DirectorySeparatorChar
+                    If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+                    IO.Directory.CreateDirectory(EXEPath)
+                    Dim iExtract As New Process With {.StartInfo = New ProcessStartInfo(tmpMSU.Path, "/x:" & EXEPath)}
+                    If iExtract.Start Then
+                      iExtract.WaitForExit()
+                      If IO.File.Exists(EXEPath & "IE-Win7.CAB") Then
+                        Dim Extracted() As String = IO.Directory.GetFiles(EXEPath)
+                        Dim sSpelling As String = Nothing, sHyphenation As String = Nothing
+                        For J As Integer = 0 To Extracted.Count - 1
+                          If IO.Path.GetFileName(Extracted(J)).ToLower.StartsWith("ie-spelling") And Extracted(J).ToLower.EndsWith(".msu") Then
+                            sSpelling = Extracted(J)
+                          End If
+                          If IO.Path.GetFileName(Extracted(J)).ToLower.StartsWith("ie-hyphenation") And Extracted(J).ToLower.EndsWith(".msu") Then
+                            sHyphenation = Extracted(J)
+                          End If
+                        Next
+                        If String.IsNullOrEmpty(sSpelling) Or String.IsNullOrEmpty(sHyphenation) Then
+                          If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+                          DiscardDISM(Mount)
+                          ToggleInputs(True)
+                          SetStatus("Failed to integrate " & DisplayName & " into " & tmpDISM.Name & "!")
+                          Return False
+                        End If
+                        If Not AddToDism(Mount, EXEPath & "IE-Win7.CAB") Then
+                          DiscardDISM(Mount)
+                          ToggleInputs(True)
+                          SetStatus("Failed to integrate " & DisplayName & " (IE-Win7.CAB) into " & tmpDISM.Name & "!")
+                          Return False
+                        End If
+                        If Not AddToDism(Mount, sSpelling) Then
+                          DiscardDISM(Mount)
+                          ToggleInputs(True)
+                          SetStatus("Failed to integrate " & DisplayName & " (" & IO.Path.GetFileName(sSpelling) & ") into " & tmpDISM.Name & "!")
+                          Return False
+                        End If
+                        If Not AddToDism(Mount, sHyphenation) Then
+                          DiscardDISM(Mount)
+                          ToggleInputs(True)
+                          SetStatus("Failed to integrate " & DisplayName & " (" & IO.Path.GetFileName(sHyphenation) & ") into " & tmpDISM.Name & "!")
+                          Return False
+                        End If
+                      Else
+                        If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+                        DiscardDISM(Mount)
+                        ToggleInputs(True)
+                        SetStatus("Failed to integrate " & DisplayName & " into " & tmpDISM.Name & "!")
+                        Return False
+                      End If
+                      If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+                    Else
+                      If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+                      DiscardDISM(Mount)
+                      ToggleInputs(True)
+                      SetStatus("Failed to integrate " & DisplayName & " into " & tmpDISM.Name & "!")
+                      Return False
+                    End If
+                  ElseIf fInfo.OriginalFilename = "mergedwusetup.exe" Then
+                    Dim tmpCAB As String = WorkDir & "wusetup.cab"
                     If IO.File.Exists(tmpCAB) Then
                       WriteToOutput("Deleting """ & tmpCAB & """...")
                       IO.File.Delete(tmpCAB)
                     End If
-                    DiscardDISM(Mount)
-                    ToggleInputs(True)
-                    SetStatus("Failed to extract " & DisplayName & " from EXE to CAB!")
-                    Return False
-                  End If
-                  Dim cabList() As String = ExtractFilesList(tmpCAB)
-                  If cabList.Contains("update.mum") Then
-                    If Not AddToDism(Mount, tmpCAB) Then
+                    If Not EXE2CAB(tmpMSU.Path, tmpCAB) Then
                       If IO.File.Exists(tmpCAB) Then
                         WriteToOutput("Deleting """ & tmpCAB & """...")
                         IO.File.Delete(tmpCAB)
                       End If
                       DiscardDISM(Mount)
                       ToggleInputs(True)
-                      SetStatus("Failed to integrate " & DisplayName & " into " & tmpDISM.Name & "!")
+                      SetStatus("Failed to extract " & DisplayName & " from EXE to CAB!")
                       Return False
                     End If
-                  ElseIf cabList.Contains("WUA-Downlevel.exe") And cabList.Contains("WUA-Win7SP1.exe") Then
-                    Dim useEXE As String = "WUA-Downlevel.exe"
-                    If chkSP.Checked Or tmpDISM.SPLevel > 0 Then useEXE = "WUA-Win7SP1.exe"
-                    ExtractAFile(tmpCAB, WorkDir, useEXE)
-                    If Not IO.File.Exists(WorkDir & useEXE) Then
+                    Dim cabList() As String = ExtractFilesList(tmpCAB)
+                    If cabList.Contains("WUA-Downlevel.exe") And cabList.Contains("WUA-Win7SP1.exe") Then
+                      Dim useEXE As String = "WUA-Downlevel.exe"
+                      If chkSP.Checked Or tmpDISM.SPLevel > 0 Then useEXE = "WUA-Win7SP1.exe"
+                      ExtractAFile(tmpCAB, WorkDir, useEXE)
+                      If Not IO.File.Exists(WorkDir & useEXE) Then
+                        If IO.File.Exists(tmpCAB) Then
+                          WriteToOutput("Deleting """ & tmpCAB & """...")
+                          IO.File.Delete(tmpCAB)
+                        End If
+                        DiscardDISM(Mount)
+                        ToggleInputs(True)
+                        SetStatus("Failed to integrate " & DisplayName & " into " & tmpDISM.Name & "!")
+                        Return False
+                      Else
+                        Dim useCab1 As String = "WUClient-SelfUpdate-ActiveX.cab"
+                        Dim useCab2 As String = "WUClient-SelfUpdate-Aux-TopLevel.cab"
+                        Dim useCab3 As String = "WUClient-SelfUpdate-Core-TopLevel.cab"
+                        ExtractAFile(WorkDir & useEXE, WorkDir, useCab1)
+                        ExtractAFile(WorkDir & useEXE, WorkDir, useCab2)
+                        ExtractAFile(WorkDir & useEXE, WorkDir, useCab3)
+
+                        If Not IO.File.Exists(WorkDir & useCab1) Then
+                          If IO.File.Exists(tmpCAB) Then
+                            WriteToOutput("Deleting """ & tmpCAB & """...")
+                            IO.File.Delete(tmpCAB)
+                          End If
+                          If IO.File.Exists(WorkDir & useEXE) Then
+                            WriteToOutput("Deleting """ & WorkDir & useEXE & """...")
+                            IO.File.Delete(WorkDir & useEXE)
+                          End If
+                          DiscardDISM(Mount)
+                          ToggleInputs(True)
+                          SetStatus("Failed to integrate " & DisplayName & " (" & useCab1 & ") into " & tmpDISM.Name & "!")
+                          Return False
+                        End If
+                        If Not IO.File.Exists(WorkDir & useCab2) Then
+                          If IO.File.Exists(tmpCAB) Then
+                            WriteToOutput("Deleting """ & tmpCAB & """...")
+                            IO.File.Delete(tmpCAB)
+                          End If
+                          If IO.File.Exists(WorkDir & useEXE) Then
+                            WriteToOutput("Deleting """ & WorkDir & useEXE & """...")
+                            IO.File.Delete(WorkDir & useEXE)
+                          End If
+                          DiscardDISM(Mount)
+                          ToggleInputs(True)
+                          SetStatus("Failed to integrate " & DisplayName & " (" & useCab2 & ") into " & tmpDISM.Name & "!")
+                          Return False
+                        End If
+                        If Not IO.File.Exists(WorkDir & useCab3) Then
+                          If IO.File.Exists(tmpCAB) Then
+                            WriteToOutput("Deleting """ & tmpCAB & """...")
+                            IO.File.Delete(tmpCAB)
+                          End If
+                          If IO.File.Exists(WorkDir & useEXE) Then
+                            WriteToOutput("Deleting """ & WorkDir & useEXE & """...")
+                            IO.File.Delete(WorkDir & useEXE)
+                          End If
+                          DiscardDISM(Mount)
+                          ToggleInputs(True)
+                          SetStatus("Failed to integrate " & DisplayName & " (" & useCab3 & ") into " & tmpDISM.Name & "!")
+                          Return False
+                        End If
+
+                        If Not AddToDism(Mount, WorkDir & useCab1) Then
+                          If IO.File.Exists(tmpCAB) Then
+                            WriteToOutput("Deleting """ & tmpCAB & """...")
+                            IO.File.Delete(tmpCAB)
+                          End If
+                          If IO.File.Exists(WorkDir & useEXE) Then
+                            WriteToOutput("Deleting """ & WorkDir & useEXE & """...")
+                            IO.File.Delete(WorkDir & useEXE)
+                          End If
+                          DiscardDISM(Mount)
+                          ToggleInputs(True)
+                          SetStatus("Failed to integrate " & DisplayName & " (" & useCab1 & ") into " & tmpDISM.Name & "!")
+                          Return False
+                        End If
+                        If Not AddToDism(Mount, WorkDir & useCab2) Then
+                          If IO.File.Exists(tmpCAB) Then
+                            WriteToOutput("Deleting """ & tmpCAB & """...")
+                            IO.File.Delete(tmpCAB)
+                          End If
+                          If IO.File.Exists(WorkDir & useEXE) Then
+                            WriteToOutput("Deleting """ & WorkDir & useEXE & """...")
+                            IO.File.Delete(WorkDir & useEXE)
+                          End If
+                          DiscardDISM(Mount)
+                          ToggleInputs(True)
+                          SetStatus("Failed to integrate " & DisplayName & " (" & useCab2 & ") into " & tmpDISM.Name & "!")
+                          Return False
+                        End If
+                        If Not AddToDism(Mount, WorkDir & useCab3) Then
+                          If IO.File.Exists(tmpCAB) Then
+                            WriteToOutput("Deleting """ & tmpCAB & """...")
+                            IO.File.Delete(tmpCAB)
+                          End If
+                          If IO.File.Exists(WorkDir & useEXE) Then
+                            WriteToOutput("Deleting """ & WorkDir & useEXE & """...")
+                            IO.File.Delete(WorkDir & useEXE)
+                          End If
+                          DiscardDISM(Mount)
+                          ToggleInputs(True)
+                          SetStatus("Failed to integrate " & DisplayName & " (" & useCab3 & ") into " & tmpDISM.Name & "!")
+                          Return False
+                        End If
+                      End If
+                    Else
                       If IO.File.Exists(tmpCAB) Then
                         WriteToOutput("Deleting """ & tmpCAB & """...")
                         IO.File.Delete(tmpCAB)
@@ -4600,116 +5050,54 @@
                       DiscardDISM(Mount)
                       ToggleInputs(True)
                       SetStatus("Failed to integrate " & DisplayName & " into " & tmpDISM.Name & "!")
-                      Return False
-                    Else
-                      Dim useCab1 As String = "WUClient-SelfUpdate-ActiveX.cab"
-                      Dim useCab2 As String = "WUClient-SelfUpdate-Aux-TopLevel.cab"
-                      Dim useCab3 As String = "WUClient-SelfUpdate-Core-TopLevel.cab"
-                      ExtractAFile(WorkDir & useEXE, WorkDir, useCab1)
-                      ExtractAFile(WorkDir & useEXE, WorkDir, useCab2)
-                      ExtractAFile(WorkDir & useEXE, WorkDir, useCab3)
-
-                      If Not IO.File.Exists(WorkDir & useCab1) Then
-                        If IO.File.Exists(tmpCAB) Then
-                          WriteToOutput("Deleting """ & tmpCAB & """...")
-                          IO.File.Delete(tmpCAB)
-                        End If
-                        If IO.File.Exists(WorkDir & useEXE) Then
-                          WriteToOutput("Deleting """ & WorkDir & useEXE & """...")
-                          IO.File.Delete(WorkDir & useEXE)
-                        End If
-                        DiscardDISM(Mount)
-                        ToggleInputs(True)
-                        SetStatus("Failed to integrate " & DisplayName & " (" & useCab1 & ") into " & tmpDISM.Name & "!")
-                        Return False
-                      End If
-                      If Not IO.File.Exists(WorkDir & useCab2) Then
-                        If IO.File.Exists(tmpCAB) Then
-                          WriteToOutput("Deleting """ & tmpCAB & """...")
-                          IO.File.Delete(tmpCAB)
-                        End If
-                        If IO.File.Exists(WorkDir & useEXE) Then
-                          WriteToOutput("Deleting """ & WorkDir & useEXE & """...")
-                          IO.File.Delete(WorkDir & useEXE)
-                        End If
-                        DiscardDISM(Mount)
-                        ToggleInputs(True)
-                        SetStatus("Failed to integrate " & DisplayName & " (" & useCab2 & ") into " & tmpDISM.Name & "!")
-                        Return False
-                      End If
-                      If Not IO.File.Exists(WorkDir & useCab3) Then
-                        If IO.File.Exists(tmpCAB) Then
-                          WriteToOutput("Deleting """ & tmpCAB & """...")
-                          IO.File.Delete(tmpCAB)
-                        End If
-                        If IO.File.Exists(WorkDir & useEXE) Then
-                          WriteToOutput("Deleting """ & WorkDir & useEXE & """...")
-                          IO.File.Delete(WorkDir & useEXE)
-                        End If
-                        DiscardDISM(Mount)
-                        ToggleInputs(True)
-                        SetStatus("Failed to integrate " & DisplayName & " (" & useCab3 & ") into " & tmpDISM.Name & "!")
-                        Return False
-                      End If
-
-                      If Not AddToDism(Mount, WorkDir & useCab1) Then
-                        If IO.File.Exists(tmpCAB) Then
-                          WriteToOutput("Deleting """ & tmpCAB & """...")
-                          IO.File.Delete(tmpCAB)
-                        End If
-                        If IO.File.Exists(WorkDir & useEXE) Then
-                          WriteToOutput("Deleting """ & WorkDir & useEXE & """...")
-                          IO.File.Delete(WorkDir & useEXE)
-                        End If
-                        DiscardDISM(Mount)
-                        ToggleInputs(True)
-                        SetStatus("Failed to integrate " & DisplayName & " (" & useCab1 & ") into " & tmpDISM.Name & "!")
-                        Return False
-                      End If
-                      If Not AddToDism(Mount, WorkDir & useCab2) Then
-                        If IO.File.Exists(tmpCAB) Then
-                          WriteToOutput("Deleting """ & tmpCAB & """...")
-                          IO.File.Delete(tmpCAB)
-                        End If
-                        If IO.File.Exists(WorkDir & useEXE) Then
-                          WriteToOutput("Deleting """ & WorkDir & useEXE & """...")
-                          IO.File.Delete(WorkDir & useEXE)
-                        End If
-                        DiscardDISM(Mount)
-                        ToggleInputs(True)
-                        SetStatus("Failed to integrate " & DisplayName & " (" & useCab2 & ") into " & tmpDISM.Name & "!")
-                        Return False
-                      End If
-                      If Not AddToDism(Mount, WorkDir & useCab3) Then
-                        If IO.File.Exists(tmpCAB) Then
-                          WriteToOutput("Deleting """ & tmpCAB & """...")
-                          IO.File.Delete(tmpCAB)
-                        End If
-                        If IO.File.Exists(WorkDir & useEXE) Then
-                          WriteToOutput("Deleting """ & WorkDir & useEXE & """...")
-                          IO.File.Delete(WorkDir & useEXE)
-                        End If
-                        DiscardDISM(Mount)
-                        ToggleInputs(True)
-                        SetStatus("Failed to integrate " & DisplayName & " (" & useCab3 & ") into " & tmpDISM.Name & "!")
-                        Return False
-                      End If
-
+                    End If
+                    If IO.File.Exists(tmpCAB) Then
+                      WriteToOutput("Deleting """ & tmpCAB & """...")
+                      IO.File.Delete(tmpCAB)
                     End If
                   Else
+                    Dim tmpCAB As String = WorkDir & "lp.cab"
                     If IO.File.Exists(tmpCAB) Then
                       WriteToOutput("Deleting """ & tmpCAB & """...")
                       IO.File.Delete(tmpCAB)
                     End If
-                    DiscardDISM(Mount)
-                    ToggleInputs(True)
-                    SetStatus("Failed to integrate " & DisplayName & " into " & tmpDISM.Name & "!")
+                    If Not EXE2CAB(tmpMSU.Path, tmpCAB) Then
+                      If IO.File.Exists(tmpCAB) Then
+                        WriteToOutput("Deleting """ & tmpCAB & """...")
+                        IO.File.Delete(tmpCAB)
+                      End If
+                      DiscardDISM(Mount)
+                      ToggleInputs(True)
+                      SetStatus("Failed to extract " & DisplayName & " from EXE to CAB!")
+                      Return False
+                    End If
+                    Dim cabList() As String = ExtractFilesList(tmpCAB)
+                    If cabList.Contains("update.mum") Then
+                      If Not AddToDism(Mount, tmpCAB) Then
+                        If IO.File.Exists(tmpCAB) Then
+                          WriteToOutput("Deleting """ & tmpCAB & """...")
+                          IO.File.Delete(tmpCAB)
+                        End If
+                        DiscardDISM(Mount)
+                        ToggleInputs(True)
+                        SetStatus("Failed to integrate " & DisplayName & " into " & tmpDISM.Name & "!")
+                        Return False
+                      End If
+                    Else
+                      If IO.File.Exists(tmpCAB) Then
+                        WriteToOutput("Deleting """ & tmpCAB & """...")
+                        IO.File.Delete(tmpCAB)
+                      End If
+                      DiscardDISM(Mount)
+                      ToggleInputs(True)
+                      SetStatus("Failed to integrate " & DisplayName & " into " & tmpDISM.Name & "!")
+                    End If
+                    If IO.File.Exists(tmpCAB) Then
+                      WriteToOutput("Deleting """ & tmpCAB & """...")
+                      IO.File.Delete(tmpCAB)
+                    End If
+                    LangChange = True
                   End If
-                  If IO.File.Exists(tmpCAB) Then
-                    WriteToOutput("Deleting """ & tmpCAB & """...")
-                    IO.File.Delete(tmpCAB)
-                  End If
-                  LangChange = True
                 Case UpdateType.LIP
                   Dim tmpCAB As String = WorkDir & "tmp" & IO.Path.GetFileNameWithoutExtension(tmpMSU.Path) & ".cab"
                   If IO.File.Exists(tmpCAB) Then
@@ -4748,7 +5136,7 @@
             End If
             If DoSave Then
               SetStatus("Saving Image Package """ & tmpDISM.Name & """...")
-              workEstim = SpeedStats.WIM_SaveImage("64")
+              workEstim = SpeedStats.WIM_SaveImage("64", wimFileSize, MSU_64.Count)
               SetProgressTime(workEstim)
               Dim saveStart As Long = TickCount()
               If Not SaveDISM(Mount) Then
@@ -4758,7 +5146,7 @@
                 Return False
               End If
               workSpeed = TickCount() - workStart
-              SpeedStats.WIM_SaveImage("64") = workSpeed
+              SpeedStats.WIM_SaveImage("64", wimFileSize, MSU_64.Count) = workSpeed
             End If
             If StopRun Then
               ToggleInputs(True)
