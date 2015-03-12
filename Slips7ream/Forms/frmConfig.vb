@@ -35,6 +35,8 @@
       lblTimeoutS.Text = " (Never)"
     ElseIf txtTimeout.Value = 1 Then
       lblTimeoutS.Text = " minute"
+    ElseIf txtTimeout.Value > 59 Then
+      lblTimeoutS.Text = " minutes (" & ConvertTime(txtTimeout.Value * 60UL * 1000UL, False) & ")"
     Else
       lblTimeoutS.Text = " minutes"
     End If
@@ -59,20 +61,13 @@
       If dirDlg.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then txtTemp.Text = IIf(dirDlg.FileName.EndsWith(IO.Path.DirectorySeparatorChar), dirDlg.FileName, dirDlg.FileName & IO.Path.DirectorySeparatorChar)
     End Using
   End Sub
-  Private Sub txtTimeout_KeyUp(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles txtTimeout.KeyUp
+  Private Sub txtTimeout_KeyUp(sender As Object, e As System.EventArgs) Handles txtTimeout.KeyUp, txtTimeout.ValueChanged
     If txtTimeout.Value = 0 Then
       lblTimeoutS.Text = " (Never)"
     ElseIf txtTimeout.Value = 1 Then
       lblTimeoutS.Text = " minute"
-    Else
-      lblTimeoutS.Text = " minutes"
-    End If
-  End Sub
-  Private Sub txtTimeout_ValueChanged(sender As System.Object, e As System.EventArgs) Handles txtTimeout.ValueChanged
-    If txtTimeout.Value = 0 Then
-      lblTimeoutS.Text = " (Never)"
-    ElseIf txtTimeout.Value = 1 Then
-      lblTimeoutS.Text = " minute"
+    ElseIf txtTimeout.Value > 59 Then
+      lblTimeoutS.Text = " minutes (" & ConvertTime(txtTimeout.Value * 60UL * 1000UL, False) & ")"
     Else
       lblTimeoutS.Text = " minutes"
     End If

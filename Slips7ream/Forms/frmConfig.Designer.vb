@@ -34,6 +34,7 @@ Partial Class frmConfig
     Me.cmdTemp = New System.Windows.Forms.Button()
     Me.lblWhitelist = New System.Windows.Forms.Label()
     Me.txtWhitelist = New System.Windows.Forms.TextBox()
+    Me.lblDonate = New Slips7ream.LinkLabel()
     Me.lblTimeoutS = New System.Windows.Forms.Label()
     Me.chkAlert = New System.Windows.Forms.CheckBox()
     Me.pnlAlert = New System.Windows.Forms.TableLayoutPanel()
@@ -41,7 +42,6 @@ Partial Class frmConfig
     Me.cmdAlertBrowse = New System.Windows.Forms.Button()
     Me.cmdPlay = New System.Windows.Forms.Button()
     Me.chkDefault = New System.Windows.Forms.CheckBox()
-    Me.lblDonate = New Slips7ream.LinkLabel()
     Me.ttInfo = New Slips7ream.ToolTip(Me.components)
     Me.pnlConfig.SuspendLayout()
     CType(Me.txtTimeout, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -116,7 +116,7 @@ Partial Class frmConfig
     '
     Me.txtTimeout.Anchor = System.Windows.Forms.AnchorStyles.Right
     Me.txtTimeout.Location = New System.Drawing.Point(127, 150)
-    Me.txtTimeout.Maximum = New Decimal(New Integer() {3600, 0, 0, 0})
+    Me.txtTimeout.Maximum = New Decimal(New Integer() {1440, 0, 0, 0})
     Me.txtTimeout.Name = "txtTimeout"
     Me.txtTimeout.Size = New System.Drawing.Size(60, 20)
     Me.txtTimeout.TabIndex = 7
@@ -172,6 +172,20 @@ Partial Class frmConfig
     Me.txtWhitelist.Size = New System.Drawing.Size(331, 112)
     Me.txtWhitelist.TabIndex = 12
     Me.ttInfo.SetTooltip(Me.txtWhitelist, resources.GetString("txtWhitelist.ToolTip"))
+    '
+    'lblDonate
+    '
+    Me.lblDonate.Anchor = System.Windows.Forms.AnchorStyles.None
+    Me.lblDonate.AutoSize = True
+    Me.pnlConfig.SetColumnSpan(Me.lblDonate, 2)
+    Me.lblDonate.Cursor = System.Windows.Forms.Cursors.Hand
+    Me.lblDonate.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!)
+    Me.lblDonate.ForeColor = System.Drawing.Color.MediumBlue
+    Me.lblDonate.Location = New System.Drawing.Point(50, 211)
+    Me.lblDonate.Name = "lblDonate"
+    Me.lblDonate.Size = New System.Drawing.Size(89, 13)
+    Me.lblDonate.TabIndex = 13
+    Me.lblDonate.Text = "Make a &Donation"
     '
     'lblTimeoutS
     '
@@ -265,20 +279,6 @@ Partial Class frmConfig
     Me.chkDefault.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
     Me.ttInfo.SetTooltip(Me.chkDefault, "Use the System Default Alert sound.")
     Me.chkDefault.UseVisualStyleBackColor = True
-    '
-    'lblDonate
-    '
-    Me.lblDonate.Anchor = System.Windows.Forms.AnchorStyles.None
-    Me.lblDonate.AutoSize = True
-    Me.pnlConfig.SetColumnSpan(Me.lblDonate, 2)
-    Me.lblDonate.Cursor = System.Windows.Forms.Cursors.Hand
-    Me.lblDonate.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!)
-    Me.lblDonate.ForeColor = System.Drawing.Color.MediumBlue
-    Me.lblDonate.Location = New System.Drawing.Point(50, 211)
-    Me.lblDonate.Name = "lblDonate"
-    Me.lblDonate.Size = New System.Drawing.Size(89, 13)
-    Me.lblDonate.TabIndex = 13
-    Me.lblDonate.Text = "Make a &Donation"
     '
     'frmConfig
     '
