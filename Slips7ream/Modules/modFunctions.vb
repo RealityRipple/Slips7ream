@@ -786,7 +786,7 @@ Module modFunctions
           If lngSeconds > 55 Then
             Return "1 Minute"
           Else
-            Return lngSeconds & "Second" & strSeconds
+            Return lngSeconds & " Second" & strSeconds
           End If
         End If
       Else
