@@ -60,7 +60,7 @@ Partial Class frmFS
     Me.lblDescription.Location = New System.Drawing.Point(3, 0)
     Me.lblDescription.Name = "lblDescription"
     Me.lblDescription.Size = New System.Drawing.Size(464, 65)
-    Me.lblDescription.TabIndex = 0
+    Me.lblDescription.TabIndex = 1
     Me.lblDescription.Text = resources.GetString("lblDescription.Text")
     '
     'txtLargeFiles
@@ -73,7 +73,7 @@ Partial Class frmFS
     Me.txtLargeFiles.ReadOnly = True
     Me.txtLargeFiles.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
     Me.txtLargeFiles.Size = New System.Drawing.Size(472, 78)
-    Me.txtLargeFiles.TabIndex = 1
+    Me.txtLargeFiles.TabIndex = 2
     '
     'pnlButtons
     '
@@ -95,7 +95,7 @@ Partial Class frmFS
     Me.pnlButtons.RowCount = 1
     Me.pnlButtons.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
     Me.pnlButtons.Size = New System.Drawing.Size(398, 31)
-    Me.pnlButtons.TabIndex = 2
+    Me.pnlButtons.TabIndex = 0
     '
     'cmdUseUDF
     '
