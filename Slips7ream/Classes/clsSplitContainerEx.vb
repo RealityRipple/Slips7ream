@@ -29,16 +29,65 @@ Public Class SplitContainerEx
   Protected Overrides Sub OnPaint(e As System.Windows.Forms.PaintEventArgs)
     MyBase.OnPaint(e)
     If c_DrawHandle Then
-      Dim SmallerRect As New Rectangle(Me.SplitterRectangle.X + 3, Me.SplitterRectangle.Y, Me.SplitterRectangle.Width - 6, Me.SplitterRectangle.Height)
+      Dim SmallerRect As Rectangle
+      Dim GripDots(4) As Rectangle
+      If MyBase.Orientation = Windows.Forms.Orientation.Vertical Then
+        SmallerRect = New Rectangle(Me.SplitterRectangle.X, Me.SplitterRectangle.Y + 3, Me.SplitterRectangle.Width, Me.SplitterRectangle.Height - 6)
+        Dim Center As New Point(Me.SplitterRectangle.X + (Me.SplitterRectangle.Width / 2), Me.SplitterRectangle.Y + (Me.SplitterRectangle.Height / 2))
+        GripDots(0) = New Rectangle(Center.X - 2, Center.Y - 9, 3, 3)
+        GripDots(1) = New Rectangle(Center.X - 2, Center.Y - 5, 3, 3)
+        GripDots(2) = New Rectangle(Center.X - 2, Center.Y - 1, 3, 3)
+        GripDots(3) = New Rectangle(Center.X - 2, Center.Y + 3, 3, 3)
+        GripDots(4) = New Rectangle(Center.X - 2, Center.Y + 7, 3, 3)
+        If Me.SplitterRectangle.Height <= 28 Then
+          GripDots(0) = Rectangle.Empty
+          GripDots(4) = Rectangle.Empty
+          If Me.SplitterRectangle.Height <= 20 Then
+            GripDots(1) = Rectangle.Empty
+            GripDots(3) = Rectangle.Empty
+            If Me.SplitterRectangle.Height <= 12 Then
+              GripDots(2) = Rectangle.Empty
+            End If
+          End If
+        End If
+      Else
+        SmallerRect = New Rectangle(Me.SplitterRectangle.X + 3, Me.SplitterRectangle.Y, Me.SplitterRectangle.Width - 6, Me.SplitterRectangle.Height)
+        Dim Center As New Point(Me.SplitterRectangle.X + (Me.SplitterRectangle.Width / 2), Me.SplitterRectangle.Y + (Me.SplitterRectangle.Height / 2))
+        GripDots(0) = New Rectangle(Center.X - 9, Center.Y - 2, 3, 3)
+        GripDots(1) = New Rectangle(Center.X - 5, Center.Y - 2, 3, 3)
+        GripDots(2) = New Rectangle(Center.X - 1, Center.Y - 2, 3, 3)
+        GripDots(3) = New Rectangle(Center.X + 3, Center.Y - 2, 3, 3)
+        GripDots(4) = New Rectangle(Center.X + 7, Center.Y - 2, 3, 3)
+        If Me.SplitterRectangle.Width <= 28 Then
+          GripDots(0) = Rectangle.Empty
+          GripDots(4) = Rectangle.Empty
+          If Me.SplitterRectangle.Width <= 20 Then
+            GripDots(1) = Rectangle.Empty
+            GripDots(3) = Rectangle.Empty
+            If Me.SplitterRectangle.Width <= 12 Then
+              GripDots(2) = Rectangle.Empty
+            End If
+          End If
+        End If
+      End If
       e.Graphics.FillRectangle(New SolidBrush(Me.BackColor), Me.SplitterRectangle)
       If Me.Enabled Then
         If Me.Focused Or c_Focus Then
           ControlPaint.DrawBorder3D(e.Graphics, SmallerRect, Border3DStyle.RaisedOuter)
+          For I As Integer = 0 To 4
+            If Not GripDots(I).IsEmpty Then ControlPaint.DrawBorder3D(e.Graphics, GripDots(I), Border3DStyle.SunkenInner)
+          Next
         Else
           ControlPaint.DrawBorder3D(e.Graphics, SmallerRect, Border3DStyle.RaisedInner)
+          For I As Integer = 0 To 4
+            If Not GripDots(I).IsEmpty Then ControlPaint.DrawBorder3D(e.Graphics, GripDots(I), Border3DStyle.SunkenOuter)
+          Next
         End If
       Else
         ControlPaint.DrawBorder3D(e.Graphics, SmallerRect, Border3DStyle.Etched)
+        For I As Integer = 0 To 4
+          If Not GripDots(I).IsEmpty Then ControlPaint.DrawBorder3D(e.Graphics, GripDots(I), Border3DStyle.Etched)
+        Next
       End If
     End If
   End Sub
