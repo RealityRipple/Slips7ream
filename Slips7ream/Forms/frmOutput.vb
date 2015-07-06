@@ -1,5 +1,4 @@
 ﻿Imports System.Runtime.InteropServices
-
 Public Class frmOutput
   <StructLayout(LayoutKind.Sequential)>
   Public Structure WINDOWPOS
@@ -36,7 +35,6 @@ Public Class frmOutput
   Private Const DockPad As Integer = 16
   Private bDock As DockStyle = DockStyle.None
   Private defSize As Size
-
   Protected Overrides Sub WndProc(ByRef m As System.Windows.Forms.Message)
     Select Case m.Msg
       Case &H46
@@ -49,6 +47,7 @@ Public Class frmOutput
         If Not ((NewPosition.flags And SWP.NoSize) = SWP.NoSize And (NewPosition.flags And SWP.NoMove) = SWP.NoMove) Then
           bDock = DockStyle.None
         End If
+        'output window smaller than main window
         If NewPosition.x >= mainBounds.Left - DockPad And NewPosition.x + NewPosition.cx <= mainBounds.Right + DockPad Then
           'top dock
           If NewPosition.y + NewPosition.cy >= mainBounds.Top - DockPad And NewPosition.y + NewPosition.cy <= mainBounds.Top + DockPad Then
@@ -60,13 +59,10 @@ Public Class frmOutput
             ElseIf Math.Abs((NewPosition.x + NewPosition.cx) - mainBounds.Right) < DockPad * 4 Then
               NewPosition.x = mainBounds.Right - NewPosition.cx
             End If
-
-            'If Math.Abs(NewPosition.cx - mainBounds.Width) < DockPad * 4 Then NewPosition.cx = mainBounds.Width
             Runtime.InteropServices.Marshal.StructureToPtr(NewPosition, m.LParam, True)
             bDock = DockStyle.Top
             If defSize.IsEmpty Then defSize = Me.Size
           End If
-
           'bottom dock
           If NewPosition.y >= mainBounds.Bottom - DockPad And NewPosition.y <= mainBounds.Bottom + DockPad Then
             NewPosition.x = mainBounds.Left
@@ -77,9 +73,35 @@ Public Class frmOutput
             bDock = DockStyle.Bottom
             If defSize.IsEmpty Then defSize = Me.Size
           End If
-
         End If
-
+        'main window smaller than output window
+        If mainBounds.Left >= NewPosition.x - DockPad And mainBounds.Right <= NewPosition.x + NewPosition.cx + DockPad Then
+          'top dock
+          If mainBounds.Top >= NewPosition.y + NewPosition.cy - DockPad And mainBounds.Top <= NewPosition.y + NewPosition.cy + DockPad Then
+            NewPosition.y = mainBounds.Top - NewPosition.cy
+            If Math.Abs(mainBounds.Left - NewPosition.x) < DockPad * 4 Then NewPosition.x = mainBounds.Left
+            If Math.Abs(mainBounds.Width - NewPosition.cx) < DockPad * 4 Then
+              NewPosition.cx = mainBounds.Width
+              NewPosition.x = mainBounds.Right - NewPosition.cx
+            ElseIf Math.Abs(mainBounds.Right - (NewPosition.x + NewPosition.cx)) < DockPad * 4 Then
+              NewPosition.x = mainBounds.Right - NewPosition.cx
+            End If
+            Runtime.InteropServices.Marshal.StructureToPtr(NewPosition, m.LParam, True)
+            bDock = DockStyle.Top
+            If defSize.IsEmpty Then defSize = Me.Size
+          End If
+          'bottom dock
+          If mainBounds.Bottom >= NewPosition.y - DockPad And mainBounds.Bottom <= NewPosition.y + DockPad Then
+            NewPosition.x = mainBounds.Left
+            NewPosition.y = mainBounds.Bottom
+            NewPosition.cx = mainBounds.Width
+            NewPosition.cy = Me.MinimumSize.Height
+            Runtime.InteropServices.Marshal.StructureToPtr(NewPosition, m.LParam, True)
+            bDock = DockStyle.Bottom
+            If defSize.IsEmpty Then defSize = Me.Size
+          End If
+        End If
+        'output window smaller than main window
         If NewPosition.y >= mainBounds.Top - DockPad And NewPosition.y + NewPosition.cy <= mainBounds.Bottom + DockPad Then
           'Left Dock
           If NewPosition.x + NewPosition.cx >= mainBounds.Left - DockPad And NewPosition.x + NewPosition.cx <= mainBounds.Left + DockPad Then
@@ -95,7 +117,6 @@ Public Class frmOutput
             bDock = DockStyle.Left
             If defSize.IsEmpty Then defSize = Me.Size
           End If
-
           'Right Dock
           If NewPosition.x >= mainBounds.Right - DockPad And NewPosition.x <= mainBounds.Right + DockPad Then
             NewPosition.x = mainBounds.Right
@@ -106,8 +127,37 @@ Public Class frmOutput
             ElseIf Math.Abs((NewPosition.y + NewPosition.cy) - mainBounds.Bottom) < DockPad * 4 Then
               NewPosition.y = mainBounds.Bottom - NewPosition.cy
             End If
-
-
+            Runtime.InteropServices.Marshal.StructureToPtr(NewPosition, m.LParam, True)
+            bDock = DockStyle.Right
+            If defSize.IsEmpty Then defSize = Me.Size
+          End If
+        End If
+        'main window smaller than output window
+        If mainBounds.Top >= NewPosition.y - DockPad And mainBounds.Bottom <= NewPosition.y + NewPosition.cy + DockPad Then
+          'Left Dock
+          If mainBounds.Left >= NewPosition.x + NewPosition.cx - DockPad And mainBounds.Left <= NewPosition.x + NewPosition.cx + DockPad Then
+            NewPosition.x = mainBounds.Left - NewPosition.cx
+            If Math.Abs(mainBounds.Top - NewPosition.y) < DockPad * 4 Then NewPosition.y = mainBounds.Top
+            If Math.Abs(mainBounds.Height - NewPosition.cy) < DockPad * 4 Then
+              NewPosition.cy = mainBounds.Height
+              NewPosition.y = mainBounds.Bottom - NewPosition.cy
+            ElseIf Math.Abs((NewPosition.y + NewPosition.cy) - mainBounds.Bottom) < DockPad * 4 Then
+              NewPosition.y = mainBounds.Bottom - NewPosition.cy
+            End If
+            Runtime.InteropServices.Marshal.StructureToPtr(NewPosition, m.LParam, True)
+            bDock = DockStyle.Left
+            If defSize.IsEmpty Then defSize = Me.Size
+          End If
+          'Right Dock
+          If NewPosition.x >= mainBounds.Right - DockPad And NewPosition.x <= mainBounds.Right + DockPad Then
+            NewPosition.x = mainBounds.Right
+            If Math.Abs(NewPosition.y - mainBounds.Top) < DockPad * 4 Then NewPosition.y = mainBounds.Top
+            If Math.Abs(NewPosition.cy - mainBounds.Height) < DockPad * 4 Then
+              NewPosition.cy = mainBounds.Height
+              NewPosition.y = mainBounds.Bottom - NewPosition.cy
+            ElseIf Math.Abs(mainBounds.Bottom - (NewPosition.y + NewPosition.cy)) < DockPad * 4 Then
+              NewPosition.y = mainBounds.Bottom - NewPosition.cy
+            End If
             Runtime.InteropServices.Marshal.StructureToPtr(NewPosition, m.LParam, True)
             bDock = DockStyle.Right
             If defSize.IsEmpty Then defSize = Me.Size
@@ -124,7 +174,6 @@ Public Class frmOutput
   End Sub
   Private Sub frmOutput_Load(sender As Object, e As System.EventArgs) Handles Me.Load
     txtOutput.ContextMenu = mnuOutput
-    txtOutputError.ContextMenu = mnuOutput
   End Sub
   Private Sub mnuOutput_Popup(sender As System.Object, e As System.EventArgs) Handles mnuOutput.Popup
     Dim mParent As ContextMenu = sender
@@ -141,21 +190,17 @@ Public Class frmOutput
       End If
     End If
   End Sub
-
   Private Sub tmrMove_Tick(sender As System.Object, e As System.EventArgs) Handles tmrMove.Tick
     RePosition()
   End Sub
-
   Public Sub DoResize()
     defSize = Me.Size
     frmOutput_ResizeEnd(Me, New EventArgs)
   End Sub
-
   Public Sub RePosition()
     Dim mainBounds = frmMain.Bounds
     Select Case bDock
       Case DockStyle.Top
-
         Me.Top = mainBounds.Top - Me.Height
         If Math.Abs(Me.Left - mainBounds.Left) < DockPad * 4 Then Me.Left = mainBounds.Left
         If Math.Abs(Me.Width - mainBounds.Width) < DockPad * 4 Then
@@ -178,18 +223,15 @@ Public Class frmOutput
         ElseIf Math.Abs(Me.Bottom - mainBounds.Bottom) < DockPad * 4 Then
           Me.Top = mainBounds.Bottom - Me.Height
         End If
-
       Case DockStyle.Right
         Me.Left = mainBounds.Right
         If Math.Abs(Me.Top - mainBounds.Top) < DockPad * 4 Then Me.Top = mainBounds.Top
-
         If Math.Abs(Me.Height - mainBounds.Height) < DockPad * 4 Then
           Me.Height = mainBounds.Height
           Me.Top = mainBounds.Bottom - Me.Height
         ElseIf Math.Abs(Me.Bottom - mainBounds.Bottom) < DockPad * 4 Then
           Me.Top = mainBounds.Bottom - Me.Height
         End If
-
       Case Else
         If Not defSize.IsEmpty Then
           Me.Size = defSize
@@ -197,7 +239,6 @@ Public Class frmOutput
         End If
     End Select
   End Sub
-
   Private Sub mnuCopy_Click(sender As System.Object, e As System.EventArgs) Handles mnuCopy.Click
     Dim mSender As MenuItem = sender
     Dim mParent As ContextMenu = mSender.Parent

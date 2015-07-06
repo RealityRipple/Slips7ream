@@ -23,58 +23,14 @@ Partial Class frmOutput
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
     Me.components = New System.ComponentModel.Container()
-    Me.pnlProgress = New System.Windows.Forms.TableLayoutPanel()
-    Me.txtOutput = New System.Windows.Forms.TextBox()
-    Me.txtOutputError = New System.Windows.Forms.TextBox()
     Me.mnuOutput = New System.Windows.Forms.ContextMenu()
     Me.mnuCopy = New System.Windows.Forms.MenuItem()
     Me.mnuClear = New System.Windows.Forms.MenuItem()
     Me.mnuSpacer = New System.Windows.Forms.MenuItem()
     Me.mnuSelectAll = New System.Windows.Forms.MenuItem()
     Me.tmrMove = New System.Windows.Forms.Timer(Me.components)
-    Me.pnlProgress.SuspendLayout()
+    Me.txtOutput = New System.Windows.Forms.TextBox()
     Me.SuspendLayout()
-    '
-    'pnlProgress
-    '
-    Me.pnlProgress.AutoSize = True
-    Me.pnlProgress.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.pnlProgress.ColumnCount = 1
-    Me.pnlProgress.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-    Me.pnlProgress.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
-    Me.pnlProgress.Controls.Add(Me.txtOutput, 0, 0)
-    Me.pnlProgress.Controls.Add(Me.txtOutputError, 0, 1)
-    Me.pnlProgress.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.pnlProgress.Location = New System.Drawing.Point(0, 0)
-    Me.pnlProgress.Margin = New System.Windows.Forms.Padding(0)
-    Me.pnlProgress.Name = "pnlProgress"
-    Me.pnlProgress.RowCount = 2
-    Me.pnlProgress.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 60.0!))
-    Me.pnlProgress.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40.0!))
-    Me.pnlProgress.Size = New System.Drawing.Size(424, 166)
-    Me.pnlProgress.TabIndex = 13
-    '
-    'txtOutput
-    '
-    Me.txtOutput.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.txtOutput.Location = New System.Drawing.Point(3, 3)
-    Me.txtOutput.Multiline = True
-    Me.txtOutput.Name = "txtOutput"
-    Me.txtOutput.ReadOnly = True
-    Me.txtOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-    Me.txtOutput.Size = New System.Drawing.Size(418, 93)
-    Me.txtOutput.TabIndex = 2
-    '
-    'txtOutputError
-    '
-    Me.txtOutputError.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.txtOutputError.Location = New System.Drawing.Point(3, 102)
-    Me.txtOutputError.Multiline = True
-    Me.txtOutputError.Name = "txtOutputError"
-    Me.txtOutputError.ReadOnly = True
-    Me.txtOutputError.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-    Me.txtOutputError.Size = New System.Drawing.Size(418, 61)
-    Me.txtOutputError.TabIndex = 3
     '
     'mnuOutput
     '
@@ -105,30 +61,37 @@ Partial Class frmOutput
     Me.tmrMove.Enabled = True
     Me.tmrMove.Interval = 50
     '
+    'txtOutput
+    '
+    Me.txtOutput.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.txtOutput.Location = New System.Drawing.Point(0, 0)
+    Me.txtOutput.Multiline = True
+    Me.txtOutput.Name = "txtOutput"
+    Me.txtOutput.ReadOnly = True
+    Me.txtOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+    Me.txtOutput.Size = New System.Drawing.Size(424, 91)
+    Me.txtOutput.TabIndex = 3
+    '
     'frmOutput
     '
     Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
     Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-    Me.ClientSize = New System.Drawing.Size(424, 166)
-    Me.Controls.Add(Me.pnlProgress)
+    Me.ClientSize = New System.Drawing.Size(424, 91)
+    Me.Controls.Add(Me.txtOutput)
     Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
     Me.Icon = Global.Slips7ream.My.Resources.Resources.icon
-    Me.MinimumSize = New System.Drawing.Size(200, 200)
+    Me.MinimumSize = New System.Drawing.Size(200, 125)
     Me.Name = "frmOutput"
-    Me.Text = "SLIPS7REAM Output Consoles"
-    Me.pnlProgress.ResumeLayout(False)
-    Me.pnlProgress.PerformLayout()
+    Me.Text = "SLIPS7REAM Output Console"
     Me.ResumeLayout(False)
     Me.PerformLayout()
 
   End Sub
-  Friend WithEvents pnlProgress As System.Windows.Forms.TableLayoutPanel
-  Friend WithEvents txtOutput As System.Windows.Forms.TextBox
-  Friend WithEvents txtOutputError As System.Windows.Forms.TextBox
   Friend WithEvents mnuOutput As System.Windows.Forms.ContextMenu
   Friend WithEvents mnuCopy As System.Windows.Forms.MenuItem
   Friend WithEvents mnuClear As System.Windows.Forms.MenuItem
   Friend WithEvents mnuSpacer As System.Windows.Forms.MenuItem
   Friend WithEvents mnuSelectAll As System.Windows.Forms.MenuItem
   Friend WithEvents tmrMove As System.Windows.Forms.Timer
+  Friend WithEvents txtOutput As System.Windows.Forms.TextBox
 End Class
