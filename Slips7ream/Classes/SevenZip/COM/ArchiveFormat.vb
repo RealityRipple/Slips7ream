@@ -33,6 +33,7 @@
       Vhd
       Z
       Zip
+      Unknown
     End Enum
     Private Shared FFormatClassMap As Dictionary(Of KnownSevenZipFormat, Guid)
     Private Shared ReadOnly Property FormatClassMap() As Dictionary(Of KnownSevenZipFormat, Guid)
@@ -76,9 +77,7 @@
     End Property
     Public Shared Function GetClassIdFromKnownFormat(format As KnownSevenZipFormat) As Guid
       Dim Result As Guid
-      If FormatClassMap.TryGetValue(format, Result) Then
-        Return Result
-      End If
+      If FormatClassMap.TryGetValue(format, Result) Then Return Result
       Return Guid.Empty
     End Function
   End Class
