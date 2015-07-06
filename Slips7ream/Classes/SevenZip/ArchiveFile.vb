@@ -16,7 +16,7 @@ Namespace Extraction
     Implements IDisposable
     Private ReadOnly m_archive As FileInfo
     Private current As FileInfo
-    Private format As Guid
+    Private c_format As Guid
     Private comment As String
     Public Shared ReadOnly AllFormats As New ReadOnlyCollection(Of ArchiveFormat.KnownSevenZipFormat)(New List(Of ArchiveFormat.KnownSevenZipFormat)() From {
       ArchiveFormat.KnownSevenZipFormat.Udf,
@@ -56,13 +56,14 @@ Namespace Extraction
     Public Sub New(archive As FileInfo)
       If archive Is Nothing Then Throw New ArgumentNullException("archive")
       Me.m_archive = archive
+      Me.c_format = Guid.Empty
       If Not archive.Exists Then Throw New FileNotFoundException("Empty List supplied")
       current = archive
     End Sub
     Public Sub New(archive As FileInfo, format As ArchiveFormat.KnownSevenZipFormat)
       If archive Is Nothing Then Throw New ArgumentNullException("archive")
       Me.m_archive = archive
-      Me.format = ArchiveFormat.GetClassIdFromKnownFormat(format)
+      Me.c_format = ArchiveFormat.GetClassIdFromKnownFormat(format)
       If Not archive.Exists Then Throw New FileNotFoundException("archive")
       current = archive
     End Sub
@@ -89,6 +90,18 @@ Namespace Extraction
         Return items.Count
       End Get
     End Property
+    Public Property Format As ArchiveFormat.KnownSevenZipFormat
+      Get
+        For Each fmt As ArchiveFormat.KnownSevenZipFormat In AllFormats
+          If ArchiveFormat.GetClassIdFromKnownFormat(fmt) = c_format Then Return fmt
+        Next
+        Return ArchiveFormat.KnownSevenZipFormat.Unknown
+      End Get
+      Set(value As ArchiveFormat.KnownSevenZipFormat)
+        c_format = ArchiveFormat.GetClassIdFromKnownFormat(value)
+      End Set
+    End Property
+
     Private Sub CloseStreams()
       For Each s As SevenZipFileStream In fileStreams.Values
         s.Dispose()
@@ -134,29 +147,45 @@ Namespace Extraction
     End Function
     Public Sub Extract() Implements IArchiveFile.Extract
       Try
-        Using ar = New Archive(m_archive, Me, format)
+        Using ar = New Archive(m_archive, Me, c_format)
           Dim indices = New List(Of UInteger)()
           Dim files = New Dictionary(Of UInteger, IArchiveEntry)()
           Dim e = ar.GetNumberOfItems()
-          For i As UInteger = 0 To e - 1
-            Dim name = ar.GetProperty(i, ItemPropId.Path).GetString()
-            If String.IsNullOrEmpty(name) Then Continue For
-            If format = ArchiveFormat.GetClassIdFromKnownFormat(ArchiveFormat.KnownSevenZipFormat.Split) Then
-              name = Path.GetFileName(name)
+          If e > 0 Then
+            For i As UInteger = 0 To e - 1
+              Dim name = ar.GetProperty(i, ItemPropId.Path).GetString()
+              If String.IsNullOrEmpty(name) Then Continue For
+              If c_format = ArchiveFormat.GetClassIdFromKnownFormat(ArchiveFormat.KnownSevenZipFormat.Split) Then
+                name = Path.GetFileName(name)
+              End If
+              If Not items.ContainsKey(name) Then
+                Continue For
+              End If
+              Dim entry = items(name)
+              If entry.Destination Is Nothing Then
+                Continue For
+              End If
+              indices.Add(i)
+              files(i) = entry
+            Next
+            If indices.Count > 0 Then
+              Using callback = New ExtractCallback(Me, files)
+                ar.Extract(indices.ToArray(), CUInt(indices.Count), ExtractMode.Extract, callback)
+              End Using
+              If files IsNot Nothing Then
+                For Each File In files
+                  Dim newInfo As New IO.FileInfo(File.Value.Destination.FullName)
+                  newInfo.CreationTime = File.Value.DateTime
+                  newInfo.LastAccessTime = File.Value.DateTime
+                  newInfo.LastWriteTime = File.Value.DateTime
+                Next
+              End If
+            Else
+              Throw New FileNotFoundException("No matched files to extract.")
             End If
-            If Not items.ContainsKey(name) Then
-              Continue For
-            End If
-            Dim entry = items(name)
-            If entry.Destination Is Nothing Then
-              Continue For
-            End If
-            indices.Add(i)
-            files(i) = entry
-          Next
-          Using callback = New ExtractCallback(Me, files)
-            ar.Extract(indices.ToArray(), CUInt(indices.Count), ExtractMode.Extract, callback)
-          End Using
+          Else
+            Throw New FileNotFoundException("No files to extract.")
+          End If
           ar.Close()
         End Using
       Finally
@@ -167,64 +196,67 @@ Namespace Extraction
       Return items.Values.GetEnumerator()
     End Function
     Public Sub Open() Implements IArchiveFile.Open
-      Dim opened = False
+      Dim opened As Boolean = False
       Try
-        Dim formats = New Dictionary(Of Guid, Boolean)()
-        If Not format = Guid.Empty Then formats.Add(format, False)
-        For Each f As ArchiveFormat.KnownSevenZipFormat In AllFormats
-          formats(ArchiveFormat.GetClassIdFromKnownFormat(f)) = False
-        Next
-        For Each f As Guid In formats.Keys
-          If opened Then
-            Exit For
-          End If
+        Dim formats As New List(Of Guid)
+        If Not c_format = Guid.Empty Then
+          formats.Add(c_format)
+        Else
+          For Each f As ArchiveFormat.KnownSevenZipFormat In AllFormats
+            formats.Add(ArchiveFormat.GetClassIdFromKnownFormat(f))
+          Next
+        End If
+        For Each f As Guid In formats
           Try
             Using ar = New Archive(m_archive, Me, f)
               Dim minCrypted As IArchiveEntry = Nothing
               Dim minIndex As UInteger = 0
               Dim e = ar.GetNumberOfItems()
-              If e > 0 Then
-                format = f
-                opened = True
-              Else
-                Exit Try
-              End If
-              For i As UInteger = 0 To e - 1
-                If ar.GetProperty(i, ItemPropId.IsDir).GetBool() Then
-                  Continue For
-                End If
-                Dim name = ar.GetProperty(i, ItemPropId.Path).GetString()
-                If String.IsNullOrEmpty(name) Then
-                  opened = False
-                  Exit Try
-                End If
-                If format = ArchiveFormat.GetClassIdFromKnownFormat(ArchiveFormat.KnownSevenZipFormat.Split) Then
+              If e < 1 Then Continue For
+              For I As UInteger = 0 To e - 1
+                If ar.GetProperty(I, ItemPropId.IsDir).GetBool() Then Continue For
+                Dim name As String
+                If f = ArchiveFormat.GetClassIdFromKnownFormat(ArchiveFormat.KnownSevenZipFormat.Split) Then
+                  name = ar.GetProperty(I, ItemPropId.Path).GetString()
+                  If String.IsNullOrEmpty(name) Then Continue For
                   name = Path.GetFileName(name)
+                Else
+                  name = ar.GetProperty(I, ItemPropId.Path).GetString()
+                  If String.IsNullOrEmpty(name) Then Continue For
                 End If
-                Dim size = ar.GetProperty(i, ItemPropId.Size).GetUlong()
-                Dim packedSize = ar.GetProperty(i, ItemPropId.PackedSize).GetUlong()
-                If packedSize = 0 Then
-                  packedSize = size
-                End If
-                Dim isCrypted = ar.GetProperty(i, ItemPropId.Encrypted).GetBool()
-                Dim crc = ar.GetProperty(i, ItemPropId.CRC).GetUint()
-                Dim entry As IArchiveEntry = New ItemInfo(name, crc, isCrypted, size, packedSize, i)
+                Dim size = ar.GetProperty(I, ItemPropId.Size).GetUlong()
+                Dim packedSize = ar.GetProperty(I, ItemPropId.PackedSize).GetUlong()
+                If packedSize = 0 Then packedSize = size
+                Dim isCrypted = ar.GetProperty(I, ItemPropId.Encrypted).GetBool()
+                Dim crc = ar.GetProperty(I, ItemPropId.CRC).GetUint()
+                Dim tModified = ar.GetProperty(I, ItemPropId.ModificationTime).GetDate
+                Dim entry As IArchiveEntry = New ItemInfo(name, crc, isCrypted, size, packedSize, tModified, I)
                 items(name) = entry
                 If isCrypted AndAlso (minCrypted Is Nothing OrElse minCrypted.CompressedSize > packedSize) Then
                   minCrypted = entry
-                  minIndex = i
+                  minIndex = I
                 End If
               Next
               comment = ar.GetArchiveProperty(ItemPropId.Comment).GetString
+              c_format = f
+              opened = True
             End Using
+            Exit For
           Catch generatedExceptionName As IndexOutOfRangeException
-            Throw New ArchiveException("Open Failed")
+            Throw New ArchiveException("Failed to open archive.")
           End Try
         Next
+        If Not opened Then
+          If formats.Count > 1 Then
+            Throw New ArchiveException("Invalid archive!")
+          Else
+            Throw New ArchiveException("Failed to open archive as " & Format.ToString & ".")
+          End If
+        End If
       Finally
         CloseStreams()
       End Try
-      If Not opened Then Throw New ArchiveException("Invalid archive!")
+
     End Sub
     Public Sub SetCompleted(ByRef completeValue As ULong) Implements IProgress.SetCompleted
     End Sub
@@ -352,7 +384,8 @@ Namespace Extraction
       Private Shared ReadOnly regPreClean As New Regex("^((?:\\|/)?(?:images|bilder|DH|set|cd(?:a|b|\d+))(?:\\|/))", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
       Private ReadOnly m_size As ULong
       Private ReadOnly m_index As UInteger
-      Friend Sub New(aName As String, aCrc As UInteger, aIsCrypted As Boolean, aSize As ULong, aCompressedSize As ULong, index As UInteger)
+      Private ReadOnly m_modified As Date
+      Friend Sub New(aName As String, aCrc As UInteger, aIsCrypted As Boolean, aSize As ULong, aCompressedSize As ULong, aModified As Date, index As UInteger)
         m_name = aName
         While True
           Dim m = regPreClean.Match(m_name)
@@ -370,6 +403,7 @@ Namespace Extraction
         m_size = aSize
         m_compressedSize = aCompressedSize
         m_index = index
+        m_modified = aModified 
       End Sub
       Public ReadOnly Property CompressedSize() As ULong Implements IArchiveEntry.CompressedSize
         Get
@@ -383,7 +417,11 @@ Namespace Extraction
       End Property
       Public ReadOnly Property DateTime() As DateTime Implements IArchiveEntry.DateTime
         Get
-          Throw New NotImplementedException()
+          If m_modified.Year = 1970 Then
+            Return New Date(1970, 1, 1)
+          Else
+            Return m_modified
+          End If
         End Get
       End Property
       Public Property Destination() As FileInfo Implements IArchiveEntry.Destination
