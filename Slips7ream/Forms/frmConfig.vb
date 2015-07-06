@@ -1,6 +1,6 @@
 ﻿Public Class frmConfig
   Private mySettings As MySettings
-  Private Sub cmdSave_Click(sender As System.Object, e As System.EventArgs) Handles cmdSave.Click
+  Private Sub cmdSave_Click(sender As System.Object, e As System.EventArgs) Handles cmdOK.Click
     If String.IsNullOrEmpty(txtTemp.Text) Then txtTemp.Text = My.Computer.FileSystem.SpecialDirectories.Temp & IO.Path.DirectorySeparatorChar & "Slips7ream"
     If Not txtTemp.Text.EndsWith(IO.Path.DirectorySeparatorChar) Then txtTemp.Text &= IO.Path.DirectorySeparatorChar
     Dim sDir As String = IO.Path.GetDirectoryName(IO.Path.GetDirectoryName(txtTemp.Text))
@@ -22,7 +22,7 @@
     mySettings.Save()
     Me.Close()
   End Sub
-  Private Sub cmdClose_Click(sender As System.Object, e As System.EventArgs) Handles cmdClose.Click
+  Private Sub cmdCancel_Click(sender As System.Object, e As System.EventArgs) Handles cmdCancel.Click
     Me.Close()
   End Sub
   Private Sub frmConfig_Load(sender As Object, e As System.EventArgs) Handles Me.Load
@@ -113,7 +113,12 @@
 
   Private Sub cmdPlay_Click(sender As System.Object, e As System.EventArgs) Handles cmdPlay.Click
     If chkDefault.Checked Then
-      My.Computer.Audio.PlaySystemSound(Media.SystemSounds.Asterisk)
+      Dim tada As String = Environment.GetFolderPath(Environment.SpecialFolder.Windows) & "\Media\tada.wav"
+      If IO.File.Exists(tada) Then
+        My.Computer.Audio.Play(tada, AudioPlayMode.Background)
+      Else
+        My.Computer.Audio.PlaySystemSound(Media.SystemSounds.Asterisk)
+      End If
     ElseIf IO.File.Exists(txtAlertPath.Text) Then
       Try
         My.Computer.Audio.Play(txtAlertPath.Text, AudioPlayMode.Background)

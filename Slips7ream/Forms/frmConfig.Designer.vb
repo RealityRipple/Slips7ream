@@ -26,15 +26,14 @@ Partial Class frmConfig
     Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmConfig))
     Me.pnlConfig = New System.Windows.Forms.TableLayoutPanel()
     Me.lblTimeout = New System.Windows.Forms.Label()
-    Me.cmdClose = New System.Windows.Forms.Button()
-    Me.cmdSave = New System.Windows.Forms.Button()
+    Me.cmdCancel = New System.Windows.Forms.Button()
+    Me.cmdOK = New System.Windows.Forms.Button()
     Me.txtTimeout = New System.Windows.Forms.NumericUpDown()
     Me.lblTemp = New System.Windows.Forms.Label()
     Me.txtTemp = New System.Windows.Forms.TextBox()
     Me.cmdTemp = New System.Windows.Forms.Button()
     Me.lblWhitelist = New System.Windows.Forms.Label()
     Me.txtWhitelist = New System.Windows.Forms.TextBox()
-    Me.lblDonate = New Slips7ream.LinkLabel()
     Me.lblTimeoutS = New System.Windows.Forms.Label()
     Me.chkAlert = New System.Windows.Forms.CheckBox()
     Me.pnlAlert = New System.Windows.Forms.TableLayoutPanel()
@@ -42,6 +41,7 @@ Partial Class frmConfig
     Me.cmdAlertBrowse = New System.Windows.Forms.Button()
     Me.cmdPlay = New System.Windows.Forms.Button()
     Me.chkDefault = New System.Windows.Forms.CheckBox()
+    Me.lblDonate = New Slips7ream.LinkLabel()
     Me.ttInfo = New Slips7ream.ToolTip(Me.components)
     Me.pnlConfig.SuspendLayout()
     CType(Me.txtTimeout, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -56,8 +56,8 @@ Partial Class frmConfig
     Me.pnlConfig.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
     Me.pnlConfig.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
     Me.pnlConfig.Controls.Add(Me.lblTimeout, 0, 2)
-    Me.pnlConfig.Controls.Add(Me.cmdClose, 3, 4)
-    Me.pnlConfig.Controls.Add(Me.cmdSave, 2, 4)
+    Me.pnlConfig.Controls.Add(Me.cmdCancel, 3, 4)
+    Me.pnlConfig.Controls.Add(Me.cmdOK, 2, 4)
     Me.pnlConfig.Controls.Add(Me.txtTimeout, 1, 2)
     Me.pnlConfig.Controls.Add(Me.lblTemp, 0, 0)
     Me.pnlConfig.Controls.Add(Me.txtTemp, 1, 0)
@@ -87,30 +87,31 @@ Partial Class frmConfig
     Me.lblTimeout.Location = New System.Drawing.Point(3, 153)
     Me.lblTimeout.Name = "lblTimeout"
     Me.lblTimeout.Size = New System.Drawing.Size(98, 13)
-    Me.lblTimeout.TabIndex = 6
+    Me.lblTimeout.TabIndex = 5
     Me.lblTimeout.Text = "Command Time&out:"
     '
-    'cmdClose
+    'cmdCancel
     '
-    Me.cmdClose.Anchor = System.Windows.Forms.AnchorStyles.Right
-    Me.cmdClose.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmdClose.Location = New System.Drawing.Point(383, 206)
-    Me.cmdClose.Name = "cmdClose"
-    Me.cmdClose.Size = New System.Drawing.Size(75, 23)
-    Me.cmdClose.TabIndex = 9
-    Me.cmdClose.Text = "&Close"
-    Me.cmdClose.UseVisualStyleBackColor = True
+    Me.cmdCancel.Anchor = System.Windows.Forms.AnchorStyles.Right
+    Me.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
+    Me.cmdCancel.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.cmdCancel.Location = New System.Drawing.Point(383, 206)
+    Me.cmdCancel.Name = "cmdCancel"
+    Me.cmdCancel.Size = New System.Drawing.Size(75, 23)
+    Me.cmdCancel.TabIndex = 11
+    Me.cmdCancel.Text = "Cancel"
+    Me.cmdCancel.UseVisualStyleBackColor = True
     '
-    'cmdSave
+    'cmdOK
     '
-    Me.cmdSave.Anchor = System.Windows.Forms.AnchorStyles.Right
-    Me.cmdSave.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmdSave.Location = New System.Drawing.Point(302, 206)
-    Me.cmdSave.Name = "cmdSave"
-    Me.cmdSave.Size = New System.Drawing.Size(75, 23)
-    Me.cmdSave.TabIndex = 8
-    Me.cmdSave.Text = "&Save"
-    Me.cmdSave.UseVisualStyleBackColor = True
+    Me.cmdOK.Anchor = System.Windows.Forms.AnchorStyles.Right
+    Me.cmdOK.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.cmdOK.Location = New System.Drawing.Point(302, 206)
+    Me.cmdOK.Name = "cmdOK"
+    Me.cmdOK.Size = New System.Drawing.Size(75, 23)
+    Me.cmdOK.TabIndex = 10
+    Me.cmdOK.Text = "OK"
+    Me.cmdOK.UseVisualStyleBackColor = True
     '
     'txtTimeout
     '
@@ -119,7 +120,7 @@ Partial Class frmConfig
     Me.txtTimeout.Maximum = New Decimal(New Integer() {1440, 0, 0, 0})
     Me.txtTimeout.Name = "txtTimeout"
     Me.txtTimeout.Size = New System.Drawing.Size(60, 20)
-    Me.txtTimeout.TabIndex = 7
+    Me.txtTimeout.TabIndex = 6
     '
     'lblTemp
     '
@@ -128,7 +129,7 @@ Partial Class frmConfig
     Me.lblTemp.Location = New System.Drawing.Point(3, 8)
     Me.lblTemp.Name = "lblTemp"
     Me.lblTemp.Size = New System.Drawing.Size(107, 13)
-    Me.lblTemp.TabIndex = 3
+    Me.lblTemp.TabIndex = 0
     Me.lblTemp.Text = "&Temp Directory Path:"
     '
     'txtTemp
@@ -138,7 +139,7 @@ Partial Class frmConfig
     Me.txtTemp.Location = New System.Drawing.Point(127, 4)
     Me.txtTemp.Name = "txtTemp"
     Me.txtTemp.Size = New System.Drawing.Size(250, 20)
-    Me.txtTemp.TabIndex = 4
+    Me.txtTemp.TabIndex = 1
     Me.ttInfo.SetTooltip(Me.txtTemp, "Empty directory for the program to work in.")
     '
     'cmdTemp
@@ -147,7 +148,7 @@ Partial Class frmConfig
     Me.cmdTemp.Location = New System.Drawing.Point(383, 3)
     Me.cmdTemp.Name = "cmdTemp"
     Me.cmdTemp.Size = New System.Drawing.Size(75, 23)
-    Me.cmdTemp.TabIndex = 5
+    Me.cmdTemp.TabIndex = 2
     Me.cmdTemp.Text = "B&rowse..."
     Me.cmdTemp.UseVisualStyleBackColor = True
     '
@@ -158,11 +159,12 @@ Partial Class frmConfig
     Me.lblWhitelist.Margin = New System.Windows.Forms.Padding(3, 6, 3, 0)
     Me.lblWhitelist.Name = "lblWhitelist"
     Me.lblWhitelist.Size = New System.Drawing.Size(108, 13)
-    Me.lblWhitelist.TabIndex = 11
+    Me.lblWhitelist.TabIndex = 3
     Me.lblWhitelist.Text = "x86 Update &Whitelist:"
     '
     'txtWhitelist
     '
+    Me.txtWhitelist.AcceptsReturn = True
     Me.pnlConfig.SetColumnSpan(Me.txtWhitelist, 3)
     Me.txtWhitelist.Dock = System.Windows.Forms.DockStyle.Fill
     Me.txtWhitelist.Location = New System.Drawing.Point(127, 32)
@@ -170,22 +172,8 @@ Partial Class frmConfig
     Me.txtWhitelist.Name = "txtWhitelist"
     Me.txtWhitelist.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
     Me.txtWhitelist.Size = New System.Drawing.Size(331, 112)
-    Me.txtWhitelist.TabIndex = 12
+    Me.txtWhitelist.TabIndex = 4
     Me.ttInfo.SetTooltip(Me.txtWhitelist, resources.GetString("txtWhitelist.ToolTip"))
-    '
-    'lblDonate
-    '
-    Me.lblDonate.Anchor = System.Windows.Forms.AnchorStyles.None
-    Me.lblDonate.AutoSize = True
-    Me.pnlConfig.SetColumnSpan(Me.lblDonate, 2)
-    Me.lblDonate.Cursor = System.Windows.Forms.Cursors.Hand
-    Me.lblDonate.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!)
-    Me.lblDonate.ForeColor = System.Drawing.Color.MediumBlue
-    Me.lblDonate.Location = New System.Drawing.Point(50, 211)
-    Me.lblDonate.Name = "lblDonate"
-    Me.lblDonate.Size = New System.Drawing.Size(89, 13)
-    Me.lblDonate.TabIndex = 13
-    Me.lblDonate.Text = "Make a &Donation"
     '
     'lblTimeoutS
     '
@@ -195,7 +183,7 @@ Partial Class frmConfig
     Me.lblTimeoutS.Location = New System.Drawing.Point(193, 153)
     Me.lblTimeoutS.Name = "lblTimeoutS"
     Me.lblTimeoutS.Size = New System.Drawing.Size(43, 13)
-    Me.lblTimeoutS.TabIndex = 10
+    Me.lblTimeoutS.TabIndex = 7
     Me.lblTimeoutS.Text = "minutes"
     '
     'chkAlert
@@ -206,7 +194,7 @@ Partial Class frmConfig
     Me.chkAlert.Location = New System.Drawing.Point(3, 179)
     Me.chkAlert.Name = "chkAlert"
     Me.chkAlert.Size = New System.Drawing.Size(118, 18)
-    Me.chkAlert.TabIndex = 14
+    Me.chkAlert.TabIndex = 8
     Me.chkAlert.Text = "&Alert on Complete:"
     Me.ttInfo.SetTooltip(Me.chkAlert, "Play an auditory alert when the Slipstream process has completed.")
     Me.chkAlert.UseVisualStyleBackColor = True
@@ -230,7 +218,7 @@ Partial Class frmConfig
     Me.pnlAlert.RowCount = 1
     Me.pnlAlert.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
     Me.pnlAlert.Size = New System.Drawing.Size(337, 30)
-    Me.pnlAlert.TabIndex = 15
+    Me.pnlAlert.TabIndex = 9
     '
     'txtAlertPath
     '
@@ -275,15 +263,31 @@ Partial Class frmConfig
     Me.chkDefault.Location = New System.Drawing.Point(282, 3)
     Me.chkDefault.Name = "chkDefault"
     Me.chkDefault.Size = New System.Drawing.Size(23, 23)
-    Me.chkDefault.TabIndex = 4
+    Me.chkDefault.TabIndex = 2
     Me.chkDefault.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
     Me.ttInfo.SetTooltip(Me.chkDefault, "Use the System Default Alert sound.")
     Me.chkDefault.UseVisualStyleBackColor = True
     '
+    'lblDonate
+    '
+    Me.lblDonate.Anchor = System.Windows.Forms.AnchorStyles.None
+    Me.lblDonate.AutoSize = True
+    Me.pnlConfig.SetColumnSpan(Me.lblDonate, 2)
+    Me.lblDonate.Cursor = System.Windows.Forms.Cursors.Hand
+    Me.lblDonate.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!)
+    Me.lblDonate.ForeColor = System.Drawing.Color.MediumBlue
+    Me.lblDonate.Location = New System.Drawing.Point(50, 211)
+    Me.lblDonate.Name = "lblDonate"
+    Me.lblDonate.Size = New System.Drawing.Size(89, 13)
+    Me.lblDonate.TabIndex = 12
+    Me.lblDonate.Text = "Make a &Donation"
+    '
     'frmConfig
     '
+    Me.AcceptButton = Me.cmdOK
     Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
     Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+    Me.CancelButton = Me.cmdCancel
     Me.ClientSize = New System.Drawing.Size(461, 232)
     Me.Controls.Add(Me.pnlConfig)
     Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
@@ -307,8 +311,8 @@ Partial Class frmConfig
   Friend WithEvents txtTemp As System.Windows.Forms.TextBox
   Friend WithEvents cmdTemp As System.Windows.Forms.Button
   Friend WithEvents lblTimeout As System.Windows.Forms.Label
-  Friend WithEvents cmdClose As System.Windows.Forms.Button
-  Friend WithEvents cmdSave As System.Windows.Forms.Button
+  Friend WithEvents cmdCancel As System.Windows.Forms.Button
+  Friend WithEvents cmdOK As System.Windows.Forms.Button
   Friend WithEvents txtTimeout As System.Windows.Forms.NumericUpDown
   Friend WithEvents lblTimeoutS As System.Windows.Forms.Label
   Friend WithEvents ttInfo As Slips7ream.ToolTip
