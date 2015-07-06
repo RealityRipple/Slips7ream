@@ -60,5 +60,9 @@ Namespace Extraction
       Dim o = GetObject()
       Return If(o Is Nothing, 0, Convert.ToUInt64(o))
     End Function
+    Public Function GetDate() As Date
+      Dim o = GetObject()
+      Return If(o Is Nothing, New Date(1970, 1, 1), o)
+    End Function
   End Class
 End Namespace
