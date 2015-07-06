@@ -289,6 +289,14 @@ Public Class SpeedStats
       WriteField("WIM_ParseImage_" & Size, value)
     End Set
   End Property
+  Public Shared Property WIM_ParseImageWithUpdates(Size As String) As Long
+    Get
+      Return ReadField("WIM_ParseImageWithUpdates_" & Size)
+    End Get
+    Set(value As Long)
+      WriteField("WIM_ParseImageWithUpdates_" & Size, value)
+    End Set
+  End Property
   Public Shared Property WIM_MountImage(Architecture As String, Size As String) As Long
     Get
       Return ReadField("WIM_MountImage_x" & Architecture & "_in_" & Size)
@@ -343,6 +351,14 @@ Public Class SpeedStats
     End Get
     Set(value As Long)
       WriteField("WIM_SplitImage_" & Size & "_to_" & ChunkSize, value)
+    End Set
+  End Property
+  Public Shared Property WIM_ParseUpdates(Architecture As String, Size As String) As Long
+    Get
+      Return ReadField("WIM_ParseUpdates_x" & Architecture & "_in_" & Size)
+    End Get
+    Set(value As Long)
+      WriteField("WIM_ParseUpdates_x" & Architecture & "_in_" & Size, value)
     End Set
   End Property
 
