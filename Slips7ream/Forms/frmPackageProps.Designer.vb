@@ -22,6 +22,8 @@ Partial Class frmPackageProps
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+    Me.components = New System.ComponentModel.Container()
+    Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmPackageProps))
     Me.pnlProps = New System.Windows.Forms.TableLayoutPanel()
     Me.lblIndex = New System.Windows.Forms.Label()
     Me.txtIndex = New System.Windows.Forms.TextBox()
@@ -64,15 +66,21 @@ Partial Class frmPackageProps
     Me.pnlButtons = New System.Windows.Forms.TableLayoutPanel()
     Me.cmdClose = New System.Windows.Forms.Button()
     Me.cmdSave = New System.Windows.Forms.Button()
+    Me.lvUpdates = New System.Windows.Forms.ListView()
+    Me.colPackage = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+    Me.colVer = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+    Me.imlUpdates = New System.Windows.Forms.ImageList(Me.components)
+    Me.lblUpdates = New System.Windows.Forms.Label()
     Me.pnlProps.SuspendLayout()
     Me.pnlButtons.SuspendLayout()
     Me.SuspendLayout()
     '
     'pnlProps
     '
-    Me.pnlProps.ColumnCount = 2
+    Me.pnlProps.ColumnCount = 3
     Me.pnlProps.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
     Me.pnlProps.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+    Me.pnlProps.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 350.0!))
     Me.pnlProps.Controls.Add(Me.lblIndex, 0, 0)
     Me.pnlProps.Controls.Add(Me.txtIndex, 1, 0)
     Me.pnlProps.Controls.Add(Me.lblName, 0, 1)
@@ -111,7 +119,9 @@ Partial Class frmPackageProps
     Me.pnlProps.Controls.Add(Me.txtModified, 1, 17)
     Me.pnlProps.Controls.Add(Me.lblLanguages, 0, 18)
     Me.pnlProps.Controls.Add(Me.txtLanguages, 1, 18)
-    Me.pnlProps.Controls.Add(Me.pnlButtons, 1, 19)
+    Me.pnlProps.Controls.Add(Me.pnlButtons, 0, 19)
+    Me.pnlProps.Controls.Add(Me.lvUpdates, 2, 1)
+    Me.pnlProps.Controls.Add(Me.lblUpdates, 2, 0)
     Me.pnlProps.Dock = System.Windows.Forms.DockStyle.Fill
     Me.pnlProps.Location = New System.Drawing.Point(0, 0)
     Me.pnlProps.Name = "pnlProps"
@@ -136,15 +146,14 @@ Partial Class frmPackageProps
     Me.pnlProps.RowStyles.Add(New System.Windows.Forms.RowStyle())
     Me.pnlProps.RowStyles.Add(New System.Windows.Forms.RowStyle())
     Me.pnlProps.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-    Me.pnlProps.RowStyles.Add(New System.Windows.Forms.RowStyle())
-    Me.pnlProps.Size = New System.Drawing.Size(304, 522)
+    Me.pnlProps.Size = New System.Drawing.Size(631, 533)
     Me.pnlProps.TabIndex = 0
     '
     'lblIndex
     '
     Me.lblIndex.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblIndex.AutoSize = True
-    Me.lblIndex.Location = New System.Drawing.Point(3, 5)
+    Me.lblIndex.Location = New System.Drawing.Point(3, 6)
     Me.lblIndex.Name = "lblIndex"
     Me.lblIndex.Size = New System.Drawing.Size(36, 13)
     Me.lblIndex.TabIndex = 0
@@ -157,14 +166,14 @@ Partial Class frmPackageProps
     Me.txtIndex.Margin = New System.Windows.Forms.Padding(2)
     Me.txtIndex.Name = "txtIndex"
     Me.txtIndex.ReadOnly = True
-    Me.txtIndex.Size = New System.Drawing.Size(191, 20)
+    Me.txtIndex.Size = New System.Drawing.Size(168, 20)
     Me.txtIndex.TabIndex = 1
     '
     'lblName
     '
     Me.lblName.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblName.AutoSize = True
-    Me.lblName.Location = New System.Drawing.Point(3, 29)
+    Me.lblName.Location = New System.Drawing.Point(3, 30)
     Me.lblName.Name = "lblName"
     Me.lblName.Size = New System.Drawing.Size(38, 13)
     Me.lblName.TabIndex = 2
@@ -173,17 +182,17 @@ Partial Class frmPackageProps
     'txtName
     '
     Me.txtName.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtName.Location = New System.Drawing.Point(111, 26)
+    Me.txtName.Location = New System.Drawing.Point(111, 27)
     Me.txtName.Margin = New System.Windows.Forms.Padding(2)
     Me.txtName.Name = "txtName"
-    Me.txtName.Size = New System.Drawing.Size(191, 20)
+    Me.txtName.Size = New System.Drawing.Size(168, 20)
     Me.txtName.TabIndex = 3
     '
     'lblDesc
     '
     Me.lblDesc.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblDesc.AutoSize = True
-    Me.lblDesc.Location = New System.Drawing.Point(3, 53)
+    Me.lblDesc.Location = New System.Drawing.Point(3, 54)
     Me.lblDesc.Name = "lblDesc"
     Me.lblDesc.Size = New System.Drawing.Size(63, 13)
     Me.lblDesc.TabIndex = 4
@@ -192,18 +201,18 @@ Partial Class frmPackageProps
     'txtDesc
     '
     Me.txtDesc.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtDesc.Location = New System.Drawing.Point(111, 50)
+    Me.txtDesc.Location = New System.Drawing.Point(111, 51)
     Me.txtDesc.Margin = New System.Windows.Forms.Padding(2)
     Me.txtDesc.Name = "txtDesc"
     Me.txtDesc.ReadOnly = True
-    Me.txtDesc.Size = New System.Drawing.Size(191, 20)
+    Me.txtDesc.Size = New System.Drawing.Size(168, 20)
     Me.txtDesc.TabIndex = 5
     '
     'lblSize
     '
     Me.lblSize.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblSize.AutoSize = True
-    Me.lblSize.Location = New System.Drawing.Point(3, 77)
+    Me.lblSize.Location = New System.Drawing.Point(3, 78)
     Me.lblSize.Name = "lblSize"
     Me.lblSize.Size = New System.Drawing.Size(30, 13)
     Me.lblSize.TabIndex = 6
@@ -212,18 +221,18 @@ Partial Class frmPackageProps
     'txtSize
     '
     Me.txtSize.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtSize.Location = New System.Drawing.Point(111, 74)
+    Me.txtSize.Location = New System.Drawing.Point(111, 75)
     Me.txtSize.Margin = New System.Windows.Forms.Padding(2)
     Me.txtSize.Name = "txtSize"
     Me.txtSize.ReadOnly = True
-    Me.txtSize.Size = New System.Drawing.Size(191, 20)
+    Me.txtSize.Size = New System.Drawing.Size(168, 20)
     Me.txtSize.TabIndex = 7
     '
     'lblArchitecture
     '
     Me.lblArchitecture.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblArchitecture.AutoSize = True
-    Me.lblArchitecture.Location = New System.Drawing.Point(3, 101)
+    Me.lblArchitecture.Location = New System.Drawing.Point(3, 102)
     Me.lblArchitecture.Name = "lblArchitecture"
     Me.lblArchitecture.Size = New System.Drawing.Size(67, 13)
     Me.lblArchitecture.TabIndex = 8
@@ -232,18 +241,18 @@ Partial Class frmPackageProps
     'txtArchitecture
     '
     Me.txtArchitecture.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtArchitecture.Location = New System.Drawing.Point(111, 98)
+    Me.txtArchitecture.Location = New System.Drawing.Point(111, 99)
     Me.txtArchitecture.Margin = New System.Windows.Forms.Padding(2)
     Me.txtArchitecture.Name = "txtArchitecture"
     Me.txtArchitecture.ReadOnly = True
-    Me.txtArchitecture.Size = New System.Drawing.Size(191, 20)
+    Me.txtArchitecture.Size = New System.Drawing.Size(168, 20)
     Me.txtArchitecture.TabIndex = 9
     '
     'lblHAL
     '
     Me.lblHAL.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblHAL.AutoSize = True
-    Me.lblHAL.Location = New System.Drawing.Point(3, 125)
+    Me.lblHAL.Location = New System.Drawing.Point(3, 126)
     Me.lblHAL.Name = "lblHAL"
     Me.lblHAL.Size = New System.Drawing.Size(31, 13)
     Me.lblHAL.TabIndex = 10
@@ -252,18 +261,18 @@ Partial Class frmPackageProps
     'txtHAL
     '
     Me.txtHAL.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtHAL.Location = New System.Drawing.Point(111, 122)
+    Me.txtHAL.Location = New System.Drawing.Point(111, 123)
     Me.txtHAL.Margin = New System.Windows.Forms.Padding(2)
     Me.txtHAL.Name = "txtHAL"
     Me.txtHAL.ReadOnly = True
-    Me.txtHAL.Size = New System.Drawing.Size(191, 20)
+    Me.txtHAL.Size = New System.Drawing.Size(168, 20)
     Me.txtHAL.TabIndex = 11
     '
     'lblVersion
     '
     Me.lblVersion.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblVersion.AutoSize = True
-    Me.lblVersion.Location = New System.Drawing.Point(3, 149)
+    Me.lblVersion.Location = New System.Drawing.Point(3, 150)
     Me.lblVersion.Name = "lblVersion"
     Me.lblVersion.Size = New System.Drawing.Size(45, 13)
     Me.lblVersion.TabIndex = 12
@@ -272,18 +281,18 @@ Partial Class frmPackageProps
     'txtVersion
     '
     Me.txtVersion.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtVersion.Location = New System.Drawing.Point(111, 146)
+    Me.txtVersion.Location = New System.Drawing.Point(111, 147)
     Me.txtVersion.Margin = New System.Windows.Forms.Padding(2)
     Me.txtVersion.Name = "txtVersion"
     Me.txtVersion.ReadOnly = True
-    Me.txtVersion.Size = New System.Drawing.Size(191, 20)
+    Me.txtVersion.Size = New System.Drawing.Size(168, 20)
     Me.txtVersion.TabIndex = 13
     '
     'lblSPBuild
     '
     Me.lblSPBuild.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblSPBuild.AutoSize = True
-    Me.lblSPBuild.Location = New System.Drawing.Point(3, 173)
+    Me.lblSPBuild.Location = New System.Drawing.Point(3, 174)
     Me.lblSPBuild.Name = "lblSPBuild"
     Me.lblSPBuild.Size = New System.Drawing.Size(100, 13)
     Me.lblSPBuild.TabIndex = 14
@@ -292,18 +301,18 @@ Partial Class frmPackageProps
     'txtSPBuild
     '
     Me.txtSPBuild.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtSPBuild.Location = New System.Drawing.Point(111, 170)
+    Me.txtSPBuild.Location = New System.Drawing.Point(111, 171)
     Me.txtSPBuild.Margin = New System.Windows.Forms.Padding(2)
     Me.txtSPBuild.Name = "txtSPBuild"
     Me.txtSPBuild.ReadOnly = True
-    Me.txtSPBuild.Size = New System.Drawing.Size(191, 20)
+    Me.txtSPBuild.Size = New System.Drawing.Size(168, 20)
     Me.txtSPBuild.TabIndex = 15
     '
     'lblSPLevel
     '
     Me.lblSPLevel.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblSPLevel.AutoSize = True
-    Me.lblSPLevel.Location = New System.Drawing.Point(3, 197)
+    Me.lblSPLevel.Location = New System.Drawing.Point(3, 198)
     Me.lblSPLevel.Name = "lblSPLevel"
     Me.lblSPLevel.Size = New System.Drawing.Size(103, 13)
     Me.lblSPLevel.TabIndex = 16
@@ -312,18 +321,18 @@ Partial Class frmPackageProps
     'txtSPLevel
     '
     Me.txtSPLevel.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtSPLevel.Location = New System.Drawing.Point(111, 194)
+    Me.txtSPLevel.Location = New System.Drawing.Point(111, 195)
     Me.txtSPLevel.Margin = New System.Windows.Forms.Padding(2)
     Me.txtSPLevel.Name = "txtSPLevel"
     Me.txtSPLevel.ReadOnly = True
-    Me.txtSPLevel.Size = New System.Drawing.Size(191, 20)
+    Me.txtSPLevel.Size = New System.Drawing.Size(168, 20)
     Me.txtSPLevel.TabIndex = 17
     '
     'lblEdition
     '
     Me.lblEdition.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblEdition.AutoSize = True
-    Me.lblEdition.Location = New System.Drawing.Point(3, 221)
+    Me.lblEdition.Location = New System.Drawing.Point(3, 222)
     Me.lblEdition.Name = "lblEdition"
     Me.lblEdition.Size = New System.Drawing.Size(42, 13)
     Me.lblEdition.TabIndex = 18
@@ -332,18 +341,18 @@ Partial Class frmPackageProps
     'txtEdition
     '
     Me.txtEdition.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtEdition.Location = New System.Drawing.Point(111, 218)
+    Me.txtEdition.Location = New System.Drawing.Point(111, 219)
     Me.txtEdition.Margin = New System.Windows.Forms.Padding(2)
     Me.txtEdition.Name = "txtEdition"
     Me.txtEdition.ReadOnly = True
-    Me.txtEdition.Size = New System.Drawing.Size(191, 20)
+    Me.txtEdition.Size = New System.Drawing.Size(168, 20)
     Me.txtEdition.TabIndex = 19
     '
     'lblInstallation
     '
     Me.lblInstallation.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblInstallation.AutoSize = True
-    Me.lblInstallation.Location = New System.Drawing.Point(3, 245)
+    Me.lblInstallation.Location = New System.Drawing.Point(3, 246)
     Me.lblInstallation.Name = "lblInstallation"
     Me.lblInstallation.Size = New System.Drawing.Size(60, 13)
     Me.lblInstallation.TabIndex = 20
@@ -352,18 +361,18 @@ Partial Class frmPackageProps
     'txtInstallation
     '
     Me.txtInstallation.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtInstallation.Location = New System.Drawing.Point(111, 242)
+    Me.txtInstallation.Location = New System.Drawing.Point(111, 243)
     Me.txtInstallation.Margin = New System.Windows.Forms.Padding(2)
     Me.txtInstallation.Name = "txtInstallation"
     Me.txtInstallation.ReadOnly = True
-    Me.txtInstallation.Size = New System.Drawing.Size(191, 20)
+    Me.txtInstallation.Size = New System.Drawing.Size(168, 20)
     Me.txtInstallation.TabIndex = 21
     '
     'lblProductType
     '
     Me.lblProductType.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblProductType.AutoSize = True
-    Me.lblProductType.Location = New System.Drawing.Point(3, 269)
+    Me.lblProductType.Location = New System.Drawing.Point(3, 270)
     Me.lblProductType.Name = "lblProductType"
     Me.lblProductType.Size = New System.Drawing.Size(74, 13)
     Me.lblProductType.TabIndex = 22
@@ -372,18 +381,18 @@ Partial Class frmPackageProps
     'txtProductType
     '
     Me.txtProductType.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtProductType.Location = New System.Drawing.Point(111, 266)
+    Me.txtProductType.Location = New System.Drawing.Point(111, 267)
     Me.txtProductType.Margin = New System.Windows.Forms.Padding(2)
     Me.txtProductType.Name = "txtProductType"
     Me.txtProductType.ReadOnly = True
-    Me.txtProductType.Size = New System.Drawing.Size(191, 20)
+    Me.txtProductType.Size = New System.Drawing.Size(168, 20)
     Me.txtProductType.TabIndex = 23
     '
     'lblProductSuite
     '
     Me.lblProductSuite.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblProductSuite.AutoSize = True
-    Me.lblProductSuite.Location = New System.Drawing.Point(3, 293)
+    Me.lblProductSuite.Location = New System.Drawing.Point(3, 294)
     Me.lblProductSuite.Name = "lblProductSuite"
     Me.lblProductSuite.Size = New System.Drawing.Size(74, 13)
     Me.lblProductSuite.TabIndex = 24
@@ -392,18 +401,18 @@ Partial Class frmPackageProps
     'txtProductSuite
     '
     Me.txtProductSuite.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtProductSuite.Location = New System.Drawing.Point(111, 290)
+    Me.txtProductSuite.Location = New System.Drawing.Point(111, 291)
     Me.txtProductSuite.Margin = New System.Windows.Forms.Padding(2)
     Me.txtProductSuite.Name = "txtProductSuite"
     Me.txtProductSuite.ReadOnly = True
-    Me.txtProductSuite.Size = New System.Drawing.Size(191, 20)
+    Me.txtProductSuite.Size = New System.Drawing.Size(168, 20)
     Me.txtProductSuite.TabIndex = 25
     '
     'lblSystemRoot
     '
     Me.lblSystemRoot.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblSystemRoot.AutoSize = True
-    Me.lblSystemRoot.Location = New System.Drawing.Point(3, 317)
+    Me.lblSystemRoot.Location = New System.Drawing.Point(3, 318)
     Me.lblSystemRoot.Name = "lblSystemRoot"
     Me.lblSystemRoot.Size = New System.Drawing.Size(70, 13)
     Me.lblSystemRoot.TabIndex = 26
@@ -412,18 +421,18 @@ Partial Class frmPackageProps
     'txtSystemRoot
     '
     Me.txtSystemRoot.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtSystemRoot.Location = New System.Drawing.Point(111, 314)
+    Me.txtSystemRoot.Location = New System.Drawing.Point(111, 315)
     Me.txtSystemRoot.Margin = New System.Windows.Forms.Padding(2)
     Me.txtSystemRoot.Name = "txtSystemRoot"
     Me.txtSystemRoot.ReadOnly = True
-    Me.txtSystemRoot.Size = New System.Drawing.Size(191, 20)
+    Me.txtSystemRoot.Size = New System.Drawing.Size(168, 20)
     Me.txtSystemRoot.TabIndex = 27
     '
     'lblFiles
     '
     Me.lblFiles.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblFiles.AutoSize = True
-    Me.lblFiles.Location = New System.Drawing.Point(3, 341)
+    Me.lblFiles.Location = New System.Drawing.Point(3, 342)
     Me.lblFiles.Name = "lblFiles"
     Me.lblFiles.Size = New System.Drawing.Size(31, 13)
     Me.lblFiles.TabIndex = 28
@@ -432,18 +441,18 @@ Partial Class frmPackageProps
     'txtFiles
     '
     Me.txtFiles.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtFiles.Location = New System.Drawing.Point(111, 338)
+    Me.txtFiles.Location = New System.Drawing.Point(111, 339)
     Me.txtFiles.Margin = New System.Windows.Forms.Padding(2)
     Me.txtFiles.Name = "txtFiles"
     Me.txtFiles.ReadOnly = True
-    Me.txtFiles.Size = New System.Drawing.Size(191, 20)
+    Me.txtFiles.Size = New System.Drawing.Size(168, 20)
     Me.txtFiles.TabIndex = 29
     '
     'lblDirectories
     '
     Me.lblDirectories.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblDirectories.AutoSize = True
-    Me.lblDirectories.Location = New System.Drawing.Point(3, 365)
+    Me.lblDirectories.Location = New System.Drawing.Point(3, 366)
     Me.lblDirectories.Name = "lblDirectories"
     Me.lblDirectories.Size = New System.Drawing.Size(60, 13)
     Me.lblDirectories.TabIndex = 30
@@ -452,18 +461,18 @@ Partial Class frmPackageProps
     'txtDirectories
     '
     Me.txtDirectories.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtDirectories.Location = New System.Drawing.Point(111, 362)
+    Me.txtDirectories.Location = New System.Drawing.Point(111, 363)
     Me.txtDirectories.Margin = New System.Windows.Forms.Padding(2)
     Me.txtDirectories.Name = "txtDirectories"
     Me.txtDirectories.ReadOnly = True
-    Me.txtDirectories.Size = New System.Drawing.Size(191, 20)
+    Me.txtDirectories.Size = New System.Drawing.Size(168, 20)
     Me.txtDirectories.TabIndex = 31
     '
     'lblCreated
     '
     Me.lblCreated.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblCreated.AutoSize = True
-    Me.lblCreated.Location = New System.Drawing.Point(3, 389)
+    Me.lblCreated.Location = New System.Drawing.Point(3, 390)
     Me.lblCreated.Name = "lblCreated"
     Me.lblCreated.Size = New System.Drawing.Size(47, 13)
     Me.lblCreated.TabIndex = 32
@@ -472,18 +481,18 @@ Partial Class frmPackageProps
     'txtCreated
     '
     Me.txtCreated.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtCreated.Location = New System.Drawing.Point(111, 386)
+    Me.txtCreated.Location = New System.Drawing.Point(111, 387)
     Me.txtCreated.Margin = New System.Windows.Forms.Padding(2)
     Me.txtCreated.Name = "txtCreated"
     Me.txtCreated.ReadOnly = True
-    Me.txtCreated.Size = New System.Drawing.Size(191, 20)
+    Me.txtCreated.Size = New System.Drawing.Size(168, 20)
     Me.txtCreated.TabIndex = 33
     '
     'lblModified
     '
     Me.lblModified.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblModified.AutoSize = True
-    Me.lblModified.Location = New System.Drawing.Point(3, 413)
+    Me.lblModified.Location = New System.Drawing.Point(3, 414)
     Me.lblModified.Name = "lblModified"
     Me.lblModified.Size = New System.Drawing.Size(53, 13)
     Me.lblModified.TabIndex = 34
@@ -492,18 +501,18 @@ Partial Class frmPackageProps
     'txtModified
     '
     Me.txtModified.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtModified.Location = New System.Drawing.Point(111, 410)
+    Me.txtModified.Location = New System.Drawing.Point(111, 411)
     Me.txtModified.Margin = New System.Windows.Forms.Padding(2)
     Me.txtModified.Name = "txtModified"
     Me.txtModified.ReadOnly = True
-    Me.txtModified.Size = New System.Drawing.Size(191, 20)
+    Me.txtModified.Size = New System.Drawing.Size(168, 20)
     Me.txtModified.TabIndex = 35
     '
     'lblLanguages
     '
     Me.lblLanguages.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblLanguages.AutoSize = True
-    Me.lblLanguages.Location = New System.Drawing.Point(3, 438)
+    Me.lblLanguages.Location = New System.Drawing.Point(3, 458)
     Me.lblLanguages.Margin = New System.Windows.Forms.Padding(3, 6, 3, 6)
     Me.lblLanguages.Name = "lblLanguages"
     Me.lblLanguages.Size = New System.Drawing.Size(63, 13)
@@ -513,14 +522,13 @@ Partial Class frmPackageProps
     'txtLanguages
     '
     Me.txtLanguages.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.txtLanguages.Location = New System.Drawing.Point(111, 434)
+    Me.txtLanguages.Location = New System.Drawing.Point(111, 435)
     Me.txtLanguages.Margin = New System.Windows.Forms.Padding(2)
     Me.txtLanguages.Multiline = True
     Me.txtLanguages.Name = "txtLanguages"
     Me.txtLanguages.ReadOnly = True
-    Me.pnlProps.SetRowSpan(Me.txtLanguages, 2)
     Me.txtLanguages.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-    Me.txtLanguages.Size = New System.Drawing.Size(191, 57)
+    Me.txtLanguages.Size = New System.Drawing.Size(168, 59)
     Me.txtLanguages.TabIndex = 37
     '
     'pnlButtons
@@ -529,12 +537,12 @@ Partial Class frmPackageProps
     Me.pnlButtons.AutoSize = True
     Me.pnlButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
     Me.pnlButtons.ColumnCount = 2
-    Me.pnlProps.SetColumnSpan(Me.pnlButtons, 2)
+    Me.pnlProps.SetColumnSpan(Me.pnlButtons, 3)
     Me.pnlButtons.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
     Me.pnlButtons.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
     Me.pnlButtons.Controls.Add(Me.cmdClose, 1, 0)
     Me.pnlButtons.Controls.Add(Me.cmdSave, 0, 0)
-    Me.pnlButtons.Location = New System.Drawing.Point(142, 493)
+    Me.pnlButtons.Location = New System.Drawing.Point(469, 500)
     Me.pnlButtons.Margin = New System.Windows.Forms.Padding(0)
     Me.pnlButtons.Name = "pnlButtons"
     Me.pnlButtons.RowCount = 1
@@ -563,13 +571,61 @@ Partial Class frmPackageProps
     Me.cmdSave.Text = "&Save"
     Me.cmdSave.UseVisualStyleBackColor = True
     '
+    'lvUpdates
+    '
+    Me.lvUpdates.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colPackage, Me.colVer})
+    Me.lvUpdates.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.lvUpdates.FullRowSelect = True
+    Me.lvUpdates.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
+    Me.lvUpdates.Location = New System.Drawing.Point(284, 28)
+    Me.lvUpdates.MultiSelect = False
+    Me.lvUpdates.Name = "lvUpdates"
+    Me.pnlProps.SetRowSpan(Me.lvUpdates, 18)
+    Me.lvUpdates.ShowGroups = False
+    Me.lvUpdates.ShowItemToolTips = True
+    Me.lvUpdates.Size = New System.Drawing.Size(344, 465)
+    Me.lvUpdates.SmallImageList = Me.imlUpdates
+    Me.lvUpdates.TabIndex = 40
+    Me.lvUpdates.UseCompatibleStateImageBehavior = False
+    Me.lvUpdates.View = System.Windows.Forms.View.Details
+    '
+    'colPackage
+    '
+    Me.colPackage.Text = "Package Name"
+    Me.colPackage.Width = 228
+    '
+    'colVer
+    '
+    Me.colVer.Text = "Version"
+    Me.colVer.Width = 92
+    '
+    'imlUpdates
+    '
+    Me.imlUpdates.ImageStream = CType(resources.GetObject("imlUpdates.ImageStream"), System.Windows.Forms.ImageListStreamer)
+    Me.imlUpdates.TransparentColor = System.Drawing.Color.Transparent
+    Me.imlUpdates.Images.SetKeyName(0, "DID")
+    Me.imlUpdates.Images.SetKeyName(1, "DO")
+    Me.imlUpdates.Images.SetKeyName(2, "UNDO")
+    Me.imlUpdates.Images.SetKeyName(3, "NO")
+    '
+    'lblUpdates
+    '
+    Me.lblUpdates.Anchor = System.Windows.Forms.AnchorStyles.None
+    Me.lblUpdates.AutoSize = True
+    Me.lblUpdates.Location = New System.Drawing.Point(405, 6)
+    Me.lblUpdates.Margin = New System.Windows.Forms.Padding(3, 6, 3, 6)
+    Me.lblUpdates.Name = "lblUpdates"
+    Me.lblUpdates.Size = New System.Drawing.Size(101, 13)
+    Me.lblUpdates.TabIndex = 39
+    Me.lblUpdates.Text = "Integrated &Updates:"
+    '
     'frmPackageProps
     '
     Me.AcceptButton = Me.cmdSave
     Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
     Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
     Me.CancelButton = Me.cmdClose
-    Me.ClientSize = New System.Drawing.Size(304, 522)
+    Me.ClientSize = New System.Drawing.Size(631, 533)
     Me.Controls.Add(Me.pnlProps)
     Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
     Me.Icon = Global.Slips7ream.My.Resources.Resources.icon
@@ -628,4 +684,9 @@ Partial Class frmPackageProps
   Friend WithEvents pnlButtons As System.Windows.Forms.TableLayoutPanel
   Friend WithEvents cmdClose As System.Windows.Forms.Button
   Friend WithEvents cmdSave As System.Windows.Forms.Button
+  Friend WithEvents lblUpdates As System.Windows.Forms.Label
+  Friend WithEvents lvUpdates As System.Windows.Forms.ListView
+  Friend WithEvents colPackage As System.Windows.Forms.ColumnHeader
+  Friend WithEvents colVer As System.Windows.Forms.ColumnHeader
+  Friend WithEvents imlUpdates As System.Windows.Forms.ImageList
 End Class
