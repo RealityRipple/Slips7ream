@@ -56,12 +56,12 @@ Public Class Expander
 
   Public Sub PerformClick()
     c_Open = Not c_Open
+    DrawExpander(IIf(c_Open, EXP_OPEN, EXP_CLOSED))
     If c_Open Then
       RaiseEvent Opened(Me, New EventArgs)
     Else
       RaiseEvent Closed(Me, New EventArgs)
     End If
-    DrawExpander(IIf(c_Open, EXP_OPEN, EXP_CLOSED))
   End Sub
 
   Private Sub pctExpander_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles pctExpander.MouseDown
@@ -75,12 +75,12 @@ Public Class Expander
       DrawExpander(EXP_NORM)
     End If
     c_Open = Not c_Open
+    DrawExpander(IIf(c_Open, EXP_OPEN, EXP_CLOSED))
     If c_Open Then
       RaiseEvent Opened(Me, New EventArgs)
     Else
       RaiseEvent Closed(Me, New EventArgs)
     End If
-    DrawExpander(IIf(c_Open, EXP_OPEN, EXP_CLOSED))
   End Sub
 
   Private Sub pctExpander_MouseEnter(sender As Object, e As System.EventArgs) Handles pctExpander.MouseEnter
@@ -150,7 +150,7 @@ Public Class Expander
       End Using
       pctExpander.Image = expanderChunk.Clone
     End Using
-
+    Application.DoEvents()
 
 
 
@@ -175,12 +175,12 @@ Public Class Expander
         DrawExpander(EXP_NORM)
       End If
       c_Open = Not c_Open
+      DrawExpander(IIf(c_Open, EXP_OPEN, EXP_CLOSED))
       If c_Open Then
         RaiseEvent Opened(Me, New EventArgs)
       Else
         RaiseEvent Closed(Me, New EventArgs)
       End If
-      DrawExpander(IIf(c_Open, EXP_OPEN, EXP_CLOSED))
     End If
   End Sub
 
