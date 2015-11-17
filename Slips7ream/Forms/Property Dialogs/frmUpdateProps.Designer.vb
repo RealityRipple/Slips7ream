@@ -47,40 +47,50 @@ Partial Class frmUpdateProps
     '
     'pnlUpdateData
     '
+    Me.pnlUpdateData.AutoSize = True
+    Me.pnlUpdateData.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
     Me.pnlUpdateData.ColumnCount = 2
     Me.pnlUpdateData.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
     Me.pnlUpdateData.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-    Me.pnlUpdateData.Controls.Add(Me.lblIdentity, 0, 2)
-    Me.pnlUpdateData.Controls.Add(Me.txtIdentity, 1, 2)
-    Me.pnlUpdateData.Controls.Add(Me.lblDisplayName, 0, 1)
-    Me.pnlUpdateData.Controls.Add(Me.txtDisplayName, 1, 1)
-    Me.pnlUpdateData.Controls.Add(Me.lblAppliesTo, 0, 3)
-    Me.pnlUpdateData.Controls.Add(Me.txtAppliesTo, 1, 3)
-    Me.pnlUpdateData.Controls.Add(Me.lblArchitecture, 0, 4)
-    Me.pnlUpdateData.Controls.Add(Me.txtArchitecture, 1, 4)
-    Me.pnlUpdateData.Controls.Add(Me.lblBuildDate, 0, 5)
-    Me.pnlUpdateData.Controls.Add(Me.txtBuildDate, 1, 5)
-    Me.pnlUpdateData.Controls.Add(Me.lblKBArticle, 0, 7)
-    Me.pnlUpdateData.Controls.Add(Me.lblKBLink, 1, 7)
-    Me.pnlUpdateData.Controls.Add(Me.cmdClose, 1, 8)
+    Me.pnlUpdateData.Controls.Add(Me.lblIdentity, 0, 4)
+    Me.pnlUpdateData.Controls.Add(Me.txtIdentity, 1, 4)
+    Me.pnlUpdateData.Controls.Add(Me.lblDisplayName, 0, 2)
+    Me.pnlUpdateData.Controls.Add(Me.txtDisplayName, 1, 2)
+    Me.pnlUpdateData.Controls.Add(Me.lblAppliesTo, 0, 6)
+    Me.pnlUpdateData.Controls.Add(Me.txtAppliesTo, 1, 6)
+    Me.pnlUpdateData.Controls.Add(Me.lblArchitecture, 0, 8)
+    Me.pnlUpdateData.Controls.Add(Me.txtArchitecture, 1, 8)
+    Me.pnlUpdateData.Controls.Add(Me.lblBuildDate, 0, 10)
+    Me.pnlUpdateData.Controls.Add(Me.txtBuildDate, 1, 10)
+    Me.pnlUpdateData.Controls.Add(Me.lblKBArticle, 0, 14)
+    Me.pnlUpdateData.Controls.Add(Me.lblKBLink, 1, 14)
+    Me.pnlUpdateData.Controls.Add(Me.cmdClose, 1, 16)
     Me.pnlUpdateData.Controls.Add(Me.lblName, 0, 0)
     Me.pnlUpdateData.Controls.Add(Me.txtName, 1, 0)
-    Me.pnlUpdateData.Controls.Add(Me.lblVersion, 0, 6)
-    Me.pnlUpdateData.Controls.Add(Me.txtVersion, 1, 6)
+    Me.pnlUpdateData.Controls.Add(Me.lblVersion, 0, 12)
+    Me.pnlUpdateData.Controls.Add(Me.txtVersion, 1, 12)
     Me.pnlUpdateData.Dock = System.Windows.Forms.DockStyle.Fill
     Me.pnlUpdateData.Location = New System.Drawing.Point(0, 0)
     Me.pnlUpdateData.Name = "pnlUpdateData"
-    Me.pnlUpdateData.RowCount = 9
+    Me.pnlUpdateData.RowCount = 17
     Me.pnlUpdateData.RowStyles.Add(New System.Windows.Forms.RowStyle())
+    Me.pnlUpdateData.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5!))
     Me.pnlUpdateData.RowStyles.Add(New System.Windows.Forms.RowStyle())
+    Me.pnlUpdateData.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5!))
     Me.pnlUpdateData.RowStyles.Add(New System.Windows.Forms.RowStyle())
+    Me.pnlUpdateData.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5!))
     Me.pnlUpdateData.RowStyles.Add(New System.Windows.Forms.RowStyle())
+    Me.pnlUpdateData.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5!))
     Me.pnlUpdateData.RowStyles.Add(New System.Windows.Forms.RowStyle())
+    Me.pnlUpdateData.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5!))
     Me.pnlUpdateData.RowStyles.Add(New System.Windows.Forms.RowStyle())
+    Me.pnlUpdateData.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5!))
     Me.pnlUpdateData.RowStyles.Add(New System.Windows.Forms.RowStyle())
+    Me.pnlUpdateData.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5!))
     Me.pnlUpdateData.RowStyles.Add(New System.Windows.Forms.RowStyle())
-    Me.pnlUpdateData.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-    Me.pnlUpdateData.Size = New System.Drawing.Size(327, 236)
+    Me.pnlUpdateData.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5!))
+    Me.pnlUpdateData.RowStyles.Add(New System.Windows.Forms.RowStyle())
+    Me.pnlUpdateData.Size = New System.Drawing.Size(334, 241)
     Me.pnlUpdateData.TabIndex = 0
     '
     'lblIdentity
@@ -99,7 +109,7 @@ Partial Class frmUpdateProps
     Me.txtIdentity.Location = New System.Drawing.Point(99, 55)
     Me.txtIdentity.Name = "txtIdentity"
     Me.txtIdentity.ReadOnly = True
-    Me.txtIdentity.Size = New System.Drawing.Size(225, 20)
+    Me.txtIdentity.Size = New System.Drawing.Size(232, 20)
     Me.txtIdentity.TabIndex = 5
     '
     'lblDisplayName
@@ -118,7 +128,7 @@ Partial Class frmUpdateProps
     Me.txtDisplayName.Location = New System.Drawing.Point(99, 29)
     Me.txtDisplayName.Name = "txtDisplayName"
     Me.txtDisplayName.ReadOnly = True
-    Me.txtDisplayName.Size = New System.Drawing.Size(225, 20)
+    Me.txtDisplayName.Size = New System.Drawing.Size(232, 20)
     Me.txtDisplayName.TabIndex = 3
     '
     'lblAppliesTo
@@ -137,7 +147,7 @@ Partial Class frmUpdateProps
     Me.txtAppliesTo.Location = New System.Drawing.Point(99, 81)
     Me.txtAppliesTo.Name = "txtAppliesTo"
     Me.txtAppliesTo.ReadOnly = True
-    Me.txtAppliesTo.Size = New System.Drawing.Size(225, 20)
+    Me.txtAppliesTo.Size = New System.Drawing.Size(232, 20)
     Me.txtAppliesTo.TabIndex = 7
     '
     'lblArchitecture
@@ -156,7 +166,7 @@ Partial Class frmUpdateProps
     Me.txtArchitecture.Location = New System.Drawing.Point(99, 107)
     Me.txtArchitecture.Name = "txtArchitecture"
     Me.txtArchitecture.ReadOnly = True
-    Me.txtArchitecture.Size = New System.Drawing.Size(225, 20)
+    Me.txtArchitecture.Size = New System.Drawing.Size(232, 20)
     Me.txtArchitecture.TabIndex = 9
     '
     'lblBuildDate
@@ -175,7 +185,7 @@ Partial Class frmUpdateProps
     Me.txtBuildDate.Location = New System.Drawing.Point(99, 133)
     Me.txtBuildDate.Name = "txtBuildDate"
     Me.txtBuildDate.ReadOnly = True
-    Me.txtBuildDate.Size = New System.Drawing.Size(225, 20)
+    Me.txtBuildDate.Size = New System.Drawing.Size(232, 20)
     Me.txtBuildDate.TabIndex = 11
     '
     'lblKBArticle
@@ -194,7 +204,7 @@ Partial Class frmUpdateProps
     Me.lblKBLink.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblKBLink.AutoSize = True
     Me.lblKBLink.Cursor = System.Windows.Forms.Cursors.Hand
-    Me.lblKBLink.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!)
+    Me.lblKBLink.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Underline)
     Me.lblKBLink.ForeColor = System.Drawing.Color.MediumBlue
     Me.lblKBLink.Location = New System.Drawing.Point(99, 188)
     Me.lblKBLink.Name = "lblKBLink"
@@ -207,11 +217,15 @@ Partial Class frmUpdateProps
     'cmdClose
     '
     Me.cmdClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.cmdClose.AutoSize = True
+    Me.cmdClose.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
     Me.cmdClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
     Me.cmdClose.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmdClose.Location = New System.Drawing.Point(249, 211)
+    Me.cmdClose.Location = New System.Drawing.Point(251, 213)
+    Me.cmdClose.MinimumSize = New System.Drawing.Size(80, 25)
     Me.cmdClose.Name = "cmdClose"
-    Me.cmdClose.Size = New System.Drawing.Size(75, 22)
+    Me.cmdClose.Padding = New System.Windows.Forms.Padding(1)
+    Me.cmdClose.Size = New System.Drawing.Size(80, 25)
     Me.cmdClose.TabIndex = 16
     Me.cmdClose.Text = "&Close"
     Me.cmdClose.UseVisualStyleBackColor = True
@@ -232,7 +246,7 @@ Partial Class frmUpdateProps
     Me.txtName.Location = New System.Drawing.Point(99, 3)
     Me.txtName.Name = "txtName"
     Me.txtName.ReadOnly = True
-    Me.txtName.Size = New System.Drawing.Size(225, 20)
+    Me.txtName.Size = New System.Drawing.Size(232, 20)
     Me.txtName.TabIndex = 1
     '
     'lblVersion
@@ -251,7 +265,7 @@ Partial Class frmUpdateProps
     Me.txtVersion.Location = New System.Drawing.Point(99, 159)
     Me.txtVersion.Name = "txtVersion"
     Me.txtVersion.ReadOnly = True
-    Me.txtVersion.Size = New System.Drawing.Size(225, 20)
+    Me.txtVersion.Size = New System.Drawing.Size(232, 20)
     Me.txtVersion.TabIndex = 13
     '
     'frmUpdateProps
@@ -259,14 +273,16 @@ Partial Class frmUpdateProps
     Me.AcceptButton = Me.cmdClose
     Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
     Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+    Me.AutoSize = True
+    Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
     Me.CancelButton = Me.cmdClose
-    Me.ClientSize = New System.Drawing.Size(327, 236)
+    Me.ClientSize = New System.Drawing.Size(334, 241)
     Me.Controls.Add(Me.pnlUpdateData)
     Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
     Me.Icon = Global.Slips7ream.My.Resources.Resources.icon
     Me.MaximizeBox = False
     Me.MinimizeBox = False
-    Me.MinimumSize = New System.Drawing.Size(220, 270)
+    Me.MinimumSize = New System.Drawing.Size(320, 275)
     Me.Name = "frmUpdateProps"
     Me.ShowIcon = False
     Me.ShowInTaskbar = False
@@ -275,6 +291,7 @@ Partial Class frmUpdateProps
     Me.pnlUpdateData.ResumeLayout(False)
     Me.pnlUpdateData.PerformLayout()
     Me.ResumeLayout(False)
+    Me.PerformLayout()
 
   End Sub
   Friend WithEvents pnlUpdateData As System.Windows.Forms.TableLayoutPanel
