@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="cab" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="update_cab" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\cab.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
@@ -130,20 +130,125 @@
   <data name="expander" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\expander.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="folder" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="update_folder" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\folder.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="mlc" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="update_mlc" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\mlc.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="move" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\move.mng;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="ParentFeatureList" xml:space="preserve">
+    <value>Chess Titans|Games
+FreeCell|Games
+Hearts|Games
+Internet Games|Games
+Internet Backgammon|Internet Games
+Internet Checkers|Internet Games
+Internet Spades|Internet Games
+Mahjong Titans|Games
+Minesweeper|Games
+More Games|Games
+Purble Place|Games
+Solitaire|Games
+Spider Solitaire|Games
+OEMHelpCustomization|Help
+CorporationHelpCustomization|Help
+FTP Server|Internet Information Services
+FTP Extensibility|FTP Server
+FTP Service|FTP Server
+Web Management Tools|Internet Information Services
+IIS 6 Management Compatibility|Web Management Tools
+IIS 6 Management Console|IIS 6 Management Compatibility
+IIS 6 Scripting Tools|IIS 6 Management Compatibility
+IIS 6 WMI Compatibility|IIS 6 Management Compatibility
+IIS Metabase and IIS 6 configuration compatibility|IIS 6 Management Compatibility
+IIS Management Console|Web Management Tools
+IIS Management Scripts and Tools|Web Management Tools
+IIS Management Service|Web Management Tools
+World Wide Web Services|Internet Information Services
+Application Development Features|World Wide Web Services
+.NET Extensibility|Application Development Features
+ASP|Application Development Features
+ASP.NET|Application Development Features
+CGI|Application Development Features
+ISAPI Extensions|Application Development Features
+ISAPI Filters|Application Development Features
+Server-Side Includes|Application Development Features
+Common HTTP Features|World Wide Web Services
+Default Document|Common HTTP Features
+Directory Browsing|Common HTTP Features
+HTTP Errors|Common HTTP Features
+HTTP Redirection|Common HTTP Features
+Static Content|Common HTTP Features
+WebDAV Publishing|Common HTTP Features
+Health and Diagnostics|World Wide Web Services
+Custom Logging|Health and Diagnostics
+HTTP Logging|Health and Diagnostics
+Logging Tools|Health and Diagnostics
+ODBC Logging|Health and Diagnostics
+Request Monitor|Health and Diagnostics
+Tracing|Health and Diagnostics
+Performance Features|World Wide Web Services
+Dynamic Content Compression|Performance Features
+Static Content Compression|Performance Features
+Security|World Wide Web Services
+Basic Authentication|Security
+Client Certificate Mapping Authentication|Security
+Digest Authentication|Security
+IIS Client Certificate Mapping Authentication|Security
+IP Security|Security
+Request Filtering|Security
+URL Authorization|Security
+Windows Authentication|Security
+Windows DVD Maker|Media Features
+Windows Media Center|Media Features
+Windows Media Player|Media Features
+Windows Communication Foundation HTTP Activation|Microsoft .NET Framework 3.5.1
+Windows Communication Foundation Non-HTTP Activation|Microsoft .NET Framework 3.5.1
+Microsoft Message Queue (MSMQ) Server Core|Microsoft Message Queue (MSMQ) Server
+MSMQ Active Directory Domain Services Integration|Microsoft Message Queue (MSMQ) Server Core
+MSMQ HTTP Support|Microsoft Message Queue (MSMQ) Server Core
+MSMQ Triggers|Microsoft Message Queue (MSMQ) Server Core
+Multicasting Support|Microsoft Message Queue (MSMQ) Server Core
+MSMQ DCOM Proxy|Microsoft Message Queue (MSMQ) Server
+Internet Printing Client|Print and Document Services
+LPD Print Service|Print and Document Services
+LPR Port Monitor|Print and Document Services
+Scan Management|Print and Document Services
+Windows Fax and Scan|Print and Document Services
+Indexing Service|Search Tools
+Windows Search|Search Tools
+Telnet Client|Telnet
+Telnet Server|Telnet
+XPS Services|XML Paper Specification
+XPS Viewer|XML Paper Specification
+Administrative Tools|Services for NFS
+Client for NFS|Services for NFS
+WMI SNMP Provider|Simple Network Management Protocol (SNMP)
+.NET Environment|Windows Process Activation Service
+Configuration APIs|Windows Process Activation Service
+Process Model|Windows Process Activation Service</value>
+  </data>
   <data name="play" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\play.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RequiredFeatureList" xml:space="preserve">
+    <value>FTP Extensibility|FTP Service
+Windows Media Center|Windows Media Player
+IIS 6 Management Console|IIS Metabase and IIS 6 configuration compatibility
+IIS 6 Scripting Tools|IIS 6 WMI Compatibility;IIS Metabase and IIS 6 configuration compatibility
+.NET Extensibility|Request Filtering
+ASP|ISAPI Extensions;Request Filtering
+ASP.NET|.NET Extensibility;ISAPI Extensions;ISAPI Filters;Default Document;Request Filtering
+WebDAV Publishing|Static Content
+Windows Communication Foundation HTTP Activation|.NET Extensibility;Request Filtering;Windows Process Activation Service;.NET Environment;Configuration APIs;Process Model
+Windows Communication Foundation Non-HTTP Activation|Windows Process Activation Service;.NET Environment;Configuration APIs;Process Model
+MSMQ HTTP Support|IIS Metabase and IIS 6 configuration compatibility;IIS Management Console;.NET Extensibility;ISAPI Extensions;Default Document;Directory Browsing;HTTP Errors;HTTP Redirection;Static Content;HTTP Logging;Logging Tools;Request Monitor;Tracing;Static Content Compression;Request Filtering</value>
   </data>
   <data name="shoot_em" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\tetris\shoot_em.ogg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -175,7 +280,490 @@
   <data name="win" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\win.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="wusa" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="update_wusa" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\wusa.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="u_a" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\u_a.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="u_i" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\u_i.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="u_n" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\u_n.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="u_p" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\u_p.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="u_u" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\u_u.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_administrative_tools" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\administrative_tools.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_application_development_features" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\application_development_features.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_asp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\asp.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_asp_net" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\asp.net.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_basic_authentication" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\basic_authentication.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_cgi" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\cgi.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_chess" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\chess.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_client_certificate_mapping_authentication" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\client_certificate_mapping_authentication.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_client_for_nfs" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\client_for_nfs.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_common_http_features" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\common_http_features.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_configuration_apis" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\configuration_apis.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_content_compression" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\content_compression.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_custom_logging" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\custom_logging.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_default_document" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\default_document.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_digest_authentication" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\digest_authentication.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_directory_browsing" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\directory_browsing.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_dotnet_environment" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\.net_environment.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_dotnet_extensibility" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\.net_extensibility.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_freecell" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\freecell.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_ftp_extensibility" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\ftp_extensibility.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_ftp_server" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\ftp_server.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_ftp_service" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\ftp_service.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_games" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\games.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_health_and_diagnostics" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\health_and_diagnostics.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_hearts" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\hearts.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_help" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\help.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_http_errors" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\http_errors.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_http_logging" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\http_logging.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_http_redirection" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\http_redirection.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_iis" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\iis.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_iis_6" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\iis_6.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_iis_client_certificate_mapping_authentication" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\iis_client_certificate_mapping_authentication.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_internet_backgammon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\internet_backgammon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_internet_checkers" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\internet_checkers.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_internet_explorer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\internet_explorer.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_internet_explorer_8" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\internet_explorer_8.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_internet_games" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\internet_games.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_internet_information_services" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\internet_information_services.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_internet_printing_client" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\internet_printing_client.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_internet_spades" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\internet_spades.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_ip_security" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\ip_security.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_isapi_extensions" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\isapi_extensions.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_isapi_filters" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\isapi_filters.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_logging_tools" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\logging_tools.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_lpd_print_service" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\lpd_print_service.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_lpr_port_monitor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\lpr_port_monitor.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_mahjong_titans" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\mahjong_titans.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_media_features" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\media_features.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_microsoft_message_queue__msmq__server" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\microsoft_message_queue_(msmq)_server.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_microsoft__net_framework" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\microsoft_.net_framework.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_minesweeper" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\minesweeper.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_more_games" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\more_games.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_msmq_active_directory_domain_services_integration" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\msmq_active_directory_domain_services_integration.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_msmq_dcom_proxy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\msmq_dcom_proxy.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_msmq_http_support" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\msmq_http_support.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_msmq_triggers" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\msmq_triggers.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_multicasting_support" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\multicasting_support.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_odbc_logging" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\odbc_logging.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_performance_features" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\performance_features.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_print_and_document_services" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\print_and_document_services.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_process_model" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\process_model.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_purble_place" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\purble_place.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_ras_connection_manager_administration_kit__cmak_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\ras_connection_manager_administration_kit_(cmak).ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_remote_differential_compression" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\remote_differential_compression.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_request_filtering" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\request_filtering.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_request_monitor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\request_monitor.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_rip_listener" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\rip_listener.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_scan_management" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\scan_management.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_security" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\security.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_server_side_includes" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\server-side_includes.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_services_for_nfs" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\services_for_nfs.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_simple_network_management_protocol__snmp_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\simple_network_management_protocol_(snmp).ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_simple_tcpip_services" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\simple_tcpip_services.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_solitaire" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\solitaire.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_spider_solitaire" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\spider_solitaire.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_static_content" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\static_content.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_subsystem_for_unix_based_applications" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\subsystem_for_unix-based_applications.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_tablet_pc_components" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\tablet_pc_components.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_telnet" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\telnet.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_tftp_client" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\tftp_client.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_tracing" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\tracing.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_url_authorization" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\url_authorization.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_webdav_publishing" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\webdav_publishing.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_web_management_tools" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\web_management_tools.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_windows_authentication" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\windows_authentication.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_windows_communication_foundation_http_activation" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\windows_communication_foundation_http_activation.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_windows_communication_foundation_non_http_activation" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\windows_communication_foundation_non-http_activation.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_windows_dvd_maker" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\windows_dvd_maker.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_windows_fax_and_scan" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\windows_fax_and_scan.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_windows_gadget_platform" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\windows_gadget_platform.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_windows_media_center" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\windows_media_center.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_windows_media_player" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\windows_media_player.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_windows_process_activation_service" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\windows_process_activation_service.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_windows_tiff_ifilter" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\windows_tiff_ifilter.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_world_wide_web_services" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\world_wide_web_services.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_xps" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\xps.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="inf" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\inf.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_adaptec" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\adaptec.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_ads_technologies" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\ads_technologies.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_advanced_micro_devices" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\advanced_micro_devices.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_afatech" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\afatech.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_asustek_computer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\asustek_computer.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_avermedia_technologies" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\avermedia_technologies.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_brother" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\brother.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_canon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\canon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_compro_technology" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\compro_technology.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_conexant" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\conexant.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_creatix" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\creatix.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_emulex" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\emulex.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_epson" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\epson.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_fuji_xerox" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\fuji_xerox.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_hauppauge" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\hauppauge.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_hewlett_packard" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\hewlett-packard.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_ibm_corporation" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\ibm_corporation.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_icp_vortex" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\icp_vortex.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_intel" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\intel.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_knc_one" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\knc_one.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_konica_minolta" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\konica_minolta.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_kworld" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\kworld.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_kyocera" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\kyocera.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_lsi" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\lsi.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_lumanate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\lumanate.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_microsoft" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\microsoft.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_nvidia" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\nvidia.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_nxp_semiconductors" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\nxp_semiconductors.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_oki" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\oki.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_pinnacle_systems" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\pinnacle_systems.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_promise_technology" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\promise_technology.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_qlogic" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\qlogic.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_ricoh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\ricoh.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_samsung" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\samsung.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_savin" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\savin.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_sharp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\sharp.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_silicon_integrated_systems_corp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\silicon_integrated_systems_corp.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_sony" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\sony.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_terratec_electronic" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\terratec_electronic.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_toshiba" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\toshiba.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_via_technologies" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\via_technologies.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_vixs_systems" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\vixs_systems.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_xerox" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\xerox.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="feature_search_tools" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\features\search_tools.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_lexmark_international" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\lexmark_international.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_oem" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\oem.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_acer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\acer.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_dell" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\dell.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_elan" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\elan.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_gigabyte" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\gigabyte.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_hannspree" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\hannspree.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_logitech" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\logitech.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_panasonic" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\panasonic.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_qualcomm_atheros" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\qualcomm_atheros.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_ralink" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\ralink.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_realtek" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\realtek.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_sceptre" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\sceptre.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_synaptics" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\synaptics.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_bitland" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\bitland.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
