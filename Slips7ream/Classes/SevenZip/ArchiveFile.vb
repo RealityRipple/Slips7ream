@@ -51,8 +51,8 @@ Namespace Extraction
       ArchiveFormat.KnownSevenZipFormat.XZ,
       ArchiveFormat.KnownSevenZipFormat.Z
     })
-    Private ReadOnly items As New Dictionary(Of String, IArchiveEntry)()
-    Private ReadOnly fileStreams As New Dictionary(Of String, SevenZipFileStream)()
+    Private ReadOnly items As New Dictionary(Of String, IArchiveEntry)
+    Private ReadOnly fileStreams As New Dictionary(Of String, SevenZipFileStream)
     Public Sub New(archive As FileInfo)
       If archive Is Nothing Then Throw New ArgumentNullException("archive")
       Me.m_archive = archive
@@ -142,9 +142,6 @@ Namespace Extraction
     Public Sub Dispose() Implements IDisposable.Dispose
       CloseStreams()
     End Sub
-    Private Function System_Collections_IEnumerable_GetEnumerator() As System.Collections.IEnumerator Implements System.Collections.IEnumerable.GetEnumerator
-      Return items.Values.GetEnumerator()
-    End Function
     Public Sub Extract() Implements IArchiveFile.Extract
       Try
         Using ar = New Archive(m_archive, Me, c_format)
@@ -161,7 +158,7 @@ Namespace Extraction
               If Not items.ContainsKey(name) Then
                 Continue For
               End If
-              Dim entry = items(name)
+              Dim entry As IArchiveEntry = items(name)
               If entry.Destination Is Nothing Then
                 Continue For
               End If
@@ -176,7 +173,7 @@ Namespace Extraction
                 For Each File In files
                   Dim newInfo As New IO.FileInfo(File.Value.Destination.FullName)
                   newInfo.CreationTime = File.Value.DateTime
-                  newInfo.LastAccessTime = File.Value.DateTime
+                  newInfo.LastAccessTime = Now
                   newInfo.LastWriteTime = File.Value.DateTime
                 Next
               End If
@@ -192,7 +189,10 @@ Namespace Extraction
         CloseStreams()
       End Try
     End Sub
-    Friend Function GetEnumerator() As IEnumerator(Of IArchiveEntry) Implements IArchiveFile.GetEnumerator
+    Private Function GetIArchiveFileEnumerator() As IEnumerator(Of IArchiveEntry) Implements IArchiveFile.GetEnumerator
+      Return items.Values.GetEnumerator()
+    End Function
+    Private Function GetIEnumerableEnumerator() As IEnumerator Implements IEnumerable.GetEnumerator
       Return items.Values.GetEnumerator()
     End Function
     Public Sub Open() Implements IArchiveFile.Open
@@ -231,7 +231,7 @@ Namespace Extraction
                 Dim crc = ar.GetProperty(I, ItemPropId.CRC).GetUint()
                 Dim tModified = ar.GetProperty(I, ItemPropId.ModificationTime).GetDate
                 Dim entry As IArchiveEntry = New ItemInfo(name, crc, isCrypted, size, packedSize, tModified, I)
-                items(name) = entry
+                items.Add(name, entry)
                 If isCrypted AndAlso (minCrypted Is Nothing OrElse minCrypted.CompressedSize > packedSize) Then
                   minCrypted = entry
                   minIndex = I
