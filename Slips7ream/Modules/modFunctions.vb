@@ -1,453 +1,568 @@
 ﻿Imports Microsoft.WindowsAPICodePack.Dialogs
-Module modFunctions
-  Private Declare Auto Function GetShortPathName Lib "kernel32.dll" (ByVal lpszLongPath As String, ByVal lpszShortPath As String, ByVal cchBuffer As Int32) As Int32
-  Public Structure UpdateInfo
-    Public IsFile As Boolean
-    Public Path As String
-    Public Sub New(Location As String, File As Boolean)
-      IsFile = File
-      Path = Location
-    End Sub
+Imports System.Runtime.InteropServices
+
+Public Module modFunctions
+  Public Declare Function WindowFromPoint Lib "user32" (pt As Point) As IntPtr
+  Public Declare Function SendMessageA Lib "user32" (hWnd As IntPtr, msg As Integer, wParam As IntPtr, lParam As IntPtr) As IntPtr
+  Private Declare Function SetupDiGetClassImageList Lib "setupapi" (ByRef classImageListData As SP_CLASSIMAGELIST_DATA) As Boolean
+  Private Declare Function SetupDiGetClassImageIndex Lib "setupapi" (classImageListData As SP_CLASSIMAGELIST_DATA, classGUID As Guid, ByRef imageIndex As Int16) As Boolean
+  Private Declare Function SetupDiDestroyClassImageList Lib "setupapi" (ByRef classImageListData As SP_CLASSIMAGELIST_DATA) As Boolean
+  Private Declare Function DestroyIcon Lib "user32" (handle As IntPtr) As Boolean
+  Private Declare Function ImageList_GetIcon Lib "comctl32" (hIML As IntPtr, index As Integer, flags As Integer) As IntPtr
+  Private Declare Function ExtractIconEx Lib "shell32" (lpszFile As String, nIconIndex As Int16, phiconLarge() As IntPtr, phiconSmall() As IntPtr, nIcons As UInt16) As UInt16
+  Public Enum ArchitectureList
+    x86
+    amd64
+    ia64
+  End Enum
+  <StructLayout(LayoutKind.Sequential)>
+  Private Structure SP_CLASSIMAGELIST_DATA
+    Public cbSize As UInteger
+    Public ImageList As IntPtr
+    Public Reserved As UInteger
   End Structure
-  Public Structure UpdateInfoEx
-    Public Path As String
-    Public DisplayName As String
-    Public AppliesTo As String
-    Public Architecture As String
-    Public BuildDate As String
-    Public KBArticle As String
-    Public SupportLink As String
-    Public Failure As String
-    Public Sub New(Location As String)
-      Path = Location
-      Failure = Nothing
-      If IO.File.Exists(Location) Then
-        Select Case GetUpdateType(Location)
-          Case UpdateType.MSU
-            Dim MSUPath As String = WorkDir & "UpdateMSU_Extract" & IO.Path.DirectorySeparatorChar
-            If IO.Directory.Exists(MSUPath) Then SlowDeleteDirectory(MSUPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
-            IO.Directory.CreateDirectory(MSUPath)
-            Dim exRet As String = ExtractAFile(Location, MSUPath, "pkgProperties.txt")
-            If Not exRet = "OK" Then
-              Failure = exRet
-              Return
-            End If
-            Dim filePath() As String = My.Computer.FileSystem.GetFiles(MSUPath, FileIO.SearchOption.SearchTopLevelOnly).ToArray
-            If filePath.Count >= 1 Then
-              Dim sFile As String = filePath(0)
-              DisplayName = IO.Path.GetFileNameWithoutExtension(sFile)
-              DisplayName = DisplayName.Substring(0, DisplayName.Length - 14)
-              Dim sMSU As String = My.Computer.FileSystem.ReadAllText(sFile)
-              Dim sData() As String = Split(sMSU, vbNewLine)
-              For Each sLine As String In sData
-                If sLine.StartsWith("Applies to=") Then
-                  AppliesTo = GetMSUValue(sLine)
-                ElseIf sLine.StartsWith("Processor Architecture=") Then
-                  Architecture = GetMSUValue(sLine)
-                ElseIf sLine.StartsWith("Build Date=") Then
-                  BuildDate = GetMSUValue(sLine)
-                ElseIf sLine.StartsWith("KB Article Number=") Then
-                  KBArticle = GetMSUValue(sLine)
-                  If KBArticle.StartsWith("KB") Then KBArticle = KBArticle.Substring(2)
-                ElseIf sLine.StartsWith("Support Link=") Then
-                  SupportLink = GetMSUValue(sLine)
-                End If
-              Next
-              If KBArticle = "2841134" Or KBArticle = "2718695" Then
-                Dim CABfile As String = IO.Path.GetFileName(sFile).Replace("-pkgProperties.txt", ".cab")
-                exRet = ExtractAFile(Location, MSUPath, CABfile)
-                If Not exRet = "OK" Then
-                  Failure = exRet
-                  Return
-                End If
-                If My.Computer.FileSystem.FileExists(MSUPath & CABfile) Then
-                  Dim MSUCABPath As String = WorkDir & "UpdateMSU_Extract" & IO.Path.DirectorySeparatorChar & "CAB" & IO.Path.DirectorySeparatorChar
-                  If IO.Directory.Exists(MSUCABPath) Then SlowDeleteDirectory(MSUCABPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
-                  IO.Directory.CreateDirectory(MSUCABPath)
-                  exRet = ExtractAFile(MSUPath & CABfile, MSUCABPath, "update.mum")
-                  If Not exRet = "OK" Then
-                    Failure = exRet
-                    Return
-                  End If
-                  If IO.File.Exists(MSUCABPath & "update.mum") Then
-                    Dim xMUM As XElement = XElement.Load(MSUCABPath & "update.mum")
-                    Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
-                    If KBArticle = "2718695" Then
-                      DisplayName = xAssemblyIdentity.Attribute("language").Value & " IE10 Language Pack"
-                      If Architecture = "x86" Then
-                        AppliesTo = "Internet Explorer 10 x86"
-                      ElseIf Architecture = "amd64" Then
-                        AppliesTo = "Internet Explorer 10 x64"
-                      Else
-                        AppliesTo = "Internet Explorer 10 " & Architecture
-                      End If
-                    Else
-                      DisplayName = xAssemblyIdentity.Attribute("language").Value & " IE11 Language Pack"
-                      If Architecture = "x86" Then
-                        AppliesTo = "Internet Explorer 11 x86"
-                      ElseIf Architecture = "amd64" Then
-                        AppliesTo = "Internet Explorer 11 x64"
-                      Else
-                        AppliesTo = "Internet Explorer 11 " & Architecture
-                      End If
-                    End If
-                    'Architecture = xAssemblyIdentity.Attribute("processorArchitecture")
-
-                    'Dim xPackage As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}package")
-                    'Dim xParent As XElement = xPackage.Element("{urn:schemas-microsoft-com:asm.v3}parent")
-                    'Dim xParentAssemblyIdentity As XElement = xParent.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
-                    'AppliesTo = xParentAssemblyIdentity.Attribute("name")
-                    'BuildDate = Nothing
-
-                  Else
-                    Failure = "Description File Not Found"
-                  End If
-                Else
-                  Failure = "CAB File Not Found"
-                End If
-              End If
-            Else
-              Failure = "Properties File Not Found"
-            End If
-            If IO.Directory.Exists(MSUPath) Then SlowDeleteDirectory(MSUPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
-          Case UpdateType.CAB
-            Dim CABPath As String = WorkDir & "UpdateCAB_Extract" & IO.Path.DirectorySeparatorChar
-            If IO.Directory.Exists(CABPath) Then SlowDeleteDirectory(CABPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
-            IO.Directory.CreateDirectory(CABPath)
-            Dim exRet As String = ExtractAFile(Location, CABPath, "update.mum")
-            If Not exRet = "OK" Then
-              Failure = exRet
-              Return
-            End If
-            If IO.File.Exists(CABPath & "update.mum") Then
-              Dim xMUM As XElement = XElement.Load(CABPath & "update.mum")
-              DisplayName = xMUM.Attribute("displayName")
-              SupportLink = xMUM.Attribute("supportInformation")
-              Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
-              Architecture = xAssemblyIdentity.Attribute("processorArchitecture")
-              Dim xPackage As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}package")
-              KBArticle = xPackage.Attribute("identifier")
-              If KBArticle.StartsWith("KB") Then KBArticle = KBArticle.Substring(2)
-              Dim xParent As XElement = xPackage.Element("{urn:schemas-microsoft-com:asm.v3}parent")
-              Dim xParentAssemblyIdentity As XElement = xParent.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
-              AppliesTo = xParentAssemblyIdentity.Attribute("name")
-              BuildDate = Nothing
-            Else
-              Failure = "Description File Not Found"
-            End If
-            If IO.Directory.Exists(CABPath) Then SlowDeleteDirectory(CABPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
-          Case UpdateType.LP
-            Dim LPPath As String = WorkDir & "UpdateLP_Extract" & IO.Path.DirectorySeparatorChar
-            If IO.Directory.Exists(LPPath) Then SlowDeleteDirectory(LPPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
-            IO.Directory.CreateDirectory(LPPath)
-            Dim exRet As String = ExtractAFile(Location, LPPath, "update.mum")
-            If Not exRet = "OK" Then
-              Failure = exRet
-              Return
-            End If
-            If IO.File.Exists(LPPath & "update.mum") Then
-              Dim xMUM As XElement = XElement.Load(LPPath & "update.mum")
-              Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
-              DisplayName = xAssemblyIdentity.Attribute("language").Value & " Multilingual User Interface Pack"
-              SupportLink = Nothing '"http://windows.microsoft.com/en-us/windows/language-packs#lptabs=win7"
-              Architecture = xAssemblyIdentity.Attribute("processorArchitecture")
-              Dim xPackage As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}package")
-              KBArticle = Nothing
-              Dim xParent As XElement = xPackage.Element("{urn:schemas-microsoft-com:asm.v3}parent")
-              Dim xParentAssemblyIdentity As XElement = xParent.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
-              AppliesTo = xParentAssemblyIdentity.Attribute("name")
-              BuildDate = Nothing
-            Else
-              Failure = "Description File Not Found"
-            End If
-            If IO.Directory.Exists(LPPath) Then SlowDeleteDirectory(LPPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
-          Case UpdateType.LIP
-            Dim MLCPath As String = WorkDir & "UpdateMLC_Extract" & IO.Path.DirectorySeparatorChar
-            If IO.Directory.Exists(MLCPath) Then SlowDeleteDirectory(MLCPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
-            IO.Directory.CreateDirectory(MLCPath)
-            Dim exRet As String = ExtractAFile(Location, MLCPath, "update.mum")
-            If Not exRet = "OK" Then
-              Failure = exRet
-              Return
-            End If
-            If IO.File.Exists(MLCPath & "update.mum") Then
-              Dim xMUM As XElement = XElement.Load(MLCPath & "update.mum")
-              Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
-              DisplayName = xAssemblyIdentity.Attribute("language").Value & " Language Interface Pack"
-              SupportLink = Nothing '"http://windows.microsoft.com/en-us/windows/language-packs#lptabs=win7"
-              Architecture = xAssemblyIdentity.Attribute("processorArchitecture")
-              Dim xPackage As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}package")
-              KBArticle = Nothing
-              Dim xParent As XElement = xPackage.Element("{urn:schemas-microsoft-com:asm.v3}parent")
-              Dim xParentAssemblyIdentity As XElement = xParent.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
-              AppliesTo = xParentAssemblyIdentity.Attribute("name")
-              BuildDate = Nothing
-            Else
-              Failure = "Description File Not Found"
-            End If
-            If IO.Directory.Exists(MLCPath) Then SlowDeleteDirectory(MLCPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
-          Case UpdateType.EXE
-            Dim EXEPath As String = WorkDir & "UpdateEXE_Extract" & IO.Path.DirectorySeparatorChar
+  Public Function GetUpdateInfo(sPath As String) As Update_File()
+    If IO.File.Exists(sPath) Then
+      Select Case GetUpdateType(sPath)
+        Case UpdateType.EXE
+          Dim fInfo As FileVersionInfo = FileVersionInfo.GetVersionInfo(sPath)
+          If fInfo.OriginalFilename = "iesetup.exe" And fInfo.ProductMajorPart > 9 Then
+            Dim EXEPath As String = Update_File.WorkDir & "UpdateEXE_Extract" & IO.Path.DirectorySeparatorChar
             If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
             IO.Directory.CreateDirectory(EXEPath)
-            Dim fInfo As FileVersionInfo = FileVersionInfo.GetVersionInfo(Location)
-            If fInfo.OriginalFilename = "iesetup.exe" And fInfo.ProductMajorPart > 9 Then
-              Dim iExtract As New Process With {.StartInfo = New ProcessStartInfo(Location, "/x:" & EXEPath)}
-              If iExtract.Start Then
-                iExtract.WaitForExit()
-                If IO.File.Exists(EXEPath & "IE-Win7.CAB") Then
-                  Dim exRet As String = ExtractAFile(EXEPath & "IE-Win7.CAB", EXEPath, "update.mum")
-                  If exRet = "OK" Then
-                    If IO.File.Exists(EXEPath & "update.mum") Then
-                      Dim xMUM As XElement = XElement.Load(EXEPath & "update.mum")
-                      DisplayName = xMUM.Attribute("displayName").Value & " with Spelling and Hyphenation"
-                      SupportLink = xMUM.Attribute("supportInformation").Value
-                      Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
-                      Architecture = xAssemblyIdentity.Attribute("processorArchitecture").Value
-                      Dim xPackage As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}package")
-                      KBArticle = xPackage.Attribute("identifier").Value
-                      If KBArticle.StartsWith("KB") Then KBArticle = KBArticle.Substring(2)
-                      Dim xParent As XElement = xPackage.Element("{urn:schemas-microsoft-com:asm.v3}parent")
-                      Dim xParentAssemblyIdentity As XElement = xParent.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
-                      AppliesTo = xParentAssemblyIdentity.Attribute("name").Value
-                      BuildDate = Nothing
-                    Else
-                      Failure = "Description File Not Found"
-                    End If
-                  Else
-                    Failure = exRet
-                  End If
-                Else
-                  Failure = "IE CAB File Not Found"
+            Dim iExtract As New Process With {.StartInfo = New ProcessStartInfo(sPath, "/x:" & EXEPath)}
+            If iExtract.Start Then
+              iExtract.WaitForExit()
+              Dim updateList As New List(Of Update_File)
+              For Each sFile In IO.Directory.GetFiles(EXEPath)
+                If IO.Path.GetFileName(sFile).ToLower = "ie-win7.cab" Then
+                  updateList.Add(New Update_File(sFile) With {.Path = sPath})
+                ElseIf IO.Path.GetFileName(sFile).ToLower.Contains("ie-spelling") Then
+                  updateList.Add(New Update_File(sFile) With {.Path = sPath})
+                ElseIf IO.Path.GetFileName(sFile).ToLower.Contains("ie-hyphenation") Then
+                  updateList.Add(New Update_File(sFile) With {.Path = sPath})
+                ElseIf IO.Path.GetFileName(sFile).ToLower.Contains("ielangpack") Then
+                  updateList.Add(New Update_File(sFile) With {.Path = sPath})
                 End If
-              Else
-                Failure = "Could not extract CABs from IE Setup EXE"
-              End If
-            ElseIf fInfo.OriginalFilename = "mergedwusetup.exe" Then
-              Dim exRet As String = ExtractAFile(Location, EXEPath, "WUA-Win7SP1.exe")
-              If exRet = "OK" Then
-                exRet = ExtractAFile(EXEPath & "WUA-Win7SP1.exe", EXEPath, "WUClient-SelfUpdate-ActiveX.cab")
-                If exRet = "OK" Then
-                  exRet = ExtractAFile(EXEPath & "WUClient-SelfUpdate-ActiveX.cab", EXEPath, "update.mum")
-                  If exRet = "OK" Then
-                    If IO.File.Exists(EXEPath & "update.mum") Then
-                      Dim xMUM As XElement = XElement.Load(EXEPath & "update.mum")
-                      DisplayName = xMUM.Attribute("displayName")
-                      If DisplayName.Contains("Microsoft Windows Update Client SelfUpdate ActiveX") Then
-                        DisplayName = "Windows Update Agent"
-                      End If
-                      SupportLink = "http://support.microsoft.com?kbid=949104"
-                      Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
-                      Architecture = xAssemblyIdentity.Attribute("processorArchitecture")
-                      Dim xPackage As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}package")
-                      KBArticle = "949104"
-                      Dim xParent As XElement = xPackage.Element("{urn:schemas-microsoft-com:asm.v3}parent")
-                      Dim xParentAssemblyIdentity As XElement = xParent.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
-                      AppliesTo = xParentAssemblyIdentity.Attribute("name")
-                      BuildDate = Nothing
-                    Else
-                      Failure = "Description File Not Found"
-                    End If
-                  Else
-                    Failure = exRet
-                  End If
-                Else
-                  Failure = exRet
-                End If
-              Else
-                Failure = exRet
-              End If
+              Next
+              If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+              Return updateList.ToArray
             Else
-              Dim exRet As String = ExtractAFile(Location, EXEPath, "update.mum")
-              If exRet = "OK" Then
-                If IO.File.Exists(EXEPath & "update.mum") Then
-                  Dim xMUM As XElement = XElement.Load(EXEPath & "update.mum")
-                  Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
-                  DisplayName = xAssemblyIdentity.Attribute("language").Value & " Multilingual User Interface Pack"
-                  SupportLink = Nothing
-                  Architecture = xAssemblyIdentity.Attribute("processorArchitecture")
-                  Dim xPackage As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}package")
-                  KBArticle = Nothing
-                  Dim xParent As XElement = xPackage.Element("{urn:schemas-microsoft-com:asm.v3}parent")
-                  Dim xParentAssemblyIdentity As XElement = xParent.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
-                  AppliesTo = xParentAssemblyIdentity.Attribute("name")
-                  BuildDate = Nothing
-                Else
-                  Failure = "Description File Not Found"
-                End If
-              Else
-                Failure = exRet
+              If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+              Return {New Update_File(sPath)}
+            End If
+          Else
+            Return {New Update_File(sPath)}
+          End If
+        Case Else
+          Return {New Update_File(sPath)}
+      End Select
+    Else
+      Return Nothing
+    End If
+  End Function
+  Public Function GetUpdateName(Ident As Update_Identity) As String
+    Select Case Ident.Name
+      Case "WUClient-SelfUpdate-Core-TopLevel"
+        Return "Windows Update Agent " & Ident.Version.Substring(0, Ident.Version.IndexOf(".", Ident.Version.IndexOf(".") + 1))
+      Case "Microsoft-Windows-InternetExplorer-LanguagePack"
+        Dim ieVer As String = Ident.Version.Substring(0, Ident.Version.IndexOf("."))
+        Return Ident.Language & " IE" & ieVer & " Language Pack"
+      Case "Microsoft-Windows-InternetExplorer-LIPPack"
+        Dim ieVer As String = Ident.Version.Substring(0, Ident.Version.IndexOf("."))
+        Return Ident.Language & " IE" & ieVer & " Language Interface Pack"
+      Case "Microsoft-Windows-InternetExplorer-Package-TopLevel"
+        Dim ieVer As String = Ident.Version.Substring(0, Ident.Version.IndexOf("."))
+        Return "Internet Explorer " & ieVer
+      Case "Microsoft-Windows-PlatformUpdate-Win7-SRV08R2-Package-TopLevel" : Return "Platform Update for Windows 7"
+      Case "Microsoft-Windows-Client-LanguagePack-Package" : Return Ident.Language & " Multilingual User Interface Pack"
+      Case "Microsoft-Windows-Client-Refresh-LanguagePack-Package" : Return Ident.Language & " Multilingual User Interface Pack"
+      Case "Microsoft-Windows-LIP-LanguagePack-Package" : Return Ident.Language & " Language Interface Pack"
+      Case "Microsoft-Windows-RDP-WinIP-Package-TopLevel" : Return "Remote Desktop Protocol Update"
+      Case "Microsoft-Windows-RDP-BlueIP-Package-TopLevel" : Return "Remote App and Desktop Connections Update"
+      Case "Microsoft-Windows-Security-WindowsActivationTechnologies-Package" : Return "Windows Activation Update"
+      Case Else
+        If Ident.Name.StartsWith("Package_for_") Then
+          Return Ident.Name.Substring(12) & " Update"
+        ElseIf Ident.Name.StartsWith("Microsoft-Windows-IE-Spelling-Parent-Package") Then
+          Return "IE Spelling Package for " & Ident.Name.Substring(Ident.Name.LastIndexOf("-") + 1)
+        ElseIf Ident.Name.StartsWith("Microsoft-Windows-IE-Hyphenation-Parent-Package") Then
+          Return "IE Hyphenation Package for " & Ident.Name.Substring(Ident.Name.LastIndexOf("-") + 1)
+        Else
+          Return Ident.Name
+        End If
+    End Select
+  End Function
+  Public Function GetUpdateCompany(Provider As String, ReferenceList() As String) As String
+    If String.IsNullOrEmpty(Provider) Then Return "Unknown"
+    Do While Provider.EndsWith(".")
+      Provider = Provider.Substring(0, Provider.Length - 1)
+      If String.IsNullOrEmpty(Provider) Then Return "Unknown"
+    Loop
+    Do While Provider.EndsWith(" Inc")
+      Provider = Provider.Substring(0, Provider.Length - 4)
+      If String.IsNullOrEmpty(Provider) Then Return "Unknown"
+    Loop
+    Do While Provider.EndsWith(" GmbH")
+      Provider = Provider.Substring(0, Provider.Length - 5)
+      If String.IsNullOrEmpty(Provider) Then Return "Unknown"
+    Loop
+    Do While Provider.EndsWith(",")
+      Provider = Provider.Substring(0, Provider.Length - 1)
+      If String.IsNullOrEmpty(Provider) Then Return "Unknown"
+    Loop
+    For Each refItem In ReferenceList
+      If Provider.StartsWith(refItem & " ") Then Provider = refItem
+    Next
+    Select Case Provider.ToLower
+      Case "%msft%", "msft" : Return "Microsoft"
+      Case "amd", "ati technologies" : Return "Advanced Micro Devices"
+      Case "intel corporation" : Return "Intel"
+      Case "nvidia corporation" : Return "NVIDIA"
+      Case "hp", "hewlett-packard company", "compaq" : Return "Hewlett-Packard"
+      Case "okidata" : Return "Oki"
+      Case "philips semiconductors" : Return "NXP Semiconductors"
+      Case "gestetner", "infotec", "lanier", "nrg" : Return "Ricoh"
+      Case "atheros", "qualcomm" : Return "Qualcomm Atheros"
+      Case "hanns-g" : Return "Hannspree"
+      Case "realtek semiconductor corp" : Return "RealTek"
+      Case "elantech" : Return "Elan"
+    End Select
+    Return Provider
+  End Function
+  Private Function ConvertPathVars(Path As String, OriginalINF As String, arch As ArchitectureList) As String
+    Do While Path.Contains("%")
+      Dim sA As String = Path.Substring(0, Path.IndexOf("%"))
+      Dim sB As String = Path.Substring(Path.IndexOf("%", Path.IndexOf("%") + 1) + 1)
+      Dim sE As String = Path.Substring(Path.IndexOf("%") + 1)
+      sE = sE.Substring(0, sE.IndexOf("%"))
+      Path = sA & GetEnvPath(sE, OriginalINF, arch) & sB
+    Loop
+    If IsNumeric(Path) Then Path = GetEnvPath(Path, OriginalINF, arch)
+    Return Path.Trim
+  End Function
+  Private Function GetEnvPath(sInput As String, OriginalINF As String, arch As ArchitectureList) As String
+    Dim sEnv As String = Nothing
+    If IsNumeric(sInput) Then
+      Dim pathWin As String = IO.Path.GetDirectoryName(OriginalINF)
+      If pathWin.ToLower.Contains("windows") Then
+        pathWin = pathWin.Substring(0, pathWin.ToLower.LastIndexOf("windows"))
+      Else
+        pathWin = Environment.GetFolderPath(Environment.SpecialFolder.Windows)
+      End If
+      Select Case Int32.Parse(sInput)
+        Case 1 : sEnv = IO.Path.GetDirectoryName(OriginalINF)
+        Case &HA : sEnv = IO.Path.Combine(pathWin, "Windows")
+        Case &HB : sEnv = IO.Path.Combine(pathWin, "Windows", "System32")
+        Case &HC : sEnv = IO.Path.Combine(pathWin, "Windows", "System32", "drivers")
+        Case &H11 : sEnv = IO.Path.Combine(pathWin, "Windows", "inf")
+        Case &H12 : sEnv = IO.Path.Combine(pathWin, "Windows", "help")
+        Case &H14 : sEnv = IO.Path.Combine(pathWin, "Windows", "fonts")
+        Case &H15 : sEnv = IO.Path.Combine(pathWin, "Windows", "System32", "viewers")
+        Case &H17 : sEnv = IO.Path.Combine(pathWin, "Windows", "System32", "spool", "drivers", "color")
+        Case &H18 : sEnv = pathWin
+        Case &H19 : sEnv = IO.Path.Combine(pathWin, "Windows")
+        Case &H1E : sEnv = pathWin
+        Case &H32 : sEnv = IO.Path.Combine(pathWin, "Windows", "System")
+        Case &H33 : sEnv = IO.Path.Combine(pathWin, "Windows", "System32", "spool")
+        Case &H34 : sEnv = IO.Path.Combine(pathWin, "Windows", "System32", "spool", "drivers")
+        Case &H35 : sEnv = IO.Path.Combine(pathWin, "Users")
+        Case &H36 : sEnv = pathWin
+        Case &H37
+          Select Case arch
+            Case ArchitectureList.x86 : sEnv = IO.Path.Combine(pathWin, "Windows", "System32", "spool", "prtprocs", "W32X86")
+            Case ArchitectureList.amd64 : sEnv = IO.Path.Combine(pathWin, "Windows", "System32", "spool", "prtprocs", "x64")
+            Case ArchitectureList.ia64 : sEnv = IO.Path.Combine(pathWin, "Windows", "System32", "spool", "prtprocs", "IA64")
+          End Select
+        Case &H4016 : sEnv = IO.Path.Combine(pathWin, "ProgramData", "Microsoft", "Windows", "Start Menu")
+        Case &H4017 : sEnv = IO.Path.Combine(pathWin, "ProgramData", "Microsoft", "Windows", "Start Menu", "Programs")
+        Case &H4018 : sEnv = IO.Path.Combine(pathWin, "ProgramData", "Microsoft", "Windows", "Start Menu", "Programs", "Startup")
+        Case &H4019 : sEnv = IO.Path.Combine(pathWin, "Users", "Public", "Desktop")
+        Case &H401F : sEnv = IO.Path.Combine(pathWin, "Users", "Public", "Favorites")
+        Case &H4023 : sEnv = IO.Path.Combine(pathWin, "ProgramData")
+        Case &H4026 : sEnv = IO.Path.Combine(pathWin, "Program Files")
+        Case &H4029
+          Select Case arch
+            Case ArchitectureList.x86 : sEnv = IO.Path.Combine(pathWin, "Windows", "System32")
+            Case ArchitectureList.amd64, ArchitectureList.ia64 : sEnv = IO.Path.Combine(pathWin, "Windows", "SysWOW64")
+          End Select
+        Case &H402A
+          Select Case arch
+            Case ArchitectureList.x86 : sEnv = IO.Path.Combine(pathWin, "Program Files")
+            Case ArchitectureList.amd64, ArchitectureList.ia64 : sEnv = IO.Path.Combine(pathWin, "Program Files (x86)")
+          End Select
+        Case &H402B : sEnv = IO.Path.Combine(pathWin, "Program Files", "Common Files")
+        Case &H402C
+          Select Case arch
+            Case ArchitectureList.x86 : sEnv = IO.Path.Combine(pathWin, "Program Files", "Common Files")
+            Case ArchitectureList.amd64, ArchitectureList.ia64 : sEnv = IO.Path.Combine(pathWin, "Program Files (x86)", "Common Files")
+          End Select
+        Case &H402D : sEnv = IO.Path.Combine(pathWin, "ProgramData", "Microsoft", "Windows", "Templates")
+        Case &H402E : sEnv = IO.Path.Combine(pathWin, "Users", "Public", "Documents")
+        Case &H101D0
+          Select Case arch
+            Case ArchitectureList.x86 : sEnv = IO.Path.Combine(pathWin, "Windows", "System32", "spool", "drivers", "W32X86")
+            Case ArchitectureList.amd64 : sEnv = IO.Path.Combine(pathWin, "Windows", "System32", "spool", "drivers", "x64")
+            Case ArchitectureList.ia64 : sEnv = IO.Path.Combine(pathWin, "Windows", "System32", "spool", "drivers", "IA64")
+          End Select
+        Case &H101D1
+          Select Case arch
+            Case ArchitectureList.x86 : sEnv = IO.Path.Combine(pathWin, "Windows", "System32", "spool", "prtprocs", "W32X86")
+            Case ArchitectureList.amd64 : sEnv = IO.Path.Combine(pathWin, "Windows", "System32", "spool", "prtprocs", "x64")
+            Case ArchitectureList.ia64 : sEnv = IO.Path.Combine(pathWin, "Windows", "System32", "spool", "prtprocs", "IA64")
+          End Select
+        Case &H101D2 : sEnv = IO.Path.Combine(pathWin, "Windows", "System32")
+        Case &H101D3 : sEnv = IO.Path.Combine(pathWin, "Windows", "System32", "spool", "drivers", "color")
+        Case &H101D4 : Debug.Print("ASP Path?")
+      End Select
+    Else
+      sEnv = Environ(sInput)
+    End If
+    If Not String.IsNullOrEmpty(sEnv) Then Return sEnv
+    Dim sINF() As String = IO.File.ReadAllLines(OriginalINF)
+    For Each line In sINF
+      If line.TrimStart.ToLower.StartsWith(sInput.ToLower) And line.Contains("=") Then
+        Dim sVal As String = line.Substring(line.IndexOf("=") + 1)
+        sVal = CleanupINFString(sVal)
+        Return GetEnvPath(sVal, OriginalINF, arch)
+      End If
+    Next
+    Debug.Print("Could not determine the path for """ & sInput & """")
+    Return sInput
+  End Function
+  Private Function CleanupINFString(Value As String) As String
+    Dim sVal As String = Value.TrimStart
+    Do While sVal.StartsWith("""")
+      sVal = sVal.Substring(1)
+    Loop
+    If sVal.Contains(";") Then sVal = sVal.Substring(0, sVal.IndexOf(";"))
+    sVal = sVal.TrimEnd
+    Do While sVal.EndsWith("""")
+      sVal = sVal.Substring(0, sVal.Length - 1)
+    Loop
+    sVal.Trim()
+    Return sVal
+  End Function
+  Private Function GuessPath(FileName As String, DefaultPaths() As String, INFPath As String) As String
+    Do While FileName.StartsWith("\")
+      FileName = FileName.Substring(1)
+    Loop
+    Dim pathLocal As String = IO.Path.Combine(IO.Path.GetDirectoryName(INFPath), FileName)
+    If IO.File.Exists(pathLocal) Then Return pathLocal
+    If DefaultPaths IsNot Nothing Then
+      For Each path In DefaultPaths
+        Dim pathDefault As String = IO.Path.Combine(path, FileName)
+        If IO.File.Exists(pathDefault) Then Return pathDefault
+      Next
+    End If
+    Dim pathSys As String = IO.Path.GetDirectoryName(INFPath)
+    If pathSys.ToLower.Contains("system32") Then
+      pathSys = pathSys.Substring(0, pathSys.ToLower.LastIndexOf("system32") + 8)
+      pathSys = IO.Path.Combine(pathSys, FileName)
+      If IO.File.Exists(pathSys) Then Return pathSys
+    End If
+    Dim pathWin As String = IO.Path.GetDirectoryName(INFPath)
+    If pathWin.ToLower.Contains("windows") Then
+      pathWin = pathWin.Substring(0, pathWin.ToLower.LastIndexOf("windows") + 7)
+      pathWin = IO.Path.Combine(pathWin, FileName)
+      If IO.File.Exists(pathWin) Then Return pathWin
+    End If
+    If FileName.Contains("\") Then
+      Return GuessPath(FileName.Substring(FileName.IndexOf("\") + 1), DefaultPaths, INFPath)
+    Else
+      Return FileName
+    End If
+  End Function
+  Public Function GetDriverIcon(DriverINFPath As String, architecture As ArchitectureList) As Icon
+    Dim sINF() As String = IO.File.ReadAllLines(DriverINFPath)
+    Dim sResPath As String = Nothing
+    Dim sDefPaths As New List(Of String)
+
+    For Each sLine In sINF
+
+      If sLine.ToLower.Contains("defaultdestdir") And sLine.Contains("=") And sDefPaths.Count = 0 Then
+        Dim sParts() As String = Split(sLine, "=", 2)
+        If sParts(1).Contains(",") Then
+          Dim sPaths() As String = Split(sParts(1), ",")
+          For Each sPath In sPaths
+            sPath = CleanupINFString(sPath)
+            sDefPaths.Add(ConvertPathVars(sPath, DriverINFPath, architecture))
+          Next
+        Else
+          Dim sPath As String = CleanupINFString(sParts(1))
+          sDefPaths.Add(ConvertPathVars(sPath, DriverINFPath, architecture))
+        End If
+      End If
+
+      If sLine.ToLower.Contains("hkr") And sLine.Contains(",") And (sLine.ToLower.Contains("installer32") Or sLine.ToLower.Contains("enumproppages32")) And String.IsNullOrEmpty(sResPath) Then
+        Dim sParts() As String = Split(sLine, ",", 5)
+        If sParts.Length = 5 Then
+          If sParts(2).ToLower = "installer32" Or sParts(2).ToLower = "enumproppages32" Then
+            sResPath = CleanupINFString(sParts(4))
+            If sResPath.Contains(",") Then sResPath = sResPath.Substring(0, sResPath.IndexOf(","))
+            sResPath = ConvertPathVars(sResPath, DriverINFPath, architecture)
+          End If
+        End If
+      End If
+
+    Next
+
+    For Each sLine In sINF
+
+      If (sLine.ToLower.Contains("deviceicon") Or sLine.ToLower.Contains("devicebrandingicon")) And sLine.Contains(",") Then
+        Dim sParts() As String = Split(sLine, ",", 5)
+        If sParts.Length = 5 Then
+          If sParts(0).ToLower = "deviceicon" Or sParts(0).ToLower = "devicebrandingicon" Then
+            Dim sIconPath As String = CleanupINFString(sParts(4))
+            Dim sIconNum As String = "0"
+            If sIconPath.Contains(",") Then
+              sIconNum = sIconPath.Substring(sIconPath.IndexOf(",") + 1)
+              sIconPath = sIconPath.Substring(0, sIconPath.IndexOf(","))
+            End If
+            sIconPath = ConvertPathVars(CleanupINFString(sIconPath), DriverINFPath, architecture)
+            sIconNum = CleanupINFString(sIconNum)
+            If Not sIconPath.Contains(":\") Then sIconPath = GuessPath(sIconPath, sDefPaths.ToArray, DriverINFPath)
+            If IO.File.Exists(sIconPath) Then
+              Dim icoPtr(0) As IntPtr
+              Dim siNumber As Int16 = Int16.Parse(sIconNum)
+              If ExtractIconEx(sIconPath, siNumber, Nothing, icoPtr, 1) > 0 Then
+                Dim ico As Icon = Icon.FromHandle(icoPtr(0)).Clone
+                DestroyIcon(icoPtr(0))
+                Return ico
               End If
             End If
-            If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
-          Case UpdateType.Other
-              DisplayName = Nothing
-              AppliesTo = Nothing
-              SupportLink = Nothing
-              Architecture = Nothing
-              KBArticle = Nothing
-              BuildDate = Nothing
-              Failure = "Unknown File Type"
-        End Select
-      End If
-    End Sub
-    Private Shared c_ExtractRet As New Collections.Generic.List(Of String)
-
-    Private Function ExtractAFile(Source As String, Destination As String, File As String) As String
-      Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractAFile))
-      Dim cIndex As Integer = c_ExtractRet.Count
-      c_ExtractRet.Add(Nothing)
-      tRunWithReturn.Start({Source, Destination, File, cIndex})
-      Do While String.IsNullOrEmpty(c_ExtractRet(cIndex))
-        Application.DoEvents()
-        Threading.Thread.Sleep(1)
-      Loop
-      Dim sRet As String = c_ExtractRet(cIndex)
-      c_ExtractRet(cIndex) = Nothing
-      Return sRet
-    End Function
-    Private Sub AsyncExtractAFile(Obj As Object)
-      Dim Source, Destination, Find As String
-      Source = Obj(0)
-      Destination = Obj(1)
-      Find = Obj(2)
-      Dim cIndex As UInteger = Obj(3)
-      Dim bFound As Boolean = False
-      If Not Destination.EndsWith(IO.Path.DirectorySeparatorChar) Then Destination &= IO.Path.DirectorySeparatorChar
-      Using Extractor As New Extraction.ArchiveFile(New IO.FileInfo(Source))
-        Try
-          Extractor.Open()
-        Catch ex As Exception
-          c_ExtractRet(cIndex) = "Error Opening: " & ex.Message
-          Return
-        End Try
-        Dim eFiles() As Extraction.COM.IArchiveEntry = Extractor.ToArray
-        For Each file As Extraction.COM.IArchiveEntry In eFiles
-          If file.Name.ToLower.EndsWith(Find.ToLower) Then
-            file.Destination = New IO.FileInfo(Destination & file.Name)
-            bFound = True
-            Exit For
           End If
-        Next
-        Try
-          Extractor.Extract()
-        Catch ex As Exception
-          c_ExtractRet(cIndex) = "Error Extracting: " & ex.Message
-          Return
-        End Try
-      End Using
-      If bFound Then
-        c_ExtractRet(cIndex) = "OK"
-      Else
-        c_ExtractRet(cIndex) = "File Not Found"
+        End If
       End If
-    End Sub
 
-    Private Function GetMSUValue(Line As String) As String
-      Dim sTmp As String = Line.Substring(Line.IndexOf("="c) + 1)
-      Return sTmp.Substring(1, sTmp.Length - 2)
-    End Function
-    Private ReadOnly Property WorkDir As String
-      Get
-        Dim mySettings As New MySettings
-        Dim tempDir As String = mySettings.TempDir
-        If String.IsNullOrEmpty(tempDir) Then tempDir = My.Computer.FileSystem.SpecialDirectories.Temp & IO.Path.DirectorySeparatorChar & "Slips7ream" & IO.Path.DirectorySeparatorChar
-        If Not IO.Directory.Exists(tempDir) Then IO.Directory.CreateDirectory(tempDir)
-        Return tempDir
-      End Get
-    End Property
-  End Structure
-  Public Structure PackageInfo
-    Public Index As Integer
-    Public Name As String
-    Public Desc As String
-    Public Size As Long
-    Public Sub New(i As Integer, n As String, d As String, s As Long)
-      Index = i
-      Name = n
-      Desc = d
-      Size = s
-    End Sub
-  End Structure
-  Public Structure PackageInfoEx
-    Public Index As Integer
-    Public Name As String
-    Public Desc As String
-    Public Size As Long
-    Public Architecture As String
-    Public HAL As String
-    Public Version As String
-    Public SPBuild As Integer
-    Public SPLevel As Integer
-    Public Edition As String
-    Public Installation As String
-    Public ProductType As String
-    Public ProductSuite As String
-    Public SystemRoot As String
-    Public Directories As Integer
-    Public Files As Integer
-    Public Created As String
-    Public Modified As String
-    Public LangList() As String
-    Public Sub New(Info As String)
-      Dim infoLines() As String = Split(Info, vbNewLine)
-      For I As Integer = 0 To infoLines.Length - 1
-        Dim line As String = infoLines(I)
-        If line.StartsWith("Index : ") Then
-          Index = GetVal(line)
-        ElseIf line.StartsWith("Name : ") Then
-          Name = GetVal(line)
-        ElseIf line.StartsWith("Description : ") Then
-          Desc = GetVal(line)
-        ElseIf line.StartsWith("Size : ") Then
-          Dim sTmp As String = GetVal(line)
-          Size = NumericVal(sTmp.Substring(0, sTmp.Length - 6))
-        ElseIf line.StartsWith("Architecture : ") Then
-          Architecture = GetVal(line)
-        ElseIf line.StartsWith("Hal : ") Then
-          HAL = GetVal(line)
-        ElseIf line.StartsWith("Version : ") Then
-          Version = GetVal(line)
-        ElseIf line.StartsWith("ServicePack Build : ") Then
-          SPBuild = GetVal(line)
-        ElseIf line.StartsWith("ServicePack Level : ") Then
-          SPLevel = GetVal(line)
-        ElseIf line.StartsWith("Edition : ") Then
-          Edition = GetVal(line)
-        ElseIf line.StartsWith("Installation : ") Then
-          Installation = GetVal(line)
-        ElseIf line.StartsWith("ProductType : ") Then
-          ProductType = GetVal(line)
-        ElseIf line.StartsWith("ProductSuite : ") Then
-          ProductSuite = GetVal(line)
-        ElseIf line.StartsWith("System Root : ") Then
-          SystemRoot = GetVal(line)
-        ElseIf line.StartsWith("Directories : ") Then
-          Directories = GetVal(line)
-        ElseIf line.StartsWith("Files : ") Then
-          Files = GetVal(line)
-        ElseIf line.StartsWith("Created : ") Then
-          Created = GetVal(line)
-        ElseIf line.StartsWith("Modified : ") Then
-          Modified = GetVal(line)
-        ElseIf line.StartsWith("Languages :") Then
-          Dim sLang As String = String.Empty
-          Dim sLangs As New Collections.Generic.List(Of String)
-          Dim J As Integer = I
-          Do
-            J += 1
-            sLang = Trim(infoLines(J))
-            sLang = sLang.Replace(vbTab, "")
-            If Not String.IsNullOrEmpty(sLang) Then sLangs.Add(sLang)
-          Loop Until String.IsNullOrEmpty(sLang)
-          LangList = sLangs.ToArray
+      If sLine.ToLower.Contains("hkr") And sLine.Contains(",") And sLine.ToLower.Contains("icons") Then
+        Dim sParts() As String = Split(sLine, ",", 5)
+        If sParts.Length = 5 Then
+          If sParts(2).ToLower = "icons" Then
+            Dim sIconPath As String = CleanupINFString(sParts(4))
+            Dim sIconParts() As String = Split(sIconPath, ",", 2)
+            Dim siFilePath As String = ConvertPathVars(sIconParts(0), DriverINFPath, architecture)
+            If Not siFilePath.Contains(":\") Then siFilePath = GuessPath(siFilePath, sDefPaths.ToArray, DriverINFPath)
+            If IO.File.Exists(siFilePath) Then
+              Dim siNumber As Int16 = Int16.Parse(sIconParts(1))
+              Dim icoPtr(0) As IntPtr
+              If ExtractIconEx(siFilePath, siNumber, Nothing, icoPtr, 1) > 0 Then
+                Dim ico As Icon = Icon.FromHandle(icoPtr(0)).Clone
+                DestroyIcon(icoPtr(0))
+                Return ico
+              End If
+            End If
+          End If
+        End If
+      End If
+
+      If sLine.ToLower.Contains("hkr") And sLine.Contains(",") And sLine.ToLower.Contains("icon") Then
+        Dim sParts() As String = Split(sLine, ",", 5)
+        If sParts.Length = 5 Then
+          If sParts(2).ToLower = "icon" Then
+            Dim sIcon As String = CleanupINFString(sParts(4))
+            If IsNumeric(sIcon) Then
+              If sIcon.StartsWith("-") Then
+                Dim icoPtr(0) As IntPtr
+                Dim siNumber As Int16 = Int16.Parse(sIcon)
+                If siNumber = -1 Then siNumber = 0
+                Dim sSetupAPI As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "setupapi.dll")
+                If ExtractIconEx(sSetupAPI, siNumber, Nothing, icoPtr, 1) > 0 Then
+                  Dim ico As Icon = Icon.FromHandle(icoPtr(0)).Clone
+                  DestroyIcon(icoPtr(0))
+                  Return ico
+                End If
+              ElseIf Not String.IsNullOrEmpty(sResPath) Then
+                sIcon = "-" & sIcon
+                If Not sResPath.Contains(":\") Then sResPath = GuessPath(sResPath, sDefPaths.ToArray, DriverINFPath)
+                If IO.File.Exists(sResPath) Then
+                  Dim icoPtr(0) As IntPtr
+                  If ExtractIconEx(sResPath, Int16.Parse(sIcon), Nothing, icoPtr, 1) > 0 Then
+                    Dim ico As Icon = Icon.FromHandle(icoPtr(0)).Clone
+                    DestroyIcon(icoPtr(0))
+                    Return ico
+                  End If
+                End If
+              End If
+            End If
+          End If
+        End If
+      End If
+    Next
+    Return Nothing
+  End Function
+  Public Function GetDriverCompanyIcon(Company As String) As Icon
+    Select Case Company.ToLower
+      Case "acer" : Return My.Resources.company_acer
+      Case "adaptec" : Return My.Resources.company_adaptec
+      Case "ads technologies" : Return My.Resources.company_ads_technologies
+      Case "advanced micro devices" : Return My.Resources.company_advanced_micro_devices
+      Case "afatech" : Return My.Resources.company_afatech
+      Case "asustek computer" : Return My.Resources.company_asustek_computer
+      Case "avermedia technologies" : Return My.Resources.company_avermedia_technologies
+      Case "bitland" : Return My.Resources.company_bitland
+      Case "brother" : Return My.Resources.company_brother
+      Case "canon" : Return My.Resources.company_canon
+      Case "compro technology" : Return My.Resources.company_compro_technology
+      Case "conexant" : Return My.Resources.company_conexant
+      Case "creatix" : Return My.Resources.company_creatix
+      Case "dell" : Return My.Resources.company_dell
+      Case "elan" : Return My.Resources.company_elan
+      Case "emulex" : Return My.Resources.company_emulex
+      Case "epson" : Return My.Resources.company_epson
+      Case "fuji xerox" : Return My.Resources.company_fuji_xerox
+      Case "gigabyte" : Return My.Resources.company_gigabyte
+      Case "hannspree" : Return My.Resources.company_hannspree
+      Case "hauppauge" : Return My.Resources.company_hauppauge
+      Case "hewlett-packard" : Return My.Resources.company_hewlett_packard
+      Case "ibm corporation" : Return My.Resources.company_ibm_corporation
+      Case "icp vortex" : Return My.Resources.company_icp_vortex
+      Case "intel" : Return My.Resources.company_intel
+      Case "knc one" : Return My.Resources.company_knc_one
+      Case "konica minolta" : Return My.Resources.company_konica_minolta
+      Case "kworld" : Return My.Resources.company_kworld
+      Case "kyocera" : Return My.Resources.company_kyocera
+      Case "lexmark international" : Return My.Resources.company_lexmark_international
+      Case "logitech" : Return My.Resources.company_logitech
+      Case "lsi" : Return My.Resources.company_lsi
+      Case "lumanate" : Return My.Resources.company_lumanate
+      Case "microsoft" : Return My.Resources.company_microsoft
+      Case "nvidia" : Return My.Resources.company_nvidia
+      Case "nxp semiconductors" : Return My.Resources.company_nxp_semiconductors
+      Case "oki" : Return My.Resources.company_oki
+      Case "panasonic" : Return My.Resources.company_panasonic
+      Case "pinnacle systems" : Return My.Resources.company_pinnacle_systems
+      Case "promise technology" : Return My.Resources.company_promise_technology
+      Case "qlogic" : Return My.Resources.company_qlogic
+      Case "qualcomm atheros" : Return My.Resources.company_qualcomm_atheros
+      Case "ralink" : Return My.Resources.company_ralink
+      Case "realtek" : Return My.Resources.company_realtek
+      Case "sceptre" : Return My.Resources.company_sceptre
+      Case "ricoh" : Return My.Resources.company_ricoh
+      Case "samsung" : Return My.Resources.company_samsung
+      Case "savin" : Return My.Resources.company_savin
+      Case "silicon integrated systems corp" : Return My.Resources.company_silicon_integrated_systems_corp
+      Case "sharp" : Return My.Resources.company_sharp
+      Case "sony" : Return My.Resources.company_sony
+      Case "synaptics" : Return My.Resources.company_synaptics
+      Case "terratec electronic" : Return My.Resources.company_terratec_electronic
+      Case "toshiba" : Return My.Resources.company_toshiba
+      Case "via technologies" : Return My.Resources.company_via_technologies
+      Case "vidzmedia pte ltd" : Return My.Resources.company_oem
+      Case "vixs systems" : Return My.Resources.company_vixs_systems
+      Case "xerox" : Return My.Resources.company_xerox
+      Case Else : Debug.Print("No icon for " & Company)
+    End Select
+    Return My.Resources.company_oem
+  End Function
+  Public Function GetDriverClassIcon(ClassGUID As String, DriverINFPath As String, architecture As ArchitectureList) As Icon
+    If Not String.IsNullOrEmpty(DriverINFPath) AndAlso IO.File.Exists(DriverINFPath) Then
+      Dim sINF() As String = IO.File.ReadAllLines(DriverINFPath)
+      Dim sResPath As String = Nothing
+      Dim sDefPaths As New List(Of String)
+      For Each sLine In sINF
+        If sLine.ToLower.Contains("defaultdestdir") And sLine.Contains("=") And sDefPaths.Count = 0 Then
+          Dim sParts() As String = Split(sLine, "=", 2)
+          If sParts(1).Contains(",") Then
+            Dim sPaths() As String = Split(sParts(1), ",")
+            For Each sPath In sPaths
+              sPath = CleanupINFString(sPath)
+              sDefPaths.Add(ConvertPathVars(sPath, DriverINFPath, architecture))
+            Next
+          Else
+            Dim sPath As String = CleanupINFString(sParts(1))
+            sDefPaths.Add(ConvertPathVars(sPath, DriverINFPath, architecture))
+          End If
+        End If
+        If sLine.ToLower.Contains("hkr") And sLine.Contains(",") And (sLine.ToLower.Contains("installer32") Or sLine.ToLower.Contains("enumproppages32")) And String.IsNullOrEmpty(sResPath) Then
+          Dim sParts() As String = Split(sLine, ",", 5)
+          If sParts.Length = 5 Then
+            If sParts(2).ToLower = "installer32" Or sParts(2).ToLower = "enumproppages32" Then
+              sResPath = CleanupINFString(sParts(4))
+              If sResPath.Contains(",") Then sResPath = sResPath.Substring(0, sResPath.IndexOf(","))
+              sResPath = ConvertPathVars(sResPath, DriverINFPath, architecture)
+            End If
+          End If
         End If
       Next
-    End Sub
-    Private Function GetVal(line As String) As String
-      Return line.Substring(line.IndexOf(" : ") + 3)
-    End Function
-  End Structure
+      For Each sLine In sINF
+        If sLine.ToLower.Contains("devicebrandingicon") And sLine.Contains(",") Then
+          Dim sParts() As String = Split(sLine, ",", 5)
+          If sParts.Length = 5 Then
+            If sParts(0).ToLower = "devicebrandingicon" Then
+              Dim sIconPath As String = CleanupINFString(sParts(4))
+              Dim sIconNum As String = "0"
+              If sIconPath.Contains(",") Then
+                sIconNum = sIconPath.Substring(sIconPath.IndexOf(",") + 1)
+                sIconPath = sIconPath.Substring(0, sIconPath.IndexOf(","))
+              End If
+              sIconPath = ConvertPathVars(CleanupINFString(sIconPath), DriverINFPath, architecture)
+              sIconNum = CleanupINFString(sIconNum)
+              If Not sIconPath.Contains(":\") Then sIconPath = GuessPath(sIconPath, sDefPaths.ToArray, DriverINFPath)
+              If IO.File.Exists(sIconPath) Then
+                Dim icoPtr(0) As IntPtr
+                Dim siNumber As Int16 = Int16.Parse(sIconNum)
+                If ExtractIconEx(sIconPath, siNumber, Nothing, icoPtr, 1) > 0 Then
+                  Dim ico As Icon = Icon.FromHandle(icoPtr(0)).Clone
+                  DestroyIcon(icoPtr(0))
+                  Return ico
+                End If
+              End If
+            End If
+          End If
+        End If
+        If sLine.ToLower.Contains("hkr") And sLine.Contains(",") And sLine.ToLower.Contains("icon") Then
+          Dim sParts() As String = Split(sLine, ",", 5)
+          If sParts.Length = 5 Then
+            If sParts(2).ToLower = "icon" Then
+              Dim sIcon As String = CleanupINFString(sParts(4))
+              If IsNumeric(sIcon) Then
+                If sIcon.StartsWith("-") Then
+                  Dim icoPtr(0) As IntPtr
+                  Dim siNumber As Int16 = Int16.Parse(sIcon)
+                  If siNumber = -1 Then siNumber = 0
+                  Dim sSetupAPI As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "setupapi.dll")
+                  If ExtractIconEx(sSetupAPI, siNumber, Nothing, icoPtr, 1) > 0 Then
+                    Dim ico As Icon = Icon.FromHandle(icoPtr(0)).Clone
+                    DestroyIcon(icoPtr(0))
+                    Return ico
+                  End If
+                ElseIf Not String.IsNullOrEmpty(sResPath) Then
+                  sIcon = "-" & sIcon
+                  If Not sResPath.Contains(":\") Then sResPath = GuessPath(sResPath, sDefPaths.ToArray, DriverINFPath)
+                  If IO.File.Exists(sResPath) Then
+                    Dim icoPtr(0) As IntPtr
+                    If ExtractIconEx(sResPath, Int16.Parse(sIcon), Nothing, icoPtr, 1) > 0 Then
+                      Dim ico As Icon = Icon.FromHandle(icoPtr(0)).Clone
+                      DestroyIcon(icoPtr(0))
+                      Return ico
+                    End If
+                  End If
+                End If
+              End If
+            End If
+          End If
+        End If
+      Next
+    End If
+    Dim imageListData As New SP_CLASSIMAGELIST_DATA
+    imageListData.cbSize = Marshal.SizeOf(imageListData)
+    SetupDiGetClassImageList(imageListData)
+    Try
+      Dim idxIcon As Integer
+      If SetupDiGetClassImageIndex(imageListData, New Guid(ClassGUID), idxIcon) Then
+        Dim ptrIcon As IntPtr = ImageList_GetIcon(imageListData.ImageList, idxIcon, 0)
+        If Not ptrIcon = IntPtr.Zero Then
+          Dim icoClass As Icon = Icon.FromHandle(ptrIcon).Clone
+          DestroyIcon(ptrIcon)
+          If icoClass.Width > 0 Then Return icoClass
+        End If
+      End If
+      Return My.Resources.inf
+    Finally
+      SetupDiDestroyClassImageList(imageListData)
+    End Try
+  End Function
   Public Function ByteSize(InBytes As UInt64) As String
     If InBytes > 1024 Then
       If InBytes / 1024 > 1024 Then
@@ -466,6 +581,13 @@ Module modFunctions
     Else
       Return (InBytes) & " B"
     End If
+  End Function
+  Private Function getTotalSize(ioDir As IO.DirectoryInfo) As UInt64
+    Dim uSize As UInt64 = 0
+    For Each ioFile As IO.FileInfo In ioDir.EnumerateFiles
+      uSize += ioFile.Length
+    Next
+    Return uSize
   End Function
   Public ReadOnly Property AIKDir As String
     Get
@@ -486,13 +608,14 @@ Module modFunctions
       If IO.File.Exists(systemDir) Then
         Dim sysInfo As FileVersionInfo = FileVersionInfo.GetVersionInfo(systemDir)
         Dim locInfo As FileVersionInfo = FileVersionInfo.GetVersionInfo(localDir)
-        If clsUpdate.CompareVersions(sysInfo.ProductVersion, locInfo.ProductVersion) Then
+        If CompareMSVersions(sysInfo.ProductVersion, locInfo.ProductVersion) Then
           Return systemDir
         End If
       End If
       Return localDir
     End Get
   End Property
+  Private Declare Auto Function GetShortPathName Lib "kernel32.dll" (ByVal lpszLongPath As String, ByVal lpszShortPath As String, ByVal cchBuffer As Int32) As Int32
   Public Function ShortenPath(Path As String) As String
     Dim count As Integer = GetShortPathName(Path, Nothing, 0)
     Dim strShortPath As String = Space(count)
@@ -520,7 +643,8 @@ Module modFunctions
       IO.Directory.Delete(Directory, False)
     Else
       Dim doProg As Boolean = True
-      If frmMain.pbTotal.Value > 0 Then doProg = False
+      If Not frmMain.pbTotal.Visible Then doProg = False
+      If frmMain.pbTotal.Value > 0 And frmMain.pbTotal.Maximum > 1 Then doProg = False
       Dim sDirs() As String = IO.Directory.GetDirectories(Directory)
       Dim sFiles() As String = IO.Directory.GetFiles(Directory)
       For I As Integer = 0 To sDirs.Count - 1
@@ -535,7 +659,7 @@ Module modFunctions
       Next
       If sFiles.Count > 0 Then
         For I As Integer = 0 To sFiles.Count - 1
-          If sFiles.Count > 1 Then frmMain.SetProgress(I, sFiles.Count - 1)
+          If sFiles.Count > 1 And doProg Then frmMain.SetProgress(I, sFiles.Count - 1)
           Try
             IO.File.Delete(sFiles(I))
           Catch ex As Exception
@@ -559,12 +683,14 @@ Module modFunctions
     c_SlowCopyRet.Add(0)
     tRunWithReturn.Start({File, Destination, Move, cIndex})
     Do While IsNumeric(c_SlowCopyRet(cIndex))
-      Dim iPercent As Integer
-      If Integer.TryParse(c_SlowCopyRet(cIndex), iPercent) Then
-        If iPercent > 990 Then
-          frmMain.SetProgress(0, 0)
-        Else
-          frmMain.SetProgress(iPercent, 1000)
+      If frmMain.pbIndividual.Value = 0 And frmMain.pbIndividual.Maximum = 1 Then
+        Dim iPercent As Integer
+        If Integer.TryParse(c_SlowCopyRet(cIndex), iPercent) Then
+          If iPercent > 990 Then
+            frmMain.SetProgress(0, 0)
+          Else
+            frmMain.SetProgress(iPercent, 1000)
+          End If
         End If
       End If
       Application.DoEvents()
@@ -651,6 +777,8 @@ Module modFunctions
     LIP
     LP
     EXE
+    MSI
+    INF
     Other
   End Enum
   Public Function TypeToString(updateType As UpdateType) As String
@@ -660,16 +788,39 @@ Module modFunctions
       Case modFunctions.UpdateType.LIP : Return "LIP"
       Case modFunctions.UpdateType.LP : Return "LP"
       Case modFunctions.UpdateType.EXE : Return "EXE"
+      Case modFunctions.UpdateType.MSI : Return "MSI"
     End Select
     Return Nothing
   End Function
   Public Function GetUpdateType(Path As String) As UpdateType
     If IO.Path.GetFileName(Path).ToLower = "lp.cab" Then Return UpdateType.LP
-    If IO.Path.GetExtension(Path).ToLower = ".cab" Then Return UpdateType.CAB
-    If IO.Path.GetExtension(Path).ToLower = ".mlc" Then Return UpdateType.LIP
-    If IO.Path.GetExtension(Path).ToLower = ".exe" Then Return UpdateType.EXE
-    If IO.Path.GetExtension(Path).ToLower = ".msu" Then Return UpdateType.MSU
+    Select Case IO.Path.GetExtension(Path).ToLower
+      Case ".cab" : Return UpdateType.CAB
+      Case ".mlc" : Return UpdateType.LIP
+      Case ".exe" : Return UpdateType.EXE
+      Case ".msi" : Return UpdateType.MSI
+      Case ".msu" : Return UpdateType.MSU
+      Case ".inf" : Return UpdateType.INF
+    End Select
     Return UpdateType.Other
+  End Function
+  Public Function GetUpdateCompression(Path As String) As Extraction.COM.ArchiveFormat.KnownSevenZipFormat
+    Select Case IO.Path.GetExtension(Path).ToLower
+      'Case ".cab" : Return Extraction.COM.ArchiveFormat.KnownSevenZipFormat.Z
+      Case ".cab", ".mlc", ".msu", ".exe" : Return Extraction.COM.ArchiveFormat.KnownSevenZipFormat.Cab
+      Case ".msi" : Return Extraction.COM.ArchiveFormat.KnownSevenZipFormat.Compound
+      Case ".iso" : Return Extraction.COM.ArchiveFormat.KnownSevenZipFormat.Udf
+      Case Else
+        Debug.Print(IO.Path.GetExtension(Path))
+    End Select
+    Return Extraction.COM.ArchiveFormat.KnownSevenZipFormat.Unknown
+  End Function
+  Public Function GetUpdateCompression(Type As UpdateType) As Extraction.COM.ArchiveFormat.KnownSevenZipFormat
+    Select Case Type
+      Case UpdateType.CAB, UpdateType.LIP, UpdateType.LP, UpdateType.MSU, UpdateType.EXE : Return Extraction.COM.ArchiveFormat.KnownSevenZipFormat.Cab
+      Case UpdateType.MSI : Return Extraction.COM.ArchiveFormat.KnownSevenZipFormat.Compound
+    End Select
+    Return Extraction.COM.ArchiveFormat.KnownSevenZipFormat.Unknown
   End Function
   Public Sub SortFiles(ByRef FileList() As String)
     Dim FilesOutOfOrder() As String = FileList
@@ -804,21 +955,102 @@ Module modFunctions
       End If
     End If
   End Function
+  Public Function CompareMSVersions(Ver1 As String, Ver2 As String) As Integer
+    Dim v1Ver(3) As String
+    If Ver1.Contains(".") Then
+      For I As Integer = 1 To 3
+        v1Ver(0) = Ver1.Split(".")(0)
+        If Ver1.Split(".").Count > I Then
+          v1Ver(I) = Ver1.Split(".")(I).Trim
+        Else
+          v1Ver(I) = "0"
+        End If
+      Next
+    ElseIf Ver1.Contains(",") Then
+      v1Ver(0) = Ver1.Split(".")(0)
+      For I As Integer = 1 To 3
+        If Ver1.Split(",").Count > I Then
+          v1Ver(I) = Ver1.Split(",")(I).Trim
+        Else
+          v1Ver(I) = "0"
+        End If
+      Next
+    End If
+    Dim v2Ver(3) As String
+    If Ver2.Contains(".") Then
+      v2Ver(0) = Ver2.Split(".")(0)
+      For I As Integer = 1 To 3
+        If Ver2.Split(".").Count > I Then
+          v2Ver(I) = Ver2.Split(".")(I).Trim
+        Else
+          v2Ver(I) = "0"
+        End If
+      Next
+    ElseIf Ver2.Contains(",") Then
+      v2Ver(0) = Ver2.Split(",")(0)
+      For I As Integer = 1 To 3
+        If Ver2.Split(",").Count > I Then
+          v2Ver(I) = Ver2.Split(",")(I).Trim
+        Else
+          v2Ver(I) = "0"
+        End If
+      Next
+    End If
+    If Val(v1Ver(0)) > Val(v2Ver(0)) Then
+      Return 1
+    ElseIf Val(v1Ver(0)) = Val(v2Ver(0)) Then
+      If Val(v1Ver(1)) > Val(v2Ver(1)) Then
+        Return 1
+      ElseIf Val(v1Ver(1)) = Val(v2Ver(1)) Then
+        If Val(v1Ver(2)) > Val(v2Ver(2)) Then
+          Return 1
+        ElseIf Val(v1Ver(2)) = Val(v2Ver(2)) Then
+          If Val(v1Ver(3)) > Val(v2Ver(3)) Then
+            Return 1
+          ElseIf Val(v1Ver(3)) = Val(v2Ver(3)) Then
+            Return 0
+          Else
+            Return -1
+          End If
+        Else
+          Return -1
+        End If
+      Else
+        Return -1
+      End If
+    Else
+      Return -1
+    End If
+  End Function
 #Region "Task Dialogs"
-  Public Function SelectionBox(owner As Form, newPath As String, newVer As Integer, oldPath As String, oldVer As Integer, ByRef Always As Boolean) As Boolean
+  Public Function UpdateSelectionBox(owner As Form, newData As Update_File, oldData As Update_File, ByRef Always As Boolean) As TaskDialogResult
     If TaskDialog.IsPlatformSupported Then
-      Dim newData As New UpdateInfoEx(newPath)
-      Dim oldData As New UpdateInfoEx(oldPath)
-      Dim newName As String = "KB" & newData.KBArticle
-      If newData.DisplayName.Contains("Internet Explorer") Then newName = "Internet Explorer"
-      Dim oldName As String = "KB" & oldData.KBArticle
-      If oldData.DisplayName.Contains("Internet Explorer") Then oldName = "Internet Explorer"
-      If newVer > oldVer Then
+      Dim UpdateName As String = Nothing
+      If String.IsNullOrEmpty(oldData.Failure) Then
+        If oldData.Name.Contains("Internet Explorer") Then
+          UpdateName = "Internet Explorer"
+        Else
+          UpdateName = oldData.Name
+        End If
+      End If
+      If String.IsNullOrEmpty(UpdateName) Then
+        If String.IsNullOrEmpty(newData.Failure) Then
+          If newData.Name.Contains("Internet Explorer") Then
+            UpdateName = "Internet Explorer"
+          Else
+            UpdateName = newData.Name
+          End If
+        End If
+      End If
+      If String.IsNullOrEmpty(UpdateName) Then
+        UpdateName = IO.Path.GetFileNameWithoutExtension(oldData.Path)
+      End If
+      If CompareMSVersions(newData.KBVersion, oldData.KBVersion) > 0 Then
         Using dlgUpdate As New TaskDialog
           dlgUpdate.Cancelable = False
           dlgUpdate.StartupLocation = TaskDialogStartupLocation.CenterOwner
           dlgUpdate.Caption = "Replace Older Version?"
-          dlgUpdate.InstructionText = "There is already an older version of " & oldName & " in the Update List."
+          dlgUpdate.InstructionText = "There is already an older version of " & UpdateName & " in the Update List."
           dlgUpdate.StandardButtons = TaskDialogStandardButtons.None
           dlgUpdate.Text = "Click the version you want to keep"
           dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
@@ -826,7 +1058,7 @@ Module modFunctions
           dlgUpdate.FooterCheckBoxText = "&Do this for all new versions"
           Dim em As String = ChrW(&H2003) & ChrW(&H2003)
           Dim sYes As String
-          Dim newFInfo As New IO.FileInfo(newPath)
+          Dim newFInfo As New IO.FileInfo(newData.Path)
           If String.IsNullOrEmpty(newData.Failure) Then
             Dim newDate As String = newData.BuildDate
             If String.IsNullOrEmpty(newDate) Then newDate = newFInfo.LastWriteTime.ToShortDateString
@@ -836,19 +1068,19 @@ Module modFunctions
               em & "Built: " & newDate
           Else
             sYes = "Replace the update with this new version:" & vbNewLine &
-              em & IO.Path.GetFileNameWithoutExtension(newPath) & vbNewLine &
+              em & IO.Path.GetFileNameWithoutExtension(newData.Path) & vbNewLine &
               em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
               em & "Built: " & newFInfo.LastWriteTime.ToShortDateString
           End If
           Dim cmdYes As New CommandLink(
-            "cmdNew",
-            "Use Newer Version " & newVer,
+            "cmdYes",
+            "Use Newer Version " & newData.KBVersion,
             sYes)
           cmdYes.Default = True
           AddHandler cmdYes.Click, AddressOf SelectionDialogCommandLink_Click
           dlgUpdate.Controls.Add(cmdYes)
           Dim sNo As String
-          Dim oldFInfo As New IO.FileInfo(oldPath)
+          Dim oldFInfo As New IO.FileInfo(oldData.Path)
           If String.IsNullOrEmpty(oldData.Failure) Then
             Dim oldDate As String = oldData.BuildDate
             If String.IsNullOrEmpty(oldDate) Then oldDate = oldFInfo.LastWriteTime.ToShortDateString
@@ -858,29 +1090,33 @@ Module modFunctions
               em & "Built: " & oldDate
           Else
             sNo = "This update will not be replaced:" & vbNewLine &
-              em & IO.Path.GetFileNameWithoutExtension(oldPath) & vbNewLine &
+              em & IO.Path.GetFileNameWithoutExtension(oldData.Path) & vbNewLine &
               em & "Size: " & ByteSize(oldFInfo.Length) & vbNewLine &
               em & "Built: " & oldFInfo.LastWriteTime.ToShortDateString
           End If
           Dim cmdNo As New CommandLink(
-            "cmdOld",
-            "Use Older Version " & oldVer,
+            "cmdNo",
+            "Use Older Version " & oldData.KBVersion,
             sNo)
           AddHandler cmdNo.Click, AddressOf SelectionDialogCommandLink_Click
           dlgUpdate.Controls.Add(cmdNo)
           dlgUpdate.OwnerWindowHandle = owner.Handle
           AddHandler dlgUpdate.Opened, AddressOf RefreshDlg
-          Dim ret As TaskDialogResult = dlgUpdate.Show()
+          Dim ret As TaskDialogResult
+          Try
+            ret = dlgUpdate.Show
+          Catch ex As Exception
+            Return UpdateSelectionBoxLegacy(owner, newData, oldData)
+          End Try
           Always = dlgUpdate.FooterCheckBoxChecked
-          If ret = TaskDialogResult.Yes Then Return True
-          Return False
+          Return ret
         End Using
       Else
         Using dlgUpdate As New TaskDialog
           dlgUpdate.Cancelable = False
           dlgUpdate.StartupLocation = TaskDialogStartupLocation.CenterOwner
           dlgUpdate.Caption = "Replace Newer Version?"
-          dlgUpdate.InstructionText = "There is already a newer version of " & newName & " in the Update List."
+          dlgUpdate.InstructionText = "There is already a newer version of " & UpdateName & " in the Update List."
           dlgUpdate.StandardButtons = TaskDialogStandardButtons.None
           dlgUpdate.Text = "Click the version you want to keep"
           dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
@@ -888,7 +1124,7 @@ Module modFunctions
           dlgUpdate.FooterCheckBoxText = "&Do this for all old versions"
           Dim em As String = ChrW(&H2003) & ChrW(&H2003)
           Dim sYes As String
-          Dim newFInfo As New IO.FileInfo(newPath)
+          Dim newFInfo As New IO.FileInfo(newData.Path)
           If String.IsNullOrEmpty(newData.Failure) Then
             Dim newDate As String = newData.BuildDate
             If String.IsNullOrEmpty(newDate) Then newDate = newFInfo.LastWriteTime.ToShortDateString
@@ -898,17 +1134,17 @@ Module modFunctions
               em & "Built: " & newDate
           Else
             sYes = "Replace the update with this old version:" & vbNewLine &
-              em & IO.Path.GetFileNameWithoutExtension(newPath) & vbNewLine &
+              em & IO.Path.GetFileNameWithoutExtension(newData.Path) & vbNewLine &
               em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
               em & "Built: " & newFInfo.LastWriteTime.ToShortDateString
           End If
           Dim cmdYes As New CommandLink(
-            "cmdNew",
-            "Use Older Version " & newVer,
+            "cmdYes",
+            "Use Older Version " & newData.KBVersion,
             sYes)
           AddHandler cmdYes.Click, AddressOf SelectionDialogCommandLink_Click
           Dim sNo As String
-          Dim oldFInfo As New IO.FileInfo(oldPath)
+          Dim oldFInfo As New IO.FileInfo(oldData.Path)
           If String.IsNullOrEmpty(oldData.Failure) Then
             Dim oldDate As String = oldData.BuildDate
             If String.IsNullOrEmpty(oldDate) Then oldDate = oldFInfo.LastWriteTime.ToShortDateString
@@ -918,13 +1154,13 @@ Module modFunctions
               em & "Built: " & oldDate
           Else
             sNo = "This update will not be replaced:" & vbNewLine &
-              em & IO.Path.GetFileNameWithoutExtension(oldPath) & vbNewLine &
+              em & IO.Path.GetFileNameWithoutExtension(oldData.Path) & vbNewLine &
               em & "Size: " & ByteSize(oldFInfo.Length) & vbNewLine &
               em & "Built: " & oldFInfo.LastWriteTime.ToShortDateString
           End If
           Dim cmdNo As New CommandLink(
-            "cmdOld",
-            "Use Newer Version " & oldVer,
+            "cmdNo",
+            "Use Newer Version " & oldData.KBVersion,
             sNo)
           cmdNo.Default = True
           AddHandler cmdNo.Click, AddressOf SelectionDialogCommandLink_Click
@@ -936,36 +1172,640 @@ Module modFunctions
           Try
             ret = dlgUpdate.Show
           Catch ex As Exception
-            Return SelectionBoxLegacy(owner, newPath, newVer, oldPath, oldVer, Always)
+            Return UpdateSelectionBoxLegacy(owner, newData, oldData)
           End Try
           Always = dlgUpdate.FooterCheckBoxChecked
-          If ret = TaskDialogResult.Yes Then Return True
-          Return False
+          Return ret
         End Using
       End If
     Else
-      Return SelectionBoxLegacy(owner, newPath, newVer, oldPath, oldVer, Always)
+      Return UpdateSelectionBoxLegacy(owner, newData, oldData)
     End If
   End Function
-  Private Function SelectionBoxLegacy(owner As Form, newPath As String, newVer As Integer, oldPath As String, oldVer As Integer, ByRef Always As Boolean) As Boolean
-    Dim oldData As New UpdateInfoEx(oldPath)
-    Dim UpdateName As String
+  Private Function UpdateSelectionBoxLegacy(owner As Form, newData As Update_File, oldData As Update_File) As TaskDialogResult
+    Dim UpdateName As String = Nothing
     If String.IsNullOrEmpty(oldData.Failure) Then
-      UpdateName = oldData.DisplayName
-    Else
-      Dim newData As New UpdateInfoEx(newPath)
-      If String.IsNullOrEmpty(newData.Failure) Then
-        UpdateName = newData.DisplayName
+      If oldData.Name.Contains("Internet Explorer") Then
+        UpdateName = "Internet Explorer"
       Else
-        UpdateName = IO.Path.GetFileNameWithoutExtension(oldPath)
+        UpdateName = oldData.Name
       End If
     End If
-    If newVer > oldVer Then
-      Return MessageBox.Show(owner, "There is already an older version of this update in the list." & vbNewLine & "Do you want to replace " & UpdateName & " with version " & newVer & "?", "Replace Older Version?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = DialogResult.Yes
+    If String.IsNullOrEmpty(UpdateName) Then
+      If String.IsNullOrEmpty(newData.Failure) Then
+        If newData.Name.Contains("Internet Explorer") Then
+          UpdateName = "Internet Explorer"
+        Else
+          UpdateName = newData.Name
+        End If
+      End If
+    End If
+    If String.IsNullOrEmpty(UpdateName) Then
+      UpdateName = IO.Path.GetFileNameWithoutExtension(oldData.Path)
+    End If
+    If CompareMSVersions(newData.KBVersion, oldData.KBVersion) > 0 Then
+      Dim ret As DialogResult = MessageBox.Show(owner, "There is already an older version of this update in the list." & vbNewLine & "Do you want to replace " & UpdateName & " with version " & newData.KBVersion & "?", "Replace Older Version?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1)
+      If ret = DialogResult.Yes Then Return TaskDialogResult.Yes
+      If ret = DialogResult.No Then Return TaskDialogResult.No
+      Return TaskDialogResult.Cancel
     Else
-      Return MessageBox.Show(owner, "There is already a newer version of this update in the list." & vbNewLine & "Do you want to replace " & UpdateName & " with version " & newVer & "?", "Replace Newer Version", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = DialogResult.Yes
+      Dim ret As DialogResult = MessageBox.Show(owner, "There is already a newer version of this update in the list." & vbNewLine & "Do you want to replace " & UpdateName & " with version " & newData.KBVersion & "?", "Replace Newer Version?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+      If ret = DialogResult.Yes Then Return TaskDialogResult.Yes
+      If ret = DialogResult.No Then Return TaskDialogResult.No
+      Return TaskDialogResult.Cancel
     End If
   End Function
+
+  Public Enum Comparison
+    Newer
+    Mixed
+    Older
+  End Enum
+  Public Function UpdateSelectionBox2(owner As Form, newData As Update_File, oldPData() As Update_Integrated, PList() As ImagePackage, ByRef Always As Boolean, newCompared As Comparison) As TaskDialogResult
+    If TaskDialog.IsPlatformSupported Then
+      Dim UpdateName As String = Nothing
+      If String.IsNullOrEmpty(newData.Failure) Then
+        If newData.Name.Contains("Internet Explorer") Then
+          UpdateName = "Internet Explorer"
+        Else
+          UpdateName = newData.Name
+        End If
+      End If
+      If String.IsNullOrEmpty(UpdateName) Then
+        UpdateName = IO.Path.GetFileNameWithoutExtension(newData.Path)
+      End If
+      Select Case newCompared
+        Case Comparison.Newer
+          Using dlgUpdate As New TaskDialog
+            dlgUpdate.Cancelable = True
+            dlgUpdate.StartupLocation = TaskDialogStartupLocation.CenterOwner
+            dlgUpdate.Caption = "Replace Older Versions?"
+            dlgUpdate.InstructionText = "There are already older versions of " & UpdateName & " integrated into Image Packages."
+            dlgUpdate.StandardButtons = TaskDialogStandardButtons.Cancel
+            dlgUpdate.Text = "Click the version you want to keep"
+            dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
+            dlgUpdate.FooterCheckBoxChecked = False
+            dlgUpdate.FooterCheckBoxText = "&Do this for all new versions"
+            Dim en As String = ChrW(&H2003)
+            Dim em As String = en & en
+            Dim sYes As String
+            Dim newFInfo As New IO.FileInfo(newData.Path)
+            If String.IsNullOrEmpty(newData.Failure) Then
+              Dim newDate As String = newData.BuildDate
+              If String.IsNullOrEmpty(newDate) Then newDate = newFInfo.LastWriteTime.ToShortDateString
+              sYes = "Replace the updates with this new version:" & vbNewLine &
+                em & newData.DisplayName & vbNewLine &
+                em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
+                em & "Built: " & newDate
+            Else
+              sYes = "Replace the updates with this new version:" & vbNewLine &
+                em & IO.Path.GetFileNameWithoutExtension(newData.Path) & vbNewLine &
+                em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
+                em & "Built: " & newFInfo.LastWriteTime.ToShortDateString
+            End If
+            Dim cmdYes As New CommandLink(
+              "cmdYes",
+              "Use Newer Version " & newData.KBVersion,
+              sYes)
+            cmdYes.Default = True
+            AddHandler cmdYes.Click, AddressOf SelectionDialogCommandLink_Click
+            dlgUpdate.Controls.Add(cmdYes)
+            Dim sNo As String
+            sNo = "These updates will not be replaced:"
+            For I As Integer = 0 To oldPData.Length - 1
+              If CompareMSVersions(newData.Ident.Version, oldPData(I).Ident.Version) > 0 Then
+                Dim oldV As String = oldPData(I).Ident.Version
+                If oldV.StartsWith("6.1.") Then oldV = oldV.Substring(4)
+                sNo &= vbNewLine &
+                       en & oldPData(I).Ident.Name & " (" & oldV & ")" & vbNewLine &
+                       em & "Installed in " & PList(I).Name
+              End If
+            Next
+            Dim cmdNo As New CommandLink(
+              "cmdNo",
+              "Use Older Integrated Versions",
+              sNo)
+            AddHandler cmdNo.Click, AddressOf SelectionDialogCommandLink_Click
+            dlgUpdate.Controls.Add(cmdNo)
+            dlgUpdate.OwnerWindowHandle = owner.Handle
+            AddHandler dlgUpdate.Opened, AddressOf RefreshDlg
+            Dim ret As TaskDialogResult
+            Try
+              ret = dlgUpdate.Show
+            Catch ex As Exception
+              Return UpdateSelectionBox2Legacy(owner, newData, oldPData, PList, Always)
+            End Try
+            Always = dlgUpdate.FooterCheckBoxChecked
+            Return ret
+          End Using
+        Case Comparison.Older
+          Using dlgUpdate As New TaskDialog
+            dlgUpdate.Cancelable = True
+            dlgUpdate.StartupLocation = TaskDialogStartupLocation.CenterOwner
+            dlgUpdate.Caption = "Replace Newer Versions?"
+            dlgUpdate.InstructionText = "There are already newer versions of " & UpdateName & " integrated into Image Packages."
+            dlgUpdate.StandardButtons = TaskDialogStandardButtons.Cancel
+            dlgUpdate.Text = "Click the version you want to keep"
+            dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
+            dlgUpdate.FooterCheckBoxChecked = False
+            dlgUpdate.FooterCheckBoxText = "&Do this for all old versions"
+            Dim en As String = ChrW(&H2003)
+            Dim em As String = en & en
+            Dim sYes As String
+            Dim newFInfo As New IO.FileInfo(newData.Path)
+            If String.IsNullOrEmpty(newData.Failure) Then
+              Dim newDate As String = newData.BuildDate
+              If String.IsNullOrEmpty(newDate) Then newDate = newFInfo.LastWriteTime.ToShortDateString
+              sYes = "Replace the updates with this old version:" & vbNewLine &
+                em & newData.DisplayName & vbNewLine &
+                em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
+                em & "Built: " & newDate
+            Else
+              sYes = "Replace the updates with this old version:" & vbNewLine &
+                em & IO.Path.GetFileNameWithoutExtension(newData.Path) & vbNewLine &
+                em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
+                em & "Built: " & newFInfo.LastWriteTime.ToShortDateString
+            End If
+            Dim cmdYes As New CommandLink(
+              "cmdYes",
+              "Use Older Version " & newData.KBVersion,
+              sYes)
+            AddHandler cmdYes.Click, AddressOf SelectionDialogCommandLink_Click
+            Dim sNo As String
+            sNo = "These updates will not be replaced:"
+            For I As Integer = 0 To oldPData.Length - 1
+              If CompareMSVersions(newData.Ident.Version, oldPData(I).Ident.Version) > 0 Then
+                Dim oldV As String = oldPData(I).Ident.Version
+                If oldV.StartsWith("6.1.") Then oldV = oldV.Substring(4)
+                sNo &= vbNewLine &
+                       en & oldPData(I).Ident.Name & " (" & oldV & ")" & vbNewLine &
+                       em & "Installed in " & PList(I).Name
+              End If
+            Next
+            Dim cmdNo As New CommandLink(
+              "cmdNo",
+              "Use Newer Integrated Versions",
+              sNo)
+            cmdNo.Default = True
+            AddHandler cmdNo.Click, AddressOf SelectionDialogCommandLink_Click
+            dlgUpdate.Controls.Add(cmdNo)
+            dlgUpdate.Controls.Add(cmdYes)
+            dlgUpdate.OwnerWindowHandle = owner.Handle
+            AddHandler dlgUpdate.Opened, AddressOf RefreshDlg
+            Dim ret As TaskDialogResult
+            Try
+              ret = dlgUpdate.Show
+            Catch ex As Exception
+              Return UpdateSelectionBox2Legacy(owner, newData, oldPData, PList, Always)
+            End Try
+            Always = dlgUpdate.FooterCheckBoxChecked
+            Return ret
+          End Using
+        Case Comparison.Mixed
+          Using dlgUpdate As New TaskDialog
+            dlgUpdate.Cancelable = True
+            dlgUpdate.StartupLocation = TaskDialogStartupLocation.CenterOwner
+            dlgUpdate.Caption = "Replace Other Versions?"
+            dlgUpdate.InstructionText = "There are already other versions of " & UpdateName & " integrated into Image Packages."
+            dlgUpdate.StandardButtons = TaskDialogStandardButtons.Cancel
+            dlgUpdate.Text = "Click the versions you want to keep"
+            dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
+            'dlgUpdate.FooterCheckBoxChecked = False
+            'dlgUpdate.FooterCheckBoxText = "&Do this for all old versions"
+            Dim en As String = ChrW(&H2003)
+            Dim em As String = en & en
+            Dim sAll As String
+            Dim newFInfo As New IO.FileInfo(newData.Path)
+            If String.IsNullOrEmpty(newData.Failure) Then
+              Dim newDate As String = newData.BuildDate
+              If String.IsNullOrEmpty(newDate) Then newDate = newFInfo.LastWriteTime.ToShortDateString
+              sAll = "Replace all updates with this version:" & vbNewLine &
+                em & newData.DisplayName & vbNewLine &
+                em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
+                em & "Built: " & newDate
+            Else
+              sAll = "Replace all updates with this version:" & vbNewLine &
+                em & IO.Path.GetFileNameWithoutExtension(newData.Path) & vbNewLine &
+                em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
+                em & "Built: " & newFInfo.LastWriteTime.ToShortDateString
+            End If
+            Dim cmdAll As New CommandLink(
+              "cmdAll",
+              "Use Version " & newData.KBVersion,
+              sAll)
+            AddHandler cmdAll.Click, AddressOf SelectionDialogCommandLink_Click
+            Dim sYes As String
+            sYes = "These updates will be upgraded:"
+            For I As Integer = 0 To oldPData.Length - 1
+              If CompareMSVersions(newData.Ident.Version, oldPData(I).Ident.Version) > 0 Then
+                Dim oldV As String = oldPData(I).Ident.Version
+                If oldV.StartsWith("6.1.") Then oldV = oldV.Substring(4)
+                sYes &= vbNewLine &
+                        en & oldPData(I).Ident.Name & " (" & oldV & ")" & vbNewLine &
+                        em & "Installed in " & PList(I).Name
+              End If
+            Next
+            Dim cmdYes As New CommandLink(
+              "cmdYes",
+              "Use Newer Version " & newData.KBVersion & " on Older Updates",
+              sYes)
+            AddHandler cmdYes.Click, AddressOf SelectionDialogCommandLink_Click
+            cmdYes.Default = True
+            Dim sNo As String
+            sNo = "These updates will be downgraded:"
+            For I As Integer = 0 To oldPData.Length - 1
+              If CompareMSVersions(newData.Ident.Version, oldPData(I).Ident.Version) < 0 Then
+                Dim oldV As String = oldPData(I).Ident.Version
+                If oldV.StartsWith("6.1.") Then oldV = oldV.Substring(4)
+                sNo &= vbNewLine &
+                       en & oldPData(I).Ident.Name & " (" & oldV & ")" & vbNewLine &
+                       em & "Installed in " & PList(I).Name
+              End If
+            Next
+            Dim cmdNo As New CommandLink(
+              "cmdNo",
+              "Use Older Version " & newData.KBVersion & " on Newer Updates",
+              sYes)
+            AddHandler cmdYes.Click, AddressOf SelectionDialogCommandLink_Click
+            Dim cmdNone As New CommandLink(
+              "cmdNone",
+              "Don't Replace Integrated Versions.")
+            'cmdNone.Default = True
+            AddHandler cmdNo.Click, AddressOf SelectionDialogCommandLink_Click
+            dlgUpdate.Controls.Add(cmdAll)
+            dlgUpdate.Controls.Add(cmdYes)
+            dlgUpdate.Controls.Add(cmdNo)
+            dlgUpdate.Controls.Add(cmdNone)
+            dlgUpdate.OwnerWindowHandle = owner.Handle
+            AddHandler dlgUpdate.Opened, AddressOf RefreshDlg
+            Try
+              Return dlgUpdate.Show
+            Catch ex As Exception
+              Return UpdateSelectionBox2Legacy(owner, newData, oldPData, PList, newCompared)
+            End Try
+          End Using
+        Case Else
+          Return TaskDialogResult.Cancel
+      End Select
+    Else
+      Return UpdateSelectionBox2Legacy(owner, newData, oldPData, PList, newCompared)
+    End If
+  End Function
+  Private Function UpdateSelectionBox2Legacy(owner As Form, newData As Update_File, oldPData() As Update_Integrated, PList() As ImagePackage, newCompared As Comparison) As TaskDialogResult
+    Dim UpdateName As String = Nothing
+    If String.IsNullOrEmpty(newData.Failure) Then
+      If newData.Name.Contains("Internet Explorer") Then
+        UpdateName = "Internet Explorer"
+      Else
+        UpdateName = newData.Name
+      End If
+    End If
+    If String.IsNullOrEmpty(UpdateName) Then
+      UpdateName = IO.Path.GetFileNameWithoutExtension(newData.Path)
+    End If
+    Select Case newCompared
+      Case Comparison.Newer
+        Dim ret As DialogResult = MessageBox.Show(owner, "There are already older versions of this update integrated in the Image Package." & vbNewLine & "Do you want to replace " & UpdateName & " with version " & newData.KBVersion & "?", "Replace Older Versions?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1)
+        If ret = DialogResult.Yes Then Return TaskDialogResult.Yes
+        If ret = DialogResult.No Then Return TaskDialogResult.No
+      Case Comparison.Older
+        Dim ret As DialogResult = MessageBox.Show(owner, "There are already newer versions of this update integrated in the Image Package." & vbNewLine & "Do you want to replace " & UpdateName & " with version " & newData.KBVersion & "?", "Replace Newer Versions?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+        If ret = DialogResult.Yes Then Return TaskDialogResult.Yes
+        If ret = DialogResult.No Then Return TaskDialogResult.No
+      Case Comparison.Mixed
+        Dim oldRet As DialogResult = MessageBox.Show(owner, "There are already older versions of this update integrated in the Image Package." & vbNewLine & "Do you want to replace " & UpdateName & " with version " & newData.KBVersion & "?", "Replace Older Versions?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1)
+        If oldRet = DialogResult.Cancel Then Return TaskDialogResult.Cancel
+        Dim newRet As DialogResult = MessageBox.Show(owner, "There are already newer versions of this update integrated in the Image Package." & vbNewLine & "Do you want to replace " & UpdateName & " with version " & newData.KBVersion & "?", "Replace Newer Versions?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+        If newRet = DialogResult.Cancel Then Return TaskDialogResult.Cancel
+        If oldRet = DialogResult.Yes And newRet = DialogResult.Yes Then
+          Return TaskDialogResult.Ok
+        ElseIf oldRet = DialogResult.Yes And newRet = DialogResult.No Then
+          Return TaskDialogResult.Yes
+        ElseIf oldRet = DialogResult.No And newRet = DialogResult.Yes Then
+          Return TaskDialogResult.No
+        ElseIf oldRet = DialogResult.No And newRet = DialogResult.No Then
+          Return TaskDialogResult.No
+        End If
+    End Select
+    Return TaskDialogResult.Cancel
+  End Function
+
+  Public Function DriverSelectionBox(owner As Form, newData As Driver, oldPData() As Driver, PList() As ImagePackage, ByRef Always As Boolean, newCompared As Comparison) As TaskDialogResult
+    If TaskDialog.IsPlatformSupported Then
+      Dim DriverName As String = Nothing
+      If Not String.IsNullOrEmpty(newData.PublishedName) Then DriverName = IO.Path.GetFileNameWithoutExtension(newData.PublishedName)
+      If String.IsNullOrEmpty(DriverName) Then
+        If Not String.IsNullOrEmpty(newData.OriginalFileName) Then DriverName = IO.Path.GetFileNameWithoutExtension(newData.OriginalFileName)
+      End If
+      If String.IsNullOrEmpty(DriverName) Then
+        If Not String.IsNullOrEmpty(newData.DriverStorePath) Then DriverName = IO.Path.GetFileNameWithoutExtension(newData.DriverStorePath)
+      End If
+      Select Case newCompared
+        Case Comparison.Newer
+          Using dlgUpdate As New TaskDialog
+            dlgUpdate.Cancelable = True
+            dlgUpdate.StartupLocation = TaskDialogStartupLocation.CenterOwner
+            dlgUpdate.Caption = "Replace Older Versions?"
+            dlgUpdate.InstructionText = "There are already older versions of " & DriverName & " integrated into Image Packages."
+            dlgUpdate.StandardButtons = TaskDialogStandardButtons.Cancel
+            dlgUpdate.Text = "Click the version you want to keep"
+            dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
+            dlgUpdate.FooterCheckBoxChecked = False
+            dlgUpdate.FooterCheckBoxText = "&Do this for all new versions"
+            Dim en As String = ChrW(&H2003)
+            Dim em As String = en & en
+            Dim sYes As String
+            If String.IsNullOrEmpty(newData.DriverStorePath) Then
+              Dim newDate As String = newData.Date
+              sYes = "Replace the updates with this new version:" & vbNewLine &
+                em & DriverName & vbNewLine &
+                em & "Provider: " & newData.ProviderName & vbNewLine &
+                em & "Built: " & newDate
+            ElseIf Not IO.File.Exists(newData.DriverStorePath) Then
+              If IO.Directory.Exists(newData.DriverStorePath) Then
+                Dim newDInfo As New IO.DirectoryInfo(IO.Path.GetDirectoryName(newData.DriverStorePath))
+                Dim newDate As String = newData.Date
+                If String.IsNullOrEmpty(newDate) Then newDate = newDInfo.LastWriteTime.ToShortDateString
+                sYes = "Replace the updates with this new version:" & vbNewLine &
+                  em & IO.Path.GetFileNameWithoutExtension(newData.DriverStorePath) & vbNewLine &
+                  em & "Provider: " & newData.ProviderName & vbNewLine &
+                  em & "Driver Folder Size: " & ByteSize(getTotalSize(newDInfo)) & vbNewLine &
+                  em & "Built: " & newDate
+              Else
+                sYes = "Replace the updates with this new version:" & vbNewLine &
+                  em & IO.Path.GetFileNameWithoutExtension(newData.DriverStorePath) & vbNewLine &
+                  em & "Provider: " & newData.ProviderName & vbNewLine &
+                  em & "Built: " & newData.Date
+              End If
+            Else
+              Dim newFInfo As New IO.FileInfo(newData.DriverStorePath)
+              Dim newDInfo As New IO.DirectoryInfo(IO.Path.GetDirectoryName(newData.DriverStorePath))
+              Dim newDate As String = newData.Date
+              If String.IsNullOrEmpty(newDate) Then newDate = newFInfo.LastWriteTime.ToShortDateString
+              sYes = "Replace the updates with this new version:" & vbNewLine &
+                em & IO.Path.GetFileNameWithoutExtension(newData.DriverStorePath) & vbNewLine &
+                em & "Provider: " & newData.ProviderName & vbNewLine &
+                em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
+                em & "Driver Folder Size: " & ByteSize(getTotalSize(newDInfo)) & vbNewLine &
+                em & "Built: " & newDate
+            End If
+            Dim cmdYes As New CommandLink(
+              "cmdYes",
+              "Use Newer Version " & newData.Version,
+              sYes)
+            cmdYes.Default = True
+            AddHandler cmdYes.Click, AddressOf SelectionDialogCommandLink_Click
+            dlgUpdate.Controls.Add(cmdYes)
+            Dim sNo As String
+            sNo = "These updates will not be replaced:"
+            For I As Integer = 0 To oldPData.Length - 1
+              If CompareMSVersions(newData.Version, oldPData(I).Version) > 0 Then
+                Dim oldName As String = Nothing
+                If Not String.IsNullOrEmpty(oldPData(I).PublishedName) Then oldName = IO.Path.GetFileNameWithoutExtension(oldPData(I).PublishedName)
+                If String.IsNullOrEmpty(oldName) Then
+                  If Not String.IsNullOrEmpty(oldPData(I).OriginalFileName) Then oldName = IO.Path.GetFileNameWithoutExtension(oldPData(I).OriginalFileName)
+                End If
+                sNo &= vbNewLine &
+                       en & oldPData(I).PublishedName & " (" & oldPData(I).Version & ")" & vbNewLine &
+                       em & "Installed in " & PList(I).Name
+              End If
+            Next
+            Dim cmdNo As New CommandLink(
+              "cmdNo",
+              "Use Older Integrated Versions",
+              sNo)
+            AddHandler cmdNo.Click, AddressOf SelectionDialogCommandLink_Click
+            dlgUpdate.Controls.Add(cmdNo)
+            dlgUpdate.OwnerWindowHandle = owner.Handle
+            AddHandler dlgUpdate.Opened, AddressOf RefreshDlg
+            Dim ret As TaskDialogResult
+            Try
+              ret = dlgUpdate.Show
+            Catch ex As Exception
+              Return DriverSelectionBoxLegacy(owner, newData, oldPData, PList, Always)
+            End Try
+            Always = dlgUpdate.FooterCheckBoxChecked
+            Return ret
+          End Using
+        Case Comparison.Older
+          Using dlgUpdate As New TaskDialog
+            dlgUpdate.Cancelable = True
+            dlgUpdate.StartupLocation = TaskDialogStartupLocation.CenterOwner
+            dlgUpdate.Caption = "Replace Newer Versions?"
+            dlgUpdate.InstructionText = "There are already newer versions of " & DriverName & " integrated into Image Packages."
+            dlgUpdate.StandardButtons = TaskDialogStandardButtons.Cancel
+            dlgUpdate.Text = "Click the version you want to keep"
+            dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
+            dlgUpdate.FooterCheckBoxChecked = False
+            dlgUpdate.FooterCheckBoxText = "&Do this for all old versions"
+            Dim en As String = ChrW(&H2003)
+            Dim em As String = en & en
+            Dim sYes As String
+            If String.IsNullOrEmpty(newData.DriverStorePath) Then
+              Dim newDate As String = newData.Date
+              sYes = "Replace the updates with this old version:" & vbNewLine &
+                em & DriverName & vbNewLine &
+                em & "Provider: " & newData.ProviderName & vbNewLine &
+                em & "Built: " & newDate
+            ElseIf Not IO.File.Exists(newData.DriverStorePath) Then
+              If IO.Directory.Exists(newData.DriverStorePath) Then
+                Dim newDInfo As New IO.DirectoryInfo(IO.Path.GetDirectoryName(newData.DriverStorePath))
+                Dim newDate As String = newData.Date
+                If String.IsNullOrEmpty(newDate) Then newDate = newDInfo.LastWriteTime.ToShortDateString
+                sYes = "Replace the updates with this old version:" & vbNewLine &
+                  em & IO.Path.GetFileNameWithoutExtension(newData.DriverStorePath) & vbNewLine &
+                  em & "Provider: " & newData.ProviderName & vbNewLine &
+                  em & "Driver Folder Size: " & ByteSize(getTotalSize(newDInfo)) & vbNewLine &
+                  em & "Built: " & newDate
+              Else
+                sYes = "Replace the updates with this old version:" & vbNewLine &
+                  em & IO.Path.GetFileNameWithoutExtension(newData.DriverStorePath) & vbNewLine &
+                  em & "Provider: " & newData.ProviderName & vbNewLine &
+                  em & "Built: " & newData.Date
+              End If
+            Else
+              Dim newFInfo As New IO.FileInfo(newData.DriverStorePath)
+              Dim newDInfo As New IO.DirectoryInfo(IO.Path.GetDirectoryName(newData.DriverStorePath))
+              Dim newDate As String = newData.Date
+              If String.IsNullOrEmpty(newDate) Then newDate = newFInfo.LastWriteTime.ToShortDateString
+              sYes = "Replace the updates with this new version:" & vbNewLine &
+                em & IO.Path.GetFileNameWithoutExtension(newData.DriverStorePath) & vbNewLine &
+                em & "Provider: " & newData.ProviderName & vbNewLine &
+                em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
+                em & "Driver Folder Size: " & ByteSize(getTotalSize(newDInfo)) & vbNewLine &
+                em & "Built: " & newDate
+            End If
+            Dim cmdYes As New CommandLink(
+              "cmdYes",
+              "Use Older Version " & newData.Version,
+              sYes)
+            AddHandler cmdYes.Click, AddressOf SelectionDialogCommandLink_Click
+            Dim sNo As String
+            sNo = "These updates will not be replaced:"
+            For I As Integer = 0 To oldPData.Length - 1
+              If CompareMSVersions(newData.Version, oldPData(I).Version) > 0 Then
+                sNo &= vbNewLine &
+                       en & oldPData(I).PublishedName & " (" & oldPData(I).Version & ")" & vbNewLine &
+                       em & "Installed in " & PList(I).Name
+              End If
+            Next
+            Dim cmdNo As New CommandLink(
+              "cmdNo",
+              "Use Newer Integrated Versions",
+              sNo)
+            cmdNo.Default = True
+            AddHandler cmdNo.Click, AddressOf SelectionDialogCommandLink_Click
+            dlgUpdate.Controls.Add(cmdNo)
+            dlgUpdate.Controls.Add(cmdYes)
+            dlgUpdate.OwnerWindowHandle = owner.Handle
+            AddHandler dlgUpdate.Opened, AddressOf RefreshDlg
+            Dim ret As TaskDialogResult
+            Try
+              ret = dlgUpdate.Show
+            Catch ex As Exception
+              Return DriverSelectionBoxLegacy(owner, newData, oldPData, PList, Always)
+            End Try
+            Always = dlgUpdate.FooterCheckBoxChecked
+            Return ret
+          End Using
+        Case Comparison.Mixed
+          Using dlgUpdate As New TaskDialog
+            dlgUpdate.Cancelable = True
+            dlgUpdate.StartupLocation = TaskDialogStartupLocation.CenterOwner
+            dlgUpdate.Caption = "Replace Other Versions?"
+            dlgUpdate.InstructionText = "There are already other versions of " & DriverName & " integrated into Image Packages."
+            dlgUpdate.StandardButtons = TaskDialogStandardButtons.Cancel
+            dlgUpdate.Text = "Click the versions you want to keep"
+            dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
+            'dlgUpdate.FooterCheckBoxChecked = False
+            'dlgUpdate.FooterCheckBoxText = "&Do this for all versions"
+            Dim en As String = ChrW(&H2003)
+            Dim em As String = en & en
+            Dim sAll As String
+            If String.IsNullOrEmpty(newData.DriverStorePath) Then
+              Dim newDate As String = newData.Date
+              sAll = "Replace all updates with this version:" & vbNewLine &
+                em & DriverName & vbNewLine &
+                em & "Provider: " & newData.ProviderName & vbNewLine &
+                em & "Built: " & newDate
+            ElseIf Not IO.File.Exists(newData.DriverStorePath) Then
+              If IO.Directory.Exists(newData.DriverStorePath) Then
+                Dim newDInfo As New IO.DirectoryInfo(IO.Path.GetDirectoryName(newData.DriverStorePath))
+                Dim newDate As String = newData.Date
+                If String.IsNullOrEmpty(newDate) Then newDate = newDInfo.LastWriteTime.ToShortDateString
+                sAll = "Replace all updates with this version:" & vbNewLine &
+                  em & IO.Path.GetFileNameWithoutExtension(newData.DriverStorePath) & vbNewLine &
+                  em & "Provider: " & newData.ProviderName & vbNewLine &
+                  em & "Driver Folder Size: " & ByteSize(getTotalSize(newDInfo)) & vbNewLine &
+                  em & "Built: " & newDate
+              Else
+                sAll = "Replace all updates with this version:" & vbNewLine &
+                  em & IO.Path.GetFileNameWithoutExtension(newData.DriverStorePath) & vbNewLine &
+                  em & "Provider: " & newData.ProviderName & vbNewLine &
+                  em & "Built: " & newData.Date
+              End If
+            Else
+              Dim newFInfo As New IO.FileInfo(newData.DriverStorePath)
+              Dim newDInfo As New IO.DirectoryInfo(IO.Path.GetDirectoryName(newData.DriverStorePath))
+              Dim newDate As String = newData.Date
+              If String.IsNullOrEmpty(newDate) Then newDate = newFInfo.LastWriteTime.ToShortDateString
+              sAll = "Replace all updates with this version:" & vbNewLine &
+                em & IO.Path.GetFileNameWithoutExtension(newData.DriverStorePath) & vbNewLine &
+                em & "Provider: " & newData.ProviderName & vbNewLine &
+                em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
+                em & "Driver Folder Size: " & ByteSize(getTotalSize(newDInfo)) & vbNewLine &
+                em & "Built: " & newDate
+            End If
+            Dim cmdAll As New CommandLink(
+              "cmdAll",
+              "Use Version " & newData.Version,
+              sAll)
+            AddHandler cmdAll.Click, AddressOf SelectionDialogCommandLink_Click
+            Dim sYes As String
+            sYes = "These updates will be upgraded:"
+            For I As Integer = 0 To oldPData.Length - 1
+              If CompareMSVersions(newData.Version, oldPData(I).Version) > 0 Then
+                sYes &= vbNewLine &
+                        en & oldPData(I).PublishedName & " (" & oldPData(I).Version & ")" & vbNewLine &
+                        em & "Installed in " & PList(I).Name
+              End If
+            Next
+            Dim cmdYes As New CommandLink(
+              "cmdYes",
+              "Use Newer Version " & newData.Version & " on Older Updates",
+              sYes)
+            AddHandler cmdYes.Click, AddressOf SelectionDialogCommandLink_Click
+            cmdYes.Default = True
+            Dim sNo As String
+            sNo = "These updates will be downgraded:"
+            For I As Integer = 0 To oldPData.Length - 1
+              If CompareMSVersions(newData.Version, oldPData(I).Version) < 0 Then
+                sNo &= vbNewLine &
+                       en & oldPData(I).PublishedName & " (" & oldPData(I).Version & ")" & vbNewLine &
+                       em & "Installed in " & PList(I).Name
+              End If
+            Next
+            Dim cmdNo As New CommandLink(
+              "cmdNo",
+              "Use Older Version " & newData.Version & " on Newer Updates",
+              sYes)
+            AddHandler cmdYes.Click, AddressOf SelectionDialogCommandLink_Click
+            Dim cmdNone As New CommandLink(
+              "cmdNone",
+              "Don't Replace Integrated Versions.")
+            'cmdNone.Default = True
+            AddHandler cmdNo.Click, AddressOf SelectionDialogCommandLink_Click
+            dlgUpdate.Controls.Add(cmdAll)
+            dlgUpdate.Controls.Add(cmdYes)
+            dlgUpdate.Controls.Add(cmdNo)
+            dlgUpdate.Controls.Add(cmdNone)
+            dlgUpdate.OwnerWindowHandle = owner.Handle
+            AddHandler dlgUpdate.Opened, AddressOf RefreshDlg
+            Try
+              Return dlgUpdate.Show
+            Catch ex As Exception
+              Return DriverSelectionBoxLegacy(owner, newData, oldPData, PList, newCompared)
+            End Try
+          End Using
+        Case Else
+          Return TaskDialogResult.Cancel
+      End Select
+    Else
+      Return DriverSelectionBoxLegacy(owner, newData, oldPData, PList, newCompared)
+    End If
+  End Function
+  Private Function DriverSelectionBoxLegacy(owner As Form, newData As Driver, oldPData() As Driver, PList() As ImagePackage, newCompared As Comparison) As TaskDialogResult
+    Dim DriverName As String = Nothing
+    If String.IsNullOrEmpty(DriverName) Then
+      DriverName = IO.Path.GetFileNameWithoutExtension(newData.OriginalFileName)
+    End If
+    Select Case newCompared
+      Case Comparison.Newer
+        Dim ret As DialogResult = MessageBox.Show(owner, "There are already older versions of this driver integrated in the Image Package." & vbNewLine & "Do you want to replace " & DriverName & " with version " & newData.Version & "?", "Replace Older Versions?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1)
+        If ret = DialogResult.Yes Then Return TaskDialogResult.Yes
+        If ret = DialogResult.No Then Return TaskDialogResult.No
+      Case Comparison.Older
+        Dim ret As DialogResult = MessageBox.Show(owner, "There are already newer versions of this driver integrated in the Image Package." & vbNewLine & "Do you want to replace " & DriverName & " with version " & newData.Version & "?", "Replace Newer Versions?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+        If ret = DialogResult.Yes Then Return TaskDialogResult.Yes
+        If ret = DialogResult.No Then Return TaskDialogResult.No
+      Case Comparison.Mixed
+        Dim oldRet As DialogResult = MessageBox.Show(owner, "There are already older versions of this update integrated in the Image Package." & vbNewLine & "Do you want to replace " & DriverName & " with version " & newData.Version & "?", "Replace Older Versions?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1)
+        If oldRet = DialogResult.Cancel Then Return TaskDialogResult.Cancel
+        Dim newRet As DialogResult = MessageBox.Show(owner, "There are already newer versions of this update integrated in the Image Package." & vbNewLine & "Do you want to replace " & DriverName & " with version " & newData.Version & "?", "Replace Newer Versions?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+        If newRet = DialogResult.Cancel Then Return TaskDialogResult.Cancel
+        If oldRet = DialogResult.Yes And newRet = DialogResult.Yes Then
+          Return TaskDialogResult.Ok
+        ElseIf oldRet = DialogResult.Yes And newRet = DialogResult.No Then
+          Return TaskDialogResult.Yes
+        ElseIf oldRet = DialogResult.No And newRet = DialogResult.Yes Then
+          Return TaskDialogResult.No
+        ElseIf oldRet = DialogResult.No And newRet = DialogResult.No Then
+          Return TaskDialogResult.No
+        End If
+    End Select
+    Return TaskDialogResult.Cancel
+  End Function
+
   Private Sub SelectionDialogButton_Click(sender As TaskDialogButton, e As EventArgs)
     Select Case sender.Name
       Case "cmdYes" : CType(sender.HostingDialog, TaskDialog).Close(TaskDialogResult.Yes)
@@ -979,8 +1819,10 @@ Module modFunctions
   End Sub
   Private Sub SelectionDialogCommandLink_Click(sender As TaskDialogCommandLink, e As EventArgs)
     Select Case sender.Name
-      Case "cmdNew" : CType(sender.HostingDialog, TaskDialog).Close(TaskDialogResult.Yes)
-      Case "cmdOld" : CType(sender.HostingDialog, TaskDialog).Close(TaskDialogResult.No)
+      Case "cmdYes" : CType(sender.HostingDialog, TaskDialog).Close(TaskDialogResult.Yes)
+      Case "cmdNo" : CType(sender.HostingDialog, TaskDialog).Close(TaskDialogResult.No)
+      Case "cmdAll" : CType(sender.HostingDialog, TaskDialog).Close(TaskDialogResult.Ok)
+      Case "cmdNone" : CType(sender.HostingDialog, TaskDialog).Close(TaskDialogResult.Close)
     End Select
   End Sub
 
@@ -1243,6 +2085,8 @@ Module modFunctions
           dlgMessage.InstructionText = Title
           dlgMessage.Text = Text
           dlgMessage.Icon = Icon
+          dlgMessage.HyperlinksEnabled = True
+          AddHandler dlgMessage.HyperlinkClick, AddressOf dlg_HyperlinkClick
           Select Case Buttons
             Case MessageBoxButtons.OK
               Dim cmdOK As New TaskDialogButton("cmdOK", "&OK")
@@ -1390,6 +2234,12 @@ Module modFunctions
     Dim dlg As TaskDialog = sender
     dlg.Icon = dlg.Icon
     dlg.InstructionText = dlg.InstructionText
+  End Sub
+  Private Sub dlg_HyperlinkClick(sender As Object, e As TaskDialogHyperlinkClickedEventArgs)
+    Try
+      Process.Start(e.LinkText)
+    Catch ex As Exception
+    End Try
   End Sub
   Private Function MsgDlgLegacy(owner As Form, Text As String, Optional Title As String = Nothing, Optional Caption As String = Nothing, Optional Buttons As MessageBoxButtons = MessageBoxButtons.OK, Optional Icon As TaskDialogIcon = TaskDialogIcon.None, Optional DefaultButton As MessageBoxDefaultButton = MessageBoxDefaultButton.Button1, Optional Details As String = Nothing) As DialogResult
     Dim Content As String
