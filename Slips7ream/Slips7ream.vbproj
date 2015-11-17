@@ -40,7 +40,7 @@
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
     <DocumentationFile>Slips7ream.xml</DocumentationFile>
-    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <CodeAnalysisLogFile>bin\Debug\Slips7ream.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
@@ -52,13 +52,15 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Release\</OutputPath>
     <DocumentationFile>Slips7ream.xml</DocumentationFile>
     <Optimize>true</Optimize>
-    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</NoWarn>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <CodeAnalysisLogFile>bin\Release\Slips7ream.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
@@ -69,6 +71,8 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
@@ -101,22 +105,29 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationEvents.vb" />
-    <Compile Include="Classes\clsLineBreak.Designer.vb">
-      <DependentUpon>clsLineBreak.vb</DependentUpon>
+    <Compile Include="Classes\clsExplorer.vb" />
+    <Compile Include="Controls\ctlLineBreak.Designer.vb">
+      <DependentUpon>ctlLineBreak.vb</DependentUpon>
     </Compile>
-    <Compile Include="Classes\clsLineBreak.vb">
+    <Compile Include="Controls\ctlLineBreak.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Classes\clsLinkLabel.vb">
+    <Compile Include="Controls\ctlLinkLabel.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ctlListViewEx.vb">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Classes\clsMNG.vb" />
     <Compile Include="Classes\clsSettings.vb" />
-    <Compile Include="Classes\clsSplitContainerEx.vb">
+    <Compile Include="Controls\ctlSplitContainerEx.vb">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Classes\clsTaskBarLib.vb" />
-    <Compile Include="Classes\clsToolTip.vb">
+    <Compile Include="Controls\ctlToolTip.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ctlTreeViewEx.vb">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Classes\clsUpdate.vb" />
@@ -160,10 +171,16 @@
     <Compile Include="Forms\frmOutput.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmPackageProps.Designer.vb">
+    <Compile Include="Forms\Property Dialogs\frmDriverProps.Designer.vb">
+      <DependentUpon>frmDriverProps.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Property Dialogs\frmDriverProps.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Property Dialogs\frmPackageProps.Designer.vb">
       <DependentUpon>frmPackageProps.vb</DependentUpon>
     </Compile>
-    <Compile Include="Forms\frmPackageProps.vb">
+    <Compile Include="Forms\Property Dialogs\frmPackageProps.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\Tetris\frmTetris.Designer.vb">
@@ -178,10 +195,10 @@
     <Compile Include="Forms\Tetris\frmTetrisHelp.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmUpdateProps.Designer.vb">
+    <Compile Include="Forms\Property Dialogs\frmUpdateProps.Designer.vb">
       <DependentUpon>frmUpdateProps.vb</DependentUpon>
     </Compile>
-    <Compile Include="Forms\frmUpdateProps.vb">
+    <Compile Include="Forms\Property Dialogs\frmUpdateProps.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Modules\modFunctions.vb" />
@@ -200,10 +217,17 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Structures\stcDriver.vb" />
+    <Compile Include="Structures\stcFeature.vb" />
+    <Compile Include="Structures\stcImagePackage.vb" />
+    <Compile Include="Structures\stcUpdate_Identity.vb" />
+    <Compile Include="Structures\stcUpdate_Integrated.vb" />
+    <Compile Include="Structures\stcUpdate_File.vb" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Classes\clsLineBreak.resx">
-      <DependentUpon>clsLineBreak.vb</DependentUpon>
+    <EmbeddedResource Include="Controls\ctlLineBreak.resx">
+      <DependentUpon>ctlLineBreak.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ctlExpander.resx">
       <DependentUpon>ctlExpander.vb</DependentUpon>
@@ -223,7 +247,10 @@
     <EmbeddedResource Include="Forms\frmOutput.resx">
       <DependentUpon>frmOutput.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmPackageProps.resx">
+    <EmbeddedResource Include="Forms\Property Dialogs\frmDriverProps.resx">
+      <DependentUpon>frmDriverProps.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Property Dialogs\frmPackageProps.resx">
       <DependentUpon>frmPackageProps.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -233,15 +260,15 @@
     <EmbeddedResource Include="Forms\Tetris\frmTetrisHelp.resx">
       <DependentUpon>frmTetrisHelp.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmUpdateProps.resx">
+    <EmbeddedResource Include="Forms\Property Dialogs\frmUpdateProps.resx">
       <DependentUpon>frmUpdateProps.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -261,6 +288,172 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\companies\bitland.ico" />
+    <None Include="Resources\companies\synaptics.ico" />
+    <None Include="Resources\companies\sceptre.ico" />
+    <None Include="Resources\companies\realtek.ico" />
+    <None Include="Resources\companies\ralink.ico" />
+    <None Include="Resources\companies\qualcomm_atheros.ico" />
+    <None Include="Resources\companies\panasonic.ico" />
+    <None Include="Resources\companies\logitech.ico" />
+    <None Include="Resources\companies\hannspree.ico" />
+    <None Include="Resources\companies\gigabyte.ico" />
+    <None Include="Resources\companies\elan.ico" />
+    <None Include="Resources\companies\dell.ico" />
+    <None Include="Resources\companies\acer.ico" />
+    <None Include="Resources\companies\oem.ico" />
+    <None Include="Resources\companies\lexmark_international.ico" />
+    <None Include="Resources\companies\xerox.ico" />
+    <None Include="Resources\companies\vixs_systems.ico" />
+    <None Include="Resources\companies\via_technologies.ico" />
+    <None Include="Resources\companies\toshiba.ico" />
+    <None Include="Resources\companies\terratec_electronic.ico" />
+    <None Include="Resources\companies\sony.ico" />
+    <None Include="Resources\companies\silicon_integrated_systems_corp.ico" />
+    <None Include="Resources\companies\sharp.ico" />
+    <None Include="Resources\companies\savin.ico" />
+    <None Include="Resources\companies\samsung.ico" />
+    <None Include="Resources\companies\ricoh.ico" />
+    <None Include="Resources\companies\qlogic.ico" />
+    <None Include="Resources\companies\promise_technology.ico" />
+    <None Include="Resources\companies\pinnacle_systems.ico" />
+    <None Include="Resources\companies\oki.ico" />
+    <None Include="Resources\companies\nxp_semiconductors.ico" />
+    <None Include="Resources\companies\nvidia.ico" />
+    <None Include="Resources\companies\microsoft.ico" />
+    <None Include="Resources\companies\lumanate.ico" />
+    <None Include="Resources\companies\lsi.ico" />
+    <None Include="Resources\companies\lexmark.ico" />
+    <None Include="Resources\companies\kyocera.ico" />
+    <None Include="Resources\companies\kworld.ico" />
+    <None Include="Resources\companies\konica_minolta.ico" />
+    <None Include="Resources\companies\knc_one.ico" />
+    <None Include="Resources\companies\intel.ico" />
+    <None Include="Resources\companies\icp_vortex.ico" />
+    <None Include="Resources\companies\ibm_corporation.ico" />
+    <None Include="Resources\companies\hewlett-packard.ico" />
+    <None Include="Resources\companies\hauppauge.ico" />
+    <None Include="Resources\companies\fuji_xerox.ico" />
+    <None Include="Resources\companies\epson.ico" />
+    <None Include="Resources\companies\emulex.ico" />
+    <None Include="Resources\companies\creatix.ico" />
+    <None Include="Resources\companies\conexant.ico" />
+    <None Include="Resources\companies\compro_technology.ico" />
+    <None Include="Resources\companies\canon.ico" />
+    <None Include="Resources\companies\brother.ico" />
+    <None Include="Resources\companies\avermedia_technologies.ico" />
+    <None Include="Resources\companies\asustek_computer.ico" />
+    <None Include="Resources\companies\afatech.ico" />
+    <None Include="Resources\companies\advanced_micro_devices.ico" />
+    <None Include="Resources\companies\ads_technologies.ico" />
+    <None Include="Resources\companies\adaptec.ico" />
+    <None Include="Resources\features\search_tools.ico" />
+    <None Include="Resources\features\search.ico" />
+    <None Include="Resources\inf.ico" />
+    <None Include="Resources\features\xps.ico" />
+    <None Include="Resources\features\world_wide_web_services.ico" />
+    <None Include="Resources\features\windows_tiff_ifilter.ico" />
+    <None Include="Resources\features\windows_search.ico" />
+    <None Include="Resources\features\windows_process_activation_service.ico" />
+    <None Include="Resources\features\windows_media_player.ico" />
+    <None Include="Resources\features\windows_media_center.ico" />
+    <None Include="Resources\features\windows_gadget_platform.ico" />
+    <None Include="Resources\features\windows_fax_and_scan.ico" />
+    <None Include="Resources\features\windows_dvd_maker.ico" />
+    <None Include="Resources\features\windows_communication_foundation_non-http_activation.ico" />
+    <None Include="Resources\features\windows_communication_foundation_http_activation.ico" />
+    <None Include="Resources\features\windows_authentication.ico" />
+    <None Include="Resources\features\webdav_publishing.ico" />
+    <None Include="Resources\features\web_management_tools.ico" />
+    <None Include="Resources\features\url_authorization.ico" />
+    <None Include="Resources\features\unknown.ico" />
+    <None Include="Resources\features\tracing.ico" />
+    <None Include="Resources\features\tftp_client.ico" />
+    <None Include="Resources\features\telnet.ico" />
+    <None Include="Resources\features\tablet_pc_components.ico" />
+    <None Include="Resources\features\subsystem_for_unix-based_applications.ico" />
+    <None Include="Resources\features\static_content.ico" />
+    <None Include="Resources\features\spider_solitaire.ico" />
+    <None Include="Resources\features\solitaire.ico" />
+    <None Include="Resources\features\simple_tcpip_services.ico" />
+    <None Include="Resources\features\simple_network_management_protocol_%28snmp%29.ico" />
+    <None Include="Resources\features\services_for_nfs.ico" />
+    <None Include="Resources\features\server-side_includes.ico" />
+    <None Include="Resources\features\security.ico" />
+    <None Include="Resources\features\scan_management.ico" />
+    <None Include="Resources\features\rip_listener.ico" />
+    <None Include="Resources\features\request_monitor.ico" />
+    <None Include="Resources\features\request_filtering.ico" />
+    <None Include="Resources\features\remote_differential_compression.ico" />
+    <None Include="Resources\features\ras_connection_manager_administration_kit_%28cmak%29.ico" />
+    <None Include="Resources\features\purble_place.ico" />
+    <None Include="Resources\features\process_model.ico" />
+    <None Include="Resources\features\print_and_document_services.ico" />
+    <None Include="Resources\features\performance_features.ico" />
+    <None Include="Resources\features\odbc_logging.ico" />
+    <None Include="Resources\features\multicasting_support.ico" />
+    <None Include="Resources\features\msmq_triggers.ico" />
+    <None Include="Resources\features\msmq_http_support.ico" />
+    <None Include="Resources\features\msmq_dcom_proxy.ico" />
+    <None Include="Resources\features\msmq_active_directory_domain_services_integration.ico" />
+    <None Include="Resources\features\more_games.ico" />
+    <None Include="Resources\features\minesweeper.ico" />
+    <None Include="Resources\features\microsoft_message_queue_%28msmq%29_server.ico" />
+    <None Include="Resources\features\microsoft_.net_framework.ico" />
+    <None Include="Resources\features\media_features.ico" />
+    <None Include="Resources\features\mahjong_titans.ico" />
+    <None Include="Resources\features\lpr_port_monitor.ico" />
+    <None Include="Resources\features\lpd_print_service.ico" />
+    <None Include="Resources\features\logging_tools.ico" />
+    <None Include="Resources\features\isapi_filters.ico" />
+    <None Include="Resources\features\isapi_extensions.ico" />
+    <None Include="Resources\features\ip_security.ico" />
+    <None Include="Resources\features\internet_spades.ico" />
+    <None Include="Resources\features\internet_printing_client.ico" />
+    <None Include="Resources\features\internet_information_services.ico" />
+    <None Include="Resources\features\internet_games.ico" />
+    <None Include="Resources\features\internet_explorer_8.ico" />
+    <None Include="Resources\features\internet_explorer.ico" />
+    <None Include="Resources\features\internet_checkers.ico" />
+    <None Include="Resources\features\internet_backgammon.ico" />
+    <None Include="Resources\features\indexing_service.ico" />
+    <None Include="Resources\features\iis_client_certificate_mapping_authentication.ico" />
+    <None Include="Resources\features\iis_6.ico" />
+    <None Include="Resources\features\iis.ico" />
+    <None Include="Resources\features\http_redirection.ico" />
+    <None Include="Resources\features\http_logging.ico" />
+    <None Include="Resources\features\http_errors.ico" />
+    <None Include="Resources\features\help.ico" />
+    <None Include="Resources\features\hearts.ico" />
+    <None Include="Resources\features\health_and_diagnostics.ico" />
+    <None Include="Resources\features\games.ico" />
+    <None Include="Resources\features\ftp_service.ico" />
+    <None Include="Resources\features\ftp_server.ico" />
+    <None Include="Resources\features\ftp_extensibility.ico" />
+    <None Include="Resources\features\freecell.ico" />
+    <None Include="Resources\features\directory_browsing.ico" />
+    <None Include="Resources\features\digest_authentication.ico" />
+    <None Include="Resources\features\default_document.ico" />
+    <None Include="Resources\features\custom_logging.ico" />
+    <None Include="Resources\features\content_compression.ico" />
+    <None Include="Resources\features\configuration_apis.ico" />
+    <None Include="Resources\features\common_http_features.ico" />
+    <None Include="Resources\features\client_for_nfs.ico" />
+    <None Include="Resources\features\client_certificate_mapping_authentication.ico" />
+    <None Include="Resources\features\chess.ico" />
+    <None Include="Resources\features\cgi.ico" />
+    <None Include="Resources\features\basic_authentication.ico" />
+    <None Include="Resources\features\asp.net.ico" />
+    <None Include="Resources\features\asp.ico" />
+    <None Include="Resources\features\application_development_features.ico" />
+    <None Include="Resources\features\administrative_tools.ico" />
+    <None Include="Resources\features\.net_extensibility.ico" />
+    <None Include="Resources\features\.net_environment.ico" />
+    <None Include="Resources\u_u.png" />
+    <None Include="Resources\u_p.png" />
+    <None Include="Resources\u_n.png" />
+    <None Include="Resources\u_i.png" />
+    <None Include="Resources\u_a.png" />
     <None Include="Resources\win.png" />
     <None Include="Resources\play.png" />
     <None Include="Resources\tetris\sounds\row.wav" />
