@@ -42,6 +42,7 @@
     End If
     chkAlert.Checked = mySettings.PlayAlertNoise
     txtAlertPath.Text = mySettings.AlertNoisePath
+    chkDefault.Checked = String.IsNullOrEmpty(mySettings.AlertNoisePath)
   End Sub
   Private Sub cmdTemp_Click(sender As System.Object, e As System.EventArgs) Handles cmdTemp.Click
     Using dirDlg As New SaveFileDialog With
