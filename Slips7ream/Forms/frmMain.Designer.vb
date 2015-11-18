@@ -42,7 +42,11 @@ Partial Class frmMain
     Me.cmdSP = New System.Windows.Forms.Button()
     Me.lblSP64 = New System.Windows.Forms.Label()
     Me.brPackages = New Slips7ream.LineBreak()
-    Me.cmdLoadUpdates = New System.Windows.Forms.Button()
+    Me.pnlLoadPackageData = New System.Windows.Forms.TableLayoutPanel()
+    Me.chkLoadDrivers = New System.Windows.Forms.CheckBox()
+    Me.chkLoadUpdates = New System.Windows.Forms.CheckBox()
+    Me.cmdLoadPackages = New System.Windows.Forms.Button()
+    Me.chkLoadFeatures = New System.Windows.Forms.CheckBox()
     Me.pnlUpdates = New System.Windows.Forms.TableLayoutPanel()
     Me.pnlMSU = New System.Windows.Forms.TableLayoutPanel()
     Me.cmdAddMSU = New System.Windows.Forms.Button()
@@ -233,6 +237,7 @@ Partial Class frmMain
     Me.pnlServicePacks.SuspendLayout()
     Me.pnlSP64.SuspendLayout()
     Me.pnlSP.SuspendLayout()
+    Me.pnlLoadPackageData.SuspendLayout()
     Me.pnlUpdates.SuspendLayout()
     Me.pnlMSU.SuspendLayout()
     Me.pnlWIM.SuspendLayout()
@@ -324,7 +329,7 @@ Partial Class frmMain
     Me.pnlPackages.Controls.Add(Me.lvImages, 1, 0)
     Me.pnlPackages.Controls.Add(Me.pnlServicePacks, 0, 3)
     Me.pnlPackages.Controls.Add(Me.brPackages, 0, 2)
-    Me.pnlPackages.Controls.Add(Me.cmdLoadUpdates, 0, 1)
+    Me.pnlPackages.Controls.Add(Me.pnlLoadPackageData, 0, 1)
     Me.pnlPackages.Dock = System.Windows.Forms.DockStyle.Fill
     Me.pnlPackages.Location = New System.Drawing.Point(0, 0)
     Me.pnlPackages.Margin = New System.Windows.Forms.Padding(0)
@@ -533,24 +538,83 @@ Partial Class frmMain
     Me.brPackages.TabIndex = 3
     Me.brPackages.TabStop = False
     '
-    'cmdLoadUpdates
+    'pnlLoadPackageData
     '
-    Me.cmdLoadUpdates.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.cmdLoadUpdates.AutoSize = True
-    Me.cmdLoadUpdates.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.cmdLoadUpdates.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmdLoadUpdates.Location = New System.Drawing.Point(2, 52)
-    Me.cmdLoadUpdates.Margin = New System.Windows.Forms.Padding(2, 3, 2, 3)
-    Me.cmdLoadUpdates.MinimumSize = New System.Drawing.Size(75, 24)
-    Me.cmdLoadUpdates.Name = "cmdLoadUpdates"
-    Me.cmdLoadUpdates.Padding = New System.Windows.Forms.Padding(0, 1, 0, 1)
-    Me.cmdLoadUpdates.Size = New System.Drawing.Size(96, 37)
-    Me.cmdLoadUpdates.TabIndex = 4
-    Me.cmdLoadUpdates.Text = "Load Integrated" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Update Data"
-    Me.ttInfo.SetTooltip(Me.cmdLoadUpdates, "Parse information about Integrated Updates in Image Packages to prevent duplicate" & _
-        " updates." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(This is optional - if you know which updates are already integrate" & _
-        "d, you can save time by skipping this.)")
-    Me.cmdLoadUpdates.UseVisualStyleBackColor = True
+    Me.pnlLoadPackageData.Anchor = System.Windows.Forms.AnchorStyles.Right
+    Me.pnlLoadPackageData.AutoSize = True
+    Me.pnlLoadPackageData.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.pnlLoadPackageData.ColumnCount = 4
+    Me.pnlLoadPackageData.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlLoadPackageData.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlLoadPackageData.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlLoadPackageData.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlLoadPackageData.Controls.Add(Me.chkLoadDrivers, 0, 0)
+    Me.pnlLoadPackageData.Controls.Add(Me.chkLoadUpdates, 0, 0)
+    Me.pnlLoadPackageData.Controls.Add(Me.cmdLoadPackages, 3, 0)
+    Me.pnlLoadPackageData.Controls.Add(Me.chkLoadFeatures, 0, 0)
+    Me.pnlLoadPackageData.Location = New System.Drawing.Point(1, 66)
+    Me.pnlLoadPackageData.Margin = New System.Windows.Forms.Padding(0)
+    Me.pnlLoadPackageData.Name = "pnlLoadPackageData"
+    Me.pnlLoadPackageData.RowCount = 1
+    Me.pnlLoadPackageData.RowStyles.Add(New System.Windows.Forms.RowStyle())
+    Me.pnlLoadPackageData.Size = New System.Drawing.Size(99, 26)
+    Me.pnlLoadPackageData.TabIndex = 4
+    '
+    'chkLoadDrivers
+    '
+    Me.chkLoadDrivers.Appearance = System.Windows.Forms.Appearance.Button
+    Me.chkLoadDrivers.Image = Global.Slips7ream.My.Resources.Resources.load_driver
+    Me.chkLoadDrivers.Location = New System.Drawing.Point(48, 1)
+    Me.chkLoadDrivers.Margin = New System.Windows.Forms.Padding(0, 1, 1, 1)
+    Me.chkLoadDrivers.Name = "chkLoadDrivers"
+    Me.chkLoadDrivers.Size = New System.Drawing.Size(24, 24)
+    Me.chkLoadDrivers.TabIndex = 8
+    Me.ttInfo.SetTooltip(Me.chkLoadDrivers, "Parse information about Integrated Drivers in Image Packages to prevent duplicate" & _
+        " drivers.")
+    Me.chkLoadDrivers.UseVisualStyleBackColor = True
+    '
+    'chkLoadUpdates
+    '
+    Me.chkLoadUpdates.Appearance = System.Windows.Forms.Appearance.Button
+    Me.chkLoadUpdates.Checked = True
+    Me.chkLoadUpdates.CheckState = System.Windows.Forms.CheckState.Checked
+    Me.chkLoadUpdates.Image = Global.Slips7ream.My.Resources.Resources.load_update
+    Me.chkLoadUpdates.Location = New System.Drawing.Point(24, 1)
+    Me.chkLoadUpdates.Margin = New System.Windows.Forms.Padding(0, 1, 0, 1)
+    Me.chkLoadUpdates.Name = "chkLoadUpdates"
+    Me.chkLoadUpdates.Size = New System.Drawing.Size(24, 24)
+    Me.chkLoadUpdates.TabIndex = 7
+    Me.ttInfo.SetTooltip(Me.chkLoadUpdates, "Parse information about Integrated Updates in all Image Packages to prevent dupli" & _
+        "cate updates.")
+    Me.chkLoadUpdates.UseVisualStyleBackColor = True
+    '
+    'cmdLoadPackages
+    '
+    Me.cmdLoadPackages.Anchor = System.Windows.Forms.AnchorStyles.Right
+    Me.cmdLoadPackages.AutoSize = True
+    Me.cmdLoadPackages.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.cmdLoadPackages.Image = Global.Slips7ream.My.Resources.Resources.u_n
+    Me.cmdLoadPackages.Location = New System.Drawing.Point(74, 1)
+    Me.cmdLoadPackages.Margin = New System.Windows.Forms.Padding(1)
+    Me.cmdLoadPackages.MinimumSize = New System.Drawing.Size(24, 24)
+    Me.cmdLoadPackages.Name = "cmdLoadPackages"
+    Me.cmdLoadPackages.Padding = New System.Windows.Forms.Padding(0, 1, 0, 1)
+    Me.cmdLoadPackages.Size = New System.Drawing.Size(24, 24)
+    Me.cmdLoadPackages.TabIndex = 5
+    Me.ttInfo.SetTooltip(Me.cmdLoadPackages, resources.GetString("cmdLoadPackages.ToolTip"))
+    Me.cmdLoadPackages.UseVisualStyleBackColor = True
+    '
+    'chkLoadFeatures
+    '
+    Me.chkLoadFeatures.Appearance = System.Windows.Forms.Appearance.Button
+    Me.chkLoadFeatures.Image = Global.Slips7ream.My.Resources.Resources.load_feature
+    Me.chkLoadFeatures.Location = New System.Drawing.Point(0, 1)
+    Me.chkLoadFeatures.Margin = New System.Windows.Forms.Padding(0, 1, 0, 1)
+    Me.chkLoadFeatures.Name = "chkLoadFeatures"
+    Me.chkLoadFeatures.Size = New System.Drawing.Size(24, 24)
+    Me.chkLoadFeatures.TabIndex = 6
+    Me.ttInfo.SetTooltip(Me.chkLoadFeatures, "Parse information about Windows Features in all Image Packages.")
+    Me.chkLoadFeatures.UseVisualStyleBackColor = True
     '
     'pnlUpdates
     '
@@ -1993,6 +2057,8 @@ Partial Class frmMain
     Me.pnlSP64.PerformLayout()
     Me.pnlSP.ResumeLayout(False)
     Me.pnlSP.PerformLayout()
+    Me.pnlLoadPackageData.ResumeLayout(False)
+    Me.pnlLoadPackageData.PerformLayout()
     Me.pnlUpdates.ResumeLayout(False)
     Me.pnlUpdates.PerformLayout()
     Me.pnlMSU.ResumeLayout(False)
@@ -2214,7 +2280,11 @@ Partial Class frmMain
   Friend WithEvents mnuLabel7x86 As System.Windows.Forms.MenuItem
   Friend WithEvents mnuISOLabel As System.Windows.Forms.ContextMenu
   Friend WithEvents mnuLabelGRMCSTFRER As System.Windows.Forms.MenuItem
-  Friend WithEvents cmdLoadUpdates As System.Windows.Forms.Button
   Friend WithEvents ttLV As ToolTip
+  Friend WithEvents pnlLoadPackageData As System.Windows.Forms.TableLayoutPanel
+  Friend WithEvents cmdLoadPackages As System.Windows.Forms.Button
+  Friend WithEvents chkLoadFeatures As System.Windows.Forms.CheckBox
+  Friend WithEvents chkLoadDrivers As System.Windows.Forms.CheckBox
+  Friend WithEvents chkLoadUpdates As System.Windows.Forms.CheckBox
 
 End Class

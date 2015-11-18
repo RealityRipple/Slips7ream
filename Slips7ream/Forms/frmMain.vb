@@ -455,7 +455,10 @@
     txtMerge.Enabled = IIf(Enabled, chkMerge.Checked, Enabled)
     cmdMerge.Enabled = IIf(Enabled, chkMerge.Checked, Enabled)
     lblImages.Enabled = Enabled
-    cmdLoadUpdates.Enabled = IIf(Enabled, Not String.IsNullOrEmpty(txtWIM.Text), False)
+    chkLoadFeatures.Enabled = IIf(Enabled, Not String.IsNullOrEmpty(txtWIM.Text), False)
+    chkLoadUpdates.Enabled = IIf(Enabled, Not String.IsNullOrEmpty(txtWIM.Text), False)
+    chkLoadDrivers.Enabled = IIf(Enabled, Not String.IsNullOrEmpty(txtWIM.Text), False)
+    cmdLoadPackages.Enabled = IIf(Enabled, Not String.IsNullOrEmpty(txtWIM.Text), False)
     lvImages.ReadOnly = Not Enabled
     If Enabled Then
       cmdClose.Text = "&Close"
@@ -593,6 +596,7 @@
     StopRun = False
     RunActivity = 2
     cmdBegin.Text = "&Begin"
+    cmdLoadPackages.Image = My.Resources.u_n
     cmdOpenFolder.Visible = False
     If tLister Is Nothing Then
       tLister = New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf ParseImageList))
@@ -844,12 +848,14 @@
             Return
           End If
         End If
+        Dim Cancelled As Boolean = False
         Dim msuList As Update_File() = GetUpdateInfo(Item)
         If msuList IsNot Nothing AndAlso msuList.Count > 0 Then
           For Each msuData As Update_File In msuList
             Dim addRet As AddResult = AddToUpdates(msuData)
             If addRet.Cancel Then
               FailCollection.Add(IIf(String.IsNullOrEmpty(msuData.Name), IO.Path.GetFileNameWithoutExtension(Item), msuData.Name) & ": Cancelled dialog. No more updates added.")
+              Cancelled = True
               Exit For
             End If
             If Not addRet.Success Then FailCollection.Add(IIf(String.IsNullOrEmpty(msuData.Name), IO.Path.GetFileNameWithoutExtension(Item), msuData.Name) & ": " & addRet.FailReason)
@@ -861,6 +867,7 @@
         Else
           FailCollection.Add(IO.Path.GetFileNameWithoutExtension(Item) & ": Update not found.")
         End If
+        If Cancelled Then Exit For
       Next
       lvMSU.ResumeLayout(True)
       If FileCount > 2 Then
@@ -1055,12 +1062,14 @@
               Return
             End If
           End If
+          Dim Cancelled As Boolean = False
           Dim msuList As Update_File() = GetUpdateInfo(sUpdate)
           If msuList IsNot Nothing AndAlso msuList.Count > 0 Then
             For Each msuData As Update_File In msuList
               Dim addRet As AddResult = AddToUpdates(msuData)
               If addRet.Cancel Then
                 FailCollection.Add(IIf(String.IsNullOrEmpty(msuData.Name), IO.Path.GetFileNameWithoutExtension(sUpdate), msuData.Name) & ": Cancelled dialog. No more updates added.")
+                Cancelled = True
                 Exit For
               End If
               If Not addRet.Success Then FailCollection.Add(IIf(String.IsNullOrEmpty(msuData.Name), IO.Path.GetFileNameWithoutExtension(sUpdate), msuData.Name) & ": " & addRet.FailReason)
@@ -1072,6 +1081,7 @@
           Else
             FailCollection.Add(IO.Path.GetFileNameWithoutExtension(sUpdate) & ": Update not found.")
           End If
+          If Cancelled Then Exit For
         Next
         lvMSU.ResumeLayout(True)
         If FileCount > 2 Then
@@ -2797,9 +2807,48 @@
         End If
       End Sub)
   End Sub
+  Private Sub chkLoadPackageData_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles chkLoadFeatures.CheckedChanged, chkLoadUpdates.CheckedChanged, chkLoadDrivers.CheckedChanged
+    cmdLoadPackages.Enabled = chkLoadFeatures.Checked Or chkLoadUpdates.Checked Or chkLoadDrivers.Checked
+    Dim sList As New List(Of String)
+    If chkLoadFeatures.Checked Then sList.Add("Features")
+    If chkLoadUpdates.Checked Then sList.Add("Updates")
+    If chkLoadDrivers.Checked Then sList.Add("Drivers")
+    Dim sListText As String
+    If sList.Count = 0 Then
+      sListText = "Features, Updates, and Drivers"
+    ElseIf sList.Count = 1 Then
+      sListText = sList(0)
+    ElseIf sList.Count = 2 Then
+      sListText = sList(0) & " and " & sList(1)
+    Else
+      sListText = sList(0) & ", " & sList(1) & ", and " & sList(2)
+    End If
+    ttInfo.SetTooltip(cmdLoadPackages, "Begin Image Package Parsing procedure to gather information about " & sListText & "." & vbNewLine & vbNewLine &
+                                       "(This is optional - if you know which files are already integrated, you can save time by skipping this.)")
+  End Sub
+  Private Sub cmdLoadPackages_Click(sender As System.Object, e As System.EventArgs) Handles cmdLoadPackages.Click
+    If (Not chkLoadFeatures.Checked) And (Not chkLoadUpdates.Checked) And (Not chkLoadDrivers.Checked) Then
+      MsgDlg(Me, "You must select which data you wish to load from the Image Packages before beginning the procedure.", "No Data Selected", "Parse Image Packages", MessageBoxButtons.OK, TaskDialogIcon.ControlPanel)
+      Return
+    End If
+    cmdLoadPackages.Image = My.Resources.u_i
+    If chkLoadFeatures.Checked Then
+      LoadPackageFeatures("WIM")
+      LoadPackageFeatures("Merge")
+    End If
+    If chkLoadUpdates.Checked Then
+      LoadPackageUpdates("WIM")
+      LoadPackageUpdates("Merge")
+    End If
+    If chkLoadDrivers.Checked Then
+      LoadPackageDrivers("WIM")
+      LoadPackageDrivers("Merge")
+    End If
+    cmdLoadPackages.Image = My.Resources.u_a
+  End Sub
 #Region "Package Feature List"
   Private LoadFeatureComplete As Boolean
-  Public Sub LoadPackageFeatures(WIMID As String, SelectedIndex As Integer)
+  Public Sub LoadPackageFeatures(WIMID As String, Optional SelectedIndex As Integer = -1)
     ToggleInputs(False)
     CleanMounts()
     LoadFeatureComplete = False
@@ -2969,10 +3018,6 @@
 #End Region
 #Region "Package Updates List"
   Private LoadUpdateComplete As Boolean
-  Private Sub cmdLoadUpdates_Click(sender As System.Object, e As System.EventArgs) Handles cmdLoadUpdates.Click
-    LoadPackageUpdates("WIM")
-    LoadPackageUpdates("Merge")
-  End Sub
   Public Sub LoadPackageUpdates(WIMID As String, Optional SelectedIndex As Integer = -1)
     ToggleInputs(False)
     CleanMounts()
@@ -3965,13 +4010,23 @@
   End Sub
 
   Private Function EnableDISMFeature(MountPath As String, FeatureName As String) As Boolean
-    Dim Args As String = "/Image:" & ShortenPath(MountPath) & " /Enable-Feature /FeatureName:" & FeatureName
+    Dim Args As String = "/Image:" & ShortenPath(MountPath) & " /Enable-Feature /FeatureName:"
+    If FeatureName.Contains(" ") Then
+      Args &= """" & FeatureName & """"
+    Else
+      Args &= FeatureName
+    End If
     WriteToOutput("DISM " & Args)
     Dim sRet As String = RunWithReturn(DismPath, Args & " /English")
     Return sRet.Contains("The operation completed successfully.")
   End Function
   Private Function DisableDISMFeature(MountPath As String, FeatureName As String) As Boolean
-    Dim Args As String = "/Image:" & ShortenPath(MountPath) & " /Disable-Feature /FeatureName:" & FeatureName
+    Dim Args As String = "/Image:" & ShortenPath(MountPath) & " /Disable-Feature /FeatureName:"
+    If FeatureName.Contains(" ") Then
+      Args &= """" & FeatureName & """"
+    Else
+      Args &= FeatureName
+    End If
     WriteToOutput("DISM " & Args)
     Dim sRet As String = RunWithReturn(DismPath, Args & " /English")
     Return sRet.Contains("The operation completed successfully.")
@@ -6945,8 +7000,9 @@
     If FeatureData.Length < 1 Then Return True
     Dim pbMax As Integer = 0
     For Each FeatureList As List(Of Feature) In FeatureData
-      pbMax += FeatureList.Count + 1
+      If FeatureList IsNot Nothing Then pbMax += FeatureList.Count + 1
     Next
+    If pbMax = 0 Then Return True
     Dim pbVal As Integer = 0
     SetProgress(pbVal, pbMax)
     For I As Integer = 1 To PackageCount
@@ -7023,8 +7079,9 @@
     If UpdateData.Length < 1 Then Return True
     Dim pbMax As Integer = 0
     For Each UpdateList As List(Of Update_Integrated) In UpdateData
-      pbMax += UpdateList.Count + 1
+      If UpdateList IsNot Nothing Then pbMax += UpdateList.Count + 1
     Next
+    If pbMax = 0 Then Return True
     Dim pbVal As Integer = 0
     SetProgress(pbVal, pbMax)
     For I As Integer = 1 To PackageCount
@@ -7095,8 +7152,9 @@
     If DriverData.Length < 1 Then Return True
     Dim pbMax As Integer = 0
     For Each DriverList As List(Of Driver) In DriverData
-      pbMax += DriverList.Count + 1
+      If DriverList IsNot Nothing Then pbMax += DriverList.Count + 1
     Next
+    If pbMax = 0 Then Return True
     Dim pbVal As Integer = 0
     SetProgress(pbVal, pbMax)
     For I As Integer = 1 To PackageCount
@@ -7367,7 +7425,6 @@
     End Get
   End Property
 #End Region
-
   Public Function PreFilterMessage(ByRef m As System.Windows.Forms.Message) As Boolean Implements System.Windows.Forms.IMessageFilter.PreFilterMessage
     If m.Msg = &H20A Then
       Dim pos As New Point(m.LParam.ToInt32 And &HFFFF, m.LParam.ToInt32 >> 16)

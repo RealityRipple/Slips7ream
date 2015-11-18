@@ -120,6 +120,11 @@
   <metadata name="ttInfo.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>130, 17</value>
   </metadata>
+  <data name="cmdLoadPackages.ToolTip" xml:space="preserve">
+    <value>Begin Image Package Parsing procedure to gather information about Features, Updates, and Drivers.
+
+(This is optional - if you know which files are already integrated, you can save time by skipping this.)</value>
+  </data>
   <metadata name="imlUpdates.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>

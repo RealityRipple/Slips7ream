@@ -288,6 +288,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\load_update.png" />
+    <None Include="Resources\load_feature.png" />
+    <None Include="Resources\load_driver.png" />
     <None Include="Resources\companies\bitland.ico" />
     <None Include="Resources\companies\synaptics.ico" />
     <None Include="Resources\companies\sceptre.ico" />
