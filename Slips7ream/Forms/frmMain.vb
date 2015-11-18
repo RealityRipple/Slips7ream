@@ -2620,9 +2620,11 @@
 
         If e.UpdateList IsNot Nothing AndAlso e.UpdateList.Length > 0 Then
           For Each item In e.UpdateList
-            For Each existing In tag1.IntegratedUpdateList
-              If existing.Identity = item.Identity Then
-                existing.Remove = item.Remove
+            For I As Integer = 0 To tag1.IntegratedUpdateList.Count - 1
+              If tag1.IntegratedUpdateList(I).Identity = item.Identity Then
+                Dim newTag1Update As Update_Integrated = tag1.IntegratedUpdateList(I)
+                newTag1Update.Remove = item.Remove
+                tag1.IntegratedUpdateList(I) = newTag1Update
                 Exit For
               End If
             Next
@@ -2631,9 +2633,11 @@
 
         If e.FeatureList IsNot Nothing AndAlso e.FeatureList.Length > 0 Then
           For Each item In e.FeatureList
-            For Each existing In tag2
-              If existing.FeatureName = item.FeatureName Then
-                existing.Enable = item.Enable
+            For I As Integer = 0 To tag2.Count - 1
+              If tag2(I).FeatureName = item.FeatureName Then
+                Dim newTag2Feature As Feature = tag2(I)
+                newTag2Feature.Enable = item.Enable
+                tag2(I) = newTag2Feature
                 Exit For
               End If
             Next
@@ -2642,9 +2646,11 @@
 
         If e.DriverList IsNot Nothing AndAlso e.DriverList.Length > 0 Then
           For Each item In e.DriverList
-            For Each existing In tag3
-              If existing.PublishedName = item.PublishedName Then
-                existing.Remove = item.Remove
+            For I As Integer = 0 To tag3.Count - 1
+              If tag3(I).PublishedName = item.PublishedName Then
+                Dim newTag3Driver As Driver = tag3(I)
+                newTag3Driver.Remove = item.Remove
+                tag3(I) = newTag3Driver
                 Exit For
               End If
             Next
@@ -2652,7 +2658,6 @@
         End If
 
         lvItem.Tag = {tag0, tag1, tag2, tag3}
-
         Exit For
       End If
     Next

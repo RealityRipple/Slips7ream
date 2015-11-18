@@ -411,7 +411,7 @@
           End If
           tvItem.Name = "tvn" & FeatureDisplayName.Replace(" ", "_")
           tvItem.Tag = pFeature
-          tvItem.Checked = (pFeature.State = "Enabled") Or (pFeature.State = "Enable Pending")
+          tvItem.Checked = pFeature.Enable
           Dim sDescription As String = pFeature.Desc
           If sDescription.Length > 80 Then
             If sDescription.LastIndexOf(" ", 80) > 0 Then
@@ -716,7 +716,7 @@
           Case "Superseded" : lvItem.ImageKey = "PROBLEM"
           Case Else : lvItem.ImageKey = "NO"
         End Select
-
+        lvItem.Tag = pUpdate
         Dim sGroupName As String = "Unknown"
         If Not String.IsNullOrEmpty(pUpdate.ReleaseType) Then sGroupName = pUpdate.ReleaseType
         If sGroupName = "Security Update" Then
@@ -978,7 +978,7 @@
           Case "Superseded" : lvItem.ImageKey = "PROBLEM"
           Case Else : lvItem.ImageKey = "NO"
         End Select
-
+        lvItem.Tag = pUpdate
         Dim sGroupName As String = "Unknown"
         If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.ReleaseType) Then sGroupName = pUpdate.UpdateInfo.ReleaseType
         Dim sGroupKey As String = "lvgUnknown"
@@ -1186,6 +1186,29 @@
     End If
   End Sub
 
+  Private Sub lvDriverINF_ItemChecked(sender As Object, e As System.Windows.Forms.ItemCheckedEventArgs) Handles lvDriverINF.ItemChecked
+    If lvDriverINF.SelectedItems.Count = 0 Then Return
+    Dim sDriverClassName As String = lvDriverClass.SelectedItems(0).Name
+    Dim CompanyList As New SortedList(Of String, String)
+    For Each pDriver As Driver In DriverData
+      If Not GetDriverClassName(pDriver.ClassGUID) = sDriverClassName Then Continue For
+      Dim sProviderKey As String = "lviUnknown"
+      If Not String.IsNullOrEmpty(pDriver.ProviderName) Then sProviderKey = "lvi" & pDriver.ProviderName.Replace(" ", "_")
+      If Not CompanyList.ContainsKey(sProviderKey) Then CompanyList.Add(sProviderKey, pDriver.ProviderName)
+    Next
+    Dim sDriverCompanyName As String = lvDriverProvider.SelectedItems(0).Text
+    Dim sDriverINFName As String = lvDriverINF.SelectedItems(0).Text
+    For I As Integer = 0 To DriverData.Count - 1
+      If Not GetDriverClassName(DriverData(I).ClassGUID) = sDriverClassName Then Continue For
+      If Not GetUpdateCompany(DriverData(I).ProviderName, CompanyList.Values.ToArray) = sDriverCompanyName Then Continue For
+      If Not DriverData(I).PublishedName = sDriverINFName Then Continue For
+      Dim newData As Driver = DriverData(I)
+      newData.Remove = Not lvDriverINF.SelectedItems(0).Checked
+      DriverData(I) = newData
+      Exit For
+    Next
+  End Sub
+
   Private Sub lvDriverINF_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles lvDriverINF.MouseDoubleClick
     If lvDriverINF.SelectedItems.Count = 0 Then Return
     Dim sDriverClassName As String = lvDriverClass.SelectedItems(0).Name
@@ -1339,6 +1362,14 @@
           Next
         End If
       End If
+      For I As Integer = 0 To FeatureData.Count - 1
+        If FeatureData(I).FeatureName = CType(e.Node.Tag, Feature).FeatureName Then
+          Dim newData As Feature = FeatureData(I)
+          newData.Enable = e.Node.Checked
+          FeatureData(I) = newData
+          Exit For
+        End If
+      Next
     End If
   End Sub
 
@@ -1456,6 +1487,17 @@
     If selFeature IsNot Nothing Then
       selFeature.Collapse(False)
     End If
+  End Sub
+
+  Private Sub lvUpdates_ItemChecked(sender As Object, e As System.Windows.Forms.ItemCheckedEventArgs) Handles lvUpdates.ItemChecked
+    For I As Integer = 0 To UpdateData.Count - 1
+      If UpdateData(I).Identity = CType(e.Item.Tag, Update_Integrated).Identity Then
+        Dim newData As Update_Integrated = UpdateData(I)
+        newData.Remove = Not e.Item.Checked
+        UpdateData(I) = newData
+        Exit For
+      End If
+    Next
   End Sub
 
   Private Sub lvUpdates_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles lvUpdates.MouseUp
