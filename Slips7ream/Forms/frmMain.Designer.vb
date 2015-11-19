@@ -576,8 +576,6 @@ Partial Class frmMain
     'chkLoadUpdates
     '
     Me.chkLoadUpdates.Appearance = System.Windows.Forms.Appearance.Button
-    Me.chkLoadUpdates.Checked = True
-    Me.chkLoadUpdates.CheckState = System.Windows.Forms.CheckState.Checked
     Me.chkLoadUpdates.Image = Global.Slips7ream.My.Resources.Resources.load_update
     Me.chkLoadUpdates.Location = New System.Drawing.Point(24, 1)
     Me.chkLoadUpdates.Margin = New System.Windows.Forms.Padding(0, 1, 0, 1)

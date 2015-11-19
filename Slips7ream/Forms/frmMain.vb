@@ -51,11 +51,7 @@
   End Enum
 #Region "GUI"
   Public Sub New()
-
-    ' This call is required by the designer.
     InitializeComponent()
-
-    ' Add any initialization after the InitializeComponent() call.
     Application.AddMessageFilter(Me)
   End Sub
   Private Sub frmMain_Activated(sender As Object, e As System.EventArgs) Handles Me.Activated
@@ -161,6 +157,9 @@
     Else
       taskBar = Nothing
     End If
+    chkLoadFeatures.Checked = mySettings.LoadFeatures
+    chkLoadUpdates.Checked = mySettings.LoadUpdates
+    chkLoadDrivers.Checked = mySettings.LoadDrivers
     ToggleInputs(True)
     SetDisp(MNGList.Move)
     FreshDraw()
@@ -458,7 +457,7 @@
     chkLoadFeatures.Enabled = IIf(Enabled, Not String.IsNullOrEmpty(txtWIM.Text), False)
     chkLoadUpdates.Enabled = IIf(Enabled, Not String.IsNullOrEmpty(txtWIM.Text), False)
     chkLoadDrivers.Enabled = IIf(Enabled, Not String.IsNullOrEmpty(txtWIM.Text), False)
-    cmdLoadPackages.Enabled = IIf(Enabled, Not String.IsNullOrEmpty(txtWIM.Text), False)
+    cmdLoadPackages.Enabled = IIf(Enabled, Not String.IsNullOrEmpty(txtWIM.Text) And (chkLoadFeatures.Checked Or chkLoadUpdates.Checked Or chkLoadDrivers.Checked), False)
     lvImages.ReadOnly = Not Enabled
     If Enabled Then
       cmdClose.Text = "&Close"
@@ -2825,6 +2824,11 @@
     End If
     ttInfo.SetTooltip(cmdLoadPackages, "Begin Image Package Parsing procedure to gather information about " & sListText & "." & vbNewLine & vbNewLine &
                                        "(This is optional - if you know which files are already integrated, you can save time by skipping this.)")
+    If Me.Tag Is Nothing Then
+      If Not chkLoadFeatures.Checked = mySettings.LoadFeatures Then mySettings.LoadFeatures = chkLoadFeatures.Checked
+      If Not chkLoadUpdates.Checked = mySettings.LoadUpdates Then mySettings.LoadUpdates = chkLoadUpdates.Checked
+      If Not chkLoadDrivers.Checked = mySettings.LoadDrivers Then mySettings.LoadDrivers = chkLoadDrivers.Checked
+    End If
   End Sub
   Private Sub cmdLoadPackages_Click(sender As System.Object, e As System.EventArgs) Handles cmdLoadPackages.Click
     If (Not chkLoadFeatures.Checked) And (Not chkLoadUpdates.Checked) And (Not chkLoadDrivers.Checked) Then
@@ -5981,16 +5985,26 @@
         ToggleInputs(True)
         Return False
       End If
-      If Not String.IsNullOrEmpty(MSUData(I).Failure) Then Continue For
-      If String.IsNullOrEmpty(MSUData(I).Architecture) Then Continue For
-      If DISM_32.Count > 0 And MSUData(I).Architecture.Contains("x86") Then
-        MSU_32.Add(MSUData(I))
-      End If
-      If DISM_64.Count > 0 Then
-        If MSUData(I).Architecture.Contains("amd64") Then
+      If MSUData(I).Name = "DRIVER" Then
+        If MSUData(I).DriverData.Architectures Is Nothing OrElse MSUData(I).DriverData.Architectures.Count = 0 Then Continue For
+        If DISM_32.Count > 0 And MSUData(I).DriverData.Architectures.Contains("x86") Then
+          MSU_32.Add(MSUData(I))
+        End If
+        If DISM_64.Count > 0 And MSUData(I).DriverData.Architectures.Contains("amd64") Then
           MSU_64.Add(MSUData(I))
-        Else
-          If CheckWhitelist(MSUData(I).DisplayName) Then MSU_64.Add(MSUData(I))
+        End If
+      Else
+        If Not String.IsNullOrEmpty(MSUData(I).Failure) Then Continue For
+        If String.IsNullOrEmpty(MSUData(I).Architecture) Then Continue For
+        If DISM_32.Count > 0 And MSUData(I).Architecture.Contains("x86") Then
+          MSU_32.Add(MSUData(I))
+        End If
+        If DISM_64.Count > 0 Then
+          If MSUData(I).Architecture.Contains("amd64") Then
+            MSU_64.Add(MSUData(I))
+          Else
+            If CheckWhitelist(MSUData(I).DisplayName) Then MSU_64.Add(MSUData(I))
+          End If
         End If
       End If
     Next
@@ -6052,7 +6066,17 @@
           SetProgress(pbVal, pbMax)
           Dim shownName As String = IO.Path.GetFileNameWithoutExtension(tmpMSU.Path)
           If Not String.IsNullOrEmpty(tmpMSU.Name) Then
-            shownName = tmpMSU.Name
+            If tmpMSU.Name = "DRIVER" Then
+              If Not String.IsNullOrEmpty(tmpMSU.DriverData.OriginalFileName) Then
+                shownName = IO.Path.GetFileNameWithoutExtension(tmpMSU.DriverData.OriginalFileName)
+              ElseIf Not String.IsNullOrEmpty(tmpMSU.DriverData.PublishedName) Then
+                shownName = IO.Path.GetFileNameWithoutExtension(tmpMSU.DriverData.PublishedName)
+              ElseIf Not String.IsNullOrEmpty(tmpMSU.DriverData.DriverStorePath) Then
+                shownName = IO.Path.GetFileNameWithoutExtension(tmpMSU.DriverData.DriverStorePath)
+              End If
+            Else
+              shownName = tmpMSU.Name
+            End If
           ElseIf Not String.IsNullOrEmpty(tmpMSU.KBArticle) Then
             shownName = "KB" & tmpMSU.KBArticle
           End If
@@ -6428,7 +6452,17 @@
           SetProgress(pbVal, pbMax)
           Dim shownName As String = IO.Path.GetFileNameWithoutExtension(tmpMSU.Path)
           If Not String.IsNullOrEmpty(tmpMSU.Name) Then
-            shownName = tmpMSU.Name
+            If tmpMSU.Name = "DRIVER" Then
+              If Not String.IsNullOrEmpty(tmpMSU.DriverData.OriginalFileName) Then
+                shownName = IO.Path.GetFileNameWithoutExtension(tmpMSU.DriverData.OriginalFileName)
+              ElseIf Not String.IsNullOrEmpty(tmpMSU.DriverData.PublishedName) Then
+                shownName = IO.Path.GetFileNameWithoutExtension(tmpMSU.DriverData.PublishedName)
+              ElseIf Not String.IsNullOrEmpty(tmpMSU.DriverData.DriverStorePath) Then
+                shownName = IO.Path.GetFileNameWithoutExtension(tmpMSU.DriverData.DriverStorePath)
+              End If
+            Else
+              shownName = tmpMSU.Name
+            End If
           ElseIf Not String.IsNullOrEmpty(tmpMSU.KBArticle) Then
             shownName = "KB" & tmpMSU.KBArticle
           End If

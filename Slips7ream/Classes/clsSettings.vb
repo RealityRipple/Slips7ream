@@ -12,6 +12,9 @@
   Private c_LastUpdate As Date = New Date(1970, 1, 1)
   Private c_PlayAlertNoise As Boolean
   Private c_AlertNoisePath As String
+  Private c_LoadFeatures As Boolean
+  Private c_LoadUpdates As Boolean
+  Private c_LoadDrivers As Boolean
   Public Property TempDir As String
     Get
       Return c_TempDir
@@ -129,6 +132,33 @@
       Save()
     End Set
   End Property
+  Public Property LoadFeatures As Boolean
+    Get
+      Return c_LoadFeatures
+    End Get
+    Set(value As Boolean)
+      c_LoadFeatures = value
+      Save()
+    End Set
+  End Property
+  Public Property LoadUpdates As Boolean
+    Get
+      Return c_LoadUpdates
+    End Get
+    Set(value As Boolean)
+      c_LoadUpdates = value
+      Save()
+    End Set
+  End Property
+  Public Property LoadDrivers As Boolean
+    Get
+      Return c_LoadDrivers
+    End Get
+    Set(value As Boolean)
+      c_LoadDrivers = value
+      Save()
+    End Set
+  End Property
   Public Sub New()
     If My.Computer.Registry.CurrentUser.OpenSubKey("Software").GetSubKeyNames.Contains(Application.CompanyName) Then
       If My.Computer.Registry.CurrentUser.OpenSubKey("Software\" & Application.CompanyName).GetSubKeyNames.Contains(Application.ProductName) Then
@@ -223,6 +253,28 @@
       c_PlayAlertNoise = False
       c_AlertNoisePath = String.Empty
     End If
+    If Hive.GetSubKeyNames.Contains("Load Package Data") Then
+      Dim loadPackageData As Microsoft.Win32.RegistryKey = Hive.OpenSubKey("Load Package Data")
+      If loadPackageData.GetValueNames.Contains("Features") Then
+        c_LoadFeatures = (loadPackageData.GetValue("Features", "N") = "Y")
+      Else
+        c_LoadFeatures = False
+      End If
+      If loadPackageData.GetValueNames.Contains("Updates") Then
+        c_LoadUpdates = (loadPackageData.GetValue("Updates", "Y") = "Y")
+      Else
+        c_LoadUpdates = True
+      End If
+      If loadPackageData.GetValueNames.Contains("Drivers") Then
+        c_LoadDrivers = (loadPackageData.GetValue("Drivers", "N") = "Y")
+      Else
+        c_LoadDrivers = False
+      End If
+    Else
+      c_LoadFeatures = False
+      c_LoadUpdates = True
+      c_LoadDrivers = False
+    End If
   End Sub
   Private Sub ReadLegacy()
     c_TempDir = My.Settings.TempDir
@@ -238,6 +290,9 @@
     c_LastUpdate = My.Settings.LastUpdate
     c_PlayAlertNoise = False
     c_AlertNoisePath = String.Empty
+    c_LoadFeatures = False
+    c_LoadUpdates = True
+    c_LoadDrivers = False
     Save()
   End Sub
   Public Sub Save()
@@ -261,5 +316,9 @@
     If Not ActiveHive.GetSubKeyNames.Contains("Alert") Then ActiveHive.CreateSubKey("Alert")
     ActiveHive.OpenSubKey("Alert", True).SetValue(String.Empty, IIf(c_PlayAlertNoise, "Y", "N"))
     ActiveHive.OpenSubKey("Alert", True).SetValue("Path", c_AlertNoisePath)
+    If Not ActiveHive.GetSubKeyNames.Contains("Load Package Data") Then ActiveHive.CreateSubKey("Load Package Data")
+    ActiveHive.OpenSubKey("Load Package Data", True).SetValue("Features", IIf(c_LoadFeatures, "Y", "N"))
+    ActiveHive.OpenSubKey("Load Package Data", True).SetValue("Updates", IIf(c_LoadUpdates, "Y", "N"))
+    ActiveHive.OpenSubKey("Load Package Data", True).SetValue("Drivers", IIf(c_LoadDrivers, "Y", "N"))
   End Sub
 End Class
