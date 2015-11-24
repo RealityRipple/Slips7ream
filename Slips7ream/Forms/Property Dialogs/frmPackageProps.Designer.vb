@@ -85,8 +85,10 @@ Partial Class frmPackageProps
     Me.mnuFeatures = New System.Windows.Forms.ContextMenu()
     Me.mnuFeatureEnabled = New System.Windows.Forms.MenuItem()
     Me.mnuFeatureSpace = New System.Windows.Forms.MenuItem()
+    Me.mnuFeatureExpandAll = New System.Windows.Forms.MenuItem()
     Me.mnuFeatureExpand = New System.Windows.Forms.MenuItem()
     Me.mnuFeatureCollapse = New System.Windows.Forms.MenuItem()
+    Me.mnuFeatureCollapseAll = New System.Windows.Forms.MenuItem()
     Me.mnuUpdates = New System.Windows.Forms.ContextMenu()
     Me.mnuUpdateInclude = New System.Windows.Forms.MenuItem()
     Me.expFeatures = New Slips7ream.Expander()
@@ -667,14 +669,15 @@ Partial Class frmPackageProps
     Me.cmdLoadFeatures.Anchor = System.Windows.Forms.AnchorStyles.None
     Me.cmdLoadFeatures.AutoSize = True
     Me.cmdLoadFeatures.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.cmdLoadFeatures.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmdLoadFeatures.Location = New System.Drawing.Point(74, 135)
+    Me.cmdLoadFeatures.Image = Global.Slips7ream.My.Resources.Resources.load_feature
+    Me.cmdLoadFeatures.Location = New System.Drawing.Point(68, 135)
     Me.cmdLoadFeatures.MinimumSize = New System.Drawing.Size(80, 25)
     Me.cmdLoadFeatures.Name = "cmdLoadFeatures"
     Me.cmdLoadFeatures.Padding = New System.Windows.Forms.Padding(1)
-    Me.cmdLoadFeatures.Size = New System.Drawing.Size(157, 25)
+    Me.cmdLoadFeatures.Size = New System.Drawing.Size(169, 25)
     Me.cmdLoadFeatures.TabIndex = 2
     Me.cmdLoadFeatures.Text = "Load Windows Features List"
+    Me.cmdLoadFeatures.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
     Me.cmdLoadFeatures.UseVisualStyleBackColor = True
     '
     'cmdLoadUpdates
@@ -682,14 +685,15 @@ Partial Class frmPackageProps
     Me.cmdLoadUpdates.Anchor = System.Windows.Forms.AnchorStyles.None
     Me.cmdLoadUpdates.AutoSize = True
     Me.cmdLoadUpdates.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.cmdLoadUpdates.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmdLoadUpdates.Location = New System.Drawing.Point(49, 298)
+    Me.cmdLoadUpdates.Image = Global.Slips7ream.My.Resources.Resources.load_update
+    Me.cmdLoadUpdates.Location = New System.Drawing.Point(43, 298)
     Me.cmdLoadUpdates.MinimumSize = New System.Drawing.Size(80, 25)
     Me.cmdLoadUpdates.Name = "cmdLoadUpdates"
     Me.cmdLoadUpdates.Padding = New System.Windows.Forms.Padding(1)
-    Me.cmdLoadUpdates.Size = New System.Drawing.Size(207, 25)
+    Me.cmdLoadUpdates.Size = New System.Drawing.Size(219, 25)
     Me.cmdLoadUpdates.TabIndex = 5
     Me.cmdLoadUpdates.Text = "Load Integrated Windows Updates List"
+    Me.cmdLoadUpdates.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
     Me.cmdLoadUpdates.UseVisualStyleBackColor = True
     '
     'colFeatureDisplayName
@@ -764,14 +768,15 @@ Partial Class frmPackageProps
     Me.cmdLoadDrivers.Anchor = System.Windows.Forms.AnchorStyles.None
     Me.cmdLoadDrivers.AutoSize = True
     Me.cmdLoadDrivers.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.cmdLoadDrivers.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmdLoadDrivers.Location = New System.Drawing.Point(76, 462)
+    Me.cmdLoadDrivers.Image = Global.Slips7ream.My.Resources.Resources.load_driver
+    Me.cmdLoadDrivers.Location = New System.Drawing.Point(70, 462)
     Me.cmdLoadDrivers.MinimumSize = New System.Drawing.Size(80, 25)
     Me.cmdLoadDrivers.Name = "cmdLoadDrivers"
     Me.cmdLoadDrivers.Padding = New System.Windows.Forms.Padding(1)
-    Me.cmdLoadDrivers.Size = New System.Drawing.Size(153, 25)
+    Me.cmdLoadDrivers.Size = New System.Drawing.Size(165, 25)
     Me.cmdLoadDrivers.TabIndex = 8
     Me.cmdLoadDrivers.Text = "Load Integrated Drivers List"
+    Me.cmdLoadDrivers.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
     Me.cmdLoadDrivers.UseVisualStyleBackColor = True
     '
     'pnlDrivers
@@ -845,7 +850,7 @@ Partial Class frmPackageProps
     '
     'mnuFeatures
     '
-    Me.mnuFeatures.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuFeatureEnabled, Me.mnuFeatureSpace, Me.mnuFeatureExpand, Me.mnuFeatureCollapse})
+    Me.mnuFeatures.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuFeatureEnabled, Me.mnuFeatureSpace, Me.mnuFeatureExpandAll, Me.mnuFeatureExpand, Me.mnuFeatureCollapse, Me.mnuFeatureCollapseAll})
     '
     'mnuFeatureEnabled
     '
@@ -857,15 +862,25 @@ Partial Class frmPackageProps
     Me.mnuFeatureSpace.Index = 1
     Me.mnuFeatureSpace.Text = "-"
     '
+    'mnuFeatureExpandAll
+    '
+    Me.mnuFeatureExpandAll.Index = 2
+    Me.mnuFeatureExpandAll.Text = "Expand All Trees"
+    '
     'mnuFeatureExpand
     '
-    Me.mnuFeatureExpand.Index = 2
+    Me.mnuFeatureExpand.Index = 3
     Me.mnuFeatureExpand.Text = "Expand Tree"
     '
     'mnuFeatureCollapse
     '
-    Me.mnuFeatureCollapse.Index = 3
+    Me.mnuFeatureCollapse.Index = 4
     Me.mnuFeatureCollapse.Text = "Collapse Tree"
+    '
+    'mnuFeatureCollapseAll
+    '
+    Me.mnuFeatureCollapseAll.Index = 5
+    Me.mnuFeatureCollapseAll.Text = "Collapse All Trees"
     '
     'mnuUpdates
     '
@@ -891,18 +906,21 @@ Partial Class frmPackageProps
     '
     'tvFeatures
     '
+    Me.tvFeatures.BackColor = System.Drawing.SystemColors.Window
     Me.tvFeatures.CheckBoxes = True
     Me.tvFeatures.Dock = System.Windows.Forms.DockStyle.Fill
     Me.tvFeatures.FullRowSelect = True
+    Me.tvFeatures.HideSelection = False
     Me.tvFeatures.ImageIndex = 0
     Me.tvFeatures.ImageList = Me.imlFeatures
     Me.tvFeatures.Location = New System.Drawing.Point(3, 34)
     Me.tvFeatures.MinimumSize = New System.Drawing.Size(300, 4)
     Me.tvFeatures.Name = "tvFeatures"
+    Me.tvFeatures.ReadOnly = False
     Me.tvFeatures.SelectedImageIndex = 0
-    Me.tvFeatures.ShowNodeToolTips = True
     Me.tvFeatures.Size = New System.Drawing.Size(300, 95)
     Me.tvFeatures.TabIndex = 1
+    Me.tvFeatures.TooltipTitles = True
     '
     'expUpdates
     '
@@ -923,6 +941,7 @@ Partial Class frmPackageProps
     Me.lvUpdates.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colPackage, Me.colVer})
     Me.lvUpdates.Dock = System.Windows.Forms.DockStyle.Fill
     Me.lvUpdates.FullRowSelect = True
+    Me.lvUpdates.FullRowTooltip = True
     Me.lvUpdates.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
     Me.lvUpdates.HideSelection = False
     Me.lvUpdates.Location = New System.Drawing.Point(3, 197)
@@ -930,10 +949,10 @@ Partial Class frmPackageProps
     Me.lvUpdates.MultiSelect = False
     Me.lvUpdates.Name = "lvUpdates"
     Me.lvUpdates.ReadOnly = False
-    Me.lvUpdates.ShowItemToolTips = True
     Me.lvUpdates.Size = New System.Drawing.Size(300, 95)
     Me.lvUpdates.SmallImageList = Me.imlUpdates
     Me.lvUpdates.TabIndex = 4
+    Me.lvUpdates.TooltipTitles = True
     Me.lvUpdates.UseCompatibleStateImageBehavior = False
     Me.lvUpdates.View = System.Windows.Forms.View.Details
     '
@@ -965,16 +984,17 @@ Partial Class frmPackageProps
     Me.lvDriverClass.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.lvcGroup})
     Me.lvDriverClass.Dock = System.Windows.Forms.DockStyle.Fill
     Me.lvDriverClass.FullRowSelect = True
+    Me.lvDriverClass.FullRowTooltip = True
     Me.lvDriverClass.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
     Me.lvDriverClass.HideSelection = False
     Me.lvDriverClass.Location = New System.Drawing.Point(3, 16)
     Me.lvDriverClass.MultiSelect = False
     Me.lvDriverClass.Name = "lvDriverClass"
     Me.lvDriverClass.ReadOnly = False
-    Me.lvDriverClass.ShowItemToolTips = True
     Me.lvDriverClass.Size = New System.Drawing.Size(93, 76)
     Me.lvDriverClass.SmallImageList = Me.imlDriverClass
     Me.lvDriverClass.TabIndex = 1
+    Me.lvDriverClass.TooltipTitles = True
     Me.lvDriverClass.UseCompatibleStateImageBehavior = False
     Me.lvDriverClass.View = System.Windows.Forms.View.Details
     '
@@ -988,16 +1008,17 @@ Partial Class frmPackageProps
     Me.lvDriverProvider.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.lvcCompany})
     Me.lvDriverProvider.Dock = System.Windows.Forms.DockStyle.Fill
     Me.lvDriverProvider.FullRowSelect = True
+    Me.lvDriverProvider.FullRowTooltip = True
     Me.lvDriverProvider.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
     Me.lvDriverProvider.HideSelection = False
     Me.lvDriverProvider.Location = New System.Drawing.Point(102, 16)
     Me.lvDriverProvider.MultiSelect = False
     Me.lvDriverProvider.Name = "lvDriverProvider"
     Me.lvDriverProvider.ReadOnly = False
-    Me.lvDriverProvider.ShowItemToolTips = True
     Me.lvDriverProvider.Size = New System.Drawing.Size(94, 76)
     Me.lvDriverProvider.SmallImageList = Me.imlDriverCompany
     Me.lvDriverProvider.TabIndex = 3
+    Me.lvDriverProvider.TooltipTitles = True
     Me.lvDriverProvider.UseCompatibleStateImageBehavior = False
     Me.lvDriverProvider.View = System.Windows.Forms.View.Details
     '
@@ -1012,16 +1033,17 @@ Partial Class frmPackageProps
     Me.lvDriverINF.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.lvcName, Me.lvcVer})
     Me.lvDriverINF.Dock = System.Windows.Forms.DockStyle.Fill
     Me.lvDriverINF.FullRowSelect = True
+    Me.lvDriverINF.FullRowTooltip = True
     Me.lvDriverINF.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
     Me.lvDriverINF.HideSelection = False
     Me.lvDriverINF.Location = New System.Drawing.Point(202, 16)
     Me.lvDriverINF.MultiSelect = False
     Me.lvDriverINF.Name = "lvDriverINF"
     Me.lvDriverINF.ReadOnly = False
-    Me.lvDriverINF.ShowItemToolTips = True
     Me.lvDriverINF.Size = New System.Drawing.Size(95, 76)
     Me.lvDriverINF.SmallImageList = Me.imlDriverINF
     Me.lvDriverINF.TabIndex = 5
+    Me.lvDriverINF.TooltipTitles = True
     Me.lvDriverINF.UseCompatibleStateImageBehavior = False
     Me.lvDriverINF.View = System.Windows.Forms.View.Details
     '
@@ -1142,4 +1164,6 @@ Partial Class frmPackageProps
   Friend WithEvents imlDriverClass As System.Windows.Forms.ImageList
   Friend WithEvents imlDriverINF As System.Windows.Forms.ImageList
   Friend WithEvents imlDriverCompany As System.Windows.Forms.ImageList
+  Friend WithEvents mnuFeatureExpandAll As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuFeatureCollapseAll As System.Windows.Forms.MenuItem
 End Class

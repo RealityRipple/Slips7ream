@@ -16,6 +16,7 @@
   Private FrameNumber As UInteger
   Private FrameCount As UInteger
   Private mngDisp As MNG
+  Private fTitleFont As New Font(FontFamily.GenericSansSerif, 16, FontStyle.Regular)
   Private sTitleText As String
   Private windowChangedSize As Boolean
   Private mySettings As MySettings
@@ -206,6 +207,7 @@
       Me.Height -= 1
     End If
     windowChangedSize = False
+    RedoColumns()
   End Sub
   Private Sub spltSlips7ream_SplitterMoved(sender As System.Object, e As System.Windows.Forms.SplitterEventArgs) Handles spltSlips7ream.SplitterMoved
     RedoColumns()
@@ -270,7 +272,6 @@
           g.PixelOffsetMode = Drawing2D.PixelOffsetMode.HighQuality
           g.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
           g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAliasGridFit
-
           Dim FirstRect As New Rectangle(0, 0, pctTitle.Width - bmpFrame.Width - 48, bmpFrame.Height)
           Using firstBrush As New Drawing2D.LinearGradientBrush(FirstRect, Color.FromArgb(15, 95, 180), Color.FromArgb(32, 121, 201), 0)
             g.FillRectangle(firstBrush, FirstRect)
@@ -281,8 +282,8 @@
             g.FillRectangle(secondBrush, SecondRect)
           End Using
           g.DrawImage(bmpFrame, New Point(pctTitle.Width - bmpFrame.Width, 0))
-          g.DrawString(sTitleText, New Font(FontFamily.GenericSansSerif, 16, FontStyle.Regular), Brushes.Black, New Point(16, 8))
-          g.DrawString(sTitleText, New Font(FontFamily.GenericSansSerif, 16, FontStyle.Regular), Brushes.White, New Point(15, 7))
+          g.DrawString(sTitleText, fTitleFont, Brushes.Black, New Point(16, 8))
+          g.DrawString(sTitleText, fTitleFont, Brushes.White, New Point(15, 7))
         End Using
         pctTitle.Image = bmpDisplay.Clone
       End Using
@@ -302,8 +303,8 @@
           Using secondBrush As New Drawing2D.LinearGradientBrush(SecondRect, Color.FromArgb(32, 121, 201), Color.FromArgb(45, 166, 209), 0)
             g.FillRectangle(secondBrush, SecondRect)
           End Using
-          g.DrawString(sTitleText, New Font(FontFamily.GenericSansSerif, 16, FontStyle.Regular), Brushes.Black, New Point(16, 8))
-          g.DrawString(sTitleText, New Font(FontFamily.GenericSansSerif, 16, FontStyle.Regular), Brushes.White, New Point(15, 7))
+          g.DrawString(sTitleText, fTitleFont, Brushes.Black, New Point(16, 8))
+          g.DrawString(sTitleText, fTitleFont, Brushes.White, New Point(15, 7))
         End Using
         pctTitle.Image = bmpDisplay.Clone
       End Using
@@ -336,8 +337,8 @@
         Using secondBrush As New Drawing2D.LinearGradientBrush(SecondRect, Color.FromArgb(32, 121, 201), Color.FromArgb(45, 166, 209), 0)
           g.FillRectangle(secondBrush, SecondRect)
         End Using
-        g.DrawString(sTitleText, New Font(FontFamily.GenericSansSerif, 16, FontStyle.Regular), Brushes.Black, New Point(16, 8))
-        g.DrawString(sTitleText, New Font(FontFamily.GenericSansSerif, 16, FontStyle.Regular), Brushes.White, New Point(15, 7))
+        g.DrawString(sTitleText, fTitleFont, Brushes.Black, New Point(16, 8))
+        g.DrawString(sTitleText, fTitleFont, Brushes.White, New Point(15, 7))
       End Using
       pctTitle.Image = bmpDisplay.Clone
     End Using
@@ -365,11 +366,13 @@
   End Sub
   Private Sub RedoColumns()
     If Not lvMSU.Columns.Count = 0 Then
-      Dim msuSize As Integer = lvMSU.ClientSize.Width - lvMSU.Columns(1).Width - 1
+      lvMSU.Columns(1).AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent)
+      If lvMSU.Columns(1).Width < 75 Then lvMSU.Columns(1).Width = 75
+      Dim msuSize As Integer = lvMSU.ClientSize.Width - lvMSU.Columns(1).Width - 2
       If Not lvMSU.Columns(0).Width = msuSize Then lvMSU.Columns(0).Width = msuSize
     End If
     If Not lvImages.Columns.Count = 0 Then
-      Dim imagesSize As Integer = lvImages.ClientSize.Width - (lvImages.Columns(0).Width + lvImages.Columns(2).Width) - 1
+      Dim imagesSize As Integer = lvImages.ClientSize.Width - (lvImages.Columns(0).Width + lvImages.Columns(2).Width) - 2
       If Not lvImages.Columns(1).Width = imagesSize Then lvImages.Columns(1).Width = imagesSize
     End If
     If cmdAddMSU.Enabled Then
@@ -853,12 +856,14 @@
           For Each msuData As Update_File In msuList
             Dim addRet As AddResult = AddToUpdates(msuData)
             If addRet.Cancel Then
-              FailCollection.Add(IIf(String.IsNullOrEmpty(msuData.Name), IO.Path.GetFileNameWithoutExtension(Item), msuData.Name) & ": Cancelled dialog. No more updates added.")
+              'FailCollection.Add(IIf(String.IsNullOrEmpty(msuData.Name) Or msuData.Name = "DRIVER", IO.Path.GetFileNameWithoutExtension(Item), msuData.Name) & ": Cancelled dialog. No more updates added.")
               Cancelled = True
               Exit For
             End If
-            If Not addRet.Success Then FailCollection.Add(IIf(String.IsNullOrEmpty(msuData.Name), IO.Path.GetFileNameWithoutExtension(Item), msuData.Name) & ": " & addRet.FailReason)
+            If Not addRet.Success Then FailCollection.Add(IIf(String.IsNullOrEmpty(msuData.Name), IO.Path.GetFileNameWithoutExtension(Item), IIf(msuData.Name = "DRIVER", IO.Path.GetFileNameWithoutExtension(msuData.DriverData.DriverStorePath), msuData.Name)) & ": " & addRet.FailReason)
             If Not lvMSU.Columns.Count = 0 Then
+              lvMSU.Columns(1).AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent)
+              If lvMSU.Columns(1).Width < 75 Then lvMSU.Columns(1).Width = 75
               Dim msuSize As Integer = lvMSU.ClientSize.Width - lvMSU.Columns(1).Width - 1
               If Not lvMSU.Columns(0).Width = msuSize Then lvMSU.Columns(0).Width = msuSize
             End If
@@ -1067,12 +1072,14 @@
             For Each msuData As Update_File In msuList
               Dim addRet As AddResult = AddToUpdates(msuData)
               If addRet.Cancel Then
-                FailCollection.Add(IIf(String.IsNullOrEmpty(msuData.Name), IO.Path.GetFileNameWithoutExtension(sUpdate), msuData.Name) & ": Cancelled dialog. No more updates added.")
+                'FailCollection.Add(IIf(String.IsNullOrEmpty(msuData.Name) Or msuData.Name = "DRIVER", IO.Path.GetFileNameWithoutExtension(sUpdate), msuData.Name) & ": Cancelled dialog. No more updates added.")
                 Cancelled = True
                 Exit For
               End If
-              If Not addRet.Success Then FailCollection.Add(IIf(String.IsNullOrEmpty(msuData.Name), IO.Path.GetFileNameWithoutExtension(sUpdate), msuData.Name) & ": " & addRet.FailReason)
+              If Not addRet.Success Then FailCollection.Add(IIf(String.IsNullOrEmpty(msuData.Name), IO.Path.GetFileNameWithoutExtension(sUpdate), IIf(msuData.Name = "DRIVER", IO.Path.GetFileNameWithoutExtension(msuData.DriverData.DriverStorePath), msuData.Name)) & ": " & addRet.FailReason)
               If Not lvMSU.Columns.Count = 0 Then
+                lvMSU.Columns(1).AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent)
+                If lvMSU.Columns(1).Width < 75 Then lvMSU.Columns(1).Width = 75
                 Dim msuSize As Integer = lvMSU.ClientSize.Width - lvMSU.Columns(1).Width - 1
                 If Not lvMSU.Columns(0).Width = msuSize Then lvMSU.Columns(0).Width = msuSize
               End If
@@ -1130,6 +1137,7 @@
     Dim OnlyDown As Boolean = False
     If msuData.Name = "DRIVER" Then
       Dim drvData As Driver = msuData.DriverData
+      If String.IsNullOrEmpty(drvData.DriverStorePath) Then Return New AddResult(False)
       Dim InImage(lvImages.Items.Count - 1) As Driver
       If lvImages.Items.Count > 0 Then
         For I As Integer = 0 To lvImages.Items.Count - 1
@@ -1138,96 +1146,18 @@
             Dim dInfo As List(Of Driver) = lvImages.Items(I).Tag(3)
             If dInfo IsNot Nothing Then
               For Each driver As Driver In dInfo
-                If drvData = driver Then
-                  InImage(I) = driver
-                  InOne = True
-                  Exit For
-                End If
+                If drvData = driver Then Return New AddResult(False, "Driver already integrated.")
               Next
             End If
           End If
         Next
-        If InOne Then
-          Dim allEqual As Boolean = True
-          Dim allGreater As Boolean = True
-          Dim allLess As Boolean = True
-          For I As Integer = 0 To InImage.Length - 1
-            Dim CompareRet As Integer = CompareMSVersions(InImage(I).Version, drvData.Version)
-            If CompareRet = 0 Then
-              allGreater = False
-              allLess = False
-            ElseIf CompareRet < 0 Then
-              allGreater = False
-              allEqual = False
-            Else
-              allLess = False
-              allEqual = False
-            End If
-            If Not allGreater And Not allLess And Not allEqual Then Exit For
-          Next
-          If allEqual Then
-            Return New AddResult(False, "Update already integrated.")
-          ElseIf allLess Then
-            Dim always As Boolean = False
-            If ReplaceAllOldUpdates = TriState.True Then
-              'go ahead
-              OnlyUp = True
-            ElseIf ReplaceAllOldUpdates = TriState.False Then
-              Return New AddResult(True)
-            Else
-              Dim sbRet As Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult = DriverSelectionBox(Me, drvData, InImage, PList.ToArray, always, Comparison.Newer)
-              If sbRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.Yes Then
-                If always Then ReplaceAllOldUpdates = TriState.True
-                'go ahead
-                OnlyUp = True
-              ElseIf sbRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.No Then
-                If always Then ReplaceAllOldUpdates = TriState.False
-                Return New AddResult(True)
-              Else
-                Return New AddResult(False)
-              End If
-            End If
-          ElseIf allGreater Then
-            Dim always As Boolean = False
-            If ReplaceAllNewUpdates = TriState.True Then
-              'go ahead
-              OnlyDown = True
-            ElseIf ReplaceAllNewUpdates = TriState.False Then
-              Return New AddResult(True)
-            Else
-              Dim sbRet As Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult = DriverSelectionBox(Me, drvData, InImage, PList.ToArray, always, Comparison.Older)
-              If sbRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.Yes Then
-                If always Then ReplaceAllNewUpdates = TriState.True
-                'go ahead
-                OnlyDown = True
-              ElseIf sbRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.No Then
-                If always Then ReplaceAllNewUpdates = TriState.False
-                Return New AddResult(True)
-              Else
-                Return New AddResult(False)
-              End If
-            End If
-          Else
-            Dim sRet As Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult = DriverSelectionBox(Me, drvData, InImage, PList.ToArray, False, Comparison.Mixed)
-            If sRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.Ok Then
-              'all
-            ElseIf sRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.Yes Then
-              'old updated
-              OnlyUp = True
-            ElseIf sRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.No Then
-              'new downgraded
-              OnlyDown = True
-            ElseIf sRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.Close Then
-              'no change
-              Return New AddResult(True)
-            ElseIf sRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.Cancel Then
-              Return New AddResult(False)
-            End If
-          End If
-
-        End If
       End If
-
+      For Each item As ListViewItem In lvMSU.Items
+        Dim itemData As Update_File = item.Tag(0)
+        If itemData.Name = "DRIVER" AndAlso itemData.DriverData = drvData Then
+          Return New AddResult(False, "Driver already added.")
+        End If
+      Next
       Dim sDriverDisplayName As String = Nothing
       If Not String.IsNullOrEmpty(msuData.DriverData.OriginalFileName) Then
         sDriverDisplayName = IO.Path.GetFileNameWithoutExtension(msuData.DriverData.OriginalFileName)
@@ -1237,47 +1167,48 @@
         sDriverDisplayName = IO.Path.GetFileNameWithoutExtension(msuData.Path)
       End If
       Dim lvItem As New ListViewItem(sDriverDisplayName)
+      Dim en As String = ChrW(&H2003)
       Dim ttPublishedName As String = Nothing
       If Not String.IsNullOrEmpty(msuData.DriverData.PublishedName) Then
         ttPublishedName = IO.Path.GetFileName(msuData.DriverData.PublishedName)
         If Not String.IsNullOrEmpty(msuData.DriverData.Version) Then ttPublishedName &= " v" & msuData.DriverData.Version
       End If
       Dim ttOriginalFileName As String = Nothing
-      If Not String.IsNullOrEmpty(msuData.DriverData.OriginalFileName) Then ttOriginalFileName = " Original File Name: " & msuData.DriverData.OriginalFileName
+      If Not String.IsNullOrEmpty(msuData.DriverData.OriginalFileName) Then ttOriginalFileName = en & "Original File Name: " & msuData.DriverData.OriginalFileName
       Dim ttDriverStorePath As String = Nothing
-      If Not String.IsNullOrEmpty(msuData.DriverData.DriverStorePath) Then ttDriverStorePath = " Driver Store Path: " & msuData.DriverData.DriverStorePath
+      If Not String.IsNullOrEmpty(msuData.DriverData.DriverStorePath) Then ttDriverStorePath = en & "Driver Store Path: " & msuData.DriverData.DriverStorePath
       Dim ttInbox As String = Nothing
-      If Not String.IsNullOrEmpty(msuData.DriverData.Inbox) Then ttInbox = " Inbox: " & msuData.DriverData.Inbox
+      If Not String.IsNullOrEmpty(msuData.DriverData.Inbox) Then ttInbox = en & "Inbox: " & msuData.DriverData.Inbox
       Dim ttClassName As String = Nothing
       If Not String.IsNullOrEmpty(msuData.DriverData.ClassName) Then
-        ttClassName = " Class Name: " & msuData.DriverData.ClassName
+        ttClassName = en & "Class Name: " & msuData.DriverData.ClassName
         If Not String.IsNullOrEmpty(msuData.DriverData.ClassDescription) Then ttClassName &= " (" & msuData.DriverData.ClassDescription & ")"
       ElseIf Not String.IsNullOrEmpty(msuData.DriverData.ClassDescription) Then
-        ttClassName = " Class Description: " & msuData.DriverData.ClassDescription
+        ttClassName = en & "Class Description: " & msuData.DriverData.ClassDescription
       End If
       Dim ttClassGUID As String = Nothing
-      If Not String.IsNullOrEmpty(msuData.DriverData.ClassGUID) Then ttClassGUID = " Class GUID: " & msuData.DriverData.ClassGUID
+      If Not String.IsNullOrEmpty(msuData.DriverData.ClassGUID) Then ttClassGUID = en & "Class GUID: " & msuData.DriverData.ClassGUID
       Dim ttProviderName As String = Nothing
-      If Not String.IsNullOrEmpty(msuData.DriverData.ProviderName) Then ttProviderName = " Provider: " & msuData.DriverData.ProviderName
+      If Not String.IsNullOrEmpty(msuData.DriverData.ProviderName) Then ttProviderName = en & "Provider: " & msuData.DriverData.ProviderName
       Dim ttDate As String = Nothing
-      If Not String.IsNullOrEmpty(msuData.DriverData.Date) Then ttDate = " Date: " & msuData.DriverData.Date
+      If Not String.IsNullOrEmpty(msuData.DriverData.Date) Then ttDate = en & "Date: " & msuData.DriverData.Date
       Dim ttArch As String = Nothing
-      If msuData.DriverData.Architectures IsNot Nothing AndAlso msuData.DriverData.Architectures.Count > 0 Then ttArch = " Supported Architectures: " & Join(msuData.DriverData.Architectures.ToArray, ", ")
+      If msuData.DriverData.Architectures IsNot Nothing AndAlso msuData.DriverData.Architectures.Count > 0 Then ttArch = en & "Supported Architectures: " & Join(msuData.DriverData.Architectures.ToArray, ", ")
       Dim ttBootCritical As String = Nothing
-      If Not String.IsNullOrEmpty(msuData.DriverData.BootCritical) Then ttBootCritical = " Boot Critical: " & msuData.DriverData.BootCritical
+      If Not String.IsNullOrEmpty(msuData.DriverData.BootCritical) Then ttBootCritical = en & "Boot Critical: " & msuData.DriverData.BootCritical
       Dim myTag(1) As Object
       myTag(0) = msuData
       Dim ttNotice As String = Nothing
       If InOne Then
         If lvItem.ForeColor = lvMSU.ForeColor Then lvItem.ForeColor = Color.Orange
         If OnlyUp Then
-          ttNotice = "This update will upgrade only integrated older versions."
+          ttNotice = en & "This update will upgrade only integrated older versions."
         ElseIf OnlyDown Then
-          ttNotice = "This update will downgrade only integrated newer versions."
+          ttNotice = en & "This update will downgrade only integrated newer versions."
           myTag(1) = InImage
           lvItem.Tag = myTag
         Else
-          ttNotice = "This update will replace both newer and older integrated versions."
+          ttNotice = en & "This update will replace both newer and older integrated versions."
           myTag(1) = InImage
           lvItem.Tag = myTag
         End If
@@ -1297,7 +1228,11 @@
       lvItem.Tag = myTag
       lvItem.ForeColor = lvMSU.ForeColor
       lvItem.ImageKey = "INF"
-      lvItem.SubItems.Add(Join(msuData.DriverData.Architectures.ToArray, ", ") & " Driver")
+      If msuData.DriverData.Architectures Is Nothing Then
+        lvItem.SubItems.Add("Driver")
+      Else
+        lvItem.SubItems.Add(Join(msuData.DriverData.Architectures.ToArray, ", ") & " Driver")
+      End If
       lvMSU.Items.Add(lvItem)
       Return New AddResult(True)
     Else
@@ -1350,7 +1285,7 @@
             ElseIf ReplaceAllOldUpdates = TriState.False Then
               Return New AddResult(True)
             Else
-              Dim sbRet As Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult = UpdateSelectionBox2(Me, msuData, InImage, PList.ToArray, always, Comparison.Newer)
+              Dim sbRet As Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult = IntegratedUpdateSelectionBox(Me, msuData, InImage, PList.ToArray, always, Comparison.Newer)
               If sbRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.Yes Then
                 If always Then ReplaceAllOldUpdates = TriState.True
                 'go ahead
@@ -1370,7 +1305,7 @@
             ElseIf ReplaceAllNewUpdates = TriState.False Then
               Return New AddResult(True)
             Else
-              Dim sbRet As Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult = UpdateSelectionBox2(Me, msuData, InImage, PList.ToArray, always, Comparison.Older)
+              Dim sbRet As Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult = IntegratedUpdateSelectionBox(Me, msuData, InImage, PList.ToArray, always, Comparison.Older)
               If sbRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.Yes Then
                 If always Then ReplaceAllNewUpdates = TriState.True
                 'go ahead
@@ -1383,7 +1318,7 @@
               End If
             End If
           Else
-            Dim sRet As Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult = UpdateSelectionBox2(Me, msuData, InImage, PList.ToArray, False, Comparison.Mixed)
+            Dim sRet As Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult = IntegratedUpdateSelectionBox(Me, msuData, InImage, PList.ToArray, False, Comparison.Mixed)
             If sRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.Ok Then
               'all
             ElseIf sRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.Yes Then
@@ -1455,16 +1390,17 @@
       myTag(0) = msuData
       lvItem.Tag = myTag
       Dim bWhitelist As Boolean = msuData.Architecture = "x86" AndAlso CheckWhitelist(msuData.DisplayName)
+      Dim en As String = ChrW(&H2003)
       Dim ttItem As String = IIf(String.IsNullOrEmpty(msuData.KBArticle), msuData.Name, "KB" & msuData.KBArticle)
-      ttItem &= vbNewLine & msuData.AppliesTo & " " & msuData.Architecture & IIf(bWhitelist, " [Whitelisted for 64-bit]", "")
-      If Not String.IsNullOrEmpty(msuData.BuildDate) Then ttItem &= vbNewLine & "Built: " & msuData.BuildDate
-      ttItem &= vbNewLine & ShortenPath(msuData.Path)
+      ttItem &= vbNewLine & en & msuData.AppliesTo & " " & msuData.Architecture & IIf(bWhitelist, " [Whitelisted for 64-bit]", "")
+      If Not String.IsNullOrEmpty(msuData.BuildDate) Then ttItem &= vbNewLine & en & "Built: " & msuData.BuildDate
+      ttItem &= vbNewLine & en & ShortenPath(msuData.Path)
       lvItem.BackColor = IIf(bWhitelist, SystemColors.GradientInactiveCaption, SystemColors.Window)
       Select Case msuData.KBArticle
         Case "2647753"
           If msuData.Ident.Version = "6.1.2.0" Then
             lvItem.ForeColor = Color.Red
-            ttItem &= vbNewLine & "Version 2 may not integrate correctly. SLIPS7REAM suggests using Version 4 from the Microsoft Update Catalog."
+            ttItem &= vbNewLine & en & "Version 2 may not integrate correctly. SLIPS7REAM suggests using Version 4 from the Microsoft Update Catalog."
           End If
         Case "2830477"
           Dim Req1 As Boolean = False
@@ -1491,7 +1427,7 @@
           End If
           If Not Req1 Or Not Req2 Then
             lvItem.ForeColor = Color.Orange
-            ttItem &= vbNewLine & "Please make sure KB2574819 and KB2857650 are also integrated."
+            ttItem &= vbNewLine & en & "Please make sure KB2574819 and KB2857650 are also integrated."
           End If
         Case "2574819"
           Dim Req As Boolean = False
@@ -1572,47 +1508,47 @@
                  "vi-vn", "cy-gb", "xh-za", "yo-ng", "zu-za"
               If Not langList.Contains("en") Then
                 lvItem.ForeColor = Color.Orange
-                ttItem &= vbNewLine & "Please make sure the English Language Pack is also integrated."
+                ttItem &= vbNewLine & en & "Please make sure the English Language Pack is also integrated."
               End If
             Case "gl-es", "quz-pe"
               If Not langList.Contains("es") Then
                 lvItem.ForeColor = Color.Orange
-                ttItem &= vbNewLine & "Please make sure the Spanish Language Pack is also integrated."
+                ttItem &= vbNewLine & en & "Please make sure the Spanish Language Pack is also integrated."
               End If
             Case "nn-no"
               If Not langList.Contains("nb") Then
                 lvItem.ForeColor = Color.Orange
-                ttItem &= vbNewLine & "Please make sure the Norwegian (Bokmål) Language Pack is also integrated."
+                ttItem &= vbNewLine & en & "Please make sure the Norwegian (Bokmål) Language Pack is also integrated."
               End If
             Case "ky-kg", "tt-ru"
               If Not langList.Contains("ru") Then
                 lvItem.ForeColor = Color.Orange
-                ttItem &= vbNewLine & "Please make sure the Russian Language Pack is also integrated."
+                ttItem &= vbNewLine & en & "Please make sure the Russian Language Pack is also integrated."
               End If
             Case "eu-es", "ca-es"
               If Not (langList.Contains("es") Or langList.Contains("fr")) Then
                 lvItem.ForeColor = Color.Orange
-                ttItem &= vbNewLine & "Please make sure either the French or the Spanish Language Pack is also integrated."
+                ttItem &= vbNewLine & en & "Please make sure either the French or the Spanish Language Pack is also integrated."
               End If
             Case "bs-cyrl-ba", "bs-latn-ba"
               If Not (langList.Contains("en") Or langList.Contains("hr") Or langList.Contains("sr-latn")) Then
                 lvItem.ForeColor = Color.Orange
-                ttItem &= vbNewLine & "Please make sure either the English, the Croatian, or the Serbian (Latin) Language Pack is also integrated."
+                ttItem &= vbNewLine & en & "Please make sure either the English, the Croatian, or the Serbian (Latin) Language Pack is also integrated."
               End If
             Case "sr-cyrl-cs"
               If Not (langList.Contains("en") Or langList.Contains("sr-latn")) Then
                 lvItem.ForeColor = Color.Orange
-                ttItem &= vbNewLine & "Please make sure either the English or the Serbian (Latin) Language Pack is also integrated."
+                ttItem &= vbNewLine & en & "Please make sure either the English or the Serbian (Latin) Language Pack is also integrated."
               End If
             Case "lb-lu"
               If Not (langList.Contains("en") Or langList.Contains("fr")) Then
                 lvItem.ForeColor = Color.Orange
-                ttItem &= vbNewLine & "Please make sure either the English or the French Language Pack is also integrated."
+                ttItem &= vbNewLine & en & "Please make sure either the English or the French Language Pack is also integrated."
               End If
             Case "az-latn-az", "kk-kz", "mn-mn", "tk-tm", "uz-Latn-UZ"
               If Not (langList.Contains("en") Or langList.Contains("ru")) Then
                 lvItem.ForeColor = Color.Orange
-                ttItem &= vbNewLine & "Please make sure either the English or the Russian Language Pack is also integrated."
+                ttItem &= vbNewLine & en & "Please make sure either the English or the Russian Language Pack is also integrated."
               End If
           End Select
         End If
@@ -1621,7 +1557,7 @@
             Select Case msuData.Ident.Language.ToLower
               Case "ca-es", "cy-gb", "hi-in", "is-is", "sr-cyrl-cs"
                 lvItem.ForeColor = Color.Orange
-                ttItem &= vbNewLine & "This Language Interface Pack has been superseded by Service Pack 1 and may not integrate correctly."
+                ttItem &= vbNewLine & en & "This Language Interface Pack has been superseded by Service Pack 1 and may not integrate correctly."
             End Select
           End If
         End If
@@ -1629,63 +1565,17 @@
       If InOne Then
         If lvItem.ForeColor = lvMSU.ForeColor Then lvItem.ForeColor = Color.Orange
         If OnlyUp Then
-          ttItem &= vbNewLine & "This update will upgrade only integrated older versions."
+          ttItem &= vbNewLine & en & "This update will upgrade only integrated older versions."
         ElseIf OnlyDown Then
-          ttItem &= vbNewLine & "This update will downgrade only integrated newer versions."
+          ttItem &= vbNewLine & en & "This update will downgrade only integrated newer versions."
           myTag(1) = InImage
           lvItem.Tag = myTag
         Else
-          ttItem &= vbNewLine & "This update will replace both newer and older integrated versions."
+          ttItem &= vbNewLine & en & "This update will replace both newer and older integrated versions."
           myTag(1) = InImage
           lvItem.Tag = myTag
         End If
       End If
-
-
-      'If InOne Then
-      '  If HighList.Count = 0 And LowList.Count = 0 And EqList.Count = 0 Then
-      '    InOne = False
-      '    'do nothing
-      '  ElseIf HighList.Count = InImage.Length Then
-      '    'all higher versions
-      '    If Identical Then
-      '      'all the same higher version
-      '    Else
-      '      'different higher versions
-      '    End If
-      '  ElseIf LowList.Count = InImage.Length Then
-      '    'all lower versions
-      '    If Identical Then
-      '      'all the same lower version
-      '    Else
-      '      'different lower versions
-      '    End If
-      '  ElseIf EqList.Count = InImage.Length Then
-      '    'all equal (only possibility)
-      '    Return New AddResult(False, "Update already integrated into packages.")
-      '  Else
-      '    'an unknown amalgamation
-      '    If HighList.Count > 0 And LowList.Count > 0 Then
-      '      'some packages have higher versions, some lower, others may be equal
-      '    ElseIf HighList.Count > 0 Then
-      '      'some packages have higher versions, others may be equal
-      '    ElseIf LowList.Count > 0 Then
-      '      'some packages have lower versions, others may be equal
-      '    ElseIf EqList.Count > 0 Then
-      '      'some packages may already have this version, but not all
-      '    End If
-      '  End If
-
-      '  ttItem &= vbNewLine & "Already integrated into "
-      '  For I As Integer = 0 To InImage.Length - 1
-      '    If InImage(I).Set Then
-      '      ttItem &= lvImages.Items(I).SubItems(1).Text & ", "
-      '    End If
-      '  Next
-      '  If ttItem.EndsWith(", ") Then ttItem = ttItem.Substring(0, ttItem.Length - 2) & "!"
-      '  If lvItem.ForeColor = lvMSU.ForeColor Then lvItem.ForeColor = Color.Orange
-      'End If
-
       lvItem.ToolTipText = ttItem
       lvItem.BackColor = lvMSU.BackColor
       Select Case GetUpdateType(msuData.Path)
@@ -2671,25 +2561,6 @@
       End If
     Next
   End Sub
-  Private Sub lvImages_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles lvImages.MouseMove
-    If lvImages.Items.Count = 0 Then Return
-    Dim lvItem As ListViewItem = lvImages.GetItemAt(e.X, e.Y)
-    If lvItem Is Nothing Then
-      ttLV.SetTooltip(lvImages, Nothing)
-      Return
-    End If
-    Dim lvHTInfo As ListViewHitTestInfo = lvImages.HitTest(e.X, e.Y)
-    If lvHTInfo.SubItem Is Nothing Then
-      ttLV.SetTooltip(lvImages, Nothing)
-      Return
-    End If
-    If ttLV.GetToolTip(lvImages) = lvItem.ToolTipText Then Return
-    ttLV = New ToolTip
-    ttLV.AutoPopDelay = 30000
-    ttLV.InitialDelay = 500
-    ttLV.ReshowDelay = 100
-    ttLV.SetTooltip(lvImages, lvItem.ToolTipText)
-  End Sub
   Private Sub lvImages_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles lvImages.MouseUp
     If e.Button = Windows.Forms.MouseButtons.Right Then
       Dim selItem As ListViewItem = lvImages.GetItemAt(e.X, e.Y)
@@ -2836,18 +2707,27 @@
       Return
     End If
     cmdLoadPackages.Image = My.Resources.u_i
-    If chkLoadFeatures.Checked Then
+    Dim doFeatures As Boolean = chkLoadFeatures.Checked
+    Dim doUpdates As Boolean = chkLoadUpdates.Checked
+    Dim doDrivers As Boolean = chkLoadDrivers.Checked
+    If doFeatures Then
       LoadPackageFeatures("WIM")
       LoadPackageFeatures("Merge")
+      chkLoadFeatures.Checked = False
     End If
-    If chkLoadUpdates.Checked Then
+    If doUpdates Then
       LoadPackageUpdates("WIM")
       LoadPackageUpdates("Merge")
+      chkLoadUpdates.Checked = False
     End If
-    If chkLoadDrivers.Checked Then
+    If doDrivers Then
       LoadPackageDrivers("WIM")
       LoadPackageDrivers("Merge")
+      chkLoadDrivers.Checked = False
     End If
+    chkLoadFeatures.Checked = doFeatures
+    chkLoadUpdates.Checked = doUpdates
+    chkLoadDrivers.Checked = doDrivers
     cmdLoadPackages.Image = My.Resources.u_a
   End Sub
 #Region "Package Feature List"
@@ -2857,7 +2737,11 @@
     CleanMounts()
     LoadFeatureComplete = False
     StopRun = False
-    SetTitle("Parsing Features", "Populating the features list for each image package...")
+    If SelectedIndex = -1 Then
+      SetTitle("Parsing Features", "Populating the features list for each image package...")
+    Else
+      SetTitle("Parsing Features", "Populating the features list for the selected image package...")
+    End If
     RunActivity = 3
     tListUp = New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf LoadFeatureList))
     tListUp.Start({WIMID, SelectedIndex})
@@ -2931,11 +2815,11 @@
         If SelIndex > -1 Then
           If Not I = SelIndex Then Continue For
         End If
-        Dim progVal As Integer = I * 2
-        Dim progMax As Integer = (PackageCount + 1) * 2
+        Dim progVal As Integer = I * 3
+        Dim progMax As Integer = (PackageCount + 1) * 3
         If SelIndex > -1 Then
           progVal = 0
-          progMax = 2
+          progMax = 3
         End If
         SetProgress(progVal, progMax)
         Dim Package As ImagePackage = GetDISMPackageData(WIMFile, I)
@@ -2981,6 +2865,9 @@
             Features.Add(GetDISMFeatureData(Mount, FeatureNames(J)))
             If StopRun Then Return
           Next
+          If StopRun Then Return
+          progVal += 1
+          SetProgress(progVal, progMax)
           Dim tag0 As String = Nothing
           If lvItem.Tag IsNot Nothing Then
             If IsArray(lvItem.Tag) Then
@@ -3027,7 +2914,11 @@
     CleanMounts()
     LoadUpdateComplete = False
     StopRun = False
-    SetTitle("Parsing Updates", "Populating the integrated update list for each image package...")
+    If SelectedIndex = -1 Then
+      SetTitle("Parsing Updates", "Populating the integrated update list for each image package...")
+    Else
+      SetTitle("Parsing Updates", "Populating the integrated update list for the selected image package...")
+    End If
     RunActivity = 3
     tListUp = New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf LoadUpdateList))
     tListUp.Start({WIMID, SelectedIndex})
@@ -3196,7 +3087,11 @@
     CleanMounts()
     LoadDriverComplete = False
     StopRun = False
-    SetTitle("Parsing Drivers", "Populating the Driver list for each image package...")
+    If SelectedIndex = -1 Then
+      SetTitle("Parsing Drivers", "Populating the Driver list for each image package...")
+    Else
+      SetTitle("Parsing Drivers", "Populating the Driver list for the selected image package...")
+    End If
     RunActivity = 3
     tListUp = New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf LoadDriverList))
     tListUp.Start({WIMID, SelectedIndex})
@@ -3570,13 +3465,14 @@
       Return lblActivity.Text
     End If
   End Function
+  Private ActivityMouse As Boolean
   Private Delegate Sub SetStatusInvoker(Message As String)
   Private Sub SetStatus(Message As String)
     If Me.InvokeRequired Then
       Me.Invoke(New SetStatusInvoker(AddressOf SetStatus), Message)
       Return
     End If
-    lblActivity.Text = Message
+    SetActivityText(Message)
     If Message.Contains("...") And cmdBegin.Visible Then
       lblWIM.Enabled = False
       txtWIM.Enabled = False
@@ -3594,7 +3490,49 @@
       txtMerge.Enabled = chkMerge.Checked
       cmdMerge.Enabled = chkMerge.Checked
     End If
+    If ActivityMouse Then
+      HideActivityTT()
+      ShowActivityTT()
+    End If
     Application.DoEvents()
+  End Sub
+  Private Sub lblActivity_SizeChanged(sender As Object, e As System.EventArgs) Handles lblActivity.SizeChanged
+    SetActivityText(lblActivity.Tag)
+  End Sub
+  Private Sub SetActivityText(Message As String)
+    lblActivity.Tag = Message
+    If String.IsNullOrEmpty(Message) Then
+      lblActivity.Text = Nothing
+      Return
+    End If
+    Dim expectedW As Integer = 0
+    Dim chars As Integer = 0
+    Dim lines As Integer = 0
+    Using g As Graphics = Graphics.FromImage(New Bitmap(1, 1))
+      expectedW = g.MeasureString(Message, lblActivity.Font, lblActivity.Size, New StringFormat(StringFormatFlags.NoWrap), chars, lines).Width - 8
+    End Using
+    If chars < Message.Length Then
+      lblActivity.Text = RTrim(Message.Substring(0, chars - 3)) & "..."
+    Else
+      lblActivity.Text = Message
+    End If
+  End Sub
+  Private Sub lblActivity_MouseEnter(sender As Object, e As System.EventArgs) Handles lblActivity.MouseEnter
+    ActivityMouse = True
+    ShowActivityTT()
+  End Sub
+  Private Sub lblActivity_MouseLeave(sender As Object, e As System.EventArgs) Handles lblActivity.MouseLeave
+    HideActivityTT()
+    ActivityMouse = False
+  End Sub
+  Private Sub ShowActivityTT()
+    If String.IsNullOrEmpty(lblActivity.Tag) Then Return
+    If Not lblActivity.Tag = lblActivity.Text Then
+      ttActivity.Show(lblActivity.Tag, lblActivity, -3, -2, Integer.MaxValue)
+    End If
+  End Sub
+  Private Sub HideActivityTT()
+    ttActivity.Hide(lblActivity)
   End Sub
   Private Delegate Sub SetTitleInvoker(Title As String, Tooltip As String)
   Private Sub SetTitle(Title As String, Tooltip As String)
@@ -3692,7 +3630,11 @@
       Application.DoEvents()
     End If
     pbIndividual.Value = (Value / Maximum) * 10000
-    ttInfo.SetTooltip(pbIndividual, "Progress: " & FormatPercent(Value / Maximum, 2, TriState.True, TriState.False, TriState.False))
+    If Value = 0 And Maximum = 1 And pbIndividual.Style = ProgressBarStyle.Marquee Then
+      ttInfo.SetTooltip(pbIndividual, "Progress: Indeterminate")
+    Else
+      ttInfo.SetTooltip(pbIndividual, "Progress: " & FormatPercent(Value / Maximum, 2, TriState.True, TriState.False, TriState.False))
+    End If
   End Sub
   Public Sub SetTotal(Value As Integer, Maximum As Integer)
     If Me.InvokeRequired Then
@@ -7318,13 +7260,13 @@
         lvItem.SubItems.Add(Package.Name)
         lvItem.SubItems.Add(ByteSize(Package.Size))
         lvItem.Tag = {"WIM", Package, Nothing, Nothing}
+        Dim en As String = ChrW(&H2003)
         Dim ttItem As String = Package.Desc & IIf(Package.SPLevel > 0, " Service Pack " & Package.SPLevel, "") & vbNewLine &
-          Package.ProductType & " " & Package.Version & "." & Package.SPBuild & " (" & Package.Edition & ") " & Package.Architecture & vbNewLine &
-         FormatNumber(Package.Files, 0, TriState.False, TriState.False, TriState.True) & " files, " & FormatNumber(Package.Directories, 0, TriState.False, TriState.False, TriState.True) & " folders" & vbNewLine &
-          Package.Modified & vbNewLine &
-          ShortenPath(WIMFile)
+                               en & Package.ProductType & " " & Package.Version & "." & Package.SPBuild & " (" & Package.Edition & ") " & Package.Architecture & vbNewLine &
+                               en & FormatNumber(Package.Files, 0, TriState.False, TriState.False, TriState.True) & " files, " & FormatNumber(Package.Directories, 0, TriState.False, TriState.False, TriState.True) & " folders" & vbNewLine &
+                               en & Package.Modified & vbNewLine &
+                               en & ShortenPath(WIMFile)
         lvItem.ToolTipText = ttItem
-        'TODO: set subitems tooltip text if possible
         AddToImageList(lvItem)
         If Not lvImages.Columns.Count = 0 Then
           Dim imagesSize As Integer = lvImages.ClientSize.Width - (lvImages.Columns(0).Width + lvImages.Columns(2).Width) - 1
@@ -7385,11 +7327,12 @@
         lvItem.SubItems.Add(Package.Name)
         lvItem.SubItems.Add(ByteSize(Package.Size))
         lvItem.Tag = {"MERGE", Package, Nothing, Nothing}
+        Dim en As String = ChrW(&H2003)
         Dim ttItem As String = Package.Desc & IIf(Package.SPLevel > 0, " Service Pack " & Package.SPLevel, "") & vbNewLine &
-          Package.ProductType & " " & Package.Version & "." & Package.SPBuild & " (" & Package.Edition & ") " & Package.Architecture & vbNewLine &
-           FormatNumber(Package.Files, 0, TriState.False, TriState.False, TriState.True) & " files, " & FormatNumber(Package.Directories, 0, TriState.False, TriState.False, TriState.True) & " folders" & vbNewLine &
-          Package.Modified & vbNewLine &
-          ShortenPath(MergeFile)
+                               en & Package.ProductType & " " & Package.Version & "." & Package.SPBuild & " (" & Package.Edition & ") " & Package.Architecture & vbNewLine &
+                               en & FormatNumber(Package.Files, 0, TriState.False, TriState.False, TriState.True) & " files, " & FormatNumber(Package.Directories, 0, TriState.False, TriState.False, TriState.True) & " folders" & vbNewLine &
+                               en & Package.Modified & vbNewLine &
+                               en & ShortenPath(MergeFile)
         lvItem.ToolTipText = ttItem
         AddToImageList(lvItem)
         If Not lvImages.Columns.Count = 0 Then

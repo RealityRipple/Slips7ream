@@ -231,8 +231,12 @@
     Me.Close()
   End Sub
   Private Sub frmPackageProps_Resize(sender As Object, e As System.EventArgs) Handles Me.Resize
-    ResizeUpdates()
-    ResizeDrivers()
+    AsyncResizeUpdates()
+    AsyncResizeDrivers()
+  End Sub
+  Private Sub frmPackageProps_ResizeEnd(sender As Object, e As System.EventArgs) Handles Me.ResizeEnd
+    AsyncResizeUpdates()
+    AsyncResizeDrivers()
   End Sub
   Private Sub ResizeUpdates()
     If Me.InvokeRequired Then
@@ -250,12 +254,12 @@
     If lvUpdates.Columns.Count = 0 Then Return
     If lvUpdates.ClientSize.Width = 0 Then Return
     If lvUpdates.Items.Count > 0 Then
-      lvUpdates.AutoResizeColumn(1, ColumnHeaderAutoResizeStyle.ColumnContent)
+      lvUpdates.Columns(1).AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent)
+      If lvUpdates.Columns(1).Width < 90 Then lvUpdates.Columns(1).Width = 90
     Else
-      lvUpdates.AutoResizeColumn(1, ColumnHeaderAutoResizeStyle.None)
       lvUpdates.Columns(1).Width = 0
     End If
-    Dim packageSize As Integer = lvUpdates.ClientSize.Width - lvUpdates.Columns(1).Width - 1
+    Dim packageSize As Integer = lvUpdates.ClientSize.Width - lvUpdates.Columns(1).Width - 2
     If Not lvUpdates.Columns(0).Width = packageSize Then lvUpdates.Columns(0).Width = packageSize
   End Sub
 
@@ -272,28 +276,27 @@
       Return
     End If
     If bLoading Then Return
-    If lvDriverClass.Columns.Count = 0 Then Return
-    If lvDriverClass.ClientSize.Width = 0 Then Return
-    lvDriverClass.AutoResizeColumn(0, ColumnHeaderAutoResizeStyle.None)
-    lvDriverClass.Columns(0).Width = lvDriverClass.ClientSize.Width - 2
-    If lvDriverProvider.Columns.Count = 0 Then Return
-    If lvDriverProvider.ClientSize.Width = 0 Then Return
-    lvDriverProvider.AutoResizeColumn(0, ColumnHeaderAutoResizeStyle.None)
-    lvDriverProvider.Columns(0).Width = lvDriverProvider.ClientSize.Width - 2
-    If lvDriverINF.Columns.Count = 0 Then Return
-    If lvDriverINF.ClientSize.Width = 0 Then Return
-    If lvDriverINF.Items.Count = 0 Then
-      lvDriverINF.AutoResizeColumn(1, ColumnHeaderAutoResizeStyle.None)
-      lvDriverINF.Columns(1).Width = 0
-    Else
-      lvDriverINF.AutoResizeColumn(1, ColumnHeaderAutoResizeStyle.ColumnContent)
-      If lvDriverINF.Columns(1).Width > lvDriverINF.ClientSize.Width / 2 Then
-        lvDriverINF.AutoResizeColumn(1, ColumnHeaderAutoResizeStyle.None)
-        lvDriverINF.Columns(1).Width = 0
+    If Not lvDriverClass.Columns.Count = 0 Then
+      If Not lvDriverClass.ClientSize.Width = 0 Then
+        lvDriverClass.Columns(0).Width = lvDriverClass.ClientSize.Width - 2
       End If
     End If
-    lvDriverINF.AutoResizeColumn(0, ColumnHeaderAutoResizeStyle.None)
-    lvDriverINF.Columns(0).Width = lvDriverINF.ClientSize.Width - lvDriverINF.Columns(1).Width - 2
+    If Not lvDriverProvider.Columns.Count = 0 Then
+      If Not lvDriverProvider.ClientSize.Width = 0 Then
+        lvDriverProvider.Columns(0).Width = lvDriverProvider.ClientSize.Width - 2
+      End If
+    End If
+    If Not lvDriverINF.Columns.Count = 0 Then
+      If Not lvDriverINF.ClientSize.Width = 0 Then
+        If lvDriverINF.Items.Count = 0 Then
+          lvDriverINF.Columns(1).Width = 0
+        Else
+          lvDriverINF.Columns(1).AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent)
+          If lvDriverINF.Columns(1).Width > lvDriverINF.ClientSize.Width / 2 Then lvDriverINF.Columns(1).Width = 0
+        End If
+        lvDriverINF.Columns(0).Width = lvDriverINF.ClientSize.Width - lvDriverINF.Columns(1).Width - 2
+      End If
+    End If
   End Sub
   Private Sub frmPackageProps_Shown(sender As Object, e As System.EventArgs) Handles Me.Shown
     AsyncResizeUpdates()
@@ -306,6 +309,8 @@
   Private Sub expFeatures_Opened(sender As System.Object, e As System.EventArgs) Handles expFeatures.Opened
     PositionViews()
     DisplayFeatures()
+    ResizeUpdates()
+    ResizeDrivers()
   End Sub
   Private Sub expUpdates_Closed(sender As Object, e As System.EventArgs) Handles expUpdates.Closed
     PositionViews()
@@ -314,6 +319,7 @@
     PositionViews()
     DisplayUpdates()
     ResizeUpdates()
+    ResizeDrivers()
   End Sub
   Private Sub expDrivers_Closed(sender As System.Object, e As System.EventArgs) Handles expDrivers.Closed
     PositionViews()
@@ -321,18 +327,16 @@
   Private Sub expDrivers_Opened(sender As System.Object, e As System.EventArgs) Handles expDrivers.Opened
     PositionViews()
     DisplayDrivers()
+    ResizeUpdates()
     ResizeDrivers()
   End Sub
 
   Private Sub ToggleUI(Enable As Boolean)
     txtName.ReadOnly = Not Enable
-    'expFeatures.Enabled = Enable
     cmdLoadFeatures.Enabled = Enable
-    tvFeatures.Enabled = Enable
-    'expUpdates.Enabled = Enable
+    tvFeatures.ReadOnly = Not Enable
     cmdLoadUpdates.Enabled = Enable
     lvUpdates.ReadOnly = Not Enable
-    'expDrivers.Enabled = Enable
     cmdLoadDrivers.Enabled = Enable
     lvDriverClass.ReadOnly = Not Enable
     lvDriverProvider.ReadOnly = Not Enable
@@ -386,6 +390,12 @@
     pnlProps.ResumeLayout()
   End Sub
   Private Sub DisplayFeatures()
+    If tvFeatures.Nodes.Count > 0 Then Return
+    If FeatureData Is Nothing Then
+      tvFeatures.ReadOnly = True
+      Return
+    End If
+    tvFeatures.Tag = "LOADING"
     Dim ParentFeatures As New Collections.Specialized.NameValueCollection
     Dim featureRows() As String = Split(My.Resources.ParentFeatureList, vbNewLine)
     For Each row In featureRows
@@ -394,175 +404,169 @@
         ParentFeatures.Add(RowSplit(0), RowSplit(1))
       End If
     Next
-    If tvFeatures.Nodes.Count = 0 Then
-      If FeatureData IsNot Nothing Then
-        tvFeatures.Enabled = True
-        For Each pFeature As Feature In FeatureData
-          Dim FeatureDisplayName As String = pFeature.DisplayName
-          If String.IsNullOrEmpty(FeatureDisplayName) Then FeatureDisplayName = pFeature.FeatureName
-          Dim tvItem As TreeNode = Nothing
-          Dim shouldAdd As Boolean = False
-          Dim searchNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find("tvn" & FeatureDisplayName.Replace(" ", "_"), True))
-          If searchNode Is Nothing Then
-            tvItem = New TreeNode(FeatureDisplayName)
-            shouldAdd = True
-          Else
-            tvItem = searchNode
-          End If
-          tvItem.Name = "tvn" & FeatureDisplayName.Replace(" ", "_")
-          tvItem.Tag = pFeature
-          tvItem.Checked = pFeature.Enable
-          Dim sDescription As String = pFeature.Desc
-          If sDescription.Length > 80 Then
-            If sDescription.LastIndexOf(" ", 80) > 0 Then
-              Dim FrontHalf As String = sDescription.Substring(0, sDescription.LastIndexOf(" ", 80))
-              Dim RearHalf As String = sDescription.Substring(sDescription.LastIndexOf(" ", 80) + 1)
-              Do
-                If RearHalf.Length > 80 Then
-                  If RearHalf.LastIndexOf(" ", 80) > 0 Then
-                    FrontHalf = FrontHalf & vbNewLine & RearHalf.Substring(0, RearHalf.LastIndexOf(" ", 80))
-                    RearHalf = RearHalf.Substring(RearHalf.LastIndexOf(" ", 80) + 1)
-                  Else
-                    sDescription = FrontHalf & vbNewLine & RearHalf
-                    Exit Do
-                  End If
-                Else
-                  sDescription = FrontHalf & vbNewLine & RearHalf
-                  Exit Do
-                End If
-              Loop
-            End If
-          End If
-          If pFeature.CustomProperties IsNot Nothing AndAlso pFeature.CustomProperties.Length > 0 Then
-            If pFeature.CustomProperties.Length = 1 AndAlso pFeature.CustomProperties(0).Contains("(No custom properties found)") Then
-              tvItem.ToolTipText = FeatureDisplayName & vbNewLine &
-                                   " " & sDescription & vbNewLine &
-                                   " Internal Name: " & pFeature.FeatureName & vbNewLine &
-                                   " State: " & pFeature.State & vbNewLine &
-                                   " Restart Required: " & pFeature.RestartRequired
-            Else
-              Dim sCustomProps As String = Nothing
-              If pFeature.CustomProperties.Length = 1 Then
-                Dim sPropKey As String = pFeature.CustomProperties(0)
-                Dim sPropVal As String = Nothing
-                If sPropKey.Contains(" : ") Then
-                  sPropVal = sPropKey.Substring(sPropKey.IndexOf(" : ") + 3)
-                  sPropKey = sPropKey.Substring(0, sPropKey.IndexOf(" : "))
-                End If
-                If sPropKey = "SoftBlockLink" Then
-                  If String.IsNullOrEmpty(sCustomProps) OrElse Not sCustomProps.Contains("Changes default settings.") Then sCustomProps = " Changes default settings." & vbNewLine & sCustomProps
-                  sPropKey = "Link"
-                End If
-                sCustomProps &= " " & sPropKey & ": " & sPropVal
+    tvFeatures.ReadOnly = False
+    For Each pFeature As Feature In FeatureData
+      Dim FeatureDisplayName As String = pFeature.DisplayName
+      If String.IsNullOrEmpty(FeatureDisplayName) Then FeatureDisplayName = pFeature.FeatureName
+      Dim tvItem As TreeNode = Nothing
+      Dim shouldAdd As Boolean = False
+      Dim searchNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find("tvn" & FeatureDisplayName.Replace(" ", "_"), True))
+      If searchNode Is Nothing Then
+        tvItem = New TreeNode(FeatureDisplayName)
+        shouldAdd = True
+      Else
+        tvItem = searchNode
+      End If
+      tvItem.Name = "tvn" & FeatureDisplayName.Replace(" ", "_")
+      tvItem.Tag = pFeature
+      tvItem.Checked = pFeature.Enable
+      Dim sDescription As String = pFeature.Desc
+      If sDescription.Length > 80 Then
+        If sDescription.LastIndexOf(" ", 80) > 0 Then
+          Dim FrontHalf As String = sDescription.Substring(0, sDescription.LastIndexOf(" ", 80))
+          Dim RearHalf As String = sDescription.Substring(sDescription.LastIndexOf(" ", 80) + 1)
+          Do
+            If RearHalf.Length > 80 Then
+              If RearHalf.LastIndexOf(" ", 80) > 0 Then
+                FrontHalf = FrontHalf & vbNewLine & RearHalf.Substring(0, RearHalf.LastIndexOf(" ", 80))
+                RearHalf = RearHalf.Substring(RearHalf.LastIndexOf(" ", 80) + 1)
               Else
-                For Each sProperty In pFeature.CustomProperties
-                  Dim sPropKey As String = sProperty
-                  Dim sPropVal As String = Nothing
-                  If sPropKey.Contains(" : ") Then
-                    sPropVal = sPropKey.Substring(sPropKey.IndexOf(" : ") + 3)
-                    sPropKey = sPropKey.Substring(0, sPropKey.IndexOf(" : "))
-                  End If
-                  If sPropKey = "SoftBlockLink" Then
-                    If String.IsNullOrEmpty(sCustomProps) OrElse Not sCustomProps.Contains("Changes default settings.") Then sCustomProps = " Changes default settings." & vbNewLine & sCustomProps
-                    sPropKey = "Link"
-                  End If
-                  sCustomProps &= " " & sPropKey & ": " & sPropVal & vbNewLine
-                Next
-                Do While sCustomProps.EndsWith(vbNewLine)
-                  sCustomProps = sCustomProps.Substring(0, sCustomProps.Length - 2)
-                Loop
+                sDescription = FrontHalf & vbNewLine & RearHalf
+                Exit Do
               End If
-              tvItem.ToolTipText = FeatureDisplayName & vbNewLine &
-                                   " " & sDescription & vbNewLine &
-                                   " Internal Name: " & pFeature.FeatureName & vbNewLine &
-                                   " State: " & pFeature.State & vbNewLine &
-                                   " Restart Required: " & pFeature.RestartRequired & vbNewLine &
-                                   sCustomProps
+            Else
+              sDescription = FrontHalf & vbNewLine & RearHalf
+              Exit Do
             End If
+          Loop
+        End If
+      End If
+      Dim en As String = ChrW(&H2003)
+      If pFeature.CustomProperties IsNot Nothing AndAlso pFeature.CustomProperties.Length > 0 Then
+        If pFeature.CustomProperties.Length = 1 AndAlso pFeature.CustomProperties(0).Contains("(No custom properties found)") Then
+          tvItem.ToolTipText = FeatureDisplayName & vbNewLine &
+                               en & sDescription & vbNewLine &
+                               en & "Internal Name: " & pFeature.FeatureName & vbNewLine &
+                               en & "State: " & pFeature.State & vbNewLine &
+                               en & "Restart Required: " & pFeature.RestartRequired
+        Else
+          Dim sCustomProps As String = Nothing
+          If pFeature.CustomProperties.Length = 1 Then
+            Dim sPropKey As String = pFeature.CustomProperties(0)
+            Dim sPropVal As String = Nothing
+            If sPropKey.Contains(" : ") Then
+              sPropVal = sPropKey.Substring(sPropKey.IndexOf(" : ") + 3)
+              sPropKey = sPropKey.Substring(0, sPropKey.IndexOf(" : "))
+            End If
+            If sPropKey = "SoftBlockLink" Then
+              If String.IsNullOrEmpty(sCustomProps) OrElse Not sCustomProps.Contains("Changes default settings.") Then sCustomProps = en & "Changes default settings." & vbNewLine & sCustomProps
+              sPropKey = "Link"
+            End If
+            sCustomProps &= en & sPropKey & ": " & sPropVal
           Else
-            tvItem.ToolTipText = FeatureDisplayName & vbNewLine &
-                                 " " & sDescription & vbNewLine &
-                                 " Internal Name: " & pFeature.FeatureName & vbNewLine &
-                                 " State: " & pFeature.State & vbNewLine &
-                                 " Restart Required: " & pFeature.RestartRequired
+            For Each sProperty In pFeature.CustomProperties
+              Dim sPropKey As String = sProperty
+              Dim sPropVal As String = Nothing
+              If sPropKey.Contains(" : ") Then
+                sPropVal = sPropKey.Substring(sPropKey.IndexOf(" : ") + 3)
+                sPropKey = sPropKey.Substring(0, sPropKey.IndexOf(" : "))
+              End If
+              If sPropKey = "SoftBlockLink" Then
+                If String.IsNullOrEmpty(sCustomProps) OrElse Not sCustomProps.Contains("Changes default settings.") Then sCustomProps = en & "Changes default settings." & vbNewLine & sCustomProps
+                sPropKey = "Link"
+              End If
+              sCustomProps &= en & sPropKey & ": " & sPropVal & vbNewLine
+            Next
+            Do While sCustomProps.EndsWith(vbNewLine)
+              sCustomProps = sCustomProps.Substring(0, sCustomProps.Length - 2)
+            Loop
           End If
-          Dim KeyID As String = Nothing
-          For Each key In imlFeatures.Images.Keys
-            If FeatureDisplayName.ToLower.Replace(" ", "_") = key Then
-              KeyID = key
-              Exit For
-            End If
-          Next
-          If String.IsNullOrEmpty(KeyID) Then
+          tvItem.ToolTipText = FeatureDisplayName & vbNewLine &
+                               en & sDescription & vbNewLine &
+                               en & "Internal Name: " & pFeature.FeatureName & vbNewLine &
+                               en & "State: " & pFeature.State & vbNewLine &
+                               en & "Restart Required: " & pFeature.RestartRequired & vbNewLine &
+                               sCustomProps
+        End If
+      Else
+        tvItem.ToolTipText = FeatureDisplayName & vbNewLine &
+                             en & sDescription & vbNewLine &
+                             en & "Internal Name: " & pFeature.FeatureName & vbNewLine &
+                             en & "State: " & pFeature.State & vbNewLine &
+                             en & "Restart Required: " & pFeature.RestartRequired
+      End If
+      Dim KeyID As String = Nothing
+      For Each key In imlFeatures.Images.Keys
+        If FeatureDisplayName.ToLower.Replace(" ", "_") = key Then
+          KeyID = key
+          Exit For
+        End If
+      Next
+      If String.IsNullOrEmpty(KeyID) Then
+        For Each key In imlFeatures.Images.Keys
+          If FeatureDisplayName.ToLower.Replace(" ", "_").Contains(key) Then
+            KeyID = key
+            Exit For
+          End If
+        Next
+      End If
+      If shouldAdd Then
+        If ParentFeatures.AllKeys.Contains(FeatureDisplayName) Then
+          Dim parentNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find("tvn" & ParentFeatures(FeatureDisplayName).Replace(" ", "_"), True))
+          If parentNode Is Nothing Then
+            Dim newNode As TreeNode = tvFeatures.Nodes.Add(ParentFeatures(FeatureDisplayName))
+            newNode.Name = "tvn" & ParentFeatures(FeatureDisplayName).Replace(" ", "_")
+            newNode.Nodes.Add(tvItem)
+            newNode.ToolTipText = "Node Group - Not a Feature"
+            Dim ParentKeyID As String = Nothing
             For Each key In imlFeatures.Images.Keys
-              If FeatureDisplayName.ToLower.Replace(" ", "_").Contains(key) Then
-                KeyID = key
+              If ParentFeatures(FeatureDisplayName).ToLower.Replace(" ", "_") = key Then
+                ParentKeyID = key
                 Exit For
               End If
             Next
-          End If
-          If shouldAdd Then
-            If ParentFeatures.AllKeys.Contains(FeatureDisplayName) Then
-              Dim parentNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find("tvn" & ParentFeatures(FeatureDisplayName).Replace(" ", "_"), True))
-              If parentNode Is Nothing Then
-                Dim newNode As TreeNode = tvFeatures.Nodes.Add(ParentFeatures(FeatureDisplayName))
-                newNode.Name = "tvn" & ParentFeatures(FeatureDisplayName).Replace(" ", "_")
-                newNode.Nodes.Add(tvItem)
-                newNode.ToolTipText = "Node Group - Not a Feature"
-                Dim ParentKeyID As String = Nothing
-                For Each key In imlFeatures.Images.Keys
-                  If ParentFeatures(FeatureDisplayName).ToLower.Replace(" ", "_") = key Then
-                    ParentKeyID = key
-                    Exit For
-                  End If
-                Next
-                If String.IsNullOrEmpty(ParentKeyID) Then
-                  For Each key In imlFeatures.Images.Keys
-                    If ParentFeatures(FeatureDisplayName).ToLower.Replace(" ", "_").Contains(key) Then
-                      ParentKeyID = key
-                      Exit For
-                    End If
-                  Next
+            If String.IsNullOrEmpty(ParentKeyID) Then
+              For Each key In imlFeatures.Images.Keys
+                If ParentFeatures(FeatureDisplayName).ToLower.Replace(" ", "_").Contains(key) Then
+                  ParentKeyID = key
+                  Exit For
                 End If
-                If Not String.IsNullOrEmpty(ParentKeyID) Then
-                  newNode.ImageKey = ParentKeyID
-                Else
-                  newNode.ImageKey = "Unknown"
-                End If
-                newNode.SelectedImageKey = newNode.ImageKey
-              Else
-                parentNode.Nodes.Add(tvItem)
-              End If
-            Else
-              tvFeatures.Nodes.Add(tvItem)
+              Next
             End If
-          End If
-          If Not String.IsNullOrEmpty(KeyID) Then
-            tvItem.ImageKey = KeyID
+            If Not String.IsNullOrEmpty(ParentKeyID) Then
+              newNode.ImageKey = ParentKeyID
+            Else
+              newNode.ImageKey = "Unknown"
+            End If
+            newNode.SelectedImageKey = newNode.ImageKey
           Else
-            If tvItem.Parent IsNot Nothing AndAlso Not String.IsNullOrEmpty(tvItem.Parent.ImageKey) Then
-              tvItem.ImageKey = tvItem.Parent.ImageKey
-            Else
-              tvItem.ImageKey = "Unknown"
-            End If
+            parentNode.Nodes.Add(tvItem)
           End If
-          tvItem.SelectedImageKey = tvItem.ImageKey
-        Next
-        tvFeatures.Sort()
-      Else
-        tvFeatures.Enabled = False
+        Else
+          tvFeatures.Nodes.Add(tvItem)
+        End If
       End If
-    End If
+      If Not String.IsNullOrEmpty(KeyID) Then
+        tvItem.ImageKey = KeyID
+      Else
+        If tvItem.Parent IsNot Nothing AndAlso Not String.IsNullOrEmpty(tvItem.Parent.ImageKey) Then
+          tvItem.ImageKey = tvItem.Parent.ImageKey
+        Else
+          tvItem.ImageKey = "Unknown"
+        End If
+      End If
+      tvItem.SelectedImageKey = tvItem.ImageKey
+    Next
+    tvFeatures.Sort()
+    tvFeatures.Tag = Nothing
   End Sub
   Private Sub DisplayUpdates()
-    If lvUpdates.Items.Count > 0 Then
-      lvUpdates.ReadOnly = False
-      Return
-    End If
+    If lvUpdates.Items.Count > 0 Then Return
     If UpdateData Is Nothing Then
       lvUpdates.ReadOnly = True
       Return
     End If
+    lvUpdates.Tag = "LOADING"
     lvUpdates.ReadOnly = False
     Dim sGroupList As New Collections.Generic.SortedDictionary(Of String, String)
     For Each pUpdate As Update_Integrated In UpdateData
@@ -685,7 +689,7 @@
         Else
           lvItem.SubItems.Add(pVer)
         End If
-
+        Dim en As String = ChrW(&H2003)
         Dim ttName As String = Nothing
         If Not String.IsNullOrEmpty(pUpdate.Ident.Name) Then
           ttName = pUpdate.Ident.Name
@@ -693,16 +697,16 @@
         End If
 
         Dim ttState As String = Nothing
-        If Not String.IsNullOrEmpty(pUpdate.State) Then ttState = " State: " & pUpdate.State
+        If Not String.IsNullOrEmpty(pUpdate.State) Then ttState = en & "State: " & pUpdate.State
 
         Dim ttInstalled As String = Nothing
-        If Not String.IsNullOrEmpty(pUpdate.InstallTime) Then ttInstalled = " Installed: " & pUpdate.InstallTime
+        If Not String.IsNullOrEmpty(pUpdate.InstallTime) Then ttInstalled = en & "Installed: " & pUpdate.InstallTime
 
-        Dim ttArch As String = " " & pUpdate.Ident.Architecture
+        Dim ttArch As String = en & pUpdate.Ident.Architecture
         If Not String.IsNullOrEmpty(pUpdate.ReleaseType) Then ttArch &= " " & pUpdate.ReleaseType
 
         Dim ttLang As String = Nothing
-        If Not String.IsNullOrEmpty(pUpdate.Ident.Language) AndAlso Not pUpdate.Ident.Language = "Neutral" Then ttLang = " Language: " & pUpdate.Ident.Language
+        If Not String.IsNullOrEmpty(pUpdate.Ident.Language) AndAlso Not pUpdate.Ident.Language = "Neutral" Then ttLang = en & "Language: " & pUpdate.Ident.Language
 
         lvItem.ToolTipText = IIf(String.IsNullOrEmpty(ttName), "", ttName & vbNewLine) &
                              IIf(String.IsNullOrEmpty(ttState), "", ttState & vbNewLine) &
@@ -884,40 +888,40 @@
         Else
           lvItem.SubItems.Add(pVer)
         End If
-
+        Dim en As String = ChrW(&H2003)
         Dim ttName As String = Nothing
         If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.ProductName) Then
           ttName = pUpdate.UpdateInfo.ProductName
           If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.ProductVersion) Then ttName &= " v" & pUpdate.UpdateInfo.ProductVersion
         End If
 
-        Dim ttDescr As String = pUpdate.UpdateInfo.Description
+        Dim ttDescr As String = en & pUpdate.UpdateInfo.Description
 
         Dim ttState As String = Nothing
-        If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.State) Then ttState = " State: " & pUpdate.UpdateInfo.State
+        If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.State) Then ttState = en & "State: " & pUpdate.UpdateInfo.State
 
         Dim ttCreation As String = Nothing
-        If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.CreationTime) Then ttCreation = " Created: " & pUpdate.UpdateInfo.CreationTime
+        If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.CreationTime) Then ttCreation = en & "Created: " & pUpdate.UpdateInfo.CreationTime
 
         Dim ttInstalled As String = Nothing
         If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.InstallTime) Then
-          ttInstalled = " Installed: " & pUpdate.UpdateInfo.InstallTime
+          ttInstalled = en & "Installed: " & pUpdate.UpdateInfo.InstallTime
           If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.InstallClient) AndAlso Not pUpdate.UpdateInfo.InstallClient = "DISM Package Manager Provider" Then ttInstalled &= " by " & pUpdate.UpdateInfo.InstallClient
         End If
 
         Dim ttCompany As String = Nothing
         If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.Company) Then
-          ttCompany = " " & pUpdate.UpdateInfo.Company
+          ttCompany = en & pUpdate.UpdateInfo.Company
           If (Not String.IsNullOrEmpty(pUpdate.UpdateInfo.Copyright)) AndAlso (Not pUpdate.UpdateInfo.Company.ToLower = pUpdate.UpdateInfo.Copyright.ToLower) Then ttCompany &= " (" & pUpdate.UpdateInfo.Copyright & ")"
         ElseIf Not String.IsNullOrEmpty(pUpdate.UpdateInfo.Copyright) Then
-          ttCompany = " " & pUpdate.UpdateInfo.Copyright
+          ttCompany = en & pUpdate.UpdateInfo.Copyright
         End If
 
-        Dim ttArch As String = " " & pUpdate.Ident.Architecture
+        Dim ttArch As String = en & pUpdate.Ident.Architecture
         If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.ReleaseType) Then ttArch &= " " & pUpdate.UpdateInfo.ReleaseType
 
         Dim ttLang As String = Nothing
-        If Not String.IsNullOrEmpty(pUpdate.Ident.Language) AndAlso Not pUpdate.Ident.Language = "Neutral" Then ttLang = " Language: " & pUpdate.Ident.Language
+        If Not String.IsNullOrEmpty(pUpdate.Ident.Language) AndAlso Not pUpdate.Ident.Language = "Neutral" Then ttLang = en & "Language: " & pUpdate.Ident.Language
 
         Dim ttCustom As String = Nothing
         If Not pUpdate.UpdateInfo.CustomProperties Is Nothing Then
@@ -931,7 +935,7 @@
               ElseIf sPropKey = "LPType" Then
                 sPropKey = "Language Pack Type"
               End If
-              ttCustom &= " " & sPropKey & ": " & sPropVal & vbNewLine
+              ttCustom &= en & sPropKey & ": " & sPropVal & vbNewLine
             End If
           Next
           If Not String.IsNullOrEmpty(ttCustom) Then
@@ -951,7 +955,7 @@
               If sFeatKey = "State" Then
                 sFeatKey = "Feature State"
               End If
-              ttFeature &= " " & sFeatKey & ": " & sFeatVal & vbNewLine
+              ttFeature &= en & sFeatKey & ": " & sFeatVal & vbNewLine
             End If
           Next
           If Not String.IsNullOrEmpty(ttFeature) Then
@@ -988,12 +992,10 @@
       End If
     Next
     lvUpdates.Sort()
+    lvUpdates.Tag = Nothing
   End Sub
   Private Sub DisplayDrivers()
-    If lvDriverClass.Items.Count > 0 Then
-      lvDriverClass.ReadOnly = False
-      Return
-    End If
+    If lvDriverClass.Items.Count > 0 Then Return
     If DriverData Is Nothing Then
       lvDriverClass.Items.Clear()
       lvDriverClass.ReadOnly = True
@@ -1038,11 +1040,12 @@
       If lvDriverClass.Items.ContainsKey(cDriver.Key) Then Continue For
       Dim sGroupTitle As String = GetValidDriverDescription(cDriver.Value)
       Dim lvGroupItem As ListViewItem = lvDriverClass.Items.Add(cDriver.Key, sGroupTitle, cDriver.Key)
+      Dim en As String = ChrW(&H2003)
       lvGroupItem.ToolTipText = sGroupTitle & vbNewLine &
-                                " Class Name: " & cDriver.Value.ClassName & vbNewLine &
-                                " Class Description: " & cDriver.Value.ClassDescription & vbNewLine &
-                                " Class GUID: " & cDriver.Value.ClassGUID
-      If Not String.IsNullOrEmpty(cDriver.Value.BootCritical) Then lvGroupItem.ToolTipText &= vbNewLine & " Boot Critical: " & cDriver.Value.BootCritical
+                                en & "Class Name: " & cDriver.Value.ClassName & vbNewLine &
+                                en & "Class Description: " & cDriver.Value.ClassDescription & vbNewLine &
+                                en & "Class GUID: " & cDriver.Value.ClassGUID
+      If Not String.IsNullOrEmpty(cDriver.Value.BootCritical) Then lvGroupItem.ToolTipText &= vbNewLine & en & "Boot Critical: " & cDriver.Value.BootCritical
     Next
     lvDriverClass.ReadOnly = (lvDriverClass.Items.Count = 0)
     ResizeDrivers()
@@ -1136,35 +1139,35 @@
         imlDriverINF.Images.Add(sDeviceKey, pDriver.DriverIcon)
         Dim lvDeviceItem As ListViewItem = lvDriverINF.Items.Add(sDeviceKey, sDeviceTitle, sDeviceKey)
         lvDeviceItem.SubItems.Add(pDriver.Version)
-
+        Dim en As String = ChrW(&H2003)
         Dim ttPublishedName As String = Nothing
         If Not String.IsNullOrEmpty(pDriver.PublishedName) Then
           ttPublishedName = pDriver.PublishedName
           If Not String.IsNullOrEmpty(pDriver.Version) Then ttPublishedName &= " v" & pDriver.Version
         End If
         Dim ttOriginalFileName As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.OriginalFileName) Then ttOriginalFileName = " Original File Name: " & pDriver.OriginalFileName
+        If Not String.IsNullOrEmpty(pDriver.OriginalFileName) Then ttOriginalFileName = en & "Original File Name: " & pDriver.OriginalFileName
         Dim ttDriverStorePath As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.DriverStorePath) Then ttDriverStorePath = " Driver Store Path: " & pDriver.DriverStorePath
+        If Not String.IsNullOrEmpty(pDriver.DriverStorePath) Then ttDriverStorePath = en & "Driver Store Path: " & pDriver.DriverStorePath
         Dim ttInbox As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.Inbox) Then ttInbox = " Inbox: " & pDriver.Inbox
+        If Not String.IsNullOrEmpty(pDriver.Inbox) Then ttInbox = en & "Inbox: " & pDriver.Inbox
         Dim ttClassName As String = Nothing
         If Not String.IsNullOrEmpty(pDriver.ClassName) Then
-          ttClassName = " Class Name: " & pDriver.ClassName
+          ttClassName = en & "Class Name: " & pDriver.ClassName
           If Not String.IsNullOrEmpty(pDriver.ClassDescription) Then ttClassName &= " (" & pDriver.ClassDescription & ")"
         ElseIf Not String.IsNullOrEmpty(pDriver.ClassDescription) Then
-          ttClassName = " Class Description: " & pDriver.ClassDescription
+          ttClassName = en & "Class Description: " & pDriver.ClassDescription
         End If
         Dim ttClassGUID As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.ClassGUID) Then ttClassGUID = " Class GUID: " & pDriver.ClassGUID
+        If Not String.IsNullOrEmpty(pDriver.ClassGUID) Then ttClassGUID = en & "Class GUID: " & pDriver.ClassGUID
         Dim ttProviderName As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.ProviderName) Then ttProviderName = " Provider: " & pDriver.ProviderName
+        If Not String.IsNullOrEmpty(pDriver.ProviderName) Then ttProviderName = en & "Provider: " & pDriver.ProviderName
         Dim ttDate As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.Date) Then ttDate = " Date: " & pDriver.Date
+        If Not String.IsNullOrEmpty(pDriver.Date) Then ttDate = en & "Date: " & pDriver.Date
         Dim ttArch As String = Nothing
-        If pDriver.Architectures IsNot Nothing AndAlso pDriver.Architectures.Count > 0 Then ttArch = " Supported Architectures: " & Join(pDriver.Architectures.ToArray, ", ")
+        If pDriver.Architectures IsNot Nothing AndAlso pDriver.Architectures.Count > 0 Then ttArch = en & "Supported Architectures: " & Join(pDriver.Architectures.ToArray, ", ")
         Dim ttBootCritical As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.BootCritical) Then ttBootCritical = " Boot Critical: " & pDriver.BootCritical
+        If Not String.IsNullOrEmpty(pDriver.BootCritical) Then ttBootCritical = en & "Boot Critical: " & pDriver.BootCritical
 
         lvDeviceItem.ToolTipText = IIf(String.IsNullOrEmpty(ttPublishedName), "", ttPublishedName & vbNewLine) &
                              IIf(String.IsNullOrEmpty(ttOriginalFileName), "", ttOriginalFileName & vbNewLine) &
@@ -1329,6 +1332,7 @@
   End Sub
 
   Private Sub tvFeatures_AfterCheck(sender As Object, e As System.Windows.Forms.TreeViewEventArgs) Handles tvFeatures.AfterCheck
+    If tvFeatures.Tag IsNot Nothing Then Return
     If e.Node.ToolTipText = "Node Group - Not a Feature" Then
       If e.Node.Checked Then e.Node.Checked = False
     Else
@@ -1374,6 +1378,7 @@
   End Sub
 
   Private Sub tvFeatures_BeforeCheck(sender As Object, e As System.Windows.Forms.TreeViewCancelEventArgs) Handles tvFeatures.BeforeCheck
+    If tvFeatures.Tag IsNot Nothing Then Return
     If e.Node.ToolTipText = "Node Group - Not a Feature" Then
       If Not e.Node.Checked Then e.Cancel = True
     Else
@@ -1459,15 +1464,61 @@
       selFeature = tvFeatures.HitTest(e.X, e.Y).Node
       If selFeature IsNot Nothing Then
         If selFeature.Nodes Is Nothing OrElse selFeature.Nodes.Count = 0 Then
-          mnuFeatureExpand.Enabled = False
-          mnuFeatureCollapse.Enabled = False
+          Dim collapsed As Boolean = False
+          Dim expanded As Boolean = False
+          If selFeature.Parent IsNot Nothing Then
+            If selFeature.Parent.IsExpanded Then
+              expanded = True
+            Else
+              collapsed = True
+            End If
+          End If
+          mnuFeatureExpand.Enabled = collapsed
+          mnuFeatureCollapse.Enabled = expanded
         Else
-          mnuFeatureExpand.Enabled = True
-          mnuFeatureCollapse.Enabled = True
+          Dim collapsed As Boolean = False
+          Dim expanded As Boolean = False
+          If selFeature.Parent IsNot Nothing Then
+            If selFeature.Parent.IsExpanded Then
+              expanded = True
+            Else
+              collapsed = True
+            End If
+          End If
+          If selFeature.IsExpanded Then
+            expanded = True
+          Else
+            collapsed = True
+          End If
+          For Each tvNode As TreeNode In selFeature.Nodes
+            IterateNodes(tvNode, expanded, collapsed)
+          Next
+          mnuFeatureExpand.Enabled = collapsed
+          mnuFeatureCollapse.Enabled = expanded
         End If
+        Dim collapsedAll As Boolean = False
+        Dim expandedAll As Boolean = False
+        For Each tvNode As TreeNode In tvFeatures.Nodes
+          IterateNodes(tvNode, expandedAll, collapsedAll)
+        Next
+        mnuFeatureExpandAll.Enabled = collapsedAll
+        mnuFeatureCollapseAll.Enabled = expandedAll
         mnuFeatureEnabled.Checked = selFeature.Checked
         mnuFeatures.Show(tvFeatures, e.Location)
       End If
+    End If
+  End Sub
+
+  Private Sub IterateNodes(tvNode As TreeNode, ByRef expanded As Boolean, ByRef collapsed As Boolean)
+    If tvNode.Nodes IsNot Nothing AndAlso tvNode.Nodes.Count > 0 Then
+      If tvNode.IsExpanded Then
+        expanded = True
+      Else
+        collapsed = True
+      End If
+      For Each tvSubNode As TreeNode In tvNode.Nodes
+        IterateNodes(tvSubNode, expanded, collapsed)
+      Next
     End If
   End Sub
 
@@ -1475,6 +1526,10 @@
     If selFeature IsNot Nothing Then
       selFeature.Checked = Not selFeature.Checked
     End If
+  End Sub
+
+  Private Sub mnuFeatureExpandAll_Click(sender As System.Object, e As System.EventArgs) Handles mnuFeatureExpandAll.Click
+    tvFeatures.ExpandAll()
   End Sub
 
   Private Sub mnuFeatureExpand_Click(sender As System.Object, e As System.EventArgs) Handles mnuFeatureExpand.Click
@@ -1485,11 +1540,20 @@
 
   Private Sub mnuFeatureCollapse_Click(sender As System.Object, e As System.EventArgs) Handles mnuFeatureCollapse.Click
     If selFeature IsNot Nothing Then
-      selFeature.Collapse(False)
+      If selFeature.IsExpanded Then
+        selFeature.Collapse(False)
+      ElseIf selFeature.Parent IsNot Nothing AndAlso selFeature.Parent.IsExpanded Then
+        selFeature.Parent.Collapse(False)
+      End If
     End If
   End Sub
 
+  Private Sub mnuFeatureCollapseAll_Click(sender As System.Object, e As System.EventArgs) Handles mnuFeatureCollapseAll.Click
+    tvFeatures.CollapseAll()
+  End Sub
+
   Private Sub lvUpdates_ItemChecked(sender As Object, e As System.Windows.Forms.ItemCheckedEventArgs) Handles lvUpdates.ItemChecked
+    If lvUpdates.Tag IsNot Nothing Then Return
     For I As Integer = 0 To UpdateData.Count - 1
       If UpdateData(I).Identity = CType(e.Item.Tag, Update_Integrated).Identity Then
         Dim newData As Update_Integrated = UpdateData(I)

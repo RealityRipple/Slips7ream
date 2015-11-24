@@ -1051,7 +1051,8 @@ Public Module modFunctions
           dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
           dlgUpdate.FooterCheckBoxChecked = False
           dlgUpdate.FooterCheckBoxText = "&Do this for all new versions"
-          Dim em As String = ChrW(&H2003) & ChrW(&H2003)
+          Dim en As String = ChrW(&H2003)
+          Dim em As String = en & en
           Dim sYes As String
           Dim newFInfo As New IO.FileInfo(newData.Path)
           If String.IsNullOrEmpty(newData.Failure) Then
@@ -1117,7 +1118,8 @@ Public Module modFunctions
           dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
           dlgUpdate.FooterCheckBoxChecked = False
           dlgUpdate.FooterCheckBoxText = "&Do this for all old versions"
-          Dim em As String = ChrW(&H2003) & ChrW(&H2003)
+          Dim en As String = ChrW(&H2003)
+          Dim em As String = en & en
           Dim sYes As String
           Dim newFInfo As New IO.FileInfo(newData.Path)
           If String.IsNullOrEmpty(newData.Failure) Then
@@ -1210,13 +1212,12 @@ Public Module modFunctions
       Return TaskDialogResult.Cancel
     End If
   End Function
-
   Public Enum Comparison
     Newer
     Mixed
     Older
   End Enum
-  Public Function UpdateSelectionBox2(owner As Form, newData As Update_File, oldPData() As Update_Integrated, PList() As ImagePackage, ByRef Always As Boolean, newCompared As Comparison) As TaskDialogResult
+  Public Function IntegratedUpdateSelectionBox(owner As Form, newData As Update_File, oldPData() As Update_Integrated, PList() As ImagePackage, ByRef Always As Boolean, newCompared As Comparison) As TaskDialogResult
     If TaskDialog.IsPlatformSupported Then
       Dim UpdateName As String = Nothing
       If String.IsNullOrEmpty(newData.Failure) Then
@@ -1288,7 +1289,7 @@ Public Module modFunctions
             Try
               ret = dlgUpdate.Show
             Catch ex As Exception
-              Return UpdateSelectionBox2Legacy(owner, newData, oldPData, PList, Always)
+              Return IntegratedUpdateSelectionBoxLegacy(owner, newData, oldPData, PList, Always)
             End Try
             Always = dlgUpdate.FooterCheckBoxChecked
             Return ret
@@ -1351,7 +1352,7 @@ Public Module modFunctions
             Try
               ret = dlgUpdate.Show
             Catch ex As Exception
-              Return UpdateSelectionBox2Legacy(owner, newData, oldPData, PList, Always)
+              Return IntegratedUpdateSelectionBoxLegacy(owner, newData, oldPData, PList, Always)
             End Try
             Always = dlgUpdate.FooterCheckBoxChecked
             Return ret
@@ -1436,17 +1437,17 @@ Public Module modFunctions
             Try
               Return dlgUpdate.Show
             Catch ex As Exception
-              Return UpdateSelectionBox2Legacy(owner, newData, oldPData, PList, newCompared)
+              Return IntegratedUpdateSelectionBoxLegacy(owner, newData, oldPData, PList, newCompared)
             End Try
           End Using
         Case Else
           Return TaskDialogResult.Cancel
       End Select
     Else
-      Return UpdateSelectionBox2Legacy(owner, newData, oldPData, PList, newCompared)
+      Return IntegratedUpdateSelectionBoxLegacy(owner, newData, oldPData, PList, newCompared)
     End If
   End Function
-  Private Function UpdateSelectionBox2Legacy(owner As Form, newData As Update_File, oldPData() As Update_Integrated, PList() As ImagePackage, newCompared As Comparison) As TaskDialogResult
+  Private Function IntegratedUpdateSelectionBoxLegacy(owner As Form, newData As Update_File, oldPData() As Update_Integrated, PList() As ImagePackage, newCompared As Comparison) As TaskDialogResult
     Dim UpdateName As String = Nothing
     If String.IsNullOrEmpty(newData.Failure) Then
       If newData.Name.Contains("Internet Explorer") Then
@@ -1484,323 +1485,6 @@ Public Module modFunctions
     End Select
     Return TaskDialogResult.Cancel
   End Function
-
-  Public Function DriverSelectionBox(owner As Form, newData As Driver, oldPData() As Driver, PList() As ImagePackage, ByRef Always As Boolean, newCompared As Comparison) As TaskDialogResult
-    If TaskDialog.IsPlatformSupported Then
-      Dim DriverName As String = Nothing
-      If Not String.IsNullOrEmpty(newData.PublishedName) Then DriverName = IO.Path.GetFileNameWithoutExtension(newData.PublishedName)
-      If String.IsNullOrEmpty(DriverName) Then
-        If Not String.IsNullOrEmpty(newData.OriginalFileName) Then DriverName = IO.Path.GetFileNameWithoutExtension(newData.OriginalFileName)
-      End If
-      If String.IsNullOrEmpty(DriverName) Then
-        If Not String.IsNullOrEmpty(newData.DriverStorePath) Then DriverName = IO.Path.GetFileNameWithoutExtension(newData.DriverStorePath)
-      End If
-      Select Case newCompared
-        Case Comparison.Newer
-          Using dlgUpdate As New TaskDialog
-            dlgUpdate.Cancelable = True
-            dlgUpdate.StartupLocation = TaskDialogStartupLocation.CenterOwner
-            dlgUpdate.Caption = "Replace Older Versions?"
-            dlgUpdate.InstructionText = "There are already older versions of " & DriverName & " integrated into Image Packages."
-            dlgUpdate.StandardButtons = TaskDialogStandardButtons.Cancel
-            dlgUpdate.Text = "Click the version you want to keep"
-            dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
-            dlgUpdate.FooterCheckBoxChecked = False
-            dlgUpdate.FooterCheckBoxText = "&Do this for all new versions"
-            Dim en As String = ChrW(&H2003)
-            Dim em As String = en & en
-            Dim sYes As String
-            If String.IsNullOrEmpty(newData.DriverStorePath) Then
-              Dim newDate As String = newData.Date
-              sYes = "Replace the updates with this new version:" & vbNewLine &
-                em & DriverName & vbNewLine &
-                em & "Provider: " & newData.ProviderName & vbNewLine &
-                em & "Built: " & newDate
-            ElseIf Not IO.File.Exists(newData.DriverStorePath) Then
-              If IO.Directory.Exists(newData.DriverStorePath) Then
-                Dim newDInfo As New IO.DirectoryInfo(IO.Path.GetDirectoryName(newData.DriverStorePath))
-                Dim newDate As String = newData.Date
-                If String.IsNullOrEmpty(newDate) Then newDate = newDInfo.LastWriteTime.ToShortDateString
-                sYes = "Replace the updates with this new version:" & vbNewLine &
-                  em & IO.Path.GetFileNameWithoutExtension(newData.DriverStorePath) & vbNewLine &
-                  em & "Provider: " & newData.ProviderName & vbNewLine &
-                  em & "Driver Folder Size: " & ByteSize(getTotalSize(newDInfo)) & vbNewLine &
-                  em & "Built: " & newDate
-              Else
-                sYes = "Replace the updates with this new version:" & vbNewLine &
-                  em & IO.Path.GetFileNameWithoutExtension(newData.DriverStorePath) & vbNewLine &
-                  em & "Provider: " & newData.ProviderName & vbNewLine &
-                  em & "Built: " & newData.Date
-              End If
-            Else
-              Dim newFInfo As New IO.FileInfo(newData.DriverStorePath)
-              Dim newDInfo As New IO.DirectoryInfo(IO.Path.GetDirectoryName(newData.DriverStorePath))
-              Dim newDate As String = newData.Date
-              If String.IsNullOrEmpty(newDate) Then newDate = newFInfo.LastWriteTime.ToShortDateString
-              sYes = "Replace the updates with this new version:" & vbNewLine &
-                em & IO.Path.GetFileNameWithoutExtension(newData.DriverStorePath) & vbNewLine &
-                em & "Provider: " & newData.ProviderName & vbNewLine &
-                em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
-                em & "Driver Folder Size: " & ByteSize(getTotalSize(newDInfo)) & vbNewLine &
-                em & "Built: " & newDate
-            End If
-            Dim cmdYes As New CommandLink(
-              "cmdYes",
-              "Use Newer Version " & newData.Version,
-              sYes)
-            cmdYes.Default = True
-            AddHandler cmdYes.Click, AddressOf SelectionDialogCommandLink_Click
-            dlgUpdate.Controls.Add(cmdYes)
-            Dim sNo As String
-            sNo = "These updates will not be replaced:"
-            For I As Integer = 0 To oldPData.Length - 1
-              If CompareMSVersions(newData.Version, oldPData(I).Version) > 0 Then
-                Dim oldName As String = Nothing
-                If Not String.IsNullOrEmpty(oldPData(I).PublishedName) Then oldName = IO.Path.GetFileNameWithoutExtension(oldPData(I).PublishedName)
-                If String.IsNullOrEmpty(oldName) Then
-                  If Not String.IsNullOrEmpty(oldPData(I).OriginalFileName) Then oldName = IO.Path.GetFileNameWithoutExtension(oldPData(I).OriginalFileName)
-                End If
-                sNo &= vbNewLine &
-                       en & oldPData(I).PublishedName & " (" & oldPData(I).Version & ")" & vbNewLine &
-                       em & "Installed in " & PList(I).Name
-              End If
-            Next
-            Dim cmdNo As New CommandLink(
-              "cmdNo",
-              "Use Older Integrated Versions",
-              sNo)
-            AddHandler cmdNo.Click, AddressOf SelectionDialogCommandLink_Click
-            dlgUpdate.Controls.Add(cmdNo)
-            dlgUpdate.OwnerWindowHandle = owner.Handle
-            AddHandler dlgUpdate.Opened, AddressOf RefreshDlg
-            Dim ret As TaskDialogResult
-            Try
-              ret = dlgUpdate.Show
-            Catch ex As Exception
-              Return DriverSelectionBoxLegacy(owner, newData, oldPData, PList, Always)
-            End Try
-            Always = dlgUpdate.FooterCheckBoxChecked
-            Return ret
-          End Using
-        Case Comparison.Older
-          Using dlgUpdate As New TaskDialog
-            dlgUpdate.Cancelable = True
-            dlgUpdate.StartupLocation = TaskDialogStartupLocation.CenterOwner
-            dlgUpdate.Caption = "Replace Newer Versions?"
-            dlgUpdate.InstructionText = "There are already newer versions of " & DriverName & " integrated into Image Packages."
-            dlgUpdate.StandardButtons = TaskDialogStandardButtons.Cancel
-            dlgUpdate.Text = "Click the version you want to keep"
-            dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
-            dlgUpdate.FooterCheckBoxChecked = False
-            dlgUpdate.FooterCheckBoxText = "&Do this for all old versions"
-            Dim en As String = ChrW(&H2003)
-            Dim em As String = en & en
-            Dim sYes As String
-            If String.IsNullOrEmpty(newData.DriverStorePath) Then
-              Dim newDate As String = newData.Date
-              sYes = "Replace the updates with this old version:" & vbNewLine &
-                em & DriverName & vbNewLine &
-                em & "Provider: " & newData.ProviderName & vbNewLine &
-                em & "Built: " & newDate
-            ElseIf Not IO.File.Exists(newData.DriverStorePath) Then
-              If IO.Directory.Exists(newData.DriverStorePath) Then
-                Dim newDInfo As New IO.DirectoryInfo(IO.Path.GetDirectoryName(newData.DriverStorePath))
-                Dim newDate As String = newData.Date
-                If String.IsNullOrEmpty(newDate) Then newDate = newDInfo.LastWriteTime.ToShortDateString
-                sYes = "Replace the updates with this old version:" & vbNewLine &
-                  em & IO.Path.GetFileNameWithoutExtension(newData.DriverStorePath) & vbNewLine &
-                  em & "Provider: " & newData.ProviderName & vbNewLine &
-                  em & "Driver Folder Size: " & ByteSize(getTotalSize(newDInfo)) & vbNewLine &
-                  em & "Built: " & newDate
-              Else
-                sYes = "Replace the updates with this old version:" & vbNewLine &
-                  em & IO.Path.GetFileNameWithoutExtension(newData.DriverStorePath) & vbNewLine &
-                  em & "Provider: " & newData.ProviderName & vbNewLine &
-                  em & "Built: " & newData.Date
-              End If
-            Else
-              Dim newFInfo As New IO.FileInfo(newData.DriverStorePath)
-              Dim newDInfo As New IO.DirectoryInfo(IO.Path.GetDirectoryName(newData.DriverStorePath))
-              Dim newDate As String = newData.Date
-              If String.IsNullOrEmpty(newDate) Then newDate = newFInfo.LastWriteTime.ToShortDateString
-              sYes = "Replace the updates with this new version:" & vbNewLine &
-                em & IO.Path.GetFileNameWithoutExtension(newData.DriverStorePath) & vbNewLine &
-                em & "Provider: " & newData.ProviderName & vbNewLine &
-                em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
-                em & "Driver Folder Size: " & ByteSize(getTotalSize(newDInfo)) & vbNewLine &
-                em & "Built: " & newDate
-            End If
-            Dim cmdYes As New CommandLink(
-              "cmdYes",
-              "Use Older Version " & newData.Version,
-              sYes)
-            AddHandler cmdYes.Click, AddressOf SelectionDialogCommandLink_Click
-            Dim sNo As String
-            sNo = "These updates will not be replaced:"
-            For I As Integer = 0 To oldPData.Length - 1
-              If CompareMSVersions(newData.Version, oldPData(I).Version) > 0 Then
-                sNo &= vbNewLine &
-                       en & oldPData(I).PublishedName & " (" & oldPData(I).Version & ")" & vbNewLine &
-                       em & "Installed in " & PList(I).Name
-              End If
-            Next
-            Dim cmdNo As New CommandLink(
-              "cmdNo",
-              "Use Newer Integrated Versions",
-              sNo)
-            cmdNo.Default = True
-            AddHandler cmdNo.Click, AddressOf SelectionDialogCommandLink_Click
-            dlgUpdate.Controls.Add(cmdNo)
-            dlgUpdate.Controls.Add(cmdYes)
-            dlgUpdate.OwnerWindowHandle = owner.Handle
-            AddHandler dlgUpdate.Opened, AddressOf RefreshDlg
-            Dim ret As TaskDialogResult
-            Try
-              ret = dlgUpdate.Show
-            Catch ex As Exception
-              Return DriverSelectionBoxLegacy(owner, newData, oldPData, PList, Always)
-            End Try
-            Always = dlgUpdate.FooterCheckBoxChecked
-            Return ret
-          End Using
-        Case Comparison.Mixed
-          Using dlgUpdate As New TaskDialog
-            dlgUpdate.Cancelable = True
-            dlgUpdate.StartupLocation = TaskDialogStartupLocation.CenterOwner
-            dlgUpdate.Caption = "Replace Other Versions?"
-            dlgUpdate.InstructionText = "There are already other versions of " & DriverName & " integrated into Image Packages."
-            dlgUpdate.StandardButtons = TaskDialogStandardButtons.Cancel
-            dlgUpdate.Text = "Click the versions you want to keep"
-            dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
-            'dlgUpdate.FooterCheckBoxChecked = False
-            'dlgUpdate.FooterCheckBoxText = "&Do this for all versions"
-            Dim en As String = ChrW(&H2003)
-            Dim em As String = en & en
-            Dim sAll As String
-            If String.IsNullOrEmpty(newData.DriverStorePath) Then
-              Dim newDate As String = newData.Date
-              sAll = "Replace all updates with this version:" & vbNewLine &
-                em & DriverName & vbNewLine &
-                em & "Provider: " & newData.ProviderName & vbNewLine &
-                em & "Built: " & newDate
-            ElseIf Not IO.File.Exists(newData.DriverStorePath) Then
-              If IO.Directory.Exists(newData.DriverStorePath) Then
-                Dim newDInfo As New IO.DirectoryInfo(IO.Path.GetDirectoryName(newData.DriverStorePath))
-                Dim newDate As String = newData.Date
-                If String.IsNullOrEmpty(newDate) Then newDate = newDInfo.LastWriteTime.ToShortDateString
-                sAll = "Replace all updates with this version:" & vbNewLine &
-                  em & IO.Path.GetFileNameWithoutExtension(newData.DriverStorePath) & vbNewLine &
-                  em & "Provider: " & newData.ProviderName & vbNewLine &
-                  em & "Driver Folder Size: " & ByteSize(getTotalSize(newDInfo)) & vbNewLine &
-                  em & "Built: " & newDate
-              Else
-                sAll = "Replace all updates with this version:" & vbNewLine &
-                  em & IO.Path.GetFileNameWithoutExtension(newData.DriverStorePath) & vbNewLine &
-                  em & "Provider: " & newData.ProviderName & vbNewLine &
-                  em & "Built: " & newData.Date
-              End If
-            Else
-              Dim newFInfo As New IO.FileInfo(newData.DriverStorePath)
-              Dim newDInfo As New IO.DirectoryInfo(IO.Path.GetDirectoryName(newData.DriverStorePath))
-              Dim newDate As String = newData.Date
-              If String.IsNullOrEmpty(newDate) Then newDate = newFInfo.LastWriteTime.ToShortDateString
-              sAll = "Replace all updates with this version:" & vbNewLine &
-                em & IO.Path.GetFileNameWithoutExtension(newData.DriverStorePath) & vbNewLine &
-                em & "Provider: " & newData.ProviderName & vbNewLine &
-                em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
-                em & "Driver Folder Size: " & ByteSize(getTotalSize(newDInfo)) & vbNewLine &
-                em & "Built: " & newDate
-            End If
-            Dim cmdAll As New CommandLink(
-              "cmdAll",
-              "Use Version " & newData.Version,
-              sAll)
-            AddHandler cmdAll.Click, AddressOf SelectionDialogCommandLink_Click
-            Dim sYes As String
-            sYes = "These updates will be upgraded:"
-            For I As Integer = 0 To oldPData.Length - 1
-              If CompareMSVersions(newData.Version, oldPData(I).Version) > 0 Then
-                sYes &= vbNewLine &
-                        en & oldPData(I).PublishedName & " (" & oldPData(I).Version & ")" & vbNewLine &
-                        em & "Installed in " & PList(I).Name
-              End If
-            Next
-            Dim cmdYes As New CommandLink(
-              "cmdYes",
-              "Use Newer Version " & newData.Version & " on Older Updates",
-              sYes)
-            AddHandler cmdYes.Click, AddressOf SelectionDialogCommandLink_Click
-            cmdYes.Default = True
-            Dim sNo As String
-            sNo = "These updates will be downgraded:"
-            For I As Integer = 0 To oldPData.Length - 1
-              If CompareMSVersions(newData.Version, oldPData(I).Version) < 0 Then
-                sNo &= vbNewLine &
-                       en & oldPData(I).PublishedName & " (" & oldPData(I).Version & ")" & vbNewLine &
-                       em & "Installed in " & PList(I).Name
-              End If
-            Next
-            Dim cmdNo As New CommandLink(
-              "cmdNo",
-              "Use Older Version " & newData.Version & " on Newer Updates",
-              sYes)
-            AddHandler cmdYes.Click, AddressOf SelectionDialogCommandLink_Click
-            Dim cmdNone As New CommandLink(
-              "cmdNone",
-              "Don't Replace Integrated Versions.")
-            'cmdNone.Default = True
-            AddHandler cmdNo.Click, AddressOf SelectionDialogCommandLink_Click
-            dlgUpdate.Controls.Add(cmdAll)
-            dlgUpdate.Controls.Add(cmdYes)
-            dlgUpdate.Controls.Add(cmdNo)
-            dlgUpdate.Controls.Add(cmdNone)
-            dlgUpdate.OwnerWindowHandle = owner.Handle
-            AddHandler dlgUpdate.Opened, AddressOf RefreshDlg
-            Try
-              Return dlgUpdate.Show
-            Catch ex As Exception
-              Return DriverSelectionBoxLegacy(owner, newData, oldPData, PList, newCompared)
-            End Try
-          End Using
-        Case Else
-          Return TaskDialogResult.Cancel
-      End Select
-    Else
-      Return DriverSelectionBoxLegacy(owner, newData, oldPData, PList, newCompared)
-    End If
-  End Function
-  Private Function DriverSelectionBoxLegacy(owner As Form, newData As Driver, oldPData() As Driver, PList() As ImagePackage, newCompared As Comparison) As TaskDialogResult
-    Dim DriverName As String = Nothing
-    If String.IsNullOrEmpty(DriverName) Then
-      DriverName = IO.Path.GetFileNameWithoutExtension(newData.OriginalFileName)
-    End If
-    Select Case newCompared
-      Case Comparison.Newer
-        Dim ret As DialogResult = MessageBox.Show(owner, "There are already older versions of this driver integrated in the Image Package." & vbNewLine & "Do you want to replace " & DriverName & " with version " & newData.Version & "?", "Replace Older Versions?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1)
-        If ret = DialogResult.Yes Then Return TaskDialogResult.Yes
-        If ret = DialogResult.No Then Return TaskDialogResult.No
-      Case Comparison.Older
-        Dim ret As DialogResult = MessageBox.Show(owner, "There are already newer versions of this driver integrated in the Image Package." & vbNewLine & "Do you want to replace " & DriverName & " with version " & newData.Version & "?", "Replace Newer Versions?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
-        If ret = DialogResult.Yes Then Return TaskDialogResult.Yes
-        If ret = DialogResult.No Then Return TaskDialogResult.No
-      Case Comparison.Mixed
-        Dim oldRet As DialogResult = MessageBox.Show(owner, "There are already older versions of this update integrated in the Image Package." & vbNewLine & "Do you want to replace " & DriverName & " with version " & newData.Version & "?", "Replace Older Versions?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1)
-        If oldRet = DialogResult.Cancel Then Return TaskDialogResult.Cancel
-        Dim newRet As DialogResult = MessageBox.Show(owner, "There are already newer versions of this update integrated in the Image Package." & vbNewLine & "Do you want to replace " & DriverName & " with version " & newData.Version & "?", "Replace Newer Versions?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
-        If newRet = DialogResult.Cancel Then Return TaskDialogResult.Cancel
-        If oldRet = DialogResult.Yes And newRet = DialogResult.Yes Then
-          Return TaskDialogResult.Ok
-        ElseIf oldRet = DialogResult.Yes And newRet = DialogResult.No Then
-          Return TaskDialogResult.Yes
-        ElseIf oldRet = DialogResult.No And newRet = DialogResult.Yes Then
-          Return TaskDialogResult.No
-        ElseIf oldRet = DialogResult.No And newRet = DialogResult.No Then
-          Return TaskDialogResult.No
-        End If
-    End Select
-    Return TaskDialogResult.Cancel
-  End Function
-
   Private Sub SelectionDialogButton_Click(sender As TaskDialogButton, e As EventArgs)
     Select Case sender.Name
       Case "cmdYes" : CType(sender.HostingDialog, TaskDialog).Close(TaskDialogResult.Yes)
@@ -1820,7 +1504,6 @@ Public Module modFunctions
       Case "cmdNone" : CType(sender.HostingDialog, TaskDialog).Close(TaskDialogResult.Close)
     End Select
   End Sub
-
   Private Class CommandLink
     Inherits TaskDialogCommandLink
     Public Sub New(name As String, text As String)
@@ -1845,7 +1528,6 @@ Public Module modFunctions
       Return str
     End Function
   End Class
-
   Public Enum TaskDialogIcon
     None = 0
     Space = &H1

@@ -4,6 +4,10 @@ Imports System.Windows.Forms
 Public Class ListViewEx
   Inherits ListView
   Private c_ReadOnly As Boolean
+  Private c_FullRowTooltip As Boolean
+  Private c_TooltipTitles As Boolean
+  Private components As System.ComponentModel.IContainer
+  Private WithEvents ttLV As New Slips7ream.ToolTip
   Public Property [ReadOnly] As Boolean
     Get
       Return c_ReadOnly
@@ -12,6 +16,7 @@ Public Class ListViewEx
       c_ReadOnly = value
       MyBase.HideSelection = value
       If value Then
+        MyBase.SelectedItems.Clear()
         MyBase.BackColor = SystemColors.ButtonFace
       Else
         MyBase.BackColor = SystemColors.Window
@@ -19,6 +24,24 @@ Public Class ListViewEx
       For Each lvItem As ListViewItem In Me.Items
         lvItem.BackColor = MyBase.BackColor
       Next
+    End Set
+  End Property
+  <DefaultValue(False), Browsable(True), EditorBrowsable(True), Description("Show Tooltip Text for each ListViewItem across its entire row, not just in the first column."), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)>
+  Public Property FullRowTooltip As Boolean
+    Get
+      Return c_FullRowTooltip
+    End Get
+    Set(value As Boolean)
+      c_FullRowTooltip = value
+    End Set
+  End Property
+  <DefaultValue(False), Browsable(True), EditorBrowsable(True), Description("Turn the first line of the Tooltip Text for each ListViewItem into a bold title."), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)>
+  Public Property TooltipTitles As Boolean
+    Get
+      Return c_TooltipTitles
+    End Get
+    Set(value As Boolean)
+      c_TooltipTitles = value
     End Set
   End Property
   Protected Overrides Sub OnItemCheck(e As System.Windows.Forms.ItemCheckEventArgs)
@@ -64,6 +87,62 @@ Public Class ListViewEx
   Protected Overrides Sub OnMouseClick(e As System.Windows.Forms.MouseEventArgs)
     If Not c_ReadOnly Then MyBase.OnMouseClick(e)
   End Sub
+  Protected Overrides Sub OnMouseMove(e As System.Windows.Forms.MouseEventArgs)
+    MyBase.OnMouseMove(e)
+    If c_FullRowTooltip Then
+      If Me.Items.Count = 0 Then Return
+      Dim lvHTInfo As ListViewHitTestInfo = Me.HitTest(e.X, e.Y)
+      If lvHTInfo.Item Is Nothing Or lvHTInfo.SubItem Is Nothing Then
+        ttLV.ToolTipTitle = Nothing
+        ttLV.SetToolTip(Me, Nothing)
+        Return
+      End If
+      Dim sToolTip As String = lvHTInfo.Item.ToolTipText
+      Dim sTTTitle As String = Nothing
+      Dim sTTText As String = sToolTip
+      If Not String.IsNullOrEmpty(sToolTip) And c_TooltipTitles Then
+        If sToolTip.Contains(vbNewLine) Then
+          Dim sTTSplit() As String = Split(sToolTip, vbNewLine, 2)
+          sTTTitle = sTTSplit(0)
+          sTTText = sTTSplit(1)
+        End If
+      End If
+      If ttLV.GetToolTip(Me) = sTTText Then Return
+      ttLV = New Slips7ream.ToolTip()
+      ttLV.AutoPopDelay = 30000
+      ttLV.InitialDelay = 500
+      ttLV.ReshowDelay = 100
+      ttLV.Persistant = False
+      ttLV.ToolTipTitle = sTTTitle
+      ttLV.SetToolTip(Me, sTTText)
+    ElseIf c_TooltipTitles Then
+      If Me.Items.Count = 0 Then Return
+      Dim lvHTInfo As ListViewHitTestInfo = Me.HitTest(e.X, e.Y)
+      If lvHTInfo.Item Is Nothing OrElse lvHTInfo.Location = ListViewHitTestLocations.None OrElse lvHTInfo.SubItem.Bounds.Left > 0 Then
+        ttLV.ToolTipTitle = Nothing
+        ttLV.SetToolTip(Me, Nothing)
+        Return
+      End If
+      Dim sToolTip As String = lvHTInfo.Item.ToolTipText
+      Dim sTTTitle As String = Nothing
+      Dim sTTText As String = sToolTip
+      If Not String.IsNullOrEmpty(sToolTip) And c_TooltipTitles Then
+        If sToolTip.Contains(vbNewLine) Then
+          Dim sTTSplit() As String = Split(sToolTip, vbNewLine, 2)
+          sTTTitle = sTTSplit(0)
+          sTTText = sTTSplit(1)
+        End If
+      End If
+      If ttLV.GetToolTip(Me) = sTTText Then Return
+      ttLV = New Slips7ream.ToolTip()
+      ttLV.AutoPopDelay = 30000
+      ttLV.InitialDelay = 500
+      ttLV.ReshowDelay = 100
+      ttLV.Persistant = False
+      ttLV.ToolTipTitle = sTTTitle
+      ttLV.SetToolTip(Me, sTTText)
+    End If
+  End Sub
   Protected Overrides Sub OnMouseUp(e As System.Windows.Forms.MouseEventArgs)
     If Not c_ReadOnly Then MyBase.OnMouseUp(e)
   End Sub
@@ -74,6 +153,10 @@ Public Class ListViewEx
       Dim htInfo As ListViewHitTestInfo = HitTest(X, Y)
       If htInfo.Item IsNot Nothing Then
         If htInfo.Location = ListViewHitTestLocations.Label Then
+          OnMouseDoubleClick(New MouseEventArgs(Windows.Forms.MouseButtons.Left, 2, X, Y, 0))
+          m.Result = IntPtr.Zero
+          Return
+        ElseIf htInfo.Location = ListViewHitTestLocations.Image Then
           OnMouseDoubleClick(New MouseEventArgs(Windows.Forms.MouseButtons.Left, 2, X, Y, 0))
           m.Result = IntPtr.Zero
           Return

@@ -227,7 +227,7 @@ Partial Class frmMain
     Me.mnuLabelSpace = New System.Windows.Forms.MenuItem()
     Me.mnuLabelAuto = New System.Windows.Forms.MenuItem()
     Me.ttInfo = New Slips7ream.ToolTip(Me.components)
-    Me.ttLV = New Slips7ream.ToolTip(Me.components)
+    Me.ttActivity = New Slips7ream.ToolTip(Me.components)
     Me.pnlSlips7ream.SuspendLayout()
     CType(Me.spltSlips7ream, System.ComponentModel.ISupportInitialize).BeginInit()
     Me.spltSlips7ream.Panel1.SuspendLayout()
@@ -318,7 +318,7 @@ Partial Class frmMain
     Me.spltSlips7ream.SplitterDistance = 167
     Me.spltSlips7ream.SplitterIncrement = 16
     Me.spltSlips7ream.TabIndex = 4
-    Me.ttInfo.SetTooltip(Me.spltSlips7ream, "Click and Drag to resize the Image Packages and Updates boxes.")
+    Me.ttInfo.SetToolTip(Me.spltSlips7ream, "Click and Drag to resize the Image Packages and Updates boxes.")
     '
     'pnlPackages
     '
@@ -359,6 +359,7 @@ Partial Class frmMain
     Me.lvImages.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colIndex, Me.colName, Me.colSize})
     Me.lvImages.Dock = System.Windows.Forms.DockStyle.Fill
     Me.lvImages.FullRowSelect = True
+    Me.lvImages.FullRowTooltip = True
     Me.lvImages.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
     Me.lvImages.HideSelection = False
     Me.lvImages.Location = New System.Drawing.Point(103, 3)
@@ -368,6 +369,7 @@ Partial Class frmMain
     Me.pnlPackages.SetRowSpan(Me.lvImages, 2)
     Me.lvImages.Size = New System.Drawing.Size(318, 86)
     Me.lvImages.TabIndex = 1
+    Me.lvImages.TooltipTitles = True
     Me.lvImages.UseCompatibleStateImageBehavior = False
     Me.lvImages.View = System.Windows.Forms.View.Details
     '
@@ -434,7 +436,7 @@ Partial Class frmMain
     Me.txtSP64.Name = "txtSP64"
     Me.txtSP64.Size = New System.Drawing.Size(232, 20)
     Me.txtSP64.TabIndex = 0
-    Me.ttInfo.SetTooltip(Me.txtSP64, "Windows 7 x64 Service Pack 1 installer EXE." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(Note that x64 Integration requires " & _
+    Me.ttInfo.SetToolTip(Me.txtSP64, "Windows 7 x64 Service Pack 1 installer EXE." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(Note that x64 Integration requires " & _
         "a 64-bit Operating System.)")
     '
     'cmdSP64
@@ -450,7 +452,7 @@ Partial Class frmMain
     Me.cmdSP64.Size = New System.Drawing.Size(75, 24)
     Me.cmdSP64.TabIndex = 1
     Me.cmdSP64.Text = "Browse..."
-    Me.ttInfo.SetTooltip(Me.cmdSP64, "Choose an x64 Service Pack EXE.")
+    Me.ttInfo.SetToolTip(Me.cmdSP64, "Choose an x64 Service Pack EXE.")
     Me.cmdSP64.UseVisualStyleBackColor = True
     '
     'chkSP
@@ -463,7 +465,7 @@ Partial Class frmMain
     Me.chkSP.Size = New System.Drawing.Size(99, 18)
     Me.chkSP.TabIndex = 0
     Me.chkSP.Text = "&Service Pack:"
-    Me.ttInfo.SetTooltip(Me.chkSP, "Integrate Windows 7 Service Pack 1 into an RTM Image.")
+    Me.ttInfo.SetToolTip(Me.chkSP, "Integrate Windows 7 Service Pack 1 into an RTM Image.")
     Me.chkSP.UseVisualStyleBackColor = True
     '
     'pnlSP
@@ -493,7 +495,7 @@ Partial Class frmMain
     Me.txtSP.Name = "txtSP"
     Me.txtSP.Size = New System.Drawing.Size(232, 20)
     Me.txtSP.TabIndex = 0
-    Me.ttInfo.SetTooltip(Me.txtSP, "Windows 7 Service Pack 1 installer EXE." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(Note that x64 Integration requires a 64" & _
+    Me.ttInfo.SetToolTip(Me.txtSP, "Windows 7 Service Pack 1 installer EXE." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(Note that x64 Integration requires a 64" & _
         "-bit Operating System.)")
     '
     'cmdSP
@@ -510,7 +512,7 @@ Partial Class frmMain
     Me.cmdSP.Size = New System.Drawing.Size(75, 24)
     Me.cmdSP.TabIndex = 1
     Me.cmdSP.Text = "Browse..."
-    Me.ttInfo.SetTooltip(Me.cmdSP, "Choose a Service Pack EXE.")
+    Me.ttInfo.SetToolTip(Me.cmdSP, "Choose a Service Pack EXE.")
     Me.cmdSP.UseVisualStyleBackColor = True
     '
     'lblSP64
@@ -569,7 +571,7 @@ Partial Class frmMain
     Me.chkLoadDrivers.Name = "chkLoadDrivers"
     Me.chkLoadDrivers.Size = New System.Drawing.Size(24, 24)
     Me.chkLoadDrivers.TabIndex = 8
-    Me.ttInfo.SetTooltip(Me.chkLoadDrivers, "Parse information about Integrated Drivers in Image Packages to prevent duplicate" & _
+    Me.ttInfo.SetToolTip(Me.chkLoadDrivers, "Parse information about Integrated Drivers in Image Packages to prevent duplicate" & _
         " drivers.")
     Me.chkLoadDrivers.UseVisualStyleBackColor = True
     '
@@ -582,7 +584,7 @@ Partial Class frmMain
     Me.chkLoadUpdates.Name = "chkLoadUpdates"
     Me.chkLoadUpdates.Size = New System.Drawing.Size(24, 24)
     Me.chkLoadUpdates.TabIndex = 7
-    Me.ttInfo.SetTooltip(Me.chkLoadUpdates, "Parse information about Integrated Updates in all Image Packages to prevent dupli" & _
+    Me.ttInfo.SetToolTip(Me.chkLoadUpdates, "Parse information about Integrated Updates in all Image Packages to prevent dupli" & _
         "cate updates.")
     Me.chkLoadUpdates.UseVisualStyleBackColor = True
     '
@@ -599,7 +601,7 @@ Partial Class frmMain
     Me.cmdLoadPackages.Padding = New System.Windows.Forms.Padding(0, 1, 0, 1)
     Me.cmdLoadPackages.Size = New System.Drawing.Size(24, 24)
     Me.cmdLoadPackages.TabIndex = 5
-    Me.ttInfo.SetTooltip(Me.cmdLoadPackages, resources.GetString("cmdLoadPackages.ToolTip"))
+    Me.ttInfo.SetToolTip(Me.cmdLoadPackages, resources.GetString("cmdLoadPackages.ToolTip"))
     Me.cmdLoadPackages.UseVisualStyleBackColor = True
     '
     'chkLoadFeatures
@@ -611,7 +613,7 @@ Partial Class frmMain
     Me.chkLoadFeatures.Name = "chkLoadFeatures"
     Me.chkLoadFeatures.Size = New System.Drawing.Size(24, 24)
     Me.chkLoadFeatures.TabIndex = 6
-    Me.ttInfo.SetTooltip(Me.chkLoadFeatures, "Parse information about Windows Features in all Image Packages.")
+    Me.ttInfo.SetToolTip(Me.chkLoadFeatures, "Parse information about Windows Features in all Image Packages.")
     Me.chkLoadFeatures.UseVisualStyleBackColor = True
     '
     'pnlUpdates
@@ -666,7 +668,7 @@ Partial Class frmMain
     Me.cmdAddMSU.Size = New System.Drawing.Size(92, 24)
     Me.cmdAddMSU.TabIndex = 0
     Me.cmdAddMSU.Text = "&Add Updates..."
-    Me.ttInfo.SetTooltip(Me.cmdAddMSU, "Add MSU, CAB, MLC, or Language Pack EXE updates.")
+    Me.ttInfo.SetToolTip(Me.cmdAddMSU, "Add MSU, CAB, MLC, or Language Pack EXE updates.")
     Me.cmdAddMSU.UseVisualStyleBackColor = True
     '
     'cmdClearMSU
@@ -682,7 +684,7 @@ Partial Class frmMain
     Me.cmdClearMSU.Size = New System.Drawing.Size(88, 24)
     Me.cmdClearMSU.TabIndex = 3
     Me.cmdClearMSU.Text = "Clear Updates"
-    Me.ttInfo.SetTooltip(Me.cmdClearMSU, "Clear the list of Windows Updates." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(Shortcut: Shift+Delete)")
+    Me.ttInfo.SetToolTip(Me.cmdClearMSU, "Clear the list of Windows Updates." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(Shortcut: Shift+Delete)")
     Me.cmdClearMSU.UseVisualStyleBackColor = True
     '
     'cmdRemMSU
@@ -698,7 +700,7 @@ Partial Class frmMain
     Me.cmdRemMSU.Size = New System.Drawing.Size(104, 24)
     Me.cmdRemMSU.TabIndex = 2
     Me.cmdRemMSU.Text = "Remove Updates"
-    Me.ttInfo.SetTooltip(Me.cmdRemMSU, "Remove the selected items from the list of Windows Updates." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(Shortcut: Delete)" & _
+    Me.ttInfo.SetToolTip(Me.cmdRemMSU, "Remove the selected items from the list of Windows Updates." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(Shortcut: Delete)" & _
         "")
     Me.cmdRemMSU.UseVisualStyleBackColor = True
     '
@@ -724,10 +726,10 @@ Partial Class frmMain
     Me.lvMSU.Location = New System.Drawing.Point(103, 3)
     Me.lvMSU.Name = "lvMSU"
     Me.lvMSU.ReadOnly = False
-    Me.lvMSU.ShowItemToolTips = True
     Me.lvMSU.Size = New System.Drawing.Size(318, 102)
     Me.lvMSU.SmallImageList = Me.imlUpdates
     Me.lvMSU.TabIndex = 1
+    Me.lvMSU.TooltipTitles = True
     Me.lvMSU.UseCompatibleStateImageBehavior = False
     Me.lvMSU.View = System.Windows.Forms.View.Details
     '
@@ -784,7 +786,7 @@ Partial Class frmMain
     Me.txtWIM.Name = "txtWIM"
     Me.txtWIM.Size = New System.Drawing.Size(237, 20)
     Me.txtWIM.TabIndex = 0
-    Me.ttInfo.SetTooltip(Me.txtWIM, "Source WIM or ISO to create image from.")
+    Me.ttInfo.SetToolTip(Me.txtWIM, "Source WIM or ISO to create image from.")
     '
     'cmdWIM
     '
@@ -799,7 +801,7 @@ Partial Class frmMain
     Me.cmdWIM.Size = New System.Drawing.Size(75, 24)
     Me.cmdWIM.TabIndex = 1
     Me.cmdWIM.Text = "Browse..."
-    Me.ttInfo.SetTooltip(Me.cmdWIM, "Choose a WIM or ISO file.")
+    Me.ttInfo.SetToolTip(Me.cmdWIM, "Choose a WIM or ISO file.")
     Me.cmdWIM.UseVisualStyleBackColor = True
     '
     'pnlBottom
@@ -842,7 +844,7 @@ Partial Class frmMain
     Me.cmdBegin.Size = New System.Drawing.Size(75, 24)
     Me.cmdBegin.TabIndex = 1
     Me.cmdBegin.Text = "&Begin"
-    Me.ttInfo.SetTooltip(Me.cmdBegin, "Start the Slipstream procedure.")
+    Me.ttInfo.SetToolTip(Me.cmdBegin, "Start the Slipstream procedure.")
     Me.cmdBegin.UseVisualStyleBackColor = True
     '
     'cmdClose
@@ -864,14 +866,13 @@ Partial Class frmMain
     'lblActivity
     '
     Me.lblActivity.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.lblActivity.AutoEllipsis = True
-    Me.lblActivity.Location = New System.Drawing.Point(28, 8)
+    Me.lblActivity.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+    Me.lblActivity.Location = New System.Drawing.Point(28, 7)
     Me.lblActivity.Margin = New System.Windows.Forms.Padding(3)
     Me.lblActivity.Name = "lblActivity"
-    Me.lblActivity.Size = New System.Drawing.Size(57, 13)
+    Me.lblActivity.Size = New System.Drawing.Size(57, 15)
     Me.lblActivity.TabIndex = 0
     Me.lblActivity.Text = "Idle"
-    Me.lblActivity.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
     Me.lblActivity.UseMnemonic = False
     '
     'cmdConfig
@@ -886,7 +887,7 @@ Partial Class frmMain
     Me.cmdConfig.Size = New System.Drawing.Size(83, 24)
     Me.cmdConfig.TabIndex = 2
     Me.cmdConfig.Text = "Confi&guration"
-    Me.ttInfo.SetTooltip(Me.cmdConfig, "Change SLIPS7REAM settings.")
+    Me.ttInfo.SetToolTip(Me.cmdConfig, "Change SLIPS7REAM settings.")
     Me.cmdConfig.UseVisualStyleBackColor = True
     '
     'expOutput
@@ -899,7 +900,7 @@ Partial Class frmMain
     Me.expOutput.Size = New System.Drawing.Size(19, 19)
     Me.expOutput.TabIndex = 4
     Me.expOutput.Text = Nothing
-    Me.ttInfo.SetTooltip(Me.expOutput, "Show Output console.")
+    Me.ttInfo.SetToolTip(Me.expOutput, "Show Output console.")
     '
     'cmdOpenFolder
     '
@@ -913,7 +914,7 @@ Partial Class frmMain
     Me.cmdOpenFolder.Size = New System.Drawing.Size(79, 24)
     Me.cmdOpenFolder.TabIndex = 5
     Me.cmdOpenFolder.Text = "Open &Folder"
-    Me.ttInfo.SetTooltip(Me.cmdOpenFolder, "Open the folder containing the complete ISO or WIM file.")
+    Me.ttInfo.SetToolTip(Me.cmdOpenFolder, "Open the folder containing the complete ISO or WIM file.")
     Me.cmdOpenFolder.UseVisualStyleBackColor = True
     Me.cmdOpenFolder.Visible = False
     '
@@ -927,7 +928,7 @@ Partial Class frmMain
     Me.chkISO.Size = New System.Drawing.Size(93, 18)
     Me.chkISO.TabIndex = 5
     Me.chkISO.Text = "Save to &ISO:"
-    Me.ttInfo.SetTooltip(Me.chkISO, "Insert the Image into a Windows 7 ISO.")
+    Me.ttInfo.SetToolTip(Me.chkISO, "Insert the Image into a Windows 7 ISO.")
     Me.chkISO.UseVisualStyleBackColor = True
     '
     'pnlISO
@@ -957,7 +958,7 @@ Partial Class frmMain
     Me.txtISO.Name = "txtISO"
     Me.txtISO.Size = New System.Drawing.Size(237, 20)
     Me.txtISO.TabIndex = 0
-    Me.ttInfo.SetTooltip(Me.txtISO, "ISO to update with the new image.")
+    Me.ttInfo.SetToolTip(Me.txtISO, "ISO to update with the new image.")
     '
     'cmdISO
     '
@@ -973,7 +974,7 @@ Partial Class frmMain
     Me.cmdISO.Size = New System.Drawing.Size(75, 24)
     Me.cmdISO.TabIndex = 1
     Me.cmdISO.Text = "Browse..."
-    Me.ttInfo.SetTooltip(Me.cmdISO, "Choose a Windows 7 ISO." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(Use an x86 ISO if you're merging x86 and x64.)")
+    Me.ttInfo.SetToolTip(Me.cmdISO, "Choose a Windows 7 ISO." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(Use an x86 ISO if you're merging x86 and x64.)")
     Me.cmdISO.UseVisualStyleBackColor = True
     '
     'pnlProgress
@@ -1045,7 +1046,7 @@ Partial Class frmMain
     Me.pctOutputTear.Size = New System.Drawing.Size(424, 20)
     Me.pctOutputTear.TabIndex = 6
     Me.pctOutputTear.TabStop = False
-    Me.ttInfo.SetTooltip(Me.pctOutputTear, "Click and Drag to tear the Output Console into its own window.")
+    Me.ttInfo.SetToolTip(Me.pctOutputTear, "Click and Drag to tear the Output Console into its own window.")
     Me.pctOutputTear.Visible = False
     '
     'lblISOLabel
@@ -1069,7 +1070,7 @@ Partial Class frmMain
     Me.txtISOLabel.Name = "txtISOLabel"
     Me.txtISOLabel.Size = New System.Drawing.Size(318, 20)
     Me.txtISOLabel.TabIndex = 8
-    Me.ttInfo.SetTooltip(Me.txtISOLabel, "Disc Label for ISO.")
+    Me.ttInfo.SetToolTip(Me.txtISOLabel, "Disc Label for ISO.")
     '
     'pnlControl
     '
@@ -1117,7 +1118,7 @@ Partial Class frmMain
     Me.cmbPriority.Name = "cmbPriority"
     Me.cmbPriority.Size = New System.Drawing.Size(115, 21)
     Me.cmbPriority.TabIndex = 1
-    Me.ttInfo.SetTooltip(Me.cmbPriority, resources.GetString("cmbPriority.ToolTip"))
+    Me.ttInfo.SetToolTip(Me.cmbPriority, resources.GetString("cmbPriority.ToolTip"))
     '
     'lblCompletion
     '
@@ -1142,7 +1143,7 @@ Partial Class frmMain
     Me.cmbCompletion.Name = "cmbCompletion"
     Me.cmbCompletion.Size = New System.Drawing.Size(115, 21)
     Me.cmbCompletion.TabIndex = 4
-    Me.ttInfo.SetTooltip(Me.cmbCompletion, "Event to run after Slipstream is complete.")
+    Me.ttInfo.SetToolTip(Me.cmbCompletion, "Event to run after Slipstream is complete.")
     '
     'pnlISOOptions
     '
@@ -1180,7 +1181,7 @@ Partial Class frmMain
     Me.cmbLimitType.Name = "cmbLimitType"
     Me.cmbLimitType.Size = New System.Drawing.Size(75, 21)
     Me.cmbLimitType.TabIndex = 4
-    Me.ttInfo.SetTooltip(Me.cmbLimitType, resources.GetString("cmbLimitType.ToolTip"))
+    Me.ttInfo.SetToolTip(Me.cmbLimitType, resources.GetString("cmbLimitType.ToolTip"))
     '
     'cmbISOFormat
     '
@@ -1194,7 +1195,7 @@ Partial Class frmMain
     Me.cmbISOFormat.Name = "cmbISOFormat"
     Me.cmbISOFormat.Size = New System.Drawing.Size(116, 21)
     Me.cmbISOFormat.TabIndex = 2
-    Me.ttInfo.SetTooltip(Me.cmbISOFormat, resources.GetString("cmbISOFormat.ToolTip"))
+    Me.ttInfo.SetToolTip(Me.cmbISOFormat, resources.GetString("cmbISOFormat.ToolTip"))
     '
     'chkUnlock
     '
@@ -1207,7 +1208,7 @@ Partial Class frmMain
     Me.chkUnlock.Size = New System.Drawing.Size(115, 18)
     Me.chkUnlock.TabIndex = 0
     Me.chkUnlock.Text = "Unlock All &Editions"
-    Me.ttInfo.SetTooltip(Me.chkUnlock, "Remove ""ei.cfg"" and the install catalogs from the ISO to allow installation of al" & _
+    Me.ttInfo.SetToolTip(Me.chkUnlock, "Remove ""ei.cfg"" and the install catalogs from the ISO to allow installation of al" & _
         "l editions.")
     Me.chkUnlock.UseVisualStyleBackColor = True
     '
@@ -1232,7 +1233,7 @@ Partial Class frmMain
     Me.chkUEFI.Size = New System.Drawing.Size(81, 18)
     Me.chkUEFI.TabIndex = 3
     Me.chkUEFI.Text = "UEFI B&oot"
-    Me.ttInfo.SetTooltip(Me.chkUEFI, resources.GetString("chkUEFI.ToolTip"))
+    Me.ttInfo.SetToolTip(Me.chkUEFI, resources.GetString("chkUEFI.ToolTip"))
     Me.chkUEFI.UseVisualStyleBackColor = True
     '
     'cmbLimit
@@ -1245,7 +1246,7 @@ Partial Class frmMain
     Me.cmbLimit.Name = "cmbLimit"
     Me.cmbLimit.Size = New System.Drawing.Size(116, 21)
     Me.cmbLimit.TabIndex = 5
-    Me.ttInfo.SetTooltip(Me.cmbLimit, resources.GetString("cmbLimit.ToolTip"))
+    Me.ttInfo.SetToolTip(Me.cmbLimit, resources.GetString("cmbLimit.ToolTip"))
     '
     'chkMerge
     '
@@ -1257,7 +1258,7 @@ Partial Class frmMain
     Me.chkMerge.Size = New System.Drawing.Size(91, 18)
     Me.chkMerge.TabIndex = 2
     Me.chkMerge.Text = "&Merge WIM:"
-    Me.ttInfo.SetTooltip(Me.chkMerge, "Merge the Packages of another Image with this one.")
+    Me.ttInfo.SetToolTip(Me.chkMerge, "Merge the Packages of another Image with this one.")
     Me.chkMerge.UseVisualStyleBackColor = True
     '
     'pnlMerge
@@ -1287,7 +1288,7 @@ Partial Class frmMain
     Me.txtMerge.Name = "txtMerge"
     Me.txtMerge.Size = New System.Drawing.Size(237, 20)
     Me.txtMerge.TabIndex = 0
-    Me.ttInfo.SetTooltip(Me.txtMerge, "WIM or ISO to Merge with.")
+    Me.ttInfo.SetToolTip(Me.txtMerge, "WIM or ISO to Merge with.")
     '
     'cmdMerge
     '
@@ -1303,7 +1304,7 @@ Partial Class frmMain
     Me.cmdMerge.Size = New System.Drawing.Size(75, 24)
     Me.cmdMerge.TabIndex = 1
     Me.cmdMerge.Text = "Browse..."
-    Me.ttInfo.SetTooltip(Me.cmdMerge, "Choose a WIM or ISO file.")
+    Me.ttInfo.SetToolTip(Me.cmdMerge, "Choose a WIM or ISO file.")
     Me.cmdMerge.UseVisualStyleBackColor = True
     '
     'pctTitle
@@ -2025,10 +2026,13 @@ Partial Class frmMain
     '
     'ttInfo
     '
-    Me.ttInfo.Active = False
     Me.ttInfo.AutoPopDelay = 30000
     Me.ttInfo.InitialDelay = 500
     Me.ttInfo.ReshowDelay = 100
+    '
+    'ttActivity
+    '
+    Me.ttActivity.HideOnHover = False
     '
     'frmMain
     '
@@ -2111,7 +2115,6 @@ Partial Class frmMain
   Friend WithEvents txtMerge As System.Windows.Forms.TextBox
   Friend WithEvents cmdMerge As System.Windows.Forms.Button
   Friend WithEvents chkMerge As System.Windows.Forms.CheckBox
-  Friend WithEvents lvImages As ListViewEx
   Friend WithEvents lblImages As System.Windows.Forms.Label
   Friend WithEvents colIndex As System.Windows.Forms.ColumnHeader
   Friend WithEvents colName As System.Windows.Forms.ColumnHeader
@@ -2278,11 +2281,12 @@ Partial Class frmMain
   Friend WithEvents mnuLabel7x86 As System.Windows.Forms.MenuItem
   Friend WithEvents mnuISOLabel As System.Windows.Forms.ContextMenu
   Friend WithEvents mnuLabelGRMCSTFRER As System.Windows.Forms.MenuItem
-  Friend WithEvents ttLV As ToolTip
   Friend WithEvents pnlLoadPackageData As System.Windows.Forms.TableLayoutPanel
   Friend WithEvents cmdLoadPackages As System.Windows.Forms.Button
   Friend WithEvents chkLoadFeatures As System.Windows.Forms.CheckBox
   Friend WithEvents chkLoadDrivers As System.Windows.Forms.CheckBox
   Friend WithEvents chkLoadUpdates As System.Windows.Forms.CheckBox
+  Friend WithEvents lvImages As Slips7ream.ListViewEx
+  Friend WithEvents ttActivity As Slips7ream.ToolTip
 
 End Class

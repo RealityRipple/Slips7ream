@@ -32,7 +32,7 @@ Partial Class frmFS
     Me.cmdUseUDF102 = New System.Windows.Forms.Button()
     Me.cmdUseCurrent = New System.Windows.Forms.Button()
     Me.cmdCancel = New System.Windows.Forms.Button()
-    Me.ttFS = New System.Windows.Forms.ToolTip(Me.components)
+    Me.ttFS = New Slips7ream.ToolTip(Me.components)
     Me.pnlFS.SuspendLayout()
     Me.pnlButtons.SuspendLayout()
     Me.SuspendLayout()
@@ -178,5 +178,5 @@ Partial Class frmFS
   Friend WithEvents cmdUseUDF102 As System.Windows.Forms.Button
   Friend WithEvents cmdUseCurrent As System.Windows.Forms.Button
   Friend WithEvents cmdCancel As System.Windows.Forms.Button
-  Friend WithEvents ttFS As System.Windows.Forms.ToolTip
+  Friend WithEvents ttFS As Slips7ream.ToolTip
 End Class
