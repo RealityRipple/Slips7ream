@@ -454,7 +454,11 @@
           KBArticle = Nothing
           KBVersion = Nothing
           BuildDate = Nothing
-          Failure = "Unknown file type"
+          Dim sExt As String = IO.Path.GetExtension(Path).Substring(1).ToUpper
+          Select Case sExt
+            Case "CAT" : Failure = "Security Catalogs are included when needed automatically and do not need to be added."
+            Case Else : Failure = "Unknown file type: " & sExt
+          End Select
       End Select
     End If
   End Sub
