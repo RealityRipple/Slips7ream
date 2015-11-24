@@ -3505,6 +3505,10 @@
       lblActivity.Text = Nothing
       Return
     End If
+    If lblActivity.Width < 16 Then
+      lblActivity.Text = Message
+      Return
+    End If
     Dim expectedW As Integer = 0
     Dim chars As Integer = 0
     Dim lines As Integer = 0
