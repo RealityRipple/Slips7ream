@@ -128,7 +128,13 @@
     End If
   End Function
   Public Shared Operator =(info1 As Driver, info2 As Driver) As Boolean
+    If info1.ClassGUID = Nothing Then Return False
+    If info2.ClassGUID = Nothing Then Return False
     If Not info1.ClassGUID.ToLower = info2.ClassGUID.ToLower Then Return False
+    If Not String.IsNullOrEmpty(info1.DriverStorePath) And Not String.IsNullOrEmpty(info2.DriverStorePath) Then
+      If Not info1.DriverStorePath.ToLower = info2.DriverStorePath.ToLower Then Return False
+    End If
+    If Not info1.Version = info2.Version Then Return False
     Dim archMatches As New List(Of String)
     For Each arch1 As String In info1.Architectures
       For Each arch2 As String In info2.Architectures
@@ -136,51 +142,7 @@
       Next
     Next
     If archMatches.Count = 0 Then Return False
-    For Each Architecture In archMatches
-      Dim hw1 As List(Of Driver_Hardware) = Nothing
-      For Each hw In info1.DriverHardware
-        If hw.Key.ToLower = Architecture Then
-          hw1 = hw.Value
-          Exit For
-        End If
-      Next
-      Dim hw2 As List(Of Driver_Hardware) = Nothing
-      For Each hw In info2.DriverHardware
-        If hw.Key.ToLower = Architecture Then
-          hw2 = hw.Value
-          Exit For
-        End If
-      Next
-      If hw1 Is Nothing Then Continue For
-      If hw2 Is Nothing Then Continue For
-      For Each hwVal1 In hw1
-        For Each hwID1 In hwVal1.HardwareIDs
-          For Each hwVal2 In hw2
-            For Each hwID2 In hwVal2.HardwareIDs
-              If hwID1.Key = hwID2.Key Then Return True
-              If hwID1.Value.CompatibleIDs IsNot Nothing AndAlso hwID1.Value.CompatibleIDs.Count > 0 Then
-                If hwID2.Value.CompatibleIDs IsNot Nothing AndAlso hwID2.Value.CompatibleIDs.Count > 0 Then
-                  For Each hwCID1 In hwID1.Value.CompatibleIDs
-                    For Each hwCID2 In hwID2.Value.CompatibleIDs
-                      If hwCID1 = hwCID2 Then Return True
-                    Next
-                  Next
-                End If
-              End If
-            Next
-          Next
-        Next
-      Next
-    Next
-    Return False
-    'Public Function IterativeContainsCheck(inArray1() As String, inArray2() As String) As Boolean
-    '  For Each str1 In inArray1
-    '    For Each str2 In inArray2
-    '      If str1.ToLower = str2.ToLower Then Return True
-    '    Next
-    '  Next
-    '  Return False
-    'End Function
+    Return True
   End Operator
   Public Shared Operator <>(info1 As Driver, info2 As Driver) As Boolean
     Return Not info1 = info2
