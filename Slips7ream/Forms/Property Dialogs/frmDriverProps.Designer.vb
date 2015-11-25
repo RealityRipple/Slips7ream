@@ -58,7 +58,7 @@ Partial Class frmDriverProps
     Me.cmbHardware = New System.Windows.Forms.ComboBox()
     Me.grpHardware = New System.Windows.Forms.GroupBox()
     Me.pnlHardware = New System.Windows.Forms.TableLayoutPanel()
-    Me.lblHWID = New System.Windows.Forms.Label()
+    Me.lblHWIDs = New System.Windows.Forms.Label()
     Me.lblHWCompatibleIDs = New System.Windows.Forms.Label()
     Me.lblHWExcludeIDs = New System.Windows.Forms.Label()
     Me.lstHWCompatibleIDs = New System.Windows.Forms.ListBox()
@@ -515,7 +515,7 @@ Partial Class frmDriverProps
     Me.pnlHardware.ColumnCount = 2
     Me.pnlHardware.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
     Me.pnlHardware.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-    Me.pnlHardware.Controls.Add(Me.lblHWID, 0, 3)
+    Me.pnlHardware.Controls.Add(Me.lblHWIDs, 0, 3)
     Me.pnlHardware.Controls.Add(Me.lblHWCompatibleIDs, 0, 5)
     Me.pnlHardware.Controls.Add(Me.lblHWExcludeIDs, 0, 7)
     Me.pnlHardware.Controls.Add(Me.lstHWCompatibleIDs, 1, 5)
@@ -544,16 +544,16 @@ Partial Class frmDriverProps
     Me.pnlHardware.Size = New System.Drawing.Size(255, 231)
     Me.pnlHardware.TabIndex = 0
     '
-    'lblHWID
+    'lblHWIDs
     '
-    Me.lblHWID.Anchor = System.Windows.Forms.AnchorStyles.Left
-    Me.lblHWID.AutoSize = True
-    Me.lblHWID.Location = New System.Drawing.Point(3, 84)
-    Me.lblHWID.Margin = New System.Windows.Forms.Padding(3, 6, 3, 7)
-    Me.lblHWID.Name = "lblHWID"
-    Me.lblHWID.Size = New System.Drawing.Size(70, 13)
-    Me.lblHWID.TabIndex = 8
-    Me.lblHWID.Text = "Hardware ID:"
+    Me.lblHWIDs.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.lblHWIDs.AutoSize = True
+    Me.lblHWIDs.Location = New System.Drawing.Point(3, 84)
+    Me.lblHWIDs.Margin = New System.Windows.Forms.Padding(3, 6, 3, 7)
+    Me.lblHWIDs.Name = "lblHWIDs"
+    Me.lblHWIDs.Size = New System.Drawing.Size(75, 13)
+    Me.lblHWIDs.TabIndex = 8
+    Me.lblHWIDs.Text = "Hardware IDs:"
     '
     'lblHWCompatibleIDs
     '
@@ -737,7 +737,7 @@ Partial Class frmDriverProps
   Friend WithEvents lblHWManufacturer As System.Windows.Forms.Label
   Friend WithEvents txtHWManufacturer As System.Windows.Forms.TextBox
   Friend WithEvents lblHWArchitecture As System.Windows.Forms.Label
-  Friend WithEvents lblHWID As System.Windows.Forms.Label
+  Friend WithEvents lblHWIDs As System.Windows.Forms.Label
   Friend WithEvents lblHWServiceName As System.Windows.Forms.Label
   Friend WithEvents lblHWExcludeIDs As System.Windows.Forms.Label
   Friend WithEvents txtHWArchitecture As System.Windows.Forms.TextBox
