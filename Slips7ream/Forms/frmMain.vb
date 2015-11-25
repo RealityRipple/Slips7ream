@@ -1132,9 +1132,6 @@
       End If
     End If
     Dim PList(lvImages.Items.Count - 1) As ImagePackage
-    Dim InOne As Boolean = False
-    Dim OnlyUp As Boolean = False
-    Dim OnlyDown As Boolean = False
     If msuData.Name = "DRIVER" Then
       Dim drvData As Driver = msuData.DriverData
       If String.IsNullOrEmpty(drvData.DriverStorePath) Then Return New AddResult(False)
@@ -1199,21 +1196,6 @@
       Dim myTag(1) As Object
       myTag(0) = msuData
       Dim ttNotice As String = Nothing
-      If InOne Then
-        If lvItem.ForeColor = lvMSU.ForeColor Then lvItem.ForeColor = Color.Orange
-        If OnlyUp Then
-          ttNotice = en & "This update will upgrade only integrated older versions."
-        ElseIf OnlyDown Then
-          ttNotice = en & "This update will downgrade only integrated newer versions."
-          myTag(1) = InImage
-          lvItem.Tag = myTag
-        Else
-          ttNotice = en & "This update will replace both newer and older integrated versions."
-          myTag(1) = InImage
-          lvItem.Tag = myTag
-        End If
-      End If
-
       lvItem.ToolTipText = IIf(String.IsNullOrEmpty(ttPublishedName), "", ttPublishedName & vbNewLine) &
                            IIf(String.IsNullOrEmpty(ttOriginalFileName), "", ttOriginalFileName & vbNewLine) &
                            IIf(String.IsNullOrEmpty(ttDriverStorePath), "", ttDriverStorePath & vbNewLine) &
@@ -1231,11 +1213,26 @@
       If msuData.DriverData.Architectures Is Nothing Then
         lvItem.SubItems.Add("Driver")
       Else
-        lvItem.SubItems.Add(Join(msuData.DriverData.Architectures.ToArray, ", ") & " Driver")
+        If msuData.DriverData.Architectures.Contains("x86") Then
+          If msuData.DriverData.Architectures.Contains("amd64") Then
+            lvItem.SubItems.Add("Universal Driver")
+          Else
+            lvItem.SubItems.Add("x86 Driver")
+          End If
+        ElseIf msuData.DriverData.Architectures.Contains("amd64") Then
+          lvItem.SubItems.Add("amd64 Driver")
+        ElseIf msuData.DriverData.Architectures.Contains("ia64") Then
+          Return New AddResult(False, "Driver is for Itanium processors.")
+        Else
+          Return New AddResult(False, "Driver is for " & Join(msuData.DriverData.Architectures.ToArray, ", ") & " processors.")
+        End If
       End If
       lvMSU.Items.Add(lvItem)
       Return New AddResult(True)
     Else
+      Dim InOne As Boolean = False
+      Dim OnlyUp As Boolean = False
+      Dim OnlyDown As Boolean = False
       Dim InImage(lvImages.Items.Count - 1) As Update_Integrated
       If lvImages.Items.Count > 0 Then
         For I As Integer = 0 To lvImages.Items.Count - 1
@@ -1545,7 +1542,7 @@
                 lvItem.ForeColor = Color.Orange
                 ttItem &= vbNewLine & en & "Please make sure either the English or the French Language Pack is also integrated."
               End If
-            Case "az-latn-az", "kk-kz", "mn-mn", "tk-tm", "uz-Latn-UZ"
+            Case "az-latn-az", "kk-kz", "mn-mn", "tk-tm", "uz-latn-uz"
               If Not (langList.Contains("en") Or langList.Contains("ru")) Then
                 lvItem.ForeColor = Color.Orange
                 ttItem &= vbNewLine & en & "Please make sure either the English or the Russian Language Pack is also integrated."
@@ -1556,7 +1553,7 @@
           If msuData.Ident.Version = "6.1.7600.16385" Then
             Select Case msuData.Ident.Language.ToLower
               Case "ca-es", "cy-gb", "hi-in", "is-is", "sr-cyrl-cs"
-                lvItem.ForeColor = Color.Orange
+                lvItem.ForeColor = Color.Red
                 ttItem &= vbNewLine & en & "This Language Interface Pack has been superseded by Service Pack 1 and may not integrate correctly."
             End Select
           End If
@@ -2829,8 +2826,6 @@
         End If
         If Package.Architecture.ToLower = "x64" Then
           If Not Package.Name.Contains("64") Then Package.Name &= " x64"
-        ElseIf Package.Architecture.ToLower = "ia64" Then
-          If Not Package.Name.Contains("64") Then Package.Name &= " IA64"
         End If
         Dim lvItem As ListViewItem = Nothing
         For Each item As ListViewItem In lvImages.Items
@@ -3006,8 +3001,6 @@
         End If
         If Package.Architecture.ToLower = "x64" Then
           If Not Package.Name.Contains("64") Then Package.Name &= " x64"
-        ElseIf Package.Architecture.ToLower = "ia64" Then
-          If Not Package.Name.Contains("64") Then Package.Name &= " IA64"
         End If
         Dim lvItem As ListViewItem = Nothing
         For Each item As ListViewItem In lvImages.Items
@@ -3181,9 +3174,6 @@
         If Package.Architecture.ToLower = "x64" Then
           If Not Package.Name.Contains("64") Then Package.Name &= " x64"
           arch = ArchitectureList.amd64
-        ElseIf Package.Architecture.ToLower = "ia64" Then
-          If Not Package.Name.Contains("64") Then Package.Name &= " IA64"
-          arch = ArchitectureList.ia64
         End If
         Dim lvItem As ListViewItem = Nothing
         For Each item As ListViewItem In lvImages.Items
@@ -3373,6 +3363,7 @@
         iLimit = 1
       End Try
       If iLimit < 1 Then iLimit = 1
+      If cmbLimitType.SelectedIndex = 2 And iLimit < 351 Then iLimit = 351
       cmbLimit.Text = iLimit & " MB"
       mySettings.SplitVal = cmbLimit.Text
     End If
@@ -3851,7 +3842,7 @@
         For Each line In sLines
           If line.Contains("Mount Dir : ") Then
             Dim tmpPath As String = line.Substring(line.IndexOf(":") + 2)
-            If line.ToLower.Contains(mFindA) Or line.ToLower.Contains(mFindB) Then DiscardDISM(tmpPath) ' RunHidden(DismPath, "/Unmount-Wim /MountDir:" & ShortenPath(tmpPath) & " /discard /English")
+            If line.ToLower.Contains(mFindA) Or line.ToLower.Contains(mFindB) Then DiscardDISM(tmpPath)
           End If
         Next
       End If
@@ -4067,7 +4058,7 @@
       If DriverData.Contains("The operation completed successfully.") Then
         DriverData = DriverData.Substring(DriverData.IndexOf("Driver package information:") + 31)
         DriverData = DriverData.Substring(0, DriverData.IndexOf("The operation completed successfully.") - 4)
-        Dim driver As New Driver("") 'ShortenPath(IO.Path.GetDirectoryName(DriverINFPath))
+        Dim driver As New Driver("")
         driver.ReadExtraData(DriverData, "", IIf(Environment.Is64BitOperatingSystem, ArchitectureList.amd64, ArchitectureList.x86))
         Return driver
       End If
@@ -4416,19 +4407,9 @@
       Return
     End Try
     Dim sList As New List(Of String)
-    'Dim eFiles(Extractor.ItemCount - 1) As Extraction.COM.IArchiveEntry
     For Each File In Extractor
       sList.Add(File.Name)
     Next
-    'Try
-    '  eFiles = Extractor.ToArray
-    'Catch ex As Exception
-    '  c_ExtractRet(cIndex) = "File List Busy"
-    '  Return
-    'End Try
-    'For Each file As Extraction.COM.IArchiveEntry In eFiles
-    '  sList.Add(file.Name)
-    'Next
     If sList.Count > 0 Then
       c_ExtractRet(cIndex) = Join(sList.ToArray, "|")
     Else
@@ -5942,11 +5923,11 @@
       Else
         If Not String.IsNullOrEmpty(MSUData(I).Failure) Then Continue For
         If String.IsNullOrEmpty(MSUData(I).Architecture) Then Continue For
-        If DISM_32.Count > 0 And MSUData(I).Architecture.Contains("x86") Then
+        If DISM_32.Count > 0 And MSUData(I).Architecture.ToLower = "x86" Then
           MSU_32.Add(MSUData(I))
         End If
         If DISM_64.Count > 0 Then
-          If MSUData(I).Architecture.Contains("amd64") Then
+          If MSUData(I).Architecture.ToLower = "amd64" Then
             MSU_64.Add(MSUData(I))
           Else
             If CheckWhitelist(MSUData(I).DisplayName) Then MSU_64.Add(MSUData(I))
@@ -7257,8 +7238,6 @@
         If Package = New ImagePackage Then Return
         If Package.Architecture.ToLower = "x64" Then
           If Not Package.Name.Contains("64") Then Package.Name &= " x64"
-        ElseIf Package.Architecture.ToLower = "ia64" Then
-          If Not Package.Name.Contains("64") Then Package.Name &= " IA64"
         End If
         lvItem.Checked = True
         lvItem.SubItems.Add(Package.Name)
@@ -7324,8 +7303,6 @@
         If Package = New ImagePackage Then Return
         If Package.Architecture.ToLower = "x64" Then
           If Not Package.Name.Contains("64") Then Package.Name &= " x64"
-        ElseIf Package.Architecture.ToLower = "ia64" Then
-          If Not Package.Name.Contains("64") Then Package.Name &= " IA64"
         End If
         lvItem.Checked = True
         lvItem.SubItems.Add(Package.Name)

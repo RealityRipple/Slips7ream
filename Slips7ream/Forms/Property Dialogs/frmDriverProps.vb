@@ -21,7 +21,11 @@
       cmbArchitecture.Items.Clear()
       cmbArchitecture.Enabled = True
       For Each arch As String In myDriver.Architectures
-        cmbArchitecture.Items.Add(arch)
+        If arch.ToLower = "ia64" Then
+          cmbArchitecture.Items.Add(arch & " (Not Used)")
+        Else
+          cmbArchitecture.Items.Add(arch)
+        End If
       Next
       cmbArchitecture.SelectedIndex = 0
     Else
@@ -45,7 +49,9 @@
     End If
     cmbHardware.Items.Clear()
     cmbHardware.Enabled = True
-    For Each hw As Driver_Hardware In myDriver.DriverHardware(cmbArchitecture.Text)
+    Dim sArch As String = cmbArchitecture.Text
+    If sArch.Contains(" (Not Used)") Then sArch = sArch.Substring(0, sArch.Length - 11)
+    For Each hw As Driver_Hardware In myDriver.DriverHardware(sArch)
       cmbHardware.Items.Add(hw.Description)
     Next
     txtHWServiceName.Text = Nothing
@@ -73,7 +79,9 @@
       lstHWExcludeIDs.Items.Clear()
       Return
     End If
-    Dim myHW As Driver_Hardware = myDriver.DriverHardware(cmbArchitecture.Text)(cmbHardware.SelectedIndex)
+    Dim sArch As String = cmbArchitecture.Text
+    If sArch.Contains(" (Not Used)") Then sArch = sArch.Substring(0, sArch.Length - 11)
+    Dim myHW As Driver_Hardware = myDriver.DriverHardware(sArch)(cmbHardware.SelectedIndex)
     txtHWServiceName.Text = myHW.ServiceName
     txtHWDescription.Text = myHW.Description
     txtHWArchitecture.Text = myHW.Architecture
@@ -99,7 +107,9 @@
       lstHWExcludeIDs.Items.Clear()
       Return
     End If
-    Dim myHW As Driver_Hardware_IDLists = myDriver.DriverHardware(cmbArchitecture.Text)(cmbHardware.SelectedIndex).HardwareIDs(lstHWIDs.SelectedItem)
+    Dim sArch As String = cmbArchitecture.Text
+    If sArch.Contains(" (Not Used)") Then sArch = sArch.Substring(0, sArch.Length - 11)
+    Dim myHW As Driver_Hardware_IDLists = myDriver.DriverHardware(sArch)(cmbHardware.SelectedIndex).HardwareIDs(lstHWIDs.SelectedItem)
     lstHWCompatibleIDs.Items.Clear()
     If myHW.CompatibleIDs IsNot Nothing AndAlso myHW.CompatibleIDs.Count > 0 Then
       lstHWCompatibleIDs.Items.AddRange(myHW.CompatibleIDs.ToArray)

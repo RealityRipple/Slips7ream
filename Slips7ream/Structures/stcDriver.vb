@@ -128,20 +128,27 @@
     End If
   End Function
   Public Shared Operator =(info1 As Driver, info2 As Driver) As Boolean
-    If info1.ClassGUID = Nothing Then Return False
-    If info2.ClassGUID = Nothing Then Return False
+    If String.IsNullOrEmpty(info1.ClassGUID) Then Return False
+    If String.IsNullOrEmpty(info2.ClassGUID) Then Return False
     If Not info1.ClassGUID.ToLower = info2.ClassGUID.ToLower Then Return False
-    If Not String.IsNullOrEmpty(info1.DriverStorePath) And Not String.IsNullOrEmpty(info2.DriverStorePath) Then
-      If Not info1.DriverStorePath.ToLower = info2.DriverStorePath.ToLower Then Return False
-    End If
     If Not info1.Version = info2.Version Then Return False
+    If Not info1.Date = info2.Date Then Return False
     Dim archMatches As New List(Of String)
     For Each arch1 As String In info1.Architectures
+      If StrComp(arch1, "ia64", CompareMethod.Text) = 0 Then Continue For
       For Each arch2 As String In info2.Architectures
-        If arch1.ToLower = arch2.ToLower Then archMatches.Add(arch1.ToLower)
+        If StrComp(arch1, arch2, CompareMethod.Text) = 0 Then archMatches.Add(arch1)
       Next
     Next
     If archMatches.Count = 0 Then Return False
+    For Each arch In archMatches
+      Dim hw1 = info1.DriverHardware(arch)
+      Dim hw2 = info2.DriverHardware(arch)
+      If Not hw1.Count = hw2.Count Then Return False
+      For I As Integer = 0 To hw1.Count - 1
+        If Not hw1(I) = hw2(I) Then Return False
+      Next
+    Next
     Return True
   End Operator
   Public Shared Operator <>(info1 As Driver, info2 As Driver) As Boolean
@@ -170,6 +177,42 @@ Public Structure Driver_Hardware
       Return Nothing
     End If
   End Function
+  Public Shared Operator =(hw1 As Driver_Hardware, hw2 As Driver_Hardware)
+    If Not StrComp(hw1.ServiceName, hw2.ServiceName, CompareMethod.Text) = 0 Then Return False
+    If Not StrComp(hw1.Description, hw2.Description, CompareMethod.Text) = 0 Then Return False
+    If Not StrComp(hw1.Manufacturer, hw2.Manufacturer, CompareMethod.Text) = 0 Then Return False
+    If hw1.HardwareIDs Is Nothing And hw2.HardwareIDs Is Nothing Then Return True
+    If hw1.HardwareIDs Is Nothing Then Return False
+    If hw2.HardwareIDs Is Nothing Then Return False
+    If Not hw1.HardwareIDs.Count = hw2.HardwareIDs.Count Then Return False
+    For I As Integer = 0 To hw1.HardwareIDs.Count - 1
+      Dim key1 As String = hw1.HardwareIDs.Keys.ToArray()(I)
+      Dim key2 As String = hw2.HardwareIDs.Keys.ToArray()(I)
+      If Not StrComp(key1, key2, CompareMethod.Text) = 0 Then Return False
+      If Not hw1.HardwareIDs(key1).CompatibleIDs Is Nothing And Not hw2.HardwareIDs(key2).CompatibleIDs Is Nothing Then
+        If Not hw1.HardwareIDs(key1).CompatibleIDs.Count = hw2.HardwareIDs(key2).CompatibleIDs.Count Then Return False
+        For J As Integer = 0 To hw1.HardwareIDs(key1).CompatibleIDs.Count - 1
+          If Not StrComp(hw1.HardwareIDs(key1).CompatibleIDs(J), hw2.HardwareIDs(key2).CompatibleIDs(J), CompareMethod.Text) = 0 Then Return False
+        Next
+      Else
+        If Not hw1.HardwareIDs(key1).CompatibleIDs Is Nothing Then Return False
+        If Not hw2.HardwareIDs(key2).CompatibleIDs Is Nothing Then Return False
+      End If
+      If Not hw1.HardwareIDs(key1).ExcludeIDs Is Nothing And Not hw2.HardwareIDs(key2).ExcludeIDs Is Nothing Then
+        If Not hw1.HardwareIDs(key1).ExcludeIDs.Count = hw2.HardwareIDs(key2).ExcludeIDs.Count Then Return False
+        For J As Integer = 0 To hw1.HardwareIDs(key1).ExcludeIDs.Count - 1
+          If Not StrComp(hw1.HardwareIDs(key1).ExcludeIDs(J), hw2.HardwareIDs(key2).ExcludeIDs(J), CompareMethod.Text) = 0 Then Return False
+        Next
+      Else
+        If Not hw1.HardwareIDs(key1).ExcludeIDs Is Nothing Then Return False
+        If Not hw2.HardwareIDs(key2).ExcludeIDs Is Nothing Then Return False
+      End If
+    Next
+    Return True
+  End Operator
+  Public Shared Operator <>(hw1 As Driver_Hardware, hw2 As Driver_Hardware)
+    Return Not hw1 = hw2
+  End Operator
 End Structure
 
 Public Structure Driver_Hardware_IDLists
