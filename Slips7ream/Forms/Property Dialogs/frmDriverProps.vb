@@ -39,7 +39,6 @@
       cmbHardware.Items.Clear()
       cmbHardware.Enabled = False
       txtHWServiceName.Text = Nothing
-      txtHWDescription.Text = Nothing
       txtHWArchitecture.Text = Nothing
       txtHWManufacturer.Text = Nothing
       lstHWIDs.Items.Clear()
@@ -55,7 +54,6 @@
       cmbHardware.Items.Add(hw.Description)
     Next
     txtHWServiceName.Text = Nothing
-    txtHWDescription.Text = Nothing
     txtHWArchitecture.Text = Nothing
     txtHWManufacturer.Text = Nothing
     lstHWIDs.Items.Clear()
@@ -71,7 +69,6 @@
   Private Sub cmbHardware_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cmbHardware.SelectedIndexChanged
     If cmbHardware.SelectedIndex = -1 Then
       txtHWServiceName.Text = Nothing
-      txtHWDescription.Text = Nothing
       txtHWArchitecture.Text = Nothing
       txtHWManufacturer.Text = Nothing
       lstHWIDs.Items.Clear()
@@ -83,7 +80,6 @@
     If sArch.Contains(" (Not Used)") Then sArch = sArch.Substring(0, sArch.Length - 11)
     Dim myHW As Driver_Hardware = myDriver.DriverHardware(sArch)(cmbHardware.SelectedIndex)
     txtHWServiceName.Text = myHW.ServiceName
-    txtHWDescription.Text = myHW.Description
     txtHWArchitecture.Text = myHW.Architecture
     txtHWManufacturer.Text = myHW.Manufacturer
     lstHWIDs.Items.Clear()

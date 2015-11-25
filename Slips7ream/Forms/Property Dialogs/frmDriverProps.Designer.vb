@@ -66,8 +66,6 @@ Partial Class frmDriverProps
     Me.lstHWIDs = New System.Windows.Forms.ListBox()
     Me.lblHWServiceName = New System.Windows.Forms.Label()
     Me.txtHWServiceName = New System.Windows.Forms.TextBox()
-    Me.lblHWDescription = New System.Windows.Forms.Label()
-    Me.txtHWDescription = New System.Windows.Forms.TextBox()
     Me.lblHWManufacturer = New System.Windows.Forms.Label()
     Me.lblHWArchitecture = New System.Windows.Forms.Label()
     Me.txtHWManufacturer = New System.Windows.Forms.TextBox()
@@ -517,34 +515,31 @@ Partial Class frmDriverProps
     Me.pnlHardware.ColumnCount = 2
     Me.pnlHardware.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
     Me.pnlHardware.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-    Me.pnlHardware.Controls.Add(Me.lblHWID, 0, 4)
-    Me.pnlHardware.Controls.Add(Me.lblHWCompatibleIDs, 0, 6)
-    Me.pnlHardware.Controls.Add(Me.lblHWExcludeIDs, 0, 8)
-    Me.pnlHardware.Controls.Add(Me.lstHWCompatibleIDs, 1, 6)
-    Me.pnlHardware.Controls.Add(Me.lstHWExcludeIDs, 1, 8)
-    Me.pnlHardware.Controls.Add(Me.lstHWIDs, 1, 4)
+    Me.pnlHardware.Controls.Add(Me.lblHWID, 0, 3)
+    Me.pnlHardware.Controls.Add(Me.lblHWCompatibleIDs, 0, 5)
+    Me.pnlHardware.Controls.Add(Me.lblHWExcludeIDs, 0, 7)
+    Me.pnlHardware.Controls.Add(Me.lstHWCompatibleIDs, 1, 5)
+    Me.pnlHardware.Controls.Add(Me.lstHWExcludeIDs, 1, 7)
+    Me.pnlHardware.Controls.Add(Me.lstHWIDs, 1, 3)
     Me.pnlHardware.Controls.Add(Me.lblHWServiceName, 0, 0)
     Me.pnlHardware.Controls.Add(Me.txtHWServiceName, 1, 0)
-    Me.pnlHardware.Controls.Add(Me.lblHWDescription, 0, 1)
-    Me.pnlHardware.Controls.Add(Me.txtHWDescription, 1, 1)
-    Me.pnlHardware.Controls.Add(Me.lblHWManufacturer, 0, 3)
-    Me.pnlHardware.Controls.Add(Me.lblHWArchitecture, 0, 2)
-    Me.pnlHardware.Controls.Add(Me.txtHWManufacturer, 1, 3)
-    Me.pnlHardware.Controls.Add(Me.txtHWArchitecture, 1, 2)
+    Me.pnlHardware.Controls.Add(Me.lblHWManufacturer, 0, 2)
+    Me.pnlHardware.Controls.Add(Me.lblHWArchitecture, 0, 1)
+    Me.pnlHardware.Controls.Add(Me.txtHWManufacturer, 1, 2)
+    Me.pnlHardware.Controls.Add(Me.txtHWArchitecture, 1, 1)
     Me.pnlHardware.Dock = System.Windows.Forms.DockStyle.Fill
     Me.pnlHardware.Location = New System.Drawing.Point(3, 16)
     Me.pnlHardware.Name = "pnlHardware"
-    Me.pnlHardware.RowCount = 10
+    Me.pnlHardware.RowCount = 9
     Me.pnlHardware.RowStyles.Add(New System.Windows.Forms.RowStyle())
     Me.pnlHardware.RowStyles.Add(New System.Windows.Forms.RowStyle())
     Me.pnlHardware.RowStyles.Add(New System.Windows.Forms.RowStyle())
     Me.pnlHardware.RowStyles.Add(New System.Windows.Forms.RowStyle())
+    Me.pnlHardware.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33111!))
     Me.pnlHardware.RowStyles.Add(New System.Windows.Forms.RowStyle())
-    Me.pnlHardware.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33112!))
+    Me.pnlHardware.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33444!))
     Me.pnlHardware.RowStyles.Add(New System.Windows.Forms.RowStyle())
-    Me.pnlHardware.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33445!))
-    Me.pnlHardware.RowStyles.Add(New System.Windows.Forms.RowStyle())
-    Me.pnlHardware.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33445!))
+    Me.pnlHardware.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33444!))
     Me.pnlHardware.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
     Me.pnlHardware.Size = New System.Drawing.Size(255, 231)
     Me.pnlHardware.TabIndex = 0
@@ -553,7 +548,7 @@ Partial Class frmDriverProps
     '
     Me.lblHWID.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblHWID.AutoSize = True
-    Me.lblHWID.Location = New System.Drawing.Point(3, 110)
+    Me.lblHWID.Location = New System.Drawing.Point(3, 84)
     Me.lblHWID.Margin = New System.Windows.Forms.Padding(3, 6, 3, 7)
     Me.lblHWID.Name = "lblHWID"
     Me.lblHWID.Size = New System.Drawing.Size(70, 13)
@@ -564,7 +559,7 @@ Partial Class frmDriverProps
     '
     Me.lblHWCompatibleIDs.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblHWCompatibleIDs.AutoSize = True
-    Me.lblHWCompatibleIDs.Location = New System.Drawing.Point(3, 152)
+    Me.lblHWCompatibleIDs.Location = New System.Drawing.Point(3, 134)
     Me.lblHWCompatibleIDs.Margin = New System.Windows.Forms.Padding(3, 6, 3, 7)
     Me.lblHWCompatibleIDs.Name = "lblHWCompatibleIDs"
     Me.lblHWCompatibleIDs.Size = New System.Drawing.Size(81, 13)
@@ -575,7 +570,7 @@ Partial Class frmDriverProps
     '
     Me.lblHWExcludeIDs.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblHWExcludeIDs.AutoSize = True
-    Me.lblHWExcludeIDs.Location = New System.Drawing.Point(3, 194)
+    Me.lblHWExcludeIDs.Location = New System.Drawing.Point(3, 185)
     Me.lblHWExcludeIDs.Margin = New System.Windows.Forms.Padding(3, 6, 3, 7)
     Me.lblHWExcludeIDs.Name = "lblHWExcludeIDs"
     Me.lblHWExcludeIDs.Size = New System.Drawing.Size(67, 13)
@@ -587,11 +582,11 @@ Partial Class frmDriverProps
     Me.lstHWCompatibleIDs.Dock = System.Windows.Forms.DockStyle.Fill
     Me.lstHWCompatibleIDs.FormattingEnabled = True
     Me.lstHWCompatibleIDs.IntegralHeight = False
-    Me.lstHWCompatibleIDs.Location = New System.Drawing.Point(90, 149)
+    Me.lstHWCompatibleIDs.Location = New System.Drawing.Point(90, 131)
     Me.lstHWCompatibleIDs.Name = "lstHWCompatibleIDs"
     Me.pnlHardware.SetRowSpan(Me.lstHWCompatibleIDs, 2)
     Me.lstHWCompatibleIDs.ScrollAlwaysVisible = True
-    Me.lstHWCompatibleIDs.Size = New System.Drawing.Size(162, 36)
+    Me.lstHWCompatibleIDs.Size = New System.Drawing.Size(162, 45)
     Me.lstHWCompatibleIDs.TabIndex = 11
     '
     'lstHWExcludeIDs
@@ -599,11 +594,11 @@ Partial Class frmDriverProps
     Me.lstHWExcludeIDs.Dock = System.Windows.Forms.DockStyle.Fill
     Me.lstHWExcludeIDs.FormattingEnabled = True
     Me.lstHWExcludeIDs.IntegralHeight = False
-    Me.lstHWExcludeIDs.Location = New System.Drawing.Point(90, 191)
+    Me.lstHWExcludeIDs.Location = New System.Drawing.Point(90, 182)
     Me.lstHWExcludeIDs.Name = "lstHWExcludeIDs"
     Me.pnlHardware.SetRowSpan(Me.lstHWExcludeIDs, 2)
     Me.lstHWExcludeIDs.ScrollAlwaysVisible = True
-    Me.lstHWExcludeIDs.Size = New System.Drawing.Size(162, 37)
+    Me.lstHWExcludeIDs.Size = New System.Drawing.Size(162, 46)
     Me.lstHWExcludeIDs.TabIndex = 13
     '
     'lstHWIDs
@@ -611,11 +606,11 @@ Partial Class frmDriverProps
     Me.lstHWIDs.Dock = System.Windows.Forms.DockStyle.Fill
     Me.lstHWIDs.FormattingEnabled = True
     Me.lstHWIDs.IntegralHeight = False
-    Me.lstHWIDs.Location = New System.Drawing.Point(90, 107)
+    Me.lstHWIDs.Location = New System.Drawing.Point(90, 81)
     Me.lstHWIDs.Name = "lstHWIDs"
     Me.pnlHardware.SetRowSpan(Me.lstHWIDs, 2)
     Me.lstHWIDs.ScrollAlwaysVisible = True
-    Me.lstHWIDs.Size = New System.Drawing.Size(162, 36)
+    Me.lstHWIDs.Size = New System.Drawing.Size(162, 44)
     Me.lstHWIDs.TabIndex = 9
     '
     'lblHWServiceName
@@ -638,31 +633,11 @@ Partial Class frmDriverProps
     Me.txtHWServiceName.Size = New System.Drawing.Size(162, 20)
     Me.txtHWServiceName.TabIndex = 1
     '
-    'lblHWDescription
-    '
-    Me.lblHWDescription.Anchor = System.Windows.Forms.AnchorStyles.Left
-    Me.lblHWDescription.AutoSize = True
-    Me.lblHWDescription.Location = New System.Drawing.Point(3, 32)
-    Me.lblHWDescription.Margin = New System.Windows.Forms.Padding(3, 6, 3, 7)
-    Me.lblHWDescription.Name = "lblHWDescription"
-    Me.lblHWDescription.Size = New System.Drawing.Size(63, 13)
-    Me.lblHWDescription.TabIndex = 2
-    Me.lblHWDescription.Text = "Description:"
-    '
-    'txtHWDescription
-    '
-    Me.txtHWDescription.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtHWDescription.Location = New System.Drawing.Point(90, 29)
-    Me.txtHWDescription.Name = "txtHWDescription"
-    Me.txtHWDescription.ReadOnly = True
-    Me.txtHWDescription.Size = New System.Drawing.Size(162, 20)
-    Me.txtHWDescription.TabIndex = 3
-    '
     'lblHWManufacturer
     '
     Me.lblHWManufacturer.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblHWManufacturer.AutoSize = True
-    Me.lblHWManufacturer.Location = New System.Drawing.Point(3, 84)
+    Me.lblHWManufacturer.Location = New System.Drawing.Point(3, 58)
     Me.lblHWManufacturer.Margin = New System.Windows.Forms.Padding(3, 6, 3, 7)
     Me.lblHWManufacturer.Name = "lblHWManufacturer"
     Me.lblHWManufacturer.Size = New System.Drawing.Size(73, 13)
@@ -673,7 +648,7 @@ Partial Class frmDriverProps
     '
     Me.lblHWArchitecture.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblHWArchitecture.AutoSize = True
-    Me.lblHWArchitecture.Location = New System.Drawing.Point(3, 58)
+    Me.lblHWArchitecture.Location = New System.Drawing.Point(3, 32)
     Me.lblHWArchitecture.Margin = New System.Windows.Forms.Padding(3, 6, 3, 7)
     Me.lblHWArchitecture.Name = "lblHWArchitecture"
     Me.lblHWArchitecture.Size = New System.Drawing.Size(67, 13)
@@ -683,7 +658,7 @@ Partial Class frmDriverProps
     'txtHWManufacturer
     '
     Me.txtHWManufacturer.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtHWManufacturer.Location = New System.Drawing.Point(90, 81)
+    Me.txtHWManufacturer.Location = New System.Drawing.Point(90, 55)
     Me.txtHWManufacturer.Name = "txtHWManufacturer"
     Me.txtHWManufacturer.ReadOnly = True
     Me.txtHWManufacturer.Size = New System.Drawing.Size(162, 20)
@@ -692,7 +667,7 @@ Partial Class frmDriverProps
     'txtHWArchitecture
     '
     Me.txtHWArchitecture.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtHWArchitecture.Location = New System.Drawing.Point(90, 55)
+    Me.txtHWArchitecture.Location = New System.Drawing.Point(90, 29)
     Me.txtHWArchitecture.Name = "txtHWArchitecture"
     Me.txtHWArchitecture.ReadOnly = True
     Me.txtHWArchitecture.Size = New System.Drawing.Size(162, 20)
@@ -761,12 +736,10 @@ Partial Class frmDriverProps
   Friend WithEvents pnlHardware As System.Windows.Forms.TableLayoutPanel
   Friend WithEvents lblHWManufacturer As System.Windows.Forms.Label
   Friend WithEvents txtHWManufacturer As System.Windows.Forms.TextBox
-  Friend WithEvents lblHWDescription As System.Windows.Forms.Label
   Friend WithEvents lblHWArchitecture As System.Windows.Forms.Label
   Friend WithEvents lblHWID As System.Windows.Forms.Label
   Friend WithEvents lblHWServiceName As System.Windows.Forms.Label
   Friend WithEvents lblHWExcludeIDs As System.Windows.Forms.Label
-  Friend WithEvents txtHWDescription As System.Windows.Forms.TextBox
   Friend WithEvents txtHWArchitecture As System.Windows.Forms.TextBox
   Friend WithEvents txtHWServiceName As System.Windows.Forms.TextBox
   Friend WithEvents lstHWExcludeIDs As System.Windows.Forms.ListBox
