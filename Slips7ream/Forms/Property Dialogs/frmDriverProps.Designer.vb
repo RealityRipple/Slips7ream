@@ -28,8 +28,8 @@ Partial Class frmDriverProps
     Me.txtDriverStorePath = New System.Windows.Forms.TextBox()
     Me.lblPublishedName = New System.Windows.Forms.Label()
     Me.txtPublishedName = New System.Windows.Forms.TextBox()
-    Me.lblInbox = New System.Windows.Forms.Label()
-    Me.txtInbox = New System.Windows.Forms.TextBox()
+    Me.lblInBox = New System.Windows.Forms.Label()
+    Me.txtInBox = New System.Windows.Forms.TextBox()
     Me.lblProviderName = New System.Windows.Forms.Label()
     Me.lblOriginalFileName = New System.Windows.Forms.Label()
     Me.txtOriginalFileName = New System.Windows.Forms.TextBox()
@@ -110,8 +110,8 @@ Partial Class frmDriverProps
     Me.pnlDriverData.Controls.Add(Me.txtDriverStorePath, 2, 2)
     Me.pnlDriverData.Controls.Add(Me.lblPublishedName, 0, 1)
     Me.pnlDriverData.Controls.Add(Me.txtPublishedName, 2, 1)
-    Me.pnlDriverData.Controls.Add(Me.lblInbox, 0, 3)
-    Me.pnlDriverData.Controls.Add(Me.txtInbox, 2, 3)
+    Me.pnlDriverData.Controls.Add(Me.lblInBox, 0, 3)
+    Me.pnlDriverData.Controls.Add(Me.txtInBox, 2, 3)
     Me.pnlDriverData.Controls.Add(Me.lblProviderName, 0, 4)
     Me.pnlDriverData.Controls.Add(Me.lblOriginalFileName, 0, 0)
     Me.pnlDriverData.Controls.Add(Me.txtOriginalFileName, 2, 0)
@@ -181,25 +181,25 @@ Partial Class frmDriverProps
     Me.txtPublishedName.Size = New System.Drawing.Size(163, 20)
     Me.txtPublishedName.TabIndex = 3
     '
-    'lblInbox
+    'lblInBox
     '
-    Me.lblInbox.Anchor = System.Windows.Forms.AnchorStyles.Left
-    Me.lblInbox.AutoSize = True
-    Me.pnlDriverData.SetColumnSpan(Me.lblInbox, 2)
-    Me.lblInbox.Location = New System.Drawing.Point(3, 84)
-    Me.lblInbox.Name = "lblInbox"
-    Me.lblInbox.Size = New System.Drawing.Size(36, 13)
-    Me.lblInbox.TabIndex = 6
-    Me.lblInbox.Text = "Inbox:"
+    Me.lblInBox.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.lblInBox.AutoSize = True
+    Me.pnlDriverData.SetColumnSpan(Me.lblInBox, 2)
+    Me.lblInBox.Location = New System.Drawing.Point(3, 84)
+    Me.lblInBox.Name = "lblInBox"
+    Me.lblInBox.Size = New System.Drawing.Size(36, 13)
+    Me.lblInBox.TabIndex = 6
+    Me.lblInBox.Text = "In-Box:"
     '
     'txtInbox
     '
-    Me.txtInbox.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtInbox.Location = New System.Drawing.Point(101, 81)
-    Me.txtInbox.Name = "txtInbox"
-    Me.txtInbox.ReadOnly = True
-    Me.txtInbox.Size = New System.Drawing.Size(163, 20)
-    Me.txtInbox.TabIndex = 7
+    Me.txtInBox.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.txtInBox.Location = New System.Drawing.Point(101, 81)
+    Me.txtInBox.Name = "txtInBox"
+    Me.txtInBox.ReadOnly = True
+    Me.txtInBox.Size = New System.Drawing.Size(163, 20)
+    Me.txtInBox.TabIndex = 7
     '
     'lblProviderName
     '
@@ -710,8 +710,8 @@ Partial Class frmDriverProps
   Friend WithEvents txtDriverStorePath As System.Windows.Forms.TextBox
   Friend WithEvents lblPublishedName As System.Windows.Forms.Label
   Friend WithEvents txtPublishedName As System.Windows.Forms.TextBox
-  Friend WithEvents lblInbox As System.Windows.Forms.Label
-  Friend WithEvents txtInbox As System.Windows.Forms.TextBox
+  Friend WithEvents lblInBox As System.Windows.Forms.Label
+  Friend WithEvents txtInBox As System.Windows.Forms.TextBox
   Friend WithEvents txtClassName As System.Windows.Forms.TextBox
   Friend WithEvents lblClassDescription As System.Windows.Forms.Label
   Friend WithEvents txtClassDescription As System.Windows.Forms.TextBox

@@ -1174,8 +1174,8 @@
       If Not String.IsNullOrEmpty(msuData.DriverData.OriginalFileName) Then ttOriginalFileName = en & "Original File Name: " & msuData.DriverData.OriginalFileName
       Dim ttDriverStorePath As String = Nothing
       If Not String.IsNullOrEmpty(msuData.DriverData.DriverStorePath) Then ttDriverStorePath = en & "Driver Store Path: " & msuData.DriverData.DriverStorePath
-      Dim ttInbox As String = Nothing
-      If Not String.IsNullOrEmpty(msuData.DriverData.Inbox) Then ttInbox = en & "Inbox: " & msuData.DriverData.Inbox
+      Dim ttInBox As String = Nothing
+      If Not String.IsNullOrEmpty(msuData.DriverData.InBox) Then ttInBox = en & "In-Box: " & msuData.DriverData.InBox
       Dim ttClassName As String = Nothing
       If Not String.IsNullOrEmpty(msuData.DriverData.ClassName) Then
         ttClassName = en & "Class Name: " & msuData.DriverData.ClassName
@@ -1199,7 +1199,7 @@
       lvItem.ToolTipText = IIf(String.IsNullOrEmpty(ttPublishedName), "", ttPublishedName & vbNewLine) &
                            IIf(String.IsNullOrEmpty(ttOriginalFileName), "", ttOriginalFileName & vbNewLine) &
                            IIf(String.IsNullOrEmpty(ttDriverStorePath), "", ttDriverStorePath & vbNewLine) &
-                           IIf(String.IsNullOrEmpty(ttInbox), "", ttInbox & vbNewLine) &
+                           IIf(String.IsNullOrEmpty(ttInBox), "", ttInBox & vbNewLine) &
                            IIf(String.IsNullOrEmpty(ttClassName), "", ttClassName & vbNewLine) &
                            IIf(String.IsNullOrEmpty(ttClassGUID), "", ttClassGUID & vbNewLine) &
                            IIf(String.IsNullOrEmpty(ttProviderName), "", ttProviderName & vbNewLine) &
@@ -3621,7 +3621,7 @@
   Private Sub SetRawProgress(Value As Integer, Maximum As Integer)
     pbIndividual.Maximum = 10000
     If Value > 0 And CInt((Value / Maximum) * 10000) < pbIndividual.Value Then
-      Debug.Print("Progress backwards from " & FormatPercent(pbIndividual.Value / 10000, 2, TriState.True, TriState.False, TriState.False) & " to " & FormatPercent(Value / Maximum, 2, TriState.True, TriState.False, TriState.False))
+      Debug.Print("Progress going backwards from " & FormatPercent(pbIndividual.Value / 10000, 2, TriState.True, TriState.False, TriState.False) & " to " & FormatPercent(Value / Maximum, 2, TriState.True, TriState.False, TriState.False))
       Application.DoEvents()
     End If
     pbIndividual.Value = (Value / Maximum) * 10000

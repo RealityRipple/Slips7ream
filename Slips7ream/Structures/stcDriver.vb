@@ -3,7 +3,7 @@
   Public OriginalFileName As String
   Public DriverStorePath As String
   Public Remove As Boolean
-  Public Inbox As String
+  Public InBox As String
   Public ClassName As String
   Public ClassDescription As String
   Public ClassGUID As String
@@ -22,7 +22,7 @@
     If Not DriverData.Length = 7 Then Return
     PublishedName = Trim(DriverData(0))
     OriginalFileName = Trim(DriverData(1))
-    Inbox = Trim(DriverData(2))
+    InBox = Trim(DriverData(2))
     ClassName = Trim(DriverData(3))
     ProviderName = Trim(DriverData(4))
     [Date] = Trim(DriverData(5))

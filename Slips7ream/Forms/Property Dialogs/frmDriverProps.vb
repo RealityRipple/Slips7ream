@@ -8,7 +8,7 @@
     txtPublishedName.Text = myDriver.PublishedName
     txtOriginalFileName.Text = myDriver.OriginalFileName
     txtDriverStorePath.Text = myDriver.DriverStorePath
-    txtInbox.Text = myDriver.Inbox
+    txtInBox.Text = myDriver.InBox
     pctClassIcon.Image = myDriver.ClassIcon.ToBitmap
     txtClassName.Text = myDriver.ClassName
     txtClassDescription.Text = myDriver.ClassDescription

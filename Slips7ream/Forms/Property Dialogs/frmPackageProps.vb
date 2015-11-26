@@ -1149,8 +1149,8 @@
         If Not String.IsNullOrEmpty(pDriver.OriginalFileName) Then ttOriginalFileName = en & "Original File Name: " & pDriver.OriginalFileName
         Dim ttDriverStorePath As String = Nothing
         If Not String.IsNullOrEmpty(pDriver.DriverStorePath) Then ttDriverStorePath = en & "Driver Store Path: " & pDriver.DriverStorePath
-        Dim ttInbox As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.Inbox) Then ttInbox = en & "Inbox: " & pDriver.Inbox
+        Dim ttInBox As String = Nothing
+        If Not String.IsNullOrEmpty(pDriver.InBox) Then ttInBox = en & "In-Box: " & pDriver.InBox
         Dim ttClassName As String = Nothing
         If Not String.IsNullOrEmpty(pDriver.ClassName) Then
           ttClassName = en & "Class Name: " & pDriver.ClassName
@@ -1172,7 +1172,7 @@
         lvDeviceItem.ToolTipText = IIf(String.IsNullOrEmpty(ttPublishedName), "", ttPublishedName & vbNewLine) &
                              IIf(String.IsNullOrEmpty(ttOriginalFileName), "", ttOriginalFileName & vbNewLine) &
                              IIf(String.IsNullOrEmpty(ttDriverStorePath), "", ttDriverStorePath & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttInbox), "", ttInbox & vbNewLine) &
+                             IIf(String.IsNullOrEmpty(ttInBox), "", ttInBox & vbNewLine) &
                              IIf(String.IsNullOrEmpty(ttClassName), "", ttClassName & vbNewLine) &
                              IIf(String.IsNullOrEmpty(ttClassGUID), "", ttClassGUID & vbNewLine) &
                              IIf(String.IsNullOrEmpty(ttProviderName), "", ttProviderName & vbNewLine) &
