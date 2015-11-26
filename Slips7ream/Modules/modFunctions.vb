@@ -602,12 +602,17 @@ Public Module modFunctions
   End Property
   Public ReadOnly Property DismPath As String
     Get
+      Dim localDir As String = AIKDir
+      localDir &= "Dism.exe"
       Dim systemDir As String = Environment.SystemDirectory & IO.Path.DirectorySeparatorChar & "Dism.exe"
       If IO.File.Exists(systemDir) Then
-        Return systemDir
-      Else
-        Return AIKDir & "Dism.exe"
+        Dim sysInfo As FileVersionInfo = FileVersionInfo.GetVersionInfo(systemDir)
+        Dim locInfo As FileVersionInfo = FileVersionInfo.GetVersionInfo(localDir)
+        If CompareMSVersions(sysInfo.ProductVersion, locInfo.ProductVersion) > -1 Then
+          Return systemDir
+        End If
       End If
+      Return localDir
     End Get
   End Property
   Private Declare Auto Function GetShortPathName Lib "kernel32.dll" (ByVal lpszLongPath As String, ByVal lpszShortPath As String, ByVal cchBuffer As Int32) As Int32
