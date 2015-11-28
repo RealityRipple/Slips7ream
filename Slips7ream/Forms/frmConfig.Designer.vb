@@ -41,6 +41,7 @@ Partial Class frmConfig
     Me.cmdAlertBrowse = New System.Windows.Forms.Button()
     Me.cmdPlay = New System.Windows.Forms.Button()
     Me.chkDefault = New System.Windows.Forms.CheckBox()
+    Me.helpS7M = New System.Windows.Forms.HelpProvider()
     Me.lblDonate = New Slips7ream.LinkLabel()
     Me.ttInfo = New Slips7ream.ToolTip(Me.components)
     Me.pnlConfig.SuspendLayout()
@@ -116,9 +117,12 @@ Partial Class frmConfig
     'txtTimeout
     '
     Me.txtTimeout.Anchor = System.Windows.Forms.AnchorStyles.Right
+    Me.helpS7M.SetHelpKeyword(Me.txtTimeout, "/2_Configuration/2.3_Command_Timeout.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtTimeout, System.Windows.Forms.HelpNavigator.Topic)
     Me.txtTimeout.Location = New System.Drawing.Point(127, 150)
     Me.txtTimeout.Maximum = New Decimal(New Integer() {1440, 0, 0, 0})
     Me.txtTimeout.Name = "txtTimeout"
+    Me.helpS7M.SetShowHelp(Me.txtTimeout, True)
     Me.txtTimeout.Size = New System.Drawing.Size(60, 20)
     Me.txtTimeout.TabIndex = 6
     '
@@ -136,17 +140,23 @@ Partial Class frmConfig
     '
     Me.txtTemp.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
     Me.pnlConfig.SetColumnSpan(Me.txtTemp, 2)
+    Me.helpS7M.SetHelpKeyword(Me.txtTemp, "/2_Configuration/2.1_Temp_Directory_Path.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtTemp, System.Windows.Forms.HelpNavigator.Topic)
     Me.txtTemp.Location = New System.Drawing.Point(127, 4)
     Me.txtTemp.Name = "txtTemp"
+    Me.helpS7M.SetShowHelp(Me.txtTemp, True)
     Me.txtTemp.Size = New System.Drawing.Size(250, 20)
     Me.txtTemp.TabIndex = 1
-    Me.ttInfo.SetTooltip(Me.txtTemp, "Empty directory for the program to work in.")
+    Me.ttInfo.SetToolTip(Me.txtTemp, "Empty directory for the program to work in.")
     '
     'cmdTemp
     '
     Me.cmdTemp.Anchor = System.Windows.Forms.AnchorStyles.Right
+    Me.helpS7M.SetHelpKeyword(Me.cmdTemp, "/2_Configuration/2.1_Temp_Directory_Path.htm")
+    Me.helpS7M.SetHelpNavigator(Me.cmdTemp, System.Windows.Forms.HelpNavigator.Topic)
     Me.cmdTemp.Location = New System.Drawing.Point(383, 3)
     Me.cmdTemp.Name = "cmdTemp"
+    Me.helpS7M.SetShowHelp(Me.cmdTemp, True)
     Me.cmdTemp.Size = New System.Drawing.Size(75, 23)
     Me.cmdTemp.TabIndex = 2
     Me.cmdTemp.Text = "B&rowse..."
@@ -167,13 +177,16 @@ Partial Class frmConfig
     Me.txtWhitelist.AcceptsReturn = True
     Me.pnlConfig.SetColumnSpan(Me.txtWhitelist, 3)
     Me.txtWhitelist.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.helpS7M.SetHelpKeyword(Me.txtWhitelist, "/2_Configuration/2.2_Update_Whitelist.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtWhitelist, System.Windows.Forms.HelpNavigator.Topic)
     Me.txtWhitelist.Location = New System.Drawing.Point(127, 32)
     Me.txtWhitelist.Multiline = True
     Me.txtWhitelist.Name = "txtWhitelist"
     Me.txtWhitelist.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+    Me.helpS7M.SetShowHelp(Me.txtWhitelist, True)
     Me.txtWhitelist.Size = New System.Drawing.Size(331, 112)
     Me.txtWhitelist.TabIndex = 4
-    Me.ttInfo.SetTooltip(Me.txtWhitelist, resources.GetString("txtWhitelist.ToolTip"))
+    Me.ttInfo.SetToolTip(Me.txtWhitelist, resources.GetString("txtWhitelist.ToolTip"))
     '
     'lblTimeoutS
     '
@@ -191,12 +204,15 @@ Partial Class frmConfig
     Me.chkAlert.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.chkAlert.AutoSize = True
     Me.chkAlert.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.helpS7M.SetHelpKeyword(Me.chkAlert, "/2_Configuration/2.4_Alert_on_Complete.htm")
+    Me.helpS7M.SetHelpNavigator(Me.chkAlert, System.Windows.Forms.HelpNavigator.Topic)
     Me.chkAlert.Location = New System.Drawing.Point(3, 179)
     Me.chkAlert.Name = "chkAlert"
+    Me.helpS7M.SetShowHelp(Me.chkAlert, True)
     Me.chkAlert.Size = New System.Drawing.Size(118, 18)
     Me.chkAlert.TabIndex = 8
     Me.chkAlert.Text = "&Alert on Complete:"
-    Me.ttInfo.SetTooltip(Me.chkAlert, "Play an auditory alert when the Slipstream process has completed.")
+    Me.ttInfo.SetToolTip(Me.chkAlert, "Play an auditory alert when the Slipstream process has completed.")
     Me.chkAlert.UseVisualStyleBackColor = True
     '
     'pnlAlert
@@ -212,11 +228,14 @@ Partial Class frmConfig
     Me.pnlAlert.Controls.Add(Me.cmdPlay, 3, 0)
     Me.pnlAlert.Controls.Add(Me.chkDefault, 2, 0)
     Me.pnlAlert.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.helpS7M.SetHelpKeyword(Me.pnlAlert, "/2_Configuration/2.4_Alert_on_Complete.htm")
+    Me.helpS7M.SetHelpNavigator(Me.pnlAlert, System.Windows.Forms.HelpNavigator.Topic)
     Me.pnlAlert.Location = New System.Drawing.Point(124, 173)
     Me.pnlAlert.Margin = New System.Windows.Forms.Padding(0)
     Me.pnlAlert.Name = "pnlAlert"
     Me.pnlAlert.RowCount = 1
     Me.pnlAlert.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+    Me.helpS7M.SetShowHelp(Me.pnlAlert, True)
     Me.pnlAlert.Size = New System.Drawing.Size(337, 30)
     Me.pnlAlert.TabIndex = 9
     '
@@ -228,7 +247,7 @@ Partial Class frmConfig
     Me.txtAlertPath.Name = "txtAlertPath"
     Me.txtAlertPath.Size = New System.Drawing.Size(238, 20)
     Me.txtAlertPath.TabIndex = 0
-    Me.ttInfo.SetTooltip(Me.txtAlertPath, "Path to the WAV file to play when the Slipstream process has completed.")
+    Me.ttInfo.SetToolTip(Me.txtAlertPath, "Path to the WAV file to play when the Slipstream process has completed.")
     '
     'cmdAlertBrowse
     '
@@ -251,7 +270,7 @@ Partial Class frmConfig
     Me.cmdPlay.Name = "cmdPlay"
     Me.cmdPlay.Size = New System.Drawing.Size(23, 23)
     Me.cmdPlay.TabIndex = 3
-    Me.ttInfo.SetTooltip(Me.cmdPlay, "Play the Alert sound.")
+    Me.ttInfo.SetToolTip(Me.cmdPlay, "Play the Alert sound.")
     Me.cmdPlay.UseVisualStyleBackColor = True
     '
     'chkDefault
@@ -265,8 +284,12 @@ Partial Class frmConfig
     Me.chkDefault.Size = New System.Drawing.Size(23, 23)
     Me.chkDefault.TabIndex = 2
     Me.chkDefault.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-    Me.ttInfo.SetTooltip(Me.chkDefault, "Use the System Default Alert sound.")
+    Me.ttInfo.SetToolTip(Me.chkDefault, "Use the System Default Alert sound.")
     Me.chkDefault.UseVisualStyleBackColor = True
+    '
+    'helpS7M
+    '
+    Me.helpS7M.HelpNamespace = "S7M.chm"
     '
     'lblDonate
     '
@@ -291,10 +314,13 @@ Partial Class frmConfig
     Me.ClientSize = New System.Drawing.Size(461, 232)
     Me.Controls.Add(Me.pnlConfig)
     Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
+    Me.helpS7M.SetHelpKeyword(Me, "/2_Configuration/2.0_Configuration.htm")
+    Me.helpS7M.SetHelpNavigator(Me, System.Windows.Forms.HelpNavigator.Topic)
     Me.Icon = Global.Slips7ream.My.Resources.Resources.icon
     Me.MaximizeBox = False
     Me.MinimizeBox = False
     Me.Name = "frmConfig"
+    Me.helpS7M.SetShowHelp(Me, True)
     Me.ShowInTaskbar = False
     Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
     Me.Text = "SLIPS7REAM Configuration"
@@ -325,4 +351,5 @@ Partial Class frmConfig
   Friend WithEvents cmdAlertBrowse As System.Windows.Forms.Button
   Friend WithEvents cmdPlay As System.Windows.Forms.Button
   Friend WithEvents chkDefault As System.Windows.Forms.CheckBox
+  Friend WithEvents helpS7M As System.Windows.Forms.HelpProvider
 End Class

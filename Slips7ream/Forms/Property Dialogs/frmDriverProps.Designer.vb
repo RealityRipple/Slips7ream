@@ -70,6 +70,7 @@ Partial Class frmDriverProps
     Me.lblHWArchitecture = New System.Windows.Forms.Label()
     Me.txtHWManufacturer = New System.Windows.Forms.TextBox()
     Me.txtHWArchitecture = New System.Windows.Forms.TextBox()
+    Me.helpS7M = New System.Windows.Forms.HelpProvider()
     Me.pnlDriver.SuspendLayout()
     Me.pnlDriverData.SuspendLayout()
     Me.grpClass.SuspendLayout()
@@ -188,11 +189,11 @@ Partial Class frmDriverProps
     Me.pnlDriverData.SetColumnSpan(Me.lblInBox, 2)
     Me.lblInBox.Location = New System.Drawing.Point(3, 84)
     Me.lblInBox.Name = "lblInBox"
-    Me.lblInBox.Size = New System.Drawing.Size(36, 13)
+    Me.lblInBox.Size = New System.Drawing.Size(40, 13)
     Me.lblInBox.TabIndex = 6
     Me.lblInBox.Text = "In-Box:"
     '
-    'txtInbox
+    'txtInBox
     '
     Me.txtInBox.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
     Me.txtInBox.Location = New System.Drawing.Point(101, 81)
@@ -673,6 +674,10 @@ Partial Class frmDriverProps
     Me.txtHWArchitecture.Size = New System.Drawing.Size(162, 20)
     Me.txtHWArchitecture.TabIndex = 5
     '
+    'helpS7M
+    '
+    Me.helpS7M.HelpNamespace = "S7M.chm"
+    '
     'frmDriverProps
     '
     Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -680,11 +685,14 @@ Partial Class frmDriverProps
     Me.ClientSize = New System.Drawing.Size(534, 341)
     Me.Controls.Add(Me.pnlDriver)
     Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
+    Me.helpS7M.SetHelpKeyword(Me, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me, System.Windows.Forms.HelpNavigator.Topic)
     Me.Icon = Global.Slips7ream.My.Resources.Resources.icon
     Me.MaximizeBox = False
     Me.MinimizeBox = False
     Me.MinimumSize = New System.Drawing.Size(550, 375)
     Me.Name = "frmDriverProps"
+    Me.helpS7M.SetShowHelp(Me, True)
     Me.ShowInTaskbar = False
     Me.Text = "Driver INF Properties"
     Me.pnlDriver.ResumeLayout(False)
@@ -752,4 +760,5 @@ Partial Class frmDriverProps
   Friend WithEvents lblClassName As System.Windows.Forms.Label
   Friend WithEvents pctClassIcon As System.Windows.Forms.PictureBox
   Friend WithEvents pctDriverIcon As System.Windows.Forms.PictureBox
+  Friend WithEvents helpS7M As System.Windows.Forms.HelpProvider
 End Class

@@ -74,10 +74,24 @@ Partial Class frmPackageProps
     Me.colFeatureRestart = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
     Me.pnlMain = New System.Windows.Forms.TableLayoutPanel()
     Me.pnlLists = New System.Windows.Forms.TableLayoutPanel()
+    Me.expFeatures = New Slips7ream.Expander()
+    Me.tvFeatures = New Slips7ream.TreeViewEx()
+    Me.expUpdates = New Slips7ream.Expander()
+    Me.lvUpdates = New Slips7ream.ListViewEx()
+    Me.colPackage = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+    Me.colVer = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+    Me.expDrivers = New Slips7ream.Expander()
     Me.cmdLoadDrivers = New System.Windows.Forms.Button()
     Me.pnlDrivers = New System.Windows.Forms.TableLayoutPanel()
+    Me.lvDriverClass = New Slips7ream.ListViewEx()
+    Me.lvcGroup = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
     Me.imlDriverClass = New System.Windows.Forms.ImageList(Me.components)
+    Me.lvDriverProvider = New Slips7ream.ListViewEx()
+    Me.lvcCompany = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
     Me.imlDriverCompany = New System.Windows.Forms.ImageList(Me.components)
+    Me.lvDriverINF = New Slips7ream.ListViewEx()
+    Me.lvcName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+    Me.lvcVer = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
     Me.imlDriverINF = New System.Windows.Forms.ImageList(Me.components)
     Me.lblDriverClass = New System.Windows.Forms.Label()
     Me.lblDriverProvider = New System.Windows.Forms.Label()
@@ -91,20 +105,7 @@ Partial Class frmPackageProps
     Me.mnuFeatureCollapseAll = New System.Windows.Forms.MenuItem()
     Me.mnuUpdates = New System.Windows.Forms.ContextMenu()
     Me.mnuUpdateInclude = New System.Windows.Forms.MenuItem()
-    Me.expFeatures = New Slips7ream.Expander()
-    Me.tvFeatures = New Slips7ream.TreeViewEx()
-    Me.expUpdates = New Slips7ream.Expander()
-    Me.lvUpdates = New Slips7ream.ListViewEx()
-    Me.colPackage = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-    Me.colVer = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-    Me.expDrivers = New Slips7ream.Expander()
-    Me.lvDriverClass = New Slips7ream.ListViewEx()
-    Me.lvcGroup = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-    Me.lvDriverProvider = New Slips7ream.ListViewEx()
-    Me.lvcCompany = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-    Me.lvDriverINF = New Slips7ream.ListViewEx()
-    Me.lvcName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-    Me.lvcVer = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+    Me.helpS7M = New System.Windows.Forms.HelpProvider()
     Me.pnlProps.SuspendLayout()
     Me.pnlButtons.SuspendLayout()
     Me.pnlMain.SuspendLayout()
@@ -669,11 +670,15 @@ Partial Class frmPackageProps
     Me.cmdLoadFeatures.Anchor = System.Windows.Forms.AnchorStyles.None
     Me.cmdLoadFeatures.AutoSize = True
     Me.cmdLoadFeatures.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.helpS7M.SetHelpKeyword(Me.cmdLoadFeatures, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.1_Windo" & _
+        "ws_Features.htm")
+    Me.helpS7M.SetHelpNavigator(Me.cmdLoadFeatures, System.Windows.Forms.HelpNavigator.Topic)
     Me.cmdLoadFeatures.Image = Global.Slips7ream.My.Resources.Resources.load_feature
     Me.cmdLoadFeatures.Location = New System.Drawing.Point(68, 135)
     Me.cmdLoadFeatures.MinimumSize = New System.Drawing.Size(80, 25)
     Me.cmdLoadFeatures.Name = "cmdLoadFeatures"
     Me.cmdLoadFeatures.Padding = New System.Windows.Forms.Padding(1)
+    Me.helpS7M.SetShowHelp(Me.cmdLoadFeatures, True)
     Me.cmdLoadFeatures.Size = New System.Drawing.Size(169, 25)
     Me.cmdLoadFeatures.TabIndex = 2
     Me.cmdLoadFeatures.Text = "Load Windows Features List"
@@ -685,11 +690,15 @@ Partial Class frmPackageProps
     Me.cmdLoadUpdates.Anchor = System.Windows.Forms.AnchorStyles.None
     Me.cmdLoadUpdates.AutoSize = True
     Me.cmdLoadUpdates.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.helpS7M.SetHelpKeyword(Me.cmdLoadUpdates, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.2_Integ" & _
+        "rated_Windows_Updates.htm")
+    Me.helpS7M.SetHelpNavigator(Me.cmdLoadUpdates, System.Windows.Forms.HelpNavigator.Topic)
     Me.cmdLoadUpdates.Image = Global.Slips7ream.My.Resources.Resources.load_update
     Me.cmdLoadUpdates.Location = New System.Drawing.Point(43, 298)
     Me.cmdLoadUpdates.MinimumSize = New System.Drawing.Size(80, 25)
     Me.cmdLoadUpdates.Name = "cmdLoadUpdates"
     Me.cmdLoadUpdates.Padding = New System.Windows.Forms.Padding(1)
+    Me.helpS7M.SetShowHelp(Me.cmdLoadUpdates, True)
     Me.cmdLoadUpdates.Size = New System.Drawing.Size(219, 25)
     Me.cmdLoadUpdates.TabIndex = 5
     Me.cmdLoadUpdates.Text = "Load Integrated Windows Updates List"
@@ -763,16 +772,126 @@ Partial Class frmPackageProps
     Me.pnlLists.Size = New System.Drawing.Size(306, 491)
     Me.pnlLists.TabIndex = 1
     '
+    'expFeatures
+    '
+    Me.expFeatures.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.expFeatures.AutoSize = True
+    Me.expFeatures.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.helpS7M.SetHelpKeyword(Me.expFeatures, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.1_Windo" & _
+        "ws_Features.htm")
+    Me.helpS7M.SetHelpNavigator(Me.expFeatures, System.Windows.Forms.HelpNavigator.Topic)
+    Me.expFeatures.Location = New System.Drawing.Point(3, 6)
+    Me.expFeatures.Margin = New System.Windows.Forms.Padding(3, 6, 3, 6)
+    Me.expFeatures.Name = "expFeatures"
+    Me.helpS7M.SetShowHelp(Me.expFeatures, True)
+    Me.expFeatures.Size = New System.Drawing.Size(120, 19)
+    Me.expFeatures.TabIndex = 0
+    Me.expFeatures.Text = "Windows &Features"
+    '
+    'tvFeatures
+    '
+    Me.tvFeatures.BackColor = System.Drawing.SystemColors.Window
+    Me.tvFeatures.CheckBoxes = True
+    Me.tvFeatures.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.tvFeatures.FullRowSelect = True
+    Me.helpS7M.SetHelpKeyword(Me.tvFeatures, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.1_Windo" & _
+        "ws_Features.htm")
+    Me.helpS7M.SetHelpNavigator(Me.tvFeatures, System.Windows.Forms.HelpNavigator.Topic)
+    Me.tvFeatures.HideSelection = False
+    Me.tvFeatures.ImageIndex = 0
+    Me.tvFeatures.ImageList = Me.imlFeatures
+    Me.tvFeatures.Location = New System.Drawing.Point(3, 34)
+    Me.tvFeatures.MinimumSize = New System.Drawing.Size(300, 4)
+    Me.tvFeatures.Name = "tvFeatures"
+    Me.tvFeatures.ReadOnly = False
+    Me.tvFeatures.SelectedImageIndex = 0
+    Me.helpS7M.SetShowHelp(Me.tvFeatures, True)
+    Me.tvFeatures.Size = New System.Drawing.Size(300, 95)
+    Me.tvFeatures.TabIndex = 1
+    Me.tvFeatures.TooltipTitles = True
+    '
+    'expUpdates
+    '
+    Me.expUpdates.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.expUpdates.AutoSize = True
+    Me.expUpdates.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.helpS7M.SetHelpKeyword(Me.expUpdates, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.2_Integ" & _
+        "rated_Windows_Updates.htm")
+    Me.helpS7M.SetHelpNavigator(Me.expUpdates, System.Windows.Forms.HelpNavigator.Topic)
+    Me.expUpdates.Location = New System.Drawing.Point(3, 169)
+    Me.expUpdates.Margin = New System.Windows.Forms.Padding(3, 6, 3, 6)
+    Me.expUpdates.Name = "expUpdates"
+    Me.helpS7M.SetShowHelp(Me.expUpdates, True)
+    Me.expUpdates.Size = New System.Drawing.Size(170, 19)
+    Me.expUpdates.TabIndex = 3
+    Me.expUpdates.Text = "Integrated Windows &Updates"
+    '
+    'lvUpdates
+    '
+    Me.lvUpdates.BackColor = System.Drawing.SystemColors.Window
+    Me.lvUpdates.CheckBoxes = True
+    Me.lvUpdates.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colPackage, Me.colVer})
+    Me.lvUpdates.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.lvUpdates.FullRowSelect = True
+    Me.lvUpdates.FullRowTooltip = True
+    Me.lvUpdates.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
+    Me.helpS7M.SetHelpKeyword(Me.lvUpdates, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.2_Integ" & _
+        "rated_Windows_Updates.htm")
+    Me.helpS7M.SetHelpNavigator(Me.lvUpdates, System.Windows.Forms.HelpNavigator.Topic)
+    Me.lvUpdates.HideSelection = False
+    Me.lvUpdates.Location = New System.Drawing.Point(3, 197)
+    Me.lvUpdates.MinimumSize = New System.Drawing.Size(300, 4)
+    Me.lvUpdates.MultiSelect = False
+    Me.lvUpdates.Name = "lvUpdates"
+    Me.lvUpdates.ReadOnly = False
+    Me.helpS7M.SetShowHelp(Me.lvUpdates, True)
+    Me.lvUpdates.Size = New System.Drawing.Size(300, 95)
+    Me.lvUpdates.SmallImageList = Me.imlUpdates
+    Me.lvUpdates.TabIndex = 4
+    Me.lvUpdates.TooltipTitles = True
+    Me.lvUpdates.UseCompatibleStateImageBehavior = False
+    Me.lvUpdates.View = System.Windows.Forms.View.Details
+    '
+    'colPackage
+    '
+    Me.colPackage.Text = "Package Name"
+    Me.colPackage.Width = 200
+    '
+    'colVer
+    '
+    Me.colVer.Text = "Version"
+    Me.colVer.Width = 92
+    '
+    'expDrivers
+    '
+    Me.expDrivers.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.expDrivers.AutoSize = True
+    Me.expDrivers.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.helpS7M.SetHelpKeyword(Me.expDrivers, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.3_Integ" & _
+        "rated_Drivers.htm")
+    Me.helpS7M.SetHelpNavigator(Me.expDrivers, System.Windows.Forms.HelpNavigator.Topic)
+    Me.expDrivers.Location = New System.Drawing.Point(3, 332)
+    Me.expDrivers.Margin = New System.Windows.Forms.Padding(3, 6, 3, 6)
+    Me.expDrivers.Name = "expDrivers"
+    Me.helpS7M.SetShowHelp(Me.expDrivers, True)
+    Me.expDrivers.Size = New System.Drawing.Size(116, 19)
+    Me.expDrivers.TabIndex = 6
+    Me.expDrivers.Text = "Integrated Drivers"
+    '
     'cmdLoadDrivers
     '
     Me.cmdLoadDrivers.Anchor = System.Windows.Forms.AnchorStyles.None
     Me.cmdLoadDrivers.AutoSize = True
     Me.cmdLoadDrivers.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.helpS7M.SetHelpKeyword(Me.cmdLoadDrivers, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.3_Integ" & _
+        "rated_Drivers.htm")
+    Me.helpS7M.SetHelpNavigator(Me.cmdLoadDrivers, System.Windows.Forms.HelpNavigator.Topic)
     Me.cmdLoadDrivers.Image = Global.Slips7ream.My.Resources.Resources.load_driver
     Me.cmdLoadDrivers.Location = New System.Drawing.Point(70, 462)
     Me.cmdLoadDrivers.MinimumSize = New System.Drawing.Size(80, 25)
     Me.cmdLoadDrivers.Name = "cmdLoadDrivers"
     Me.cmdLoadDrivers.Padding = New System.Windows.Forms.Padding(1)
+    Me.helpS7M.SetShowHelp(Me.cmdLoadDrivers, True)
     Me.cmdLoadDrivers.Size = New System.Drawing.Size(165, 25)
     Me.cmdLoadDrivers.TabIndex = 8
     Me.cmdLoadDrivers.Text = "Load Integrated Drivers List"
@@ -800,17 +919,108 @@ Partial Class frmPackageProps
     Me.pnlDrivers.Size = New System.Drawing.Size(300, 95)
     Me.pnlDrivers.TabIndex = 7
     '
+    'lvDriverClass
+    '
+    Me.lvDriverClass.BackColor = System.Drawing.SystemColors.Window
+    Me.lvDriverClass.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.lvcGroup})
+    Me.lvDriverClass.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.lvDriverClass.FullRowSelect = True
+    Me.lvDriverClass.FullRowTooltip = True
+    Me.lvDriverClass.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
+    Me.helpS7M.SetHelpKeyword(Me.lvDriverClass, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.3_Integ" & _
+        "rated_Drivers.htm")
+    Me.helpS7M.SetHelpNavigator(Me.lvDriverClass, System.Windows.Forms.HelpNavigator.Topic)
+    Me.lvDriverClass.HideSelection = False
+    Me.lvDriverClass.Location = New System.Drawing.Point(3, 16)
+    Me.lvDriverClass.MultiSelect = False
+    Me.lvDriverClass.Name = "lvDriverClass"
+    Me.lvDriverClass.ReadOnly = False
+    Me.helpS7M.SetShowHelp(Me.lvDriverClass, True)
+    Me.lvDriverClass.Size = New System.Drawing.Size(93, 76)
+    Me.lvDriverClass.SmallImageList = Me.imlDriverClass
+    Me.lvDriverClass.TabIndex = 1
+    Me.lvDriverClass.TooltipTitles = True
+    Me.lvDriverClass.UseCompatibleStateImageBehavior = False
+    Me.lvDriverClass.View = System.Windows.Forms.View.Details
+    '
+    'lvcGroup
+    '
+    Me.lvcGroup.Text = "Group"
+    '
     'imlDriverClass
     '
     Me.imlDriverClass.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
     Me.imlDriverClass.ImageSize = New System.Drawing.Size(16, 16)
     Me.imlDriverClass.TransparentColor = System.Drawing.Color.Transparent
     '
+    'lvDriverProvider
+    '
+    Me.lvDriverProvider.BackColor = System.Drawing.SystemColors.Window
+    Me.lvDriverProvider.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.lvcCompany})
+    Me.lvDriverProvider.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.lvDriverProvider.FullRowSelect = True
+    Me.lvDriverProvider.FullRowTooltip = True
+    Me.lvDriverProvider.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
+    Me.helpS7M.SetHelpKeyword(Me.lvDriverProvider, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.3_Integ" & _
+        "rated_Drivers.htm")
+    Me.helpS7M.SetHelpNavigator(Me.lvDriverProvider, System.Windows.Forms.HelpNavigator.Topic)
+    Me.lvDriverProvider.HideSelection = False
+    Me.lvDriverProvider.Location = New System.Drawing.Point(102, 16)
+    Me.lvDriverProvider.MultiSelect = False
+    Me.lvDriverProvider.Name = "lvDriverProvider"
+    Me.lvDriverProvider.ReadOnly = False
+    Me.helpS7M.SetShowHelp(Me.lvDriverProvider, True)
+    Me.lvDriverProvider.Size = New System.Drawing.Size(94, 76)
+    Me.lvDriverProvider.SmallImageList = Me.imlDriverCompany
+    Me.lvDriverProvider.TabIndex = 3
+    Me.lvDriverProvider.TooltipTitles = True
+    Me.lvDriverProvider.UseCompatibleStateImageBehavior = False
+    Me.lvDriverProvider.View = System.Windows.Forms.View.Details
+    '
+    'lvcCompany
+    '
+    Me.lvcCompany.Text = "Company"
+    '
     'imlDriverCompany
     '
     Me.imlDriverCompany.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
     Me.imlDriverCompany.ImageSize = New System.Drawing.Size(16, 16)
     Me.imlDriverCompany.TransparentColor = System.Drawing.Color.Transparent
+    '
+    'lvDriverINF
+    '
+    Me.lvDriverINF.BackColor = System.Drawing.SystemColors.Window
+    Me.lvDriverINF.CheckBoxes = True
+    Me.lvDriverINF.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.lvcName, Me.lvcVer})
+    Me.lvDriverINF.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.lvDriverINF.FullRowSelect = True
+    Me.lvDriverINF.FullRowTooltip = True
+    Me.lvDriverINF.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
+    Me.helpS7M.SetHelpKeyword(Me.lvDriverINF, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.3_Integ" & _
+        "rated_Drivers.htm")
+    Me.helpS7M.SetHelpNavigator(Me.lvDriverINF, System.Windows.Forms.HelpNavigator.Topic)
+    Me.lvDriverINF.HideSelection = False
+    Me.lvDriverINF.Location = New System.Drawing.Point(202, 16)
+    Me.lvDriverINF.MultiSelect = False
+    Me.lvDriverINF.Name = "lvDriverINF"
+    Me.lvDriverINF.ReadOnly = False
+    Me.helpS7M.SetShowHelp(Me.lvDriverINF, True)
+    Me.lvDriverINF.Size = New System.Drawing.Size(95, 76)
+    Me.lvDriverINF.SmallImageList = Me.imlDriverINF
+    Me.lvDriverINF.TabIndex = 5
+    Me.lvDriverINF.TooltipTitles = True
+    Me.lvDriverINF.UseCompatibleStateImageBehavior = False
+    Me.lvDriverINF.View = System.Windows.Forms.View.Details
+    '
+    'lvcName
+    '
+    Me.lvcName.Text = "Name"
+    Me.lvcName.Width = 65
+    '
+    'lvcVer
+    '
+    Me.lvcVer.Text = "Version"
+    Me.lvcVer.Width = 25
     '
     'imlDriverINF
     '
@@ -892,170 +1102,9 @@ Partial Class frmPackageProps
     Me.mnuUpdateInclude.Index = 0
     Me.mnuUpdateInclude.Text = "Included in Image"
     '
-    'expFeatures
+    'helpS7M
     '
-    Me.expFeatures.Anchor = System.Windows.Forms.AnchorStyles.Left
-    Me.expFeatures.AutoSize = True
-    Me.expFeatures.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.expFeatures.Location = New System.Drawing.Point(3, 6)
-    Me.expFeatures.Margin = New System.Windows.Forms.Padding(3, 6, 3, 6)
-    Me.expFeatures.Name = "expFeatures"
-    Me.expFeatures.Size = New System.Drawing.Size(120, 19)
-    Me.expFeatures.TabIndex = 0
-    Me.expFeatures.Text = "Windows &Features"
-    '
-    'tvFeatures
-    '
-    Me.tvFeatures.BackColor = System.Drawing.SystemColors.Window
-    Me.tvFeatures.CheckBoxes = True
-    Me.tvFeatures.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.tvFeatures.FullRowSelect = True
-    Me.tvFeatures.HideSelection = False
-    Me.tvFeatures.ImageIndex = 0
-    Me.tvFeatures.ImageList = Me.imlFeatures
-    Me.tvFeatures.Location = New System.Drawing.Point(3, 34)
-    Me.tvFeatures.MinimumSize = New System.Drawing.Size(300, 4)
-    Me.tvFeatures.Name = "tvFeatures"
-    Me.tvFeatures.ReadOnly = False
-    Me.tvFeatures.SelectedImageIndex = 0
-    Me.tvFeatures.Size = New System.Drawing.Size(300, 95)
-    Me.tvFeatures.TabIndex = 1
-    Me.tvFeatures.TooltipTitles = True
-    '
-    'expUpdates
-    '
-    Me.expUpdates.Anchor = System.Windows.Forms.AnchorStyles.Left
-    Me.expUpdates.AutoSize = True
-    Me.expUpdates.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.expUpdates.Location = New System.Drawing.Point(3, 169)
-    Me.expUpdates.Margin = New System.Windows.Forms.Padding(3, 6, 3, 6)
-    Me.expUpdates.Name = "expUpdates"
-    Me.expUpdates.Size = New System.Drawing.Size(170, 19)
-    Me.expUpdates.TabIndex = 3
-    Me.expUpdates.Text = "Integrated Windows &Updates"
-    '
-    'lvUpdates
-    '
-    Me.lvUpdates.BackColor = System.Drawing.SystemColors.Window
-    Me.lvUpdates.CheckBoxes = True
-    Me.lvUpdates.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colPackage, Me.colVer})
-    Me.lvUpdates.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.lvUpdates.FullRowSelect = True
-    Me.lvUpdates.FullRowTooltip = True
-    Me.lvUpdates.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
-    Me.lvUpdates.HideSelection = False
-    Me.lvUpdates.Location = New System.Drawing.Point(3, 197)
-    Me.lvUpdates.MinimumSize = New System.Drawing.Size(300, 4)
-    Me.lvUpdates.MultiSelect = False
-    Me.lvUpdates.Name = "lvUpdates"
-    Me.lvUpdates.ReadOnly = False
-    Me.lvUpdates.Size = New System.Drawing.Size(300, 95)
-    Me.lvUpdates.SmallImageList = Me.imlUpdates
-    Me.lvUpdates.TabIndex = 4
-    Me.lvUpdates.TooltipTitles = True
-    Me.lvUpdates.UseCompatibleStateImageBehavior = False
-    Me.lvUpdates.View = System.Windows.Forms.View.Details
-    '
-    'colPackage
-    '
-    Me.colPackage.Text = "Package Name"
-    Me.colPackage.Width = 200
-    '
-    'colVer
-    '
-    Me.colVer.Text = "Version"
-    Me.colVer.Width = 92
-    '
-    'expDrivers
-    '
-    Me.expDrivers.Anchor = System.Windows.Forms.AnchorStyles.Left
-    Me.expDrivers.AutoSize = True
-    Me.expDrivers.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.expDrivers.Location = New System.Drawing.Point(3, 332)
-    Me.expDrivers.Margin = New System.Windows.Forms.Padding(3, 6, 3, 6)
-    Me.expDrivers.Name = "expDrivers"
-    Me.expDrivers.Size = New System.Drawing.Size(116, 19)
-    Me.expDrivers.TabIndex = 6
-    Me.expDrivers.Text = "Integrated Drivers"
-    '
-    'lvDriverClass
-    '
-    Me.lvDriverClass.BackColor = System.Drawing.SystemColors.Window
-    Me.lvDriverClass.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.lvcGroup})
-    Me.lvDriverClass.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.lvDriverClass.FullRowSelect = True
-    Me.lvDriverClass.FullRowTooltip = True
-    Me.lvDriverClass.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
-    Me.lvDriverClass.HideSelection = False
-    Me.lvDriverClass.Location = New System.Drawing.Point(3, 16)
-    Me.lvDriverClass.MultiSelect = False
-    Me.lvDriverClass.Name = "lvDriverClass"
-    Me.lvDriverClass.ReadOnly = False
-    Me.lvDriverClass.Size = New System.Drawing.Size(93, 76)
-    Me.lvDriverClass.SmallImageList = Me.imlDriverClass
-    Me.lvDriverClass.TabIndex = 1
-    Me.lvDriverClass.TooltipTitles = True
-    Me.lvDriverClass.UseCompatibleStateImageBehavior = False
-    Me.lvDriverClass.View = System.Windows.Forms.View.Details
-    '
-    'lvcGroup
-    '
-    Me.lvcGroup.Text = "Group"
-    '
-    'lvDriverProvider
-    '
-    Me.lvDriverProvider.BackColor = System.Drawing.SystemColors.Window
-    Me.lvDriverProvider.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.lvcCompany})
-    Me.lvDriverProvider.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.lvDriverProvider.FullRowSelect = True
-    Me.lvDriverProvider.FullRowTooltip = True
-    Me.lvDriverProvider.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
-    Me.lvDriverProvider.HideSelection = False
-    Me.lvDriverProvider.Location = New System.Drawing.Point(102, 16)
-    Me.lvDriverProvider.MultiSelect = False
-    Me.lvDriverProvider.Name = "lvDriverProvider"
-    Me.lvDriverProvider.ReadOnly = False
-    Me.lvDriverProvider.Size = New System.Drawing.Size(94, 76)
-    Me.lvDriverProvider.SmallImageList = Me.imlDriverCompany
-    Me.lvDriverProvider.TabIndex = 3
-    Me.lvDriverProvider.TooltipTitles = True
-    Me.lvDriverProvider.UseCompatibleStateImageBehavior = False
-    Me.lvDriverProvider.View = System.Windows.Forms.View.Details
-    '
-    'lvcCompany
-    '
-    Me.lvcCompany.Text = "Company"
-    '
-    'lvDriverINF
-    '
-    Me.lvDriverINF.BackColor = System.Drawing.SystemColors.Window
-    Me.lvDriverINF.CheckBoxes = True
-    Me.lvDriverINF.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.lvcName, Me.lvcVer})
-    Me.lvDriverINF.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.lvDriverINF.FullRowSelect = True
-    Me.lvDriverINF.FullRowTooltip = True
-    Me.lvDriverINF.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
-    Me.lvDriverINF.HideSelection = False
-    Me.lvDriverINF.Location = New System.Drawing.Point(202, 16)
-    Me.lvDriverINF.MultiSelect = False
-    Me.lvDriverINF.Name = "lvDriverINF"
-    Me.lvDriverINF.ReadOnly = False
-    Me.lvDriverINF.Size = New System.Drawing.Size(95, 76)
-    Me.lvDriverINF.SmallImageList = Me.imlDriverINF
-    Me.lvDriverINF.TabIndex = 5
-    Me.lvDriverINF.TooltipTitles = True
-    Me.lvDriverINF.UseCompatibleStateImageBehavior = False
-    Me.lvDriverINF.View = System.Windows.Forms.View.Details
-    '
-    'lvcName
-    '
-    Me.lvcName.Text = "Name"
-    Me.lvcName.Width = 65
-    '
-    'lvcVer
-    '
-    Me.lvcVer.Text = "Version"
-    Me.lvcVer.Width = 25
+    Me.helpS7M.HelpNamespace = "S7M.chm"
     '
     'frmPackageProps
     '
@@ -1065,9 +1114,13 @@ Partial Class frmPackageProps
     Me.CancelButton = Me.cmdClose
     Me.ClientSize = New System.Drawing.Size(619, 522)
     Me.Controls.Add(Me.pnlMain)
+    Me.helpS7M.SetHelpKeyword(Me, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+        "ge_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me, System.Windows.Forms.HelpNavigator.Topic)
     Me.Icon = Global.Slips7ream.My.Resources.Resources.icon
     Me.MinimumSize = New System.Drawing.Size(635, 560)
     Me.Name = "frmPackageProps"
+    Me.helpS7M.SetShowHelp(Me, True)
     Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
     Me.Text = "Image Package Properties"
     Me.pnlProps.ResumeLayout(False)
@@ -1166,4 +1219,5 @@ Partial Class frmPackageProps
   Friend WithEvents imlDriverCompany As System.Windows.Forms.ImageList
   Friend WithEvents mnuFeatureExpandAll As System.Windows.Forms.MenuItem
   Friend WithEvents mnuFeatureCollapseAll As System.Windows.Forms.MenuItem
+  Friend WithEvents helpS7M As System.Windows.Forms.HelpProvider
 End Class

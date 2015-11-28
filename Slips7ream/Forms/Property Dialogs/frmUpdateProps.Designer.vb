@@ -42,6 +42,7 @@ Partial Class frmUpdateProps
     Me.lblVersion = New System.Windows.Forms.Label()
     Me.txtVersion = New System.Windows.Forms.TextBox()
     Me.ttLink = New Slips7ream.ToolTip(Me.components)
+    Me.helpS7M = New System.Windows.Forms.HelpProvider()
     Me.pnlUpdateData.SuspendLayout()
     Me.SuspendLayout()
     '
@@ -204,7 +205,7 @@ Partial Class frmUpdateProps
     Me.lblKBLink.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblKBLink.AutoSize = True
     Me.lblKBLink.Cursor = System.Windows.Forms.Cursors.Hand
-    Me.lblKBLink.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Underline)
+    Me.lblKBLink.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!)
     Me.lblKBLink.ForeColor = System.Drawing.Color.MediumBlue
     Me.lblKBLink.Location = New System.Drawing.Point(99, 188)
     Me.lblKBLink.Name = "lblKBLink"
@@ -268,6 +269,10 @@ Partial Class frmUpdateProps
     Me.txtVersion.Size = New System.Drawing.Size(232, 20)
     Me.txtVersion.TabIndex = 13
     '
+    'helpS7M
+    '
+    Me.helpS7M.HelpNamespace = "S7M.chm"
+    '
     'frmUpdateProps
     '
     Me.AcceptButton = Me.cmdClose
@@ -279,11 +284,14 @@ Partial Class frmUpdateProps
     Me.ClientSize = New System.Drawing.Size(334, 241)
     Me.Controls.Add(Me.pnlUpdateData)
     Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
+    Me.helpS7M.SetHelpKeyword(Me, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.2_Update_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me, System.Windows.Forms.HelpNavigator.Topic)
     Me.Icon = Global.Slips7ream.My.Resources.Resources.icon
     Me.MaximizeBox = False
     Me.MinimizeBox = False
     Me.MinimumSize = New System.Drawing.Size(320, 275)
     Me.Name = "frmUpdateProps"
+    Me.helpS7M.SetShowHelp(Me, True)
     Me.ShowIcon = False
     Me.ShowInTaskbar = False
     Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
@@ -313,4 +321,5 @@ Partial Class frmUpdateProps
   Friend WithEvents txtName As System.Windows.Forms.TextBox
   Friend WithEvents lblVersion As System.Windows.Forms.Label
   Friend WithEvents txtVersion As System.Windows.Forms.TextBox
+  Friend WithEvents helpS7M As System.Windows.Forms.HelpProvider
 End Class
