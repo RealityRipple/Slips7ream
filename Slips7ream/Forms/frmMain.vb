@@ -69,7 +69,7 @@
     imlUpdates.Images.Add("CAB", My.Resources.update_cab)
     imlUpdates.Images.Add("MLC", My.Resources.update_mlc)
     imlUpdates.Images.Add("INF", My.Resources.inf)
-    ttInfo.SetTooltip(expOutput.pctExpander, "Show Output console.")
+    ttInfo.SetToolTip(expOutput.pctExpander, "Show Output console.")
     If String.IsNullOrEmpty(mySettings.DefaultFS) Then
       cmbISOFormat.SelectedIndex = 0
     Else
@@ -936,12 +936,16 @@
         TargetRowIndex = ht.Item.Index
       End If
       If TargetRowIndex > -1 Then
-        If sourceRows(0) <> TargetRowIndex Then
+        If Not sourceRows(0) = TargetRowIndex Then
           Dim targetI As Integer = TargetRowIndex
           For Each item As ListViewItem In lvMSU.SelectedItems
             Dim tmpItem = item.Clone
             item.Remove()
-            lvMSU.Items.Insert(targetI, tmpItem)
+            If lvMSU.Items.Count <= targetI Then
+              targetI = CType(lvMSU.Items.Add(tmpItem), ListViewItem).Index
+            Else
+              lvMSU.Items.Insert(targetI, tmpItem)
+            End If
             lvMSU.Items(targetI).Selected = True
             targetI += 1
           Next
@@ -1006,6 +1010,7 @@
     End If
   End Sub
   Private Sub lvMSU_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles lvMSU.SelectedIndexChanged
+    If sourceRows.Count > 0 Then Return
     If lvMSU.SelectedItems.Count > 0 Then
       cmdRemMSU.Enabled = True
       If lvMSU.SelectedItems.Count > 1 Then
@@ -1726,12 +1731,16 @@
     For Each item As ListViewItem In msuItems
       If item.Index < targetI Then targetI = item.Index
     Next
-    If targetI = Integer.MaxValue Or targetI = lvMSU.Items.Count - 1 Then Return
+    If targetI = Integer.MaxValue Or targetI >= lvMSU.Items.Count - msuItems.Count Then Return
     targetI += 1
     For Each item As ListViewItem In msuItems
       Dim tmpItem = item.Clone
       item.Remove()
-      lvMSU.Items.Insert(targetI, tmpItem)
+      If lvMSU.Items.Count <= targetI Then
+        targetI = CType(lvMSU.Items.Add(tmpItem), ListViewItem).Index
+      Else
+        lvMSU.Items.Insert(targetI, tmpItem)
+      End If
       lvMSU.Items(targetI).Selected = True
       targetI += 1
     Next
@@ -7228,6 +7237,7 @@
       SetStatus("Reading Image Packages...")
       ClearImageList("WIM")
       Dim PackageCount As Integer = GetDISMPackages(WIMFile)
+      SetProgress(0, PackageCount)
       iTotalVal += 1
       SetTotal(iTotalVal, iTotalCount)
       SetStatus("Populating Image Package List...")
@@ -7293,6 +7303,7 @@
       SetTotal(iTotalVal, iTotalCount)
       ClearImageList("MERGE")
       Dim PackageCount As Integer = GetDISMPackages(MergeFile)
+      SetProgress(0, PackageCount)
       iTotalVal += 1
       SetTotal(iTotalVal, iTotalCount)
       SetStatus("Populating Merge Image Package List...")
