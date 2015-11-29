@@ -64,15 +64,12 @@
     Checksum = 46
     Characts = 47
     Va = 48
-
     TotalSize = &H1100
     FreeSpace = &H1101
     ClusterSize = &H1102
     VolumeName = &H1103
-
     LocalName = &H1200
     Provider = &H1201
-
     UserDefined = &H10000
   End Enum
   Friend Enum OperationResult As Integer

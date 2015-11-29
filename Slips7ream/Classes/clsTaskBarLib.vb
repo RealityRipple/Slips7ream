@@ -66,7 +66,7 @@ Namespace TaskbarLib
     Overloads Sub ActivateTab(<[In]()> ByVal hwnd As Integer)
     Overloads Sub SetActivateAlt(<[In]()> ByVal hwnd As Integer)
     Overloads Sub MarkFullscreenWindow(<[In]()> ByVal hwnd As Integer, <[In]()> ByVal fFullscreen As Integer)
-    Sub SetProgressValue(<[In]()> ByVal hwnd As IntPtr, <[In]()> ByVal ullCompleted As UInt64, <[In]()> ByVal ullTotal As UInt64) 'UInt64
+    Sub SetProgressValue(<[In]()> ByVal hwnd As IntPtr, <[In]()> ByVal ullCompleted As UInt64, <[In]()> ByVal ullTotal As UInt64)
     Sub SetProgressState(<[In]()> ByVal hwnd As IntPtr, <[In]()> ByVal tbpFlags As TBPFLAG)
     Sub RegisterTab(<[In]()> ByVal hwndTab As Integer, <[In](), ComAliasName("TaskbarLib.wireHWND")> ByRef hwndMDI As RemotableHandle)
     Sub UnregisterTab(<[In]()> ByVal hwndTab As Integer)

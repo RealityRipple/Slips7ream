@@ -47,9 +47,7 @@ Public Class frmOutput
         If Not ((NewPosition.flags And SWP.NoSize) = SWP.NoSize And (NewPosition.flags And SWP.NoMove) = SWP.NoMove) Then
           bDock = DockStyle.None
         End If
-        'output window smaller than main window
         If NewPosition.x >= mainBounds.Left - DockPad And NewPosition.x + NewPosition.cx <= mainBounds.Right + DockPad Then
-          'top dock
           If NewPosition.y + NewPosition.cy >= mainBounds.Top - DockPad And NewPosition.y + NewPosition.cy <= mainBounds.Top + DockPad Then
             NewPosition.y = mainBounds.Top - NewPosition.cy
             If Math.Abs(NewPosition.x - mainBounds.Left) < DockPad * 4 Then NewPosition.x = mainBounds.Left
@@ -63,7 +61,6 @@ Public Class frmOutput
             bDock = DockStyle.Top
             If defSize.IsEmpty Then defSize = Me.Size
           End If
-          'bottom dock
           If NewPosition.y >= mainBounds.Bottom - DockPad And NewPosition.y <= mainBounds.Bottom + DockPad Then
             NewPosition.x = mainBounds.Left
             NewPosition.y = mainBounds.Bottom
@@ -74,9 +71,7 @@ Public Class frmOutput
             If defSize.IsEmpty Then defSize = Me.Size
           End If
         End If
-        'main window smaller than output window
         If mainBounds.Left >= NewPosition.x - DockPad And mainBounds.Right <= NewPosition.x + NewPosition.cx + DockPad Then
-          'top dock
           If mainBounds.Top >= NewPosition.y + NewPosition.cy - DockPad And mainBounds.Top <= NewPosition.y + NewPosition.cy + DockPad Then
             NewPosition.y = mainBounds.Top - NewPosition.cy
             If Math.Abs(mainBounds.Left - NewPosition.x) < DockPad * 4 Then NewPosition.x = mainBounds.Left
@@ -90,7 +85,6 @@ Public Class frmOutput
             bDock = DockStyle.Top
             If defSize.IsEmpty Then defSize = Me.Size
           End If
-          'bottom dock
           If mainBounds.Bottom >= NewPosition.y - DockPad And mainBounds.Bottom <= NewPosition.y + DockPad Then
             NewPosition.x = mainBounds.Left
             NewPosition.y = mainBounds.Bottom
@@ -101,9 +95,7 @@ Public Class frmOutput
             If defSize.IsEmpty Then defSize = Me.Size
           End If
         End If
-        'output window smaller than main window
         If NewPosition.y >= mainBounds.Top - DockPad And NewPosition.y + NewPosition.cy <= mainBounds.Bottom + DockPad Then
-          'Left Dock
           If NewPosition.x + NewPosition.cx >= mainBounds.Left - DockPad And NewPosition.x + NewPosition.cx <= mainBounds.Left + DockPad Then
             NewPosition.x = mainBounds.Left - NewPosition.cx
             If Math.Abs(NewPosition.y - mainBounds.Top) < DockPad * 4 Then NewPosition.y = mainBounds.Top
@@ -117,7 +109,6 @@ Public Class frmOutput
             bDock = DockStyle.Left
             If defSize.IsEmpty Then defSize = Me.Size
           End If
-          'Right Dock
           If NewPosition.x >= mainBounds.Right - DockPad And NewPosition.x <= mainBounds.Right + DockPad Then
             NewPosition.x = mainBounds.Right
             If Math.Abs(NewPosition.y - mainBounds.Top) < DockPad * 4 Then NewPosition.y = mainBounds.Top
@@ -132,9 +123,7 @@ Public Class frmOutput
             If defSize.IsEmpty Then defSize = Me.Size
           End If
         End If
-        'main window smaller than output window
         If mainBounds.Top >= NewPosition.y - DockPad And mainBounds.Bottom <= NewPosition.y + NewPosition.cy + DockPad Then
-          'Left Dock
           If mainBounds.Left >= NewPosition.x + NewPosition.cx - DockPad And mainBounds.Left <= NewPosition.x + NewPosition.cx + DockPad Then
             NewPosition.x = mainBounds.Left - NewPosition.cx
             If Math.Abs(mainBounds.Top - NewPosition.y) < DockPad * 4 Then NewPosition.y = mainBounds.Top
@@ -148,7 +137,6 @@ Public Class frmOutput
             bDock = DockStyle.Left
             If defSize.IsEmpty Then defSize = Me.Size
           End If
-          'Right Dock
           If NewPosition.x >= mainBounds.Right - DockPad And NewPosition.x <= mainBounds.Right + DockPad Then
             NewPosition.x = mainBounds.Right
             If Math.Abs(NewPosition.y - mainBounds.Top) < DockPad * 4 Then NewPosition.y = mainBounds.Top

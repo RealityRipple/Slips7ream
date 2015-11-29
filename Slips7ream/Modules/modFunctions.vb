@@ -1,6 +1,5 @@
 ﻿Imports Microsoft.WindowsAPICodePack.Dialogs
 Imports System.Runtime.InteropServices
-
 Public Module modFunctions
   Public Declare Function WindowFromPoint Lib "user32" (pt As Point) As IntPtr
   Public Declare Function SendMessageA Lib "user32" (hWnd As IntPtr, msg As Integer, wParam As IntPtr, lParam As IntPtr) As IntPtr
@@ -213,7 +212,6 @@ Public Module modFunctions
           End Select
         Case &H101D2 : sEnv = IO.Path.Combine(pathWin, "Windows", "System32")
         Case &H101D3 : sEnv = IO.Path.Combine(pathWin, "Windows", "System32", "spool", "drivers", "color")
-        Case &H101D4 : Debug.Print("ASP Path?")
       End Select
     Else
       sEnv = Environ(sInput)
@@ -227,7 +225,6 @@ Public Module modFunctions
         Return GetEnvPath(sVal, OriginalINF, arch)
       End If
     Next
-    Debug.Print("Could not determine the path for """ & sInput & """")
     Return sInput
   End Function
   Private Function CleanupINFString(Value As String) As String
@@ -277,9 +274,7 @@ Public Module modFunctions
     Dim sINF() As String = IO.File.ReadAllLines(DriverINFPath)
     Dim sResPath As String = Nothing
     Dim sDefPaths As New List(Of String)
-
     For Each sLine In sINF
-
       If sLine.ToLower.Contains("defaultdestdir") And sLine.Contains("=") And sDefPaths.Count = 0 Then
         Dim sParts() As String = Split(sLine, "=", 2)
         If sParts(1).Contains(",") Then
@@ -293,7 +288,6 @@ Public Module modFunctions
           sDefPaths.Add(ConvertPathVars(sPath, DriverINFPath, architecture))
         End If
       End If
-
       If sLine.ToLower.Contains("hkr") And sLine.Contains(",") And (sLine.ToLower.Contains("installer32") Or sLine.ToLower.Contains("enumproppages32")) And String.IsNullOrEmpty(sResPath) Then
         Dim sParts() As String = Split(sLine, ",", 5)
         If sParts.Length = 5 Then
@@ -304,11 +298,8 @@ Public Module modFunctions
           End If
         End If
       End If
-
     Next
-
     For Each sLine In sINF
-
       If (sLine.ToLower.Contains("deviceicon") Or sLine.ToLower.Contains("devicebrandingicon")) And sLine.Contains(",") Then
         Dim sParts() As String = Split(sLine, ",", 5)
         If sParts.Length = 5 Then
@@ -334,7 +325,6 @@ Public Module modFunctions
           End If
         End If
       End If
-
       If sLine.ToLower.Contains("hkr") And sLine.Contains(",") And sLine.ToLower.Contains("icons") Then
         Dim sParts() As String = Split(sLine, ",", 5)
         If sParts.Length = 5 Then
@@ -355,7 +345,6 @@ Public Module modFunctions
           End If
         End If
       End If
-
       If sLine.ToLower.Contains("hkr") And sLine.Contains(",") And sLine.ToLower.Contains("icon") Then
         Dim sParts() As String = Split(sLine, ",", 5)
         If sParts.Length = 5 Then
@@ -451,9 +440,8 @@ Public Module modFunctions
       Case "vidzmedia pte ltd" : Return My.Resources.company_oem
       Case "vixs systems" : Return My.Resources.company_vixs_systems
       Case "xerox" : Return My.Resources.company_xerox
-      Case Else : Debug.Print("No icon for " & Company)
+      Case Else : Return My.Resources.company_oem
     End Select
-    Return My.Resources.company_oem
   End Function
   Public Function GetDriverClassIcon(ClassGUID As String, DriverINFPath As String, architecture As ArchitectureList) As Icon
     If Not String.IsNullOrEmpty(DriverINFPath) AndAlso IO.File.Exists(DriverINFPath) Then
@@ -806,14 +794,11 @@ Public Module modFunctions
   End Function
   Public Function GetUpdateCompression(Path As String) As Extraction.COM.ArchiveFormat.KnownSevenZipFormat
     Select Case IO.Path.GetExtension(Path).ToLower
-      'Case ".cab" : Return Extraction.COM.ArchiveFormat.KnownSevenZipFormat.Z
       Case ".cab", ".mlc", ".msu", ".exe" : Return Extraction.COM.ArchiveFormat.KnownSevenZipFormat.Cab
       Case ".msi" : Return Extraction.COM.ArchiveFormat.KnownSevenZipFormat.Compound
       Case ".iso" : Return Extraction.COM.ArchiveFormat.KnownSevenZipFormat.Udf
-      Case Else
-        Debug.Print(IO.Path.GetExtension(Path))
+      Case Else : Return Extraction.COM.ArchiveFormat.KnownSevenZipFormat.Unknown
     End Select
-    Return Extraction.COM.ArchiveFormat.KnownSevenZipFormat.Unknown
   End Function
   Public Function GetUpdateCompression(Type As UpdateType) As Extraction.COM.ArchiveFormat.KnownSevenZipFormat
     Select Case Type
@@ -1371,8 +1356,6 @@ Public Module modFunctions
             dlgUpdate.StandardButtons = TaskDialogStandardButtons.Cancel
             dlgUpdate.Text = "Click the versions you want to keep"
             dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
-            'dlgUpdate.FooterCheckBoxChecked = False
-            'dlgUpdate.FooterCheckBoxText = "&Do this for all old versions"
             Dim en As String = ChrW(&H2003)
             Dim em As String = en & en
             Dim sAll As String
@@ -1431,7 +1414,6 @@ Public Module modFunctions
             Dim cmdNone As New CommandLink(
               "cmdNone",
               "Don't Replace Integrated Versions.")
-            'cmdNone.Default = True
             AddHandler cmdNo.Click, AddressOf SelectionDialogCommandLink_Click
             dlgUpdate.Controls.Add(cmdAll)
             dlgUpdate.Controls.Add(cmdYes)

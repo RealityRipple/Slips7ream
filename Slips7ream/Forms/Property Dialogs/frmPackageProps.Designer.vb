@@ -63,8 +63,8 @@ Partial Class frmPackageProps
     Me.txtSPBuild = New System.Windows.Forms.TextBox()
     Me.txtSPLevel = New System.Windows.Forms.TextBox()
     Me.pnlButtons = New System.Windows.Forms.TableLayoutPanel()
-    Me.cmdClose = New System.Windows.Forms.Button()
-    Me.cmdSave = New System.Windows.Forms.Button()
+    Me.cmdCancel = New System.Windows.Forms.Button()
+    Me.cmdOK = New System.Windows.Forms.Button()
     Me.imlUpdates = New System.Windows.Forms.ImageList(Me.components)
     Me.imlFeatures = New System.Windows.Forms.ImageList(Me.components)
     Me.cmdLoadFeatures = New System.Windows.Forms.Button()
@@ -614,8 +614,8 @@ Partial Class frmPackageProps
     Me.pnlButtons.ColumnCount = 2
     Me.pnlButtons.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
     Me.pnlButtons.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-    Me.pnlButtons.Controls.Add(Me.cmdClose, 1, 0)
-    Me.pnlButtons.Controls.Add(Me.cmdSave, 0, 0)
+    Me.pnlButtons.Controls.Add(Me.cmdCancel, 1, 0)
+    Me.pnlButtons.Controls.Add(Me.cmdOK, 0, 0)
     Me.pnlButtons.Location = New System.Drawing.Point(447, 491)
     Me.pnlButtons.Margin = New System.Windows.Forms.Padding(0)
     Me.pnlButtons.Name = "pnlButtons"
@@ -624,34 +624,34 @@ Partial Class frmPackageProps
     Me.pnlButtons.Size = New System.Drawing.Size(172, 31)
     Me.pnlButtons.TabIndex = 2
     '
-    'cmdClose
+    'cmdCancel
     '
-    Me.cmdClose.AutoSize = True
-    Me.cmdClose.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.cmdClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
-    Me.cmdClose.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmdClose.Location = New System.Drawing.Point(89, 3)
-    Me.cmdClose.MinimumSize = New System.Drawing.Size(80, 25)
-    Me.cmdClose.Name = "cmdClose"
-    Me.cmdClose.Padding = New System.Windows.Forms.Padding(1)
-    Me.cmdClose.Size = New System.Drawing.Size(80, 25)
-    Me.cmdClose.TabIndex = 1
-    Me.cmdClose.Text = "&Cancel"
-    Me.cmdClose.UseVisualStyleBackColor = True
+    Me.cmdCancel.AutoSize = True
+    Me.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
+    Me.cmdCancel.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.cmdCancel.Location = New System.Drawing.Point(89, 3)
+    Me.cmdCancel.MinimumSize = New System.Drawing.Size(80, 25)
+    Me.cmdCancel.Name = "cmdCancel"
+    Me.cmdCancel.Padding = New System.Windows.Forms.Padding(1)
+    Me.cmdCancel.Size = New System.Drawing.Size(80, 25)
+    Me.cmdCancel.TabIndex = 1
+    Me.cmdCancel.Text = "&Cancel"
+    Me.cmdCancel.UseVisualStyleBackColor = True
     '
-    'cmdSave
+    'cmdOK
     '
-    Me.cmdSave.AutoSize = True
-    Me.cmdSave.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.cmdSave.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmdSave.Location = New System.Drawing.Point(3, 3)
-    Me.cmdSave.MinimumSize = New System.Drawing.Size(80, 25)
-    Me.cmdSave.Name = "cmdSave"
-    Me.cmdSave.Padding = New System.Windows.Forms.Padding(1)
-    Me.cmdSave.Size = New System.Drawing.Size(80, 25)
-    Me.cmdSave.TabIndex = 0
-    Me.cmdSave.Text = "OK"
-    Me.cmdSave.UseVisualStyleBackColor = True
+    Me.cmdOK.AutoSize = True
+    Me.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.cmdOK.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.cmdOK.Location = New System.Drawing.Point(3, 3)
+    Me.cmdOK.MinimumSize = New System.Drawing.Size(80, 25)
+    Me.cmdOK.Name = "cmdOK"
+    Me.cmdOK.Padding = New System.Windows.Forms.Padding(1)
+    Me.cmdOK.Size = New System.Drawing.Size(80, 25)
+    Me.cmdOK.TabIndex = 0
+    Me.cmdOK.Text = "OK"
+    Me.cmdOK.UseVisualStyleBackColor = True
     '
     'imlUpdates
     '
@@ -1108,10 +1108,10 @@ Partial Class frmPackageProps
     '
     'frmPackageProps
     '
-    Me.AcceptButton = Me.cmdSave
+    Me.AcceptButton = Me.cmdOK
     Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
     Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-    Me.CancelButton = Me.cmdClose
+    Me.CancelButton = Me.cmdCancel
     Me.ClientSize = New System.Drawing.Size(619, 522)
     Me.Controls.Add(Me.pnlMain)
     Me.helpS7M.SetHelpKeyword(Me, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
@@ -1177,8 +1177,8 @@ Partial Class frmPackageProps
   Friend WithEvents lblLanguages As System.Windows.Forms.Label
   Friend WithEvents txtLanguages As System.Windows.Forms.TextBox
   Friend WithEvents pnlButtons As System.Windows.Forms.TableLayoutPanel
-  Friend WithEvents cmdClose As System.Windows.Forms.Button
-  Friend WithEvents cmdSave As System.Windows.Forms.Button
+  Friend WithEvents cmdCancel As System.Windows.Forms.Button
+  Friend WithEvents cmdOK As System.Windows.Forms.Button
   Friend WithEvents lvUpdates As ListViewEx
   Friend WithEvents colPackage As System.Windows.Forms.ColumnHeader
   Friend WithEvents colVer As System.Windows.Forms.ColumnHeader

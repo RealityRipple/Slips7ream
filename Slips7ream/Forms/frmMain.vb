@@ -665,7 +665,6 @@
         spltSlips7ream.SplitterDistance -= 29
       End If
     End If
-
     RedoColumns()
   End Sub
   Private Sub txtSP_DragDrop(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles txtSP.DragDrop
@@ -856,7 +855,6 @@
           For Each msuData As Update_File In msuList
             Dim addRet As AddResult = AddToUpdates(msuData)
             If addRet.Cancel Then
-              'FailCollection.Add(IIf(String.IsNullOrEmpty(msuData.Name) Or msuData.Name = "DRIVER", IO.Path.GetFileNameWithoutExtension(Item), msuData.Name) & ": Cancelled dialog. No more updates added.")
               Cancelled = True
               Exit For
             End If
@@ -1077,7 +1075,6 @@
             For Each msuData As Update_File In msuList
               Dim addRet As AddResult = AddToUpdates(msuData)
               If addRet.Cancel Then
-                'FailCollection.Add(IIf(String.IsNullOrEmpty(msuData.Name) Or msuData.Name = "DRIVER", IO.Path.GetFileNameWithoutExtension(sUpdate), msuData.Name) & ": Cancelled dialog. No more updates added.")
                 Cancelled = True
                 Exit For
               End If
@@ -1125,7 +1122,6 @@
   End Class
   Dim ReplaceAllOldUpdates As TriState = TriState.UseDefault
   Dim ReplaceAllNewUpdates As TriState = TriState.UseDefault
-
   Private Function AddToUpdates(msuData As Update_File) As AddResult
     If Not String.IsNullOrEmpty(msuData.Failure) Then Return New AddResult(False, msuData.Failure)
     If String.IsNullOrEmpty(msuData.Name) Then Return New AddResult(False, "Unable to parse information.")
@@ -1248,7 +1244,7 @@
                 If msuData.Ident.Name = package.Ident.Name Then
                   If msuData.Ident.Architecture = package.Ident.Architecture Then
                     If msuData.Ident.Language = package.Ident.Language Then
-                      InImage(I) = package ' CompareMSVersions(package.Ident.Version, msuData.Ident.Version)
+                      InImage(I) = package
                       InImage(I).Parent = PList(I)
                       InOne = True
                       Exit For
@@ -1282,7 +1278,6 @@
           ElseIf allLess Then
             Dim always As Boolean = False
             If ReplaceAllOldUpdates = TriState.True Then
-              'go ahead
               OnlyUp = True
             ElseIf ReplaceAllOldUpdates = TriState.False Then
               Return New AddResult(True)
@@ -1290,7 +1285,6 @@
               Dim sbRet As Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult = IntegratedUpdateSelectionBox(Me, msuData, InImage, PList.ToArray, always, Comparison.Newer)
               If sbRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.Yes Then
                 If always Then ReplaceAllOldUpdates = TriState.True
-                'go ahead
                 OnlyUp = True
               ElseIf sbRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.No Then
                 If always Then ReplaceAllOldUpdates = TriState.False
@@ -1302,7 +1296,6 @@
           ElseIf allGreater Then
             Dim always As Boolean = False
             If ReplaceAllNewUpdates = TriState.True Then
-              'go ahead
               OnlyDown = True
             ElseIf ReplaceAllNewUpdates = TriState.False Then
               Return New AddResult(True)
@@ -1310,7 +1303,6 @@
               Dim sbRet As Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult = IntegratedUpdateSelectionBox(Me, msuData, InImage, PList.ToArray, always, Comparison.Older)
               If sbRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.Yes Then
                 If always Then ReplaceAllNewUpdates = TriState.True
-                'go ahead
                 OnlyDown = True
               ElseIf sbRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.No Then
                 If always Then ReplaceAllNewUpdates = TriState.False
@@ -1322,15 +1314,11 @@
           Else
             Dim sRet As Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult = IntegratedUpdateSelectionBox(Me, msuData, InImage, PList.ToArray, False, Comparison.Mixed)
             If sRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.Ok Then
-              'all
             ElseIf sRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.Yes Then
-              'old updated
               OnlyUp = True
             ElseIf sRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.No Then
-              'new downgraded
               OnlyDown = True
             ElseIf sRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.Close Then
-              'no change
               Return New AddResult(True)
             ElseIf sRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.Cancel Then
               Return New AddResult(False)
@@ -1416,7 +1404,6 @@
                   If searchPackage.Ident.Name.Contains("2857650") Then Req2 = True
                 Next
               End If
-              'Next
             Next
           End If
           If lvMSU.Items.Count > 0 Then
@@ -1661,9 +1648,6 @@
       Next
       If Not String.IsNullOrEmpty(sFailList) AndAlso sFailList.Length > 1 AndAlso sFailList.EndsWith(vbNewLine) Then sFailList = sFailList.Substring(0, sFailList.Length - 2)
       Return sFailList
-      'FailCollection(9) = vbNewLine & "...and " & FailCollection.Count - 10 & " other failures."
-      'FailCollection.RemoveRange(10, FailCollection.Count - 10)
-      'Return Join(FailCollection.ToArray, vbNewLine)
     Else
       Return Join(FailCollection.ToArray, vbNewLine)
     End If
@@ -2358,7 +2342,6 @@
         medVal = "USB"
       End If
     End If
-
     If Not String.IsNullOrEmpty(langVal) Then langVal = "_" & langVal
     If Not String.IsNullOrEmpty(medVal) Then medVal = "_" & medVal
   End Sub
@@ -2367,13 +2350,9 @@
     Dim arc As String = ""
     Dim bui As String = "FRE"
     Dim pur As String = "R"
-
     Dim langVal As String = "EN"
     Dim medVal As String = "DVD"
-
     LoadLabelVals(langVal, medVal)
-
-
     Select Case Release
       Case ReleaseType.Starter : rel = "ST"
       Case ReleaseType.HomeBasic : rel = "HB"
@@ -2384,13 +2363,11 @@
       Case ReleaseType.Multiple : rel = "MU"
       Case ReleaseType.All : rel = "AL"
     End Select
-
     Select Case Arch
       Case Architecture.x86 : arc = ""
       Case Architecture.x64 : arc = "X"
       Case Architecture.Universal : arc = "U"
     End Select
-
     Select Case Build
       Case BuildType.Release : bui = "FRE"
       Case BuildType.Debug : bui = "CHE"
@@ -2497,7 +2474,6 @@
     For Each lvItem As ListViewItem In lvImages.Items
       If lvItem.Text = e.ImageIndex And lvItem.SubItems(1).Text = e.OldImageName Then
         If Not String.IsNullOrEmpty(e.NewImageName) Then lvItem.SubItems(1).Text = e.NewImageName
-
         Dim tag0 As String = Nothing
         If lvItem.Tag IsNot Nothing Then
           If IsArray(lvItem.Tag) Then
@@ -2522,7 +2498,6 @@
             If UBound(lvItem.Tag) > 2 Then tag3 = lvItem.Tag(3)
           End If
         End If
-
         If e.UpdateList IsNot Nothing AndAlso e.UpdateList.Length > 0 Then
           For Each item In e.UpdateList
             For I As Integer = 0 To tag1.IntegratedUpdateList.Count - 1
@@ -2535,7 +2510,6 @@
             Next
           Next
         End If
-
         If e.FeatureList IsNot Nothing AndAlso e.FeatureList.Length > 0 Then
           For Each item In e.FeatureList
             For I As Integer = 0 To tag2.Count - 1
@@ -2548,7 +2522,6 @@
             Next
           Next
         End If
-
         If e.DriverList IsNot Nothing AndAlso e.DriverList.Length > 0 Then
           For Each item In e.DriverList
             For I As Integer = 0 To tag3.Count - 1
@@ -2561,7 +2534,6 @@
             Next
           Next
         End If
-
         lvItem.Tag = {tag0, tag1, tag2, tag3}
         Exit For
       End If
@@ -2852,7 +2824,6 @@
             End If
           End If
         End If
-
         SetStatus("Mounting " & Package.Name & " Package...")
         If InitDISM(WIMFile, I, Mount) Then
           If StopRun Then Return
@@ -3551,7 +3522,6 @@
       ttInfo.SetTooltip(pctTitle, Tooltip)
     End If
   End Sub
-
   Private realProgVal, realProgMax As Integer
   Private realTotalVal, realTotalMax As Integer
   Private Delegate Sub SetProgressInvoker(Value As Integer, Maximum As Integer, GonnaSub As Boolean)
@@ -3689,12 +3659,11 @@
     End Try
     Application.DoEvents()
   End Sub
-
   Private Sub expOutput_Closed(sender As Object, e As System.EventArgs) Handles expOutput.Closed
     ttInfo.Hide(expOutput)
     ttInfo.Hide(expOutput.pctExpander)
-    ttInfo.SetTooltip(expOutput, "Show Output console.")
-    ttInfo.SetTooltip(expOutput.pctExpander, "Show Output console.")
+    ttInfo.SetToolTip(expOutput, "Show Output console.")
+    ttInfo.SetToolTip(expOutput.pctExpander, "Show Output console.")
     If outputWindow Then
       txtOutput.Text = frmOutput.txtOutput.Text
       If txtOutput.Text.Length > 0 Then
@@ -3714,7 +3683,6 @@
         Me.Height -= 4
       Loop
       Me.Height = newHeight
-      'Me.Height -= HeightDifferentialA
       pnlSlips7ream.ResumeLayout(True)
     End If
   End Sub
@@ -3739,7 +3707,6 @@
         Me.Height += 4
       Loop
       Me.Height = newHeight
-      'Me.Height += HeightDifferentialA
       Me.MinimumSize = New Size(Me.MinimumSize.Width, Me.MinimumSize.Height + HeightDifferentialA)
       pctOutputTear.Visible = True
       txtOutput.Visible = True
@@ -3780,7 +3747,6 @@
     If outputWindow Then Return
     If e.Button = Windows.Forms.MouseButtons.Left Then
       If Not pctOutputTear.DisplayRectangle.Contains(e.Location) Then
-
         outputWindow = True
         moving = True
         pnlSlips7ream.SuspendLayout()
@@ -3792,9 +3758,7 @@
         frmOutput.Show(Me)
         Dim newX As Integer = MousePosition.X - tearFrom.X
         Dim newY As Integer = MousePosition.Y - tearFrom.Y
-
         frmOutput.Location = New Point(newX, newY)
-
         frmOutput.Activate()
         frmOutput.txtOutput.Text = txtOutput.Text
         If frmOutput.txtOutput.Text.Length > 0 Then
@@ -3914,7 +3878,6 @@
     Dim Info As New ImagePackage(PackageList)
     Return Info
   End Function
-
   Private Function AddPackageItemToDISM(MountPath As String, AddPath As String) As Boolean
     Dim Args As String = "/Image:" & ShortenPath(MountPath) & " /Add-Package /PackagePath:" & ShortenPath(AddPath)
     WriteToOutput("DISM " & Args)
@@ -3958,7 +3921,6 @@
     End If
     Return
   End Sub
-
   Private Function EnableDISMFeature(MountPath As String, FeatureName As String) As Boolean
     Dim Args As String = "/Image:" & ShortenPath(MountPath) & " /Enable-Feature /FeatureName:"
     If FeatureName.Contains(" ") Then
@@ -4013,7 +3975,6 @@
     If Not Info.FeatureName = FeatureName Then Stop
     Return Info
   End Function
-
   Private Function AddDriverToDISM(MountPath As String, AddPath As String, Recurse As Boolean, ForceUnsigned As Boolean) As Boolean
     Dim Args As String = "/Image:" & ShortenPath(MountPath) & " /Add-Driver /Driver:" & ShortenPath(AddPath)
     If Recurse Then Args &= " /Recurse"
@@ -4074,7 +4035,6 @@
     End If
     Return Nothing
   End Function
-
   Private Function SaveDISM(MountPath As String) As Boolean
     Dim Args As String = "/Unmount-Wim /MountDir:" & ShortenPath(MountPath) & " /commit"
     WriteToOutput("DISM " & Args)
@@ -4175,7 +4135,6 @@
     c_ExtractRet(cIndex) = Nothing
     Select Case sRet
       Case "OK"
-
       Case "CRC Error"
         MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
       Case "Data Error"
@@ -4241,7 +4200,6 @@
     c_ExtractRet(cIndex) = Nothing
     Select Case sRet
       Case "OK"
-
       Case "CRC Error"
         MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
       Case "Data Error"
@@ -4311,7 +4269,6 @@
     If StopRun Then Return
     Select Case sRet
       Case "OK"
-
       Case "CRC Error"
         MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to extract """ & File & """!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
       Case "Data Error"
@@ -4332,7 +4289,6 @@
     Dim cIndex As UInteger = Obj(3)
     Dim bFound As Boolean = False
     If Not Destination.EndsWith(IO.Path.DirectorySeparatorChar) Then Destination &= IO.Path.DirectorySeparatorChar
-
     Extractor = New Extraction.ArchiveFile(New IO.FileInfo(Source), GetUpdateCompression(Source))
     Try
       Extractor.Open()
@@ -4436,7 +4392,6 @@
       Return Nothing
     End Try
   End Function
-
   Private Sub Extractor_ExtractFile(sender As Object, e As Extraction.COM.ExtractFileEventArgs) Handles Extractor.ExtractFile
     If StopRun Then e.ContinueOperation = False
     If Extractor.ExtractionCount() > 1 Then
@@ -4772,11 +4727,9 @@
       If Not String.IsNullOrEmpty(txtSP64.Text) Then iTotalMax += 1
     End If
     If Not String.IsNullOrEmpty(txtISO.Text) Then iTotalMax += 3
-
     SetTotal(iTotalVal, iTotalMax)
     SetProgress(0, 1)
     pbTotal.Style = ProgressBarStyle.Continuous
-
     SetDisp(MNGList.Copy)
     SetStatus("Checking WIM...")
     If String.IsNullOrEmpty(txtWIM.Text) OrElse Not IO.File.Exists(txtWIM.Text) Then
@@ -4805,7 +4758,6 @@
     End If
     SetDisp(MNGList.Delete)
     SetTitle("Merging Image Packages", "Merging all WIM packages into single WIM...")
-
     SetStatus("Checking Merge...")
     Dim MergeFile As String = Nothing
     If chkMerge.Checked Then
@@ -4821,7 +4773,6 @@
     Else
       MergeFile = Nothing
     End If
-
     Dim MergeWIM As String = Nothing
     Dim MergeWork As String = Work & "Merge" & IO.Path.DirectorySeparatorChar
     If Not String.IsNullOrEmpty(MergeFile) Then
@@ -4939,7 +4890,6 @@
     End If
     SetDisp(MNGList.Move)
     SetTitle("Preparing Files", "Checking updates and Service Packs to integrate...")
-
     SetStatus("Checking Service Pack...")
     Dim SPFile As String = Nothing
     If chkSP.Checked Then
@@ -4971,7 +4921,6 @@
     Else
       SP64File = Nothing
     End If
-
     SetStatus("Checking ISO...")
     Dim ISOFile As String = Nothing
     If chkISO.Checked Then
@@ -4987,7 +4936,6 @@
     Else
       ISOFile = Nothing
     End If
-
     SetStatus("Collecting Update List...")
     Dim UpdateFiles As New Collections.Generic.List(Of Update_File)
     Dim RemoveFiles As New Collections.Generic.List(Of Update_Integrated())
@@ -5003,10 +4951,8 @@
       ToggleInputs(True)
       Return
     End If
-
     SetDisp(MNGList.Copy)
     SetTitle("Adding Service Packs", "Integrating Service Pack data into WIM packages...")
-
     If Not String.IsNullOrEmpty(SPFile) Then
       If String.IsNullOrEmpty(SP64File) Then
         SetStatus("Integrating Service Pack...")
@@ -5057,10 +5003,8 @@
         End If
       End If
     End If
-
     SetDisp(MNGList.Copy)
     SetTitle("Adding Windows Updates", "Integrating update data into WIM packages...")
-
     If ImageFeatures IsNot Nothing AndAlso ImageFeatures.Length > 0 Then
       SetStatus("Toggling Features...")
       If IntegratedFeatures(WIMFile, ImageFeatures.ToArray) Then
@@ -5077,7 +5021,6 @@
         Return
       End If
     End If
-
     If ImageIntegratedUpdates IsNot Nothing AndAlso ImageIntegratedUpdates.Length > 0 Then
       SetStatus("Removing Updates...")
       If IntegratedUpdates(WIMFile, ImageIntegratedUpdates.ToArray) Then
@@ -5094,7 +5037,6 @@
         Return
       End If
     End If
-
     If ImageDrivers IsNot Nothing AndAlso ImageDrivers.Length > 0 Then
       SetStatus("Removing Drivers...")
       If IntegratedDrivers(WIMFile, ImageDrivers) Then
@@ -5106,7 +5048,6 @@
         Return
       End If
     End If
-
     Dim NoMount As Boolean = True
     If UpdateFiles.Count > 0 Then
       SetStatus("Integrating Updates...")
@@ -5130,16 +5071,13 @@
       InitDISM(WIMFile, GetDISMPackages(WIMFile), Mount)
       NoMount = False
     End If
-
     iTotalVal += 1
     SetTotal(iTotalVal, iTotalMax)
-
     SetDisp(MNGList.Move)
     If Not String.IsNullOrEmpty(ISOFile) Then
       SetTitle("Generating ISO", "Preparing WIMs and file structures, and writing ISO data...")
       Dim ISODir As String = Work & "ISO" & IO.Path.DirectorySeparatorChar
       Dim ISODDir As String = Work & "ISOD%n" & IO.Path.DirectorySeparatorChar
-
       If Not IO.Directory.Exists(ISODir) Then IO.Directory.CreateDirectory(ISODir)
       SetProgress(0, 1)
       SetStatus("Extracting ISO contents...")
@@ -5147,7 +5085,6 @@
       ExtractFiles(ISOFile, ISODir, "install.wim")
       iTotalVal += 1
       SetTotal(iTotalVal, iTotalMax)
-
       If chkUnlock.Checked Then
         SetStatus("Unlocking All Editions...")
         If IO.File.Exists(ISODir & "sources" & IO.Path.DirectorySeparatorChar & "ei.cfg") Then
@@ -5273,7 +5210,6 @@
       SetProgress(0, 1)
       iTotalVal += 1
       SetTotal(iTotalVal, iTotalMax)
-
       If cmbLimitType.SelectedIndex > 0 Then
         Dim splUEFI As Boolean = chkUEFI.Checked
         Dim limVal As String = cmbLimit.Text
@@ -5371,14 +5307,12 @@
                         End Select
                         MakeISO(sIDir, isoLabel, Nothing, isoFormat, ISODFile)
                       Catch ex As Exception
-
                       End Try
                       DiscNumber += 1
                       WIMNumber = 0
                     End If
                   End If
                 Next
-
               Else
                 ToggleInputs(True)
                 SetStatus("Failed to Split WIM!")
@@ -5462,7 +5396,6 @@
                       End Select
                       MakeISO(sIDir, isoLabel, Nothing, isoFormat, ISODFile)
                     Catch ex As Exception
-
                     End Try
                   End If
                 Next
@@ -5546,7 +5479,6 @@
                       End Select
                       MakeISO(sIDir, isoLabel, Nothing, isoFormat, ISODFile)
                     Catch ex As Exception
-
                     End Try
                   ElseIf IO.Path.GetFileNameWithoutExtension(File).ToLower.Contains("install") Then
                     Dim discNo As String = IO.Path.GetFileNameWithoutExtension(File).Substring(7)
@@ -5609,7 +5541,6 @@
                       End Select
                       MakeISO(sIDir, isoLabel, Nothing, isoFormat, ISODFile)
                     Catch ex As Exception
-
                     End Try
                   End If
                 Next
@@ -5676,7 +5607,6 @@
           End If
         End If
       End If
-
       Dim BootOrder As String = Work & "bootorder.txt"
       My.Computer.FileSystem.WriteAllText(BootOrder, "boot" & IO.Path.DirectorySeparatorChar & "bcd" & vbNewLine &
                                           "boot" & IO.Path.DirectorySeparatorChar & "boot.sdi" & vbNewLine &
@@ -5804,7 +5734,6 @@
         End If
       End If
     End If
-
     SetProgress(0, 100)
     SetTotal(0, 100)
     ToggleInputs(True)
@@ -5979,7 +5908,6 @@
           ToggleInputs(True)
           Return False
         End If
-
         If RMV_32.Count > 0 Then
           For I As Integer = 0 To RMV_32.Count - 1
             pbVal += 1
@@ -5995,7 +5923,6 @@
             End If
           Next
         End If
-
         For I As Integer = 0 To MSU_32.Count - 1
           Dim tmpMSU = MSU_32(I)
           pbVal += 1
@@ -6101,7 +6028,6 @@
                     ExtractAFile(WorkDir & useEXE, WorkDir, useCab1)
                     ExtractAFile(WorkDir & useEXE, WorkDir, useCab2)
                     ExtractAFile(WorkDir & useEXE, WorkDir, useCab3)
-
                     If Not IO.File.Exists(WorkDir & useCab1) Then
                       If IO.File.Exists(tmpCAB) Then
                         WriteToOutput("Deleting """ & tmpCAB & """...")
@@ -6144,7 +6070,6 @@
                       SetStatus("Failed to integrate " & shownName & " (" & useCab3 & ") into " & tmpDISM.Name & "!")
                       Return False
                     End If
-
                     If Not AddPackageItemToDISM(Mount, WorkDir & useCab1) Then
                       If IO.File.Exists(tmpCAB) Then
                         WriteToOutput("Deleting """ & tmpCAB & """...")
@@ -6365,7 +6290,6 @@
           ToggleInputs(True)
           Return False
         End If
-
         If RMV_64.Count > 0 Then
           For I As Integer = 0 To RMV_64.Count - 1
             pbVal += 1
@@ -6381,7 +6305,6 @@
             End If
           Next
         End If
-
         For I As Integer = 0 To MSU_64.Count - 1
           Dim tmpMSU = MSU_64(I)
           pbVal += 1
@@ -6487,7 +6410,6 @@
                     ExtractAFile(WorkDir & useEXE, WorkDir, useCab1)
                     ExtractAFile(WorkDir & useEXE, WorkDir, useCab2)
                     ExtractAFile(WorkDir & useEXE, WorkDir, useCab3)
-
                     If Not IO.File.Exists(WorkDir & useCab1) Then
                       If IO.File.Exists(tmpCAB) Then
                         WriteToOutput("Deleting """ & tmpCAB & """...")
@@ -6530,7 +6452,6 @@
                       SetStatus("Failed to integrate " & shownName & " (" & useCab3 & ") into " & tmpDISM.Name & "!")
                       Return False
                     End If
-
                     If Not AddPackageItemToDISM(Mount, WorkDir & useCab1) Then
                       If IO.File.Exists(tmpCAB) Then
                         WriteToOutput("Deleting """ & tmpCAB & """...")
@@ -6902,7 +6823,6 @@
             Continue For
           End If
         Catch ex As Exception
-
         End Try
         pbVal += 1
         SetProgress(pbVal, pbMax)
@@ -6945,8 +6865,6 @@
           ToggleInputs(True)
           Return False
         End If
-        'pbVal += 1
-        'SetProgress(pbVal, pbMax)
       Next
     Else
       ToggleInputs(True)
@@ -6959,7 +6877,6 @@
     SlowDeleteDirectory(Work & "SP1", FileIO.DeleteDirectoryOption.DeleteAllContents)
     Return True
   End Function
-
   Private Function IntegratedFeatures(WIMPath As String, FeatureData() As List(Of Feature)) As Boolean
     Dim PackageCount As Integer = GetDISMPackages(WIMPath)
     If PackageCount < 1 Then
@@ -7038,7 +6955,6 @@
     Next
     Return True
   End Function
-
   Private Function IntegratedUpdates(WIMPath As String, UpdateData() As List(Of Update_Integrated)) As Boolean
     Dim PackageCount As Integer = GetDISMPackages(WIMPath)
     If PackageCount < 1 Then
@@ -7111,7 +7027,6 @@
     Next
     Return True
   End Function
-
   Private Function IntegratedDrivers(WIMPath As String, DriverData() As List(Of Driver)) As Boolean
     Dim PackageCount As Integer = GetDISMPackages(WIMPath)
     If PackageCount < 1 Then
@@ -7183,7 +7098,6 @@
     Next
     Return True
   End Function
-
 #Region "SP1 Extras"
   Private Sub UpdateSES(Path As String)
     Dim XUpdate As XElement = XElement.Load(Path)
@@ -7393,7 +7307,6 @@
       Return sDir
     End Get
   End Property
-#End Region
   Public Function PreFilterMessage(ByRef m As System.Windows.Forms.Message) As Boolean Implements System.Windows.Forms.IMessageFilter.PreFilterMessage
     If m.Msg = &H20A Then
       Dim pos As New Point(m.LParam.ToInt32 And &HFFFF, m.LParam.ToInt32 >> 16)
@@ -7405,4 +7318,5 @@
     End If
     Return False
   End Function
+#End Region
 End Class

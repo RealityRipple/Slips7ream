@@ -1,6 +1,5 @@
 ﻿Imports System.Runtime.InteropServices
 Imports System.Text
-
 Public Class clsExplorer
   <DllImport("shell32.dll", exactspelling:=True)>
   Private Shared Function SHOpenFolderAndSelectItems(pidlFolder As IntPtr, cidl As UInteger, <[In](), MarshalAs(UnmanagedType.LPArray)> apidl As IntPtr(), dwFlags As UInteger) As Integer

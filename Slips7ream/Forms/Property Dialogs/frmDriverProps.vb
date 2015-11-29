@@ -33,7 +33,6 @@
       cmbArchitecture.Enabled = False
     End If
   End Sub
-
   Private Sub cmbArchitecture_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cmbArchitecture.SelectedIndexChanged
     If cmbArchitecture.SelectedIndex = -1 Then
       cmbHardware.Items.Clear()
@@ -65,7 +64,6 @@
       cmbHardware.Enabled = False
     End If
   End Sub
-
   Private Sub cmbHardware_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cmbHardware.SelectedIndexChanged
     If cmbHardware.SelectedIndex = -1 Then
       txtHWServiceName.Text = Nothing
@@ -92,11 +90,6 @@
     lstHWExcludeIDs.Items.Clear()
     lstHWIDs.SelectedIndex = 0
   End Sub
-
-  Private Sub cmdClose_Click(sender As System.Object, e As System.EventArgs) Handles cmdClose.Click
-    Me.Close()
-  End Sub
-
   Private Sub lstHWIDs_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles lstHWIDs.SelectedIndexChanged
     If lstHWIDs.SelectedIndex = -1 Then
       lstHWCompatibleIDs.Items.Clear()
@@ -118,5 +111,8 @@
     Else
       lstHWExcludeIDs.Items.Add("(None)")
     End If
+  End Sub
+  Private Sub cmdClose_Click(sender As System.Object, e As System.EventArgs) Handles cmdClose.Click
+    Me.Close()
   End Sub
 End Class

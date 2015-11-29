@@ -6,7 +6,6 @@ Imports Slips7ream.Extraction.COM
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Runtime.Serialization
-
 Namespace Extraction
   Public NotInheritable Class ArchiveFile
     Implements IArchiveFile
@@ -101,7 +100,6 @@ Namespace Extraction
         c_format = ArchiveFormat.GetClassIdFromKnownFormat(value)
       End Set
     End Property
-
     Private Sub CloseStreams()
       For Each s As SevenZipFileStream In fileStreams.Values
         s.Dispose()
@@ -256,7 +254,6 @@ Namespace Extraction
       Finally
         CloseStreams()
       End Try
-
     End Sub
     Public Sub SetCompleted(ByRef completeValue As ULong) Implements IProgress.SetCompleted
     End Sub
@@ -403,7 +400,7 @@ Namespace Extraction
         m_size = aSize
         m_compressedSize = aCompressedSize
         m_index = index
-        m_modified = aModified 
+        m_modified = aModified
       End Sub
       Public ReadOnly Property CompressedSize() As ULong Implements IArchiveEntry.CompressedSize
         Get

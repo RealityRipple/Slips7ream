@@ -35,44 +35,22 @@
   Private WithEvents wsVer As New Net.WebClient
   Private DownloadURL As String
 #Region "IDisposable Support"
-  Private disposedValue As Boolean ' To detect redundant calls
-
-  ' IDisposable
+  Private disposedValue As Boolean
   Protected Overridable Sub Dispose(disposing As Boolean)
     If Not Me.disposedValue Then
       If disposing Then
         If wsVer IsNot Nothing Then
           If wsVer.IsBusy Then
             wsVer.CancelAsync()
-            'If wsVer Is Nothing Then Return
-            'Do While wsVer.IsBusy
-            '  Application.DoEvents()
-            '  Threading.Thread.Sleep(10)
-            '  If wsVer Is Nothing Then Return
-            'Loop
           End If
           wsVer.Dispose()
           wsVer = Nothing
         End If
-        ' TODO: dispose managed state (managed objects).
       End If
-
-      ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
-      ' TODO: set large fields to null.
     End If
     Me.disposedValue = True
   End Sub
-
-  ' TODO: override Finalize() only if Dispose(ByVal disposing As Boolean) above has code to free unmanaged resources.
-  'Protected Overrides Sub Finalize()
-  '    ' Do not change this code.  Put cleanup code in Dispose(ByVal disposing As Boolean) above.
-  '    Dispose(False)
-  '    MyBase.Finalize()
-  'End Sub
-
-  ' This code added by Visual Basic to correctly implement the disposable pattern.
   Public Sub Dispose() Implements IDisposable.Dispose
-    ' Do not change this code.  Put cleanup code in Dispose(ByVal disposing As Boolean) above.
     Dispose(True)
     GC.SuppressFinalize(Me)
   End Sub
@@ -92,12 +70,10 @@
         Return CheckEventArgs.ResultType.NoUpdate
       End Try
     End Using
-
     Dim sVU() As String = sVerStr.Split("|"c)
     If CompareVersions(sVU(0)) Then
       Return CheckEventArgs.ResultType.NewUpdate
     End If
-
     Return CheckEventArgs.ResultType.NoUpdate
   End Function
   Public Sub DownloadUpdate(toLocation As String)
@@ -190,16 +166,12 @@
     End If
     Dim bUpdate As Boolean = False
     If Val(LocalVer(0)) > Val(RemoteVer(0)) Then
-      'Local's OK
     ElseIf Val(LocalVer(0)) = Val(RemoteVer(0)) Then
       If Val(LocalVer(1)) > Val(RemoteVer(1)) Then
-        'Local's OK
       ElseIf Val(LocalVer(1)) = Val(RemoteVer(1)) Then
         If Val(LocalVer(2)) > Val(RemoteVer(2)) Then
-          'Local's OK
         ElseIf Val(LocalVer(2)) = Val(RemoteVer(2)) Then
           If Val(LocalVer(3)) >= Val(RemoteVer(3)) Then
-            'Local's OK
           Else
             bUpdate = True
           End If

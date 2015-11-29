@@ -1,5 +1,4 @@
 ﻿Imports System.ComponentModel
-
 Public Class TreeViewEx
   Inherits TreeView
   Private c_ReadOnly As Boolean

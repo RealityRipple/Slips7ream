@@ -1,5 +1,4 @@
 ﻿Namespace My
-
   ' The following events are available for MyApplication:
   ' 
   ' Startup: Raised when the application starts, before the startup form is created.
@@ -16,7 +15,4 @@
       End If
     End Sub
   End Class
-
-
 End Namespace
-

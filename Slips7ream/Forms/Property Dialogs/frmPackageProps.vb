@@ -1,10 +1,4 @@
 ﻿Public Class frmPackageProps
-  Public Sub New()
-    ' This call is required by the designer.
-    InitializeComponent()
-
-    ' Add any initialization after the InitializeComponent() call.
-  End Sub
   Private WIMIdenifier As String
   Private UpdateData As List(Of Update_Integrated)
   Private FeatureData As List(Of Feature)
@@ -31,7 +25,8 @@
   Private originalPackageName As String
   Private selFeature As TreeNode
   Private selUpdate As ListViewItem
-
+#Region "GUI"
+#Region "Window"
   Public Sub New(WIMID As String, Data As ImagePackage, Features As List(Of Feature), Drivers As List(Of Driver))
     bLoading = True
     InitializeComponent()
@@ -90,7 +85,527 @@
     PositionViews()
     bLoading = False
   End Sub
-
+  Private Sub frmPackageProps_Shown(sender As Object, e As System.EventArgs) Handles Me.Shown
+    AsyncResizeUpdates()
+    AsyncResizeDrivers()
+  End Sub
+  Private Sub frmPackageProps_Resize(sender As Object, e As System.EventArgs) Handles Me.Resize
+    AsyncResizeUpdates()
+    AsyncResizeDrivers()
+  End Sub
+  Private Sub frmPackageProps_ResizeEnd(sender As Object, e As System.EventArgs) Handles Me.ResizeEnd
+    AsyncResizeUpdates()
+    AsyncResizeDrivers()
+  End Sub
+#Region "Buttons"
+  Private Sub cmdOK_Click(sender As System.Object, e As System.EventArgs) Handles cmdOK.Click
+    Dim iIndex As Integer = Int(txtIndex.Text)
+    Dim sName As String = txtName.Text
+    If originalPackageName = sName Then sName = Nothing
+    Dim Features As New List(Of Feature)
+    If FeatureData IsNot Nothing AndAlso FeatureData.Count > 0 Then
+      For Each Feature In FeatureData
+        If (Feature.State = "Enabled" Or Feature.State = "Enable Pending") And Not Feature.Enable Then
+          Features.Add(Feature)
+        ElseIf Not (Feature.State = "Enabled" Or Feature.State = "Enable Pending") And Feature.Enable Then
+          Features.Add(Feature)
+        End If
+      Next
+    End If
+    Dim Updates As New List(Of Update_Integrated)
+    If UpdateData IsNot Nothing AndAlso UpdateData.Count > 0 Then
+      For Each Item In UpdateData
+        If Item.Remove Then Updates.Add(Item)
+      Next
+    End If
+    Dim Drivers As New List(Of Driver)
+    If DriverData IsNot Nothing AndAlso DriverData.Count > 0 Then
+      For Each Item In DriverData
+        If Item.Remove Then Drivers.Add(Item)
+      Next
+    End If
+    RaiseEvent Response(Me, New PackagePropertiesEventArgs(iIndex, originalPackageName, sName, Features.ToArray, Updates.ToArray, Drivers.ToArray))
+    Me.Close()
+  End Sub
+  Private Sub cmdCancel_Click(sender As System.Object, e As System.EventArgs) Handles cmdCancel.Click
+    Me.Close()
+  End Sub
+#End Region
+#End Region
+#Region "Lists"
+#Region "Features"
+  Private Sub expFeatures_Opened(sender As System.Object, e As System.EventArgs) Handles expFeatures.Opened
+    PositionViews()
+    DisplayFeatures()
+    ResizeUpdates()
+    ResizeDrivers()
+  End Sub
+  Private Sub expFeatures_Closed(sender As Object, e As System.EventArgs) Handles expFeatures.Closed
+    PositionViews()
+  End Sub
+  Private Sub tvFeatures_BeforeCheck(sender As Object, e As System.Windows.Forms.TreeViewCancelEventArgs) Handles tvFeatures.BeforeCheck
+    If tvFeatures.Tag IsNot Nothing Then Return
+    If e.Node.ToolTipText = "Node Group - Not a Feature" Then
+      If Not e.Node.Checked Then e.Cancel = True
+    Else
+      Dim RequiredFeatures As New Collections.Generic.Dictionary(Of String, String())
+      Dim featureRows() As String = Split(My.Resources.RequiredFeatureList, vbNewLine)
+      For Each row In featureRows
+        If row.Contains("|") Then
+          Dim RowSplit() As String = Split(row, "|", 2)
+          RequiredFeatures.Add(RowSplit(0), Split(RowSplit(1), ";"))
+        End If
+      Next
+      If e.Node.Checked Then
+        Dim RequiredFor As New List(Of String)
+        Dim SearchList As List(Of String) = GetFullNodeList(e.Node)
+        For Each Feature In RequiredFeatures
+          For Each toFind In SearchList
+            If Feature.Value.Contains(toFind) Then
+              Dim requiredNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find("tvn" & Feature.Key.Replace(" ", "_"), True))
+              Dim isRequired As Boolean = False
+              If requiredNode IsNot Nothing Then
+                If requiredNode.Checked Then isRequired = True
+              End If
+              If isRequired And Not RequiredFor.Contains(Feature.Key) Then RequiredFor.Add(Feature.Key)
+            End If
+          Next
+        Next
+        If Not e.Action = TreeViewAction.Unknown Then
+          Dim sLearnMoreURL As String = Nothing
+          If e.Node.ToolTipText.Contains("Link: ") Then sLearnMoreURL = e.Node.ToolTipText.Substring(e.Node.ToolTipText.IndexOf("Link: ") + 6)
+          If String.IsNullOrEmpty(sLearnMoreURL) Then
+            If RequiredFor.Count > 0 Then
+              If MsgDlg(Me, Join(RequiredFor.ToArray, vbNewLine), "The following Windows features will also be turned off because they are dependent on " & e.Node.Text & ". Do you want to continue?", "Windows Features", MessageBoxButtons.YesNo, TaskDialogIcon.Warning, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.No Then
+                e.Cancel = True
+                Return
+              End If
+            End If
+          Else
+            If RequiredFor.Count > 0 Then
+              If MsgDlg(Me, Join(RequiredFor.ToArray, vbNewLine) & vbNewLine & "Other Windows features and programs on your computer might also be affected, including default settings." & vbNewLine & "<a href=""" & sLearnMoreURL & """>Go online to learn more</a>", "The following Windows features will also be turned off because they are dependent on " & e.Node.Text & ". Do you want to continue?", "Windows Features", MessageBoxButtons.YesNo, TaskDialogIcon.Warning, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.No Then
+                e.Cancel = True
+                Return
+              End If
+            Else
+              If MsgDlg(Me, "<a href=""" & sLearnMoreURL & """>Go online to learn more</a>", "Turning off " & e.Node.Text & " might affect other Windows features and programs installed on your computer, including default settings. Do you want to continue?", "Windows Features", MessageBoxButtons.YesNo, TaskDialogIcon.Information, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.No Then
+                e.Cancel = True
+              End If
+            End If
+          End If
+        End If
+        For Each Feature In RequiredFor
+          Dim requiredNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find("tvn" & Feature.Replace(" ", "_"), True))
+          If requiredNode IsNot Nothing Then
+            If requiredNode.Checked Then requiredNode.Checked = False
+          End If
+        Next
+      End If
+    End If
+  End Sub
+  Private Sub tvFeatures_AfterCheck(sender As Object, e As System.Windows.Forms.TreeViewEventArgs) Handles tvFeatures.AfterCheck
+    If tvFeatures.Tag IsNot Nothing Then Return
+    If e.Node.ToolTipText = "Node Group - Not a Feature" Then
+      If e.Node.Checked Then e.Node.Checked = False
+    Else
+      Dim RequiredFeatures As New Collections.Generic.Dictionary(Of String, String())
+      Dim featureRows() As String = Split(My.Resources.RequiredFeatureList, vbNewLine)
+      For Each row In featureRows
+        If row.Contains("|") Then
+          Dim RowSplit() As String = Split(row, "|", 2)
+          RequiredFeatures.Add(RowSplit(0), Split(RowSplit(1), ";"))
+        End If
+      Next
+      If e.Node.Checked Then
+        If RequiredFeatures.ContainsKey(e.Node.Text) Then
+          For Each sRequirement As String In RequiredFeatures(e.Node.Text)
+            Dim requiredNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find("tvn" & sRequirement.Replace(" ", "_"), True))
+            If requiredNode Is Nothing Then
+              MsgDlg(Me, "The feature " & e.Node.Text & " requires another feature, " & sRequirement & ", which could not be found!", "A required feature is missing from the feature list.", "Windows Features", MessageBoxButtons.OK, TaskDialogIcon.Information)
+              e.Node.Checked = False
+            Else
+              If Not requiredNode.Checked Then requiredNode.Checked = True
+            End If
+          Next
+        End If
+        If e.Node.Parent IsNot Nothing Then
+          If Not e.Node.Parent.Checked Then e.Node.Parent.Checked = True
+        End If
+      Else
+        If e.Node.Nodes IsNot Nothing Then
+          For Each childNode As TreeNode In e.Node.Nodes
+            childNode.Checked = False
+          Next
+        End If
+      End If
+      For I As Integer = 0 To FeatureData.Count - 1
+        If FeatureData(I).FeatureName = CType(e.Node.Tag, Feature).FeatureName Then
+          Dim newData As Feature = FeatureData(I)
+          newData.Enable = e.Node.Checked
+          FeatureData(I) = newData
+          Exit For
+        End If
+      Next
+    End If
+  End Sub
+  Private Sub tvFeatures_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles tvFeatures.MouseUp
+    If e.Button = Windows.Forms.MouseButtons.Right Then
+      selFeature = tvFeatures.HitTest(e.X, e.Y).Node
+      If selFeature IsNot Nothing Then
+        If selFeature.Nodes Is Nothing OrElse selFeature.Nodes.Count = 0 Then
+          Dim collapsed As Boolean = False
+          Dim expanded As Boolean = False
+          If selFeature.Parent IsNot Nothing Then
+            If selFeature.Parent.IsExpanded Then
+              expanded = True
+            Else
+              collapsed = True
+            End If
+          End If
+          mnuFeatureExpand.Enabled = collapsed
+          mnuFeatureCollapse.Enabled = expanded
+        Else
+          Dim collapsed As Boolean = False
+          Dim expanded As Boolean = False
+          If selFeature.Parent IsNot Nothing Then
+            If selFeature.Parent.IsExpanded Then
+              expanded = True
+            Else
+              collapsed = True
+            End If
+          End If
+          If selFeature.IsExpanded Then
+            expanded = True
+          Else
+            collapsed = True
+          End If
+          For Each tvNode As TreeNode In selFeature.Nodes
+            IterateNodes(tvNode, expanded, collapsed)
+          Next
+          mnuFeatureExpand.Enabled = collapsed
+          mnuFeatureCollapse.Enabled = expanded
+        End If
+        Dim collapsedAll As Boolean = False
+        Dim expandedAll As Boolean = False
+        For Each tvNode As TreeNode In tvFeatures.Nodes
+          IterateNodes(tvNode, expandedAll, collapsedAll)
+        Next
+        mnuFeatureExpandAll.Enabled = collapsedAll
+        mnuFeatureCollapseAll.Enabled = expandedAll
+        mnuFeatureEnabled.Checked = selFeature.Checked
+        mnuFeatures.Show(tvFeatures, e.Location)
+      End If
+    End If
+  End Sub
+#Region "Context Menu"
+  Private Sub mnuFeatureEnabled_Click(sender As System.Object, e As System.EventArgs) Handles mnuFeatureEnabled.Click
+    If selFeature IsNot Nothing Then
+      selFeature.Checked = Not selFeature.Checked
+    End If
+  End Sub
+  Private Sub mnuFeatureExpandAll_Click(sender As System.Object, e As System.EventArgs) Handles mnuFeatureExpandAll.Click
+    tvFeatures.ExpandAll()
+  End Sub
+  Private Sub mnuFeatureExpand_Click(sender As System.Object, e As System.EventArgs) Handles mnuFeatureExpand.Click
+    If selFeature IsNot Nothing Then
+      selFeature.ExpandAll()
+    End If
+  End Sub
+  Private Sub mnuFeatureCollapse_Click(sender As System.Object, e As System.EventArgs) Handles mnuFeatureCollapse.Click
+    If selFeature IsNot Nothing Then
+      If selFeature.IsExpanded Then
+        selFeature.Collapse(False)
+      ElseIf selFeature.Parent IsNot Nothing AndAlso selFeature.Parent.IsExpanded Then
+        selFeature.Parent.Collapse(False)
+      End If
+    End If
+  End Sub
+  Private Sub mnuFeatureCollapseAll_Click(sender As System.Object, e As System.EventArgs) Handles mnuFeatureCollapseAll.Click
+    tvFeatures.CollapseAll()
+  End Sub
+#End Region
+  Private Sub cmdLoadFeatures_Click(sender As Object, e As EventArgs) Handles cmdLoadFeatures.Click
+    ToggleUI(False)
+    frmMain.LoadPackageFeatures(WIMIdenifier, txtIndex.Text)
+    Dim lvItem As ListViewItem = Nothing
+    For Each item As ListViewItem In frmMain.lvImages.Items
+      If item.SubItems(1).Text = originalPackageName Then
+        lvItem = item
+        Exit For
+      End If
+    Next
+    ToggleUI(True)
+    If lvItem IsNot Nothing Then
+      If UBound(lvItem.Tag) > 1 AndAlso lvItem.Tag(2) IsNot Nothing Then
+        FeatureData = lvItem.Tag(2)
+        DisplayFeatures()
+        PositionViews()
+      Else
+        MsgDlg(Me, "The Features list could not be loaded. See the Output Console for details.", "Error loading features.", "Feature List Empty", MessageBoxButtons.OK, TaskDialogIcon.Bad)
+      End If
+    End If
+  End Sub
+  Private Sub cmdLoadUpdates_Click(sender As Object, e As EventArgs) Handles cmdLoadUpdates.Click
+    ToggleUI(False)
+    frmMain.LoadPackageUpdates(WIMIdenifier, txtIndex.Text)
+    Dim lvItem As ListViewItem = Nothing
+    For Each item As ListViewItem In frmMain.lvImages.Items
+      If item.SubItems(1).Text = originalPackageName Then
+        lvItem = item
+        Exit For
+      End If
+    Next
+    ToggleUI(True)
+    If lvItem IsNot Nothing Then
+      If UBound(lvItem.Tag) > 0 AndAlso lvItem.Tag(1) IsNot Nothing Then
+        Dim Package As ImagePackage = lvItem.Tag(1)
+        UpdateData = Package.IntegratedUpdateList
+        DisplayUpdates()
+        PositionViews()
+      Else
+        MsgDlg(Me, "The Integrated Updates list could not be loaded. See the Output Console for details.", "Error loading integrated updates.", "Update List Empty", MessageBoxButtons.OK, TaskDialogIcon.Bad)
+      End If
+    End If
+  End Sub
+  Private Sub cmdLoadDrivers_Click(sender As System.Object, e As System.EventArgs) Handles cmdLoadDrivers.Click
+    ToggleUI(False)
+    frmMain.LoadPackageDrivers(WIMIdenifier, txtIndex.Text)
+    Dim lvItem As ListViewItem = Nothing
+    For Each item As ListViewItem In frmMain.lvImages.Items
+      If item.SubItems(1).Text = originalPackageName Then
+        lvItem = item
+        Exit For
+      End If
+    Next
+    ToggleUI(True)
+    If lvItem IsNot Nothing Then
+      If UBound(lvItem.Tag) > 2 AndAlso lvItem.Tag(3) IsNot Nothing Then
+        DriverData = lvItem.Tag(3)
+        DisplayDrivers()
+        PositionViews()
+      Else
+        MsgDlg(Me, "The Driver list could not be loaded. See the Output Console for details.", "Error loading drivers.", "Driver List Empty", MessageBoxButtons.OK, TaskDialogIcon.Bad)
+      End If
+    End If
+  End Sub
+#End Region
+#Region "Updates"
+  Private Sub expUpdates_Opened(sender As System.Object, e As System.EventArgs) Handles expUpdates.Opened
+    PositionViews()
+    DisplayUpdates()
+    ResizeUpdates()
+    ResizeDrivers()
+  End Sub
+  Private Sub expUpdates_Closed(sender As Object, e As System.EventArgs) Handles expUpdates.Closed
+    PositionViews()
+  End Sub
+  Private Sub lvUpdates_ItemChecked(sender As Object, e As System.Windows.Forms.ItemCheckedEventArgs) Handles lvUpdates.ItemChecked
+    If lvUpdates.Tag IsNot Nothing Then Return
+    For I As Integer = 0 To UpdateData.Count - 1
+      If UpdateData(I).Identity = CType(e.Item.Tag, Update_Integrated).Identity Then
+        Dim newData As Update_Integrated = UpdateData(I)
+        newData.Remove = Not e.Item.Checked
+        UpdateData(I) = newData
+        Exit For
+      End If
+    Next
+  End Sub
+  Private Sub lvUpdates_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles lvUpdates.MouseUp
+    If e.Button = Windows.Forms.MouseButtons.Right Then
+      selUpdate = lvUpdates.GetItemAt(e.X, e.Y)
+      If selUpdate IsNot Nothing Then
+        mnuUpdateInclude.Checked = selUpdate.Checked
+        mnuUpdates.Show(lvUpdates, e.Location)
+      End If
+    End If
+  End Sub
+  Private Sub mnuUpdateInclude_Click(sender As System.Object, e As System.EventArgs) Handles mnuUpdateInclude.Click
+    If selUpdate IsNot Nothing Then
+      If selUpdate.Checked Then
+        selUpdate.Checked = False
+      Else
+        selUpdate.Checked = True
+      End If
+    End If
+  End Sub
+#End Region
+#Region "Drivers"
+  Private Sub expDrivers_Opened(sender As System.Object, e As System.EventArgs) Handles expDrivers.Opened
+    PositionViews()
+    DisplayDrivers()
+    ResizeUpdates()
+    ResizeDrivers()
+  End Sub
+  Private Sub expDrivers_Closed(sender As System.Object, e As System.EventArgs) Handles expDrivers.Closed
+    PositionViews()
+  End Sub
+  Private Sub lvDriverClass_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles lvDriverClass.SelectedIndexChanged
+    If lvDriverClass.SelectedItems.Count = 0 Then
+      lvDriverProvider.Items.Clear()
+      lvDriverProvider.ReadOnly = True
+      lvDriverINF.Items.Clear()
+      lvDriverINF.ReadOnly = True
+      Return
+    End If
+    lvDriverINF.Items.Clear()
+    lvDriverINF.ReadOnly = True
+    Dim sDriverClassName As String = lvDriverClass.SelectedItems(0).Name
+    Dim CompanyList As New SortedList(Of String, String)
+    For Each pDriver As Driver In DriverData
+      If Not GetDriverClassName(pDriver.ClassGUID) = sDriverClassName Then Continue For
+      Dim sProviderKey As String = "lviUnknown"
+      If Not String.IsNullOrEmpty(pDriver.ProviderName) Then sProviderKey = "lvi" & pDriver.ProviderName.Replace(" ", "_")
+      If Not CompanyList.ContainsKey(sProviderKey) Then CompanyList.Add(sProviderKey, pDriver.ProviderName)
+    Next
+    For Each cDriver As KeyValuePair(Of String, String) In CompanyList
+      If lvDriverProvider.Items.ContainsKey(cDriver.Key) Then Continue For
+      Dim sProviderTitle As String = "Unknown"
+      If Not String.IsNullOrEmpty(cDriver.Value) Then sProviderTitle = GetUpdateCompany(cDriver.Value, CompanyList.Values.ToArray)
+      Dim nameExists As Boolean = False
+      For Each item As ListViewItem In lvDriverProvider.Items
+        If item.Text = sProviderTitle Then
+          nameExists = True
+          Exit For
+        End If
+      Next
+      If Not nameExists Then
+        imlDriverCompany.Images.Add(cDriver.Key, GetDriverCompanyIcon(sProviderTitle))
+        lvDriverProvider.Items.Add(cDriver.Key, sProviderTitle, cDriver.Key)
+      End If
+    Next
+    lvDriverProvider.ReadOnly = (lvDriverProvider.Items.Count = 0)
+    ResizeDrivers()
+    If lvDriverProvider.Items.Count > 0 Then lvDriverProvider.Items(0).Selected = True
+  End Sub
+  Private Sub lvDriverProvider_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles lvDriverProvider.SelectedIndexChanged
+    If lvDriverClass.SelectedItems.Count = 0 Then
+      lvDriverProvider.Items.Clear()
+      lvDriverProvider.ReadOnly = True
+      lvDriverINF.Items.Clear()
+      lvDriverINF.ReadOnly = True
+      Return
+    End If
+    If lvDriverProvider.SelectedItems.Count = 0 Then
+      lvDriverINF.Items.Clear()
+      lvDriverINF.ReadOnly = True
+      Return
+    End If
+    Dim sDriverClassName As String = lvDriverClass.SelectedItems(0).Name
+    Dim CompanyList As New SortedList(Of String, String)
+    For Each pDriver As Driver In DriverData
+      If Not GetDriverClassName(pDriver.ClassGUID) = sDriverClassName Then Continue For
+      Dim sProviderKey As String = "lviUnknown"
+      If Not String.IsNullOrEmpty(pDriver.ProviderName) Then sProviderKey = "lvi" & pDriver.ProviderName.Replace(" ", "_")
+      If Not CompanyList.ContainsKey(sProviderKey) Then CompanyList.Add(sProviderKey, pDriver.ProviderName)
+    Next
+    Dim sDriverCompanyName As String = lvDriverProvider.SelectedItems(0).Text
+    For Each pDriver As Driver In DriverData
+      If Not GetDriverClassName(pDriver.ClassGUID) = sDriverClassName Then Continue For
+      If Not GetUpdateCompany(pDriver.ProviderName, CompanyList.Values.ToArray) = sDriverCompanyName Then Continue For
+      Dim sDeviceKey As String = "lviUnknown"
+      If Not String.IsNullOrEmpty(pDriver.PublishedName) Then sDeviceKey = "lvi" & pDriver.PublishedName.Replace(" ", "_")
+      Dim sDeviceTitle As String = "Unknown"
+      If Not String.IsNullOrEmpty(pDriver.PublishedName) Then sDeviceTitle = pDriver.PublishedName
+      If Not lvDriverINF.Items.ContainsKey(sDeviceKey) Then
+        imlDriverINF.Images.Add(sDeviceKey, pDriver.DriverIcon)
+        Dim lvDeviceItem As ListViewItem = lvDriverINF.Items.Add(sDeviceKey, sDeviceTitle, sDeviceKey)
+        lvDeviceItem.SubItems.Add(pDriver.Version)
+        Dim en As String = ChrW(&H2003)
+        Dim ttPublishedName As String = Nothing
+        If Not String.IsNullOrEmpty(pDriver.PublishedName) Then
+          ttPublishedName = pDriver.PublishedName
+          If Not String.IsNullOrEmpty(pDriver.Version) Then ttPublishedName &= " v" & pDriver.Version
+        End If
+        Dim ttOriginalFileName As String = Nothing
+        If Not String.IsNullOrEmpty(pDriver.OriginalFileName) Then ttOriginalFileName = en & "Original File Name: " & pDriver.OriginalFileName
+        Dim ttDriverStorePath As String = Nothing
+        If Not String.IsNullOrEmpty(pDriver.DriverStorePath) Then ttDriverStorePath = en & "Driver Store Path: " & pDriver.DriverStorePath
+        Dim ttInBox As String = Nothing
+        If Not String.IsNullOrEmpty(pDriver.InBox) Then ttInBox = en & "In-Box: " & pDriver.InBox
+        Dim ttClassName As String = Nothing
+        If Not String.IsNullOrEmpty(pDriver.ClassName) Then
+          ttClassName = en & "Class Name: " & pDriver.ClassName
+          If Not String.IsNullOrEmpty(pDriver.ClassDescription) Then ttClassName &= " (" & pDriver.ClassDescription & ")"
+        ElseIf Not String.IsNullOrEmpty(pDriver.ClassDescription) Then
+          ttClassName = en & "Class Description: " & pDriver.ClassDescription
+        End If
+        Dim ttClassGUID As String = Nothing
+        If Not String.IsNullOrEmpty(pDriver.ClassGUID) Then ttClassGUID = en & "Class GUID: " & pDriver.ClassGUID
+        Dim ttProviderName As String = Nothing
+        If Not String.IsNullOrEmpty(pDriver.ProviderName) Then ttProviderName = en & "Provider: " & pDriver.ProviderName
+        Dim ttDate As String = Nothing
+        If Not String.IsNullOrEmpty(pDriver.Date) Then ttDate = en & "Date: " & pDriver.Date
+        Dim ttArch As String = Nothing
+        If pDriver.Architectures IsNot Nothing AndAlso pDriver.Architectures.Count > 0 Then ttArch = en & "Supported Architectures: " & Join(pDriver.Architectures.ToArray, ", ")
+        Dim ttBootCritical As String = Nothing
+        If Not String.IsNullOrEmpty(pDriver.BootCritical) Then ttBootCritical = en & "Boot Critical: " & pDriver.BootCritical
+        lvDeviceItem.ToolTipText = IIf(String.IsNullOrEmpty(ttPublishedName), "", ttPublishedName & vbNewLine) &
+                             IIf(String.IsNullOrEmpty(ttOriginalFileName), "", ttOriginalFileName & vbNewLine) &
+                             IIf(String.IsNullOrEmpty(ttDriverStorePath), "", ttDriverStorePath & vbNewLine) &
+                             IIf(String.IsNullOrEmpty(ttInBox), "", ttInBox & vbNewLine) &
+                             IIf(String.IsNullOrEmpty(ttClassName), "", ttClassName & vbNewLine) &
+                             IIf(String.IsNullOrEmpty(ttClassGUID), "", ttClassGUID & vbNewLine) &
+                             IIf(String.IsNullOrEmpty(ttProviderName), "", ttProviderName & vbNewLine) &
+                             IIf(String.IsNullOrEmpty(ttDate), "", ttDate & vbNewLine) &
+                             IIf(String.IsNullOrEmpty(ttArch), "", ttArch & vbNewLine) &
+                             IIf(String.IsNullOrEmpty(ttBootCritical), "", ttBootCritical & vbNewLine)
+        lvDeviceItem.Checked = Not pDriver.Remove
+      End If
+    Next
+    lvDriverINF.ReadOnly = (lvDriverINF.Items.Count = 0)
+    ResizeDrivers()
+    If lvDriverINF.Items.Count > 0 Then
+      lvDriverINF.Items(0).Selected = True
+    End If
+  End Sub
+  Private Sub lvDriverINF_ItemChecked(sender As Object, e As System.Windows.Forms.ItemCheckedEventArgs) Handles lvDriverINF.ItemChecked
+    If lvDriverINF.SelectedItems.Count = 0 Then Return
+    Dim sDriverClassName As String = lvDriverClass.SelectedItems(0).Name
+    Dim CompanyList As New SortedList(Of String, String)
+    For Each pDriver As Driver In DriverData
+      If Not GetDriverClassName(pDriver.ClassGUID) = sDriverClassName Then Continue For
+      Dim sProviderKey As String = "lviUnknown"
+      If Not String.IsNullOrEmpty(pDriver.ProviderName) Then sProviderKey = "lvi" & pDriver.ProviderName.Replace(" ", "_")
+      If Not CompanyList.ContainsKey(sProviderKey) Then CompanyList.Add(sProviderKey, pDriver.ProviderName)
+    Next
+    Dim sDriverCompanyName As String = lvDriverProvider.SelectedItems(0).Text
+    Dim sDriverINFName As String = lvDriverINF.SelectedItems(0).Text
+    For I As Integer = 0 To DriverData.Count - 1
+      If Not GetDriverClassName(DriverData(I).ClassGUID) = sDriverClassName Then Continue For
+      If Not GetUpdateCompany(DriverData(I).ProviderName, CompanyList.Values.ToArray) = sDriverCompanyName Then Continue For
+      If Not DriverData(I).PublishedName = sDriverINFName Then Continue For
+      Dim newData As Driver = DriverData(I)
+      newData.Remove = Not lvDriverINF.SelectedItems(0).Checked
+      DriverData(I) = newData
+      Exit For
+    Next
+  End Sub
+  Private Sub lvDriverINF_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles lvDriverINF.MouseDoubleClick
+    If lvDriverINF.SelectedItems.Count = 0 Then Return
+    Dim sDriverClassName As String = lvDriverClass.SelectedItems(0).Name
+    Dim CompanyList As New SortedList(Of String, String)
+    For Each pDriver As Driver In DriverData
+      If Not GetDriverClassName(pDriver.ClassGUID) = sDriverClassName Then Continue For
+      Dim sProviderKey As String = "lviUnknown"
+      If Not String.IsNullOrEmpty(pDriver.ProviderName) Then sProviderKey = "lvi" & pDriver.ProviderName.Replace(" ", "_")
+      If Not CompanyList.ContainsKey(sProviderKey) Then CompanyList.Add(sProviderKey, pDriver.ProviderName)
+    Next
+    Dim sDriverCompanyName As String = lvDriverProvider.SelectedItems(0).Text
+    Dim sDriverINFName As String = lvDriverINF.SelectedItems(0).Text
+    For Each pDriver As Driver In DriverData
+      If Not GetDriverClassName(pDriver.ClassGUID) = sDriverClassName Then Continue For
+      If Not GetUpdateCompany(pDriver.ProviderName, CompanyList.Values.ToArray) = sDriverCompanyName Then Continue For
+      If Not pDriver.PublishedName = sDriverINFName Then Continue For
+      Dim driverProps As frmDriverProps
+      driverProps = New frmDriverProps(pDriver)
+      driverProps.Show(Me)
+      Exit For
+    Next
+  End Sub
+#End Region
+#End Region
+#End Region
+#Region "Useful Functions"
   Private Sub LoadImageLists()
     imlFeatures.Images.Add("unknown", My.Resources.update_folder)
     imlFeatures.Images.Add(".net_environment", My.Resources.feature_dotnet_environment)
@@ -190,147 +705,12 @@
     imlFeatures.Images.Add("windows_tiff_ifilter", My.Resources.feature_windows_tiff_ifilter)
     imlFeatures.Images.Add("world_wide_web_services", My.Resources.feature_world_wide_web_services)
     imlFeatures.Images.Add("xml_paper_specification", My.Resources.feature_xps)
-
     imlUpdates.Images.Add("DID", My.Resources.u_a)
     imlUpdates.Images.Add("DO", My.Resources.u_p)
     imlUpdates.Images.Add("UNDO", My.Resources.u_u)
     imlUpdates.Images.Add("PROBLEM", My.Resources.u_i)
     imlUpdates.Images.Add("NO", My.Resources.u_n)
   End Sub
-
-  Private Sub cmdClose_Click(sender As System.Object, e As System.EventArgs) Handles cmdClose.Click
-    Me.Close()
-  End Sub
-  Private Sub cmdSave_Click(sender As System.Object, e As System.EventArgs) Handles cmdSave.Click
-    Dim iIndex As Integer = Int(txtIndex.Text)
-    Dim sName As String = txtName.Text
-    If originalPackageName = sName Then sName = Nothing
-    Dim Features As New List(Of Feature)
-    If FeatureData IsNot Nothing AndAlso FeatureData.Count > 0 Then
-      For Each Feature In FeatureData
-        If (Feature.State = "Enabled" Or Feature.State = "Enable Pending") And Not Feature.Enable Then
-          Features.Add(Feature)
-        ElseIf Not (Feature.State = "Enabled" Or Feature.State = "Enable Pending") And Feature.Enable Then
-          Features.Add(Feature)
-        End If
-      Next
-    End If
-    Dim Updates As New List(Of Update_Integrated)
-    If UpdateData IsNot Nothing AndAlso UpdateData.Count > 0 Then
-      For Each Item In UpdateData
-        If Item.Remove Then Updates.Add(Item)
-      Next
-    End If
-    Dim Drivers As New List(Of Driver)
-    If DriverData IsNot Nothing AndAlso DriverData.Count > 0 Then
-      For Each Item In DriverData
-        If Item.Remove Then Drivers.Add(Item)
-      Next
-    End If
-    RaiseEvent Response(Me, New PackagePropertiesEventArgs(iIndex, originalPackageName, sName, Features.ToArray, Updates.ToArray, Drivers.ToArray))
-    Me.Close()
-  End Sub
-  Private Sub frmPackageProps_Resize(sender As Object, e As System.EventArgs) Handles Me.Resize
-    AsyncResizeUpdates()
-    AsyncResizeDrivers()
-  End Sub
-  Private Sub frmPackageProps_ResizeEnd(sender As Object, e As System.EventArgs) Handles Me.ResizeEnd
-    AsyncResizeUpdates()
-    AsyncResizeDrivers()
-  End Sub
-  Private Sub ResizeUpdates()
-    If Me.InvokeRequired Then
-      Me.Invoke(New MethodInvoker(AddressOf ResizeUpdates))
-      Return
-    End If
-    Dim tUpdates As New Threading.Timer(New Threading.TimerCallback(AddressOf AsyncResizeUpdates), Nothing, 200, System.Threading.Timeout.Infinite)
-  End Sub
-  Private Sub AsyncResizeUpdates()
-    If Me.InvokeRequired Then
-      Me.Invoke(New MethodInvoker(AddressOf AsyncResizeUpdates))
-      Return
-    End If
-    If bLoading Then Return
-    If lvUpdates.Columns.Count = 0 Then Return
-    If lvUpdates.ClientSize.Width = 0 Then Return
-    If lvUpdates.Items.Count > 0 Then
-      lvUpdates.Columns(1).AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent)
-      If lvUpdates.Columns(1).Width < 90 Then lvUpdates.Columns(1).Width = 90
-    Else
-      lvUpdates.Columns(1).Width = 0
-    End If
-    Dim packageSize As Integer = lvUpdates.ClientSize.Width - lvUpdates.Columns(1).Width - 2
-    If Not lvUpdates.Columns(0).Width = packageSize Then lvUpdates.Columns(0).Width = packageSize
-  End Sub
-
-  Private Sub ResizeDrivers()
-    If Me.InvokeRequired Then
-      Me.Invoke(New MethodInvoker(AddressOf ResizeDrivers))
-      Return
-    End If
-    Dim tDrivers As New Threading.Timer(New Threading.TimerCallback(AddressOf AsyncResizeDrivers), Nothing, 200, System.Threading.Timeout.Infinite)
-  End Sub
-  Private Sub AsyncResizeDrivers()
-    If Me.InvokeRequired Then
-      Me.Invoke(New MethodInvoker(AddressOf AsyncResizeDrivers))
-      Return
-    End If
-    If bLoading Then Return
-    If Not lvDriverClass.Columns.Count = 0 Then
-      If Not lvDriverClass.ClientSize.Width = 0 Then
-        lvDriverClass.Columns(0).Width = lvDriverClass.ClientSize.Width - 2
-      End If
-    End If
-    If Not lvDriverProvider.Columns.Count = 0 Then
-      If Not lvDriverProvider.ClientSize.Width = 0 Then
-        lvDriverProvider.Columns(0).Width = lvDriverProvider.ClientSize.Width - 2
-      End If
-    End If
-    If Not lvDriverINF.Columns.Count = 0 Then
-      If Not lvDriverINF.ClientSize.Width = 0 Then
-        If lvDriverINF.Items.Count = 0 Then
-          lvDriverINF.Columns(1).Width = 0
-        Else
-          lvDriverINF.Columns(1).AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent)
-          If lvDriverINF.Columns(1).Width > lvDriverINF.ClientSize.Width / 2 Then lvDriverINF.Columns(1).Width = 0
-        End If
-        lvDriverINF.Columns(0).Width = lvDriverINF.ClientSize.Width - lvDriverINF.Columns(1).Width - 2
-      End If
-    End If
-  End Sub
-  Private Sub frmPackageProps_Shown(sender As Object, e As System.EventArgs) Handles Me.Shown
-    AsyncResizeUpdates()
-    AsyncResizeDrivers()
-  End Sub
-
-  Private Sub expFeatures_Closed(sender As Object, e As System.EventArgs) Handles expFeatures.Closed
-    PositionViews()
-  End Sub
-  Private Sub expFeatures_Opened(sender As System.Object, e As System.EventArgs) Handles expFeatures.Opened
-    PositionViews()
-    DisplayFeatures()
-    ResizeUpdates()
-    ResizeDrivers()
-  End Sub
-  Private Sub expUpdates_Closed(sender As Object, e As System.EventArgs) Handles expUpdates.Closed
-    PositionViews()
-  End Sub
-  Private Sub expUpdates_Opened(sender As System.Object, e As System.EventArgs) Handles expUpdates.Opened
-    PositionViews()
-    DisplayUpdates()
-    ResizeUpdates()
-    ResizeDrivers()
-  End Sub
-  Private Sub expDrivers_Closed(sender As System.Object, e As System.EventArgs) Handles expDrivers.Closed
-    PositionViews()
-  End Sub
-  Private Sub expDrivers_Opened(sender As System.Object, e As System.EventArgs) Handles expDrivers.Opened
-    PositionViews()
-    DisplayDrivers()
-    ResizeUpdates()
-    ResizeDrivers()
-  End Sub
-
   Private Sub ToggleUI(Enable As Boolean)
     txtName.ReadOnly = Not Enable
     cmdLoadFeatures.Enabled = Enable
@@ -341,10 +721,9 @@
     lvDriverClass.ReadOnly = Not Enable
     lvDriverProvider.ReadOnly = Not Enable
     lvDriverINF.ReadOnly = Not Enable
-    cmdSave.Enabled = Enable
-    cmdClose.Enabled = Enable
+    cmdOK.Enabled = Enable
+    cmdCancel.Enabled = Enable
   End Sub
-
   Private Sub PositionViews()
     pnlProps.SuspendLayout()
     Dim SomethingOpen As Boolean = False
@@ -389,6 +768,7 @@
     End If
     pnlProps.ResumeLayout()
   End Sub
+#Region "Features"
   Private Sub DisplayFeatures()
     If tvFeatures.Nodes.Count > 0 Then Return
     If FeatureData Is Nothing Then
@@ -560,6 +940,39 @@
     tvFeatures.Sort()
     tvFeatures.Tag = Nothing
   End Sub
+  Private Function GetFullNodeList(fromNode As TreeNode) As List(Of String)
+    Dim lNodes As New List(Of String)
+    lNodes.Add(fromNode.Text)
+    If fromNode.Nodes IsNot Nothing Then
+      For Each node As TreeNode In fromNode.Nodes
+        lNodes.AddRange(GetFullNodeList(node))
+      Next
+    End If
+    Return lNodes
+  End Function
+  Private Function FilterFind(Of T)(Results() As T) As T
+    If Results.Length = 0 Then
+      Return Nothing
+    ElseIf Results.Length = 1 Then
+      Return Results(0)
+    Else
+      Return Results(0)
+    End If
+  End Function
+  Private Sub IterateNodes(tvNode As TreeNode, ByRef expanded As Boolean, ByRef collapsed As Boolean)
+    If tvNode.Nodes IsNot Nothing AndAlso tvNode.Nodes.Count > 0 Then
+      If tvNode.IsExpanded Then
+        expanded = True
+      Else
+        collapsed = True
+      End If
+      For Each tvSubNode As TreeNode In tvNode.Nodes
+        IterateNodes(tvSubNode, expanded, collapsed)
+      Next
+    End If
+  End Sub
+#End Region
+#Region "Updates"
   Private Sub DisplayUpdates()
     If lvUpdates.Items.Count > 0 Then Return
     If UpdateData Is Nothing Then
@@ -595,7 +1008,6 @@
     lvUpdates.Sorting = SortOrder.Ascending
     For Each pUpdate As Update_Integrated In UpdateData
       If String.IsNullOrEmpty(pUpdate.UpdateInfo.Identity) Then
-
         Dim pVer As String = Nothing
         If Not String.IsNullOrEmpty(pUpdate.Ident.Version) Then
           pVer = pUpdate.Ident.Version
@@ -695,19 +1107,14 @@
           ttName = pUpdate.Ident.Name
           If Not String.IsNullOrEmpty(pUpdate.Ident.Version) Then ttName &= " v" & pUpdate.Ident.Version
         End If
-
         Dim ttState As String = Nothing
         If Not String.IsNullOrEmpty(pUpdate.State) Then ttState = en & "State: " & pUpdate.State
-
         Dim ttInstalled As String = Nothing
         If Not String.IsNullOrEmpty(pUpdate.InstallTime) Then ttInstalled = en & "Installed: " & pUpdate.InstallTime
-
         Dim ttArch As String = en & pUpdate.Ident.Architecture
         If Not String.IsNullOrEmpty(pUpdate.ReleaseType) Then ttArch &= " " & pUpdate.ReleaseType
-
         Dim ttLang As String = Nothing
         If Not String.IsNullOrEmpty(pUpdate.Ident.Language) AndAlso Not pUpdate.Ident.Language = "Neutral" Then ttLang = en & "Language: " & pUpdate.Ident.Language
-
         lvItem.ToolTipText = IIf(String.IsNullOrEmpty(ttName), "", ttName & vbNewLine) &
                              IIf(String.IsNullOrEmpty(ttState), "", ttState & vbNewLine) &
                              IIf(String.IsNullOrEmpty(ttInstalled), "", ttInstalled & vbNewLine) &
@@ -762,8 +1169,6 @@
         If sName = "default" Then sName = Nothing
         Dim sDescription As String = pUpdate.UpdateInfo.Description
         If sDescription.StartsWith("Fix for KB") Then sDescription = Nothing
-
-
         Dim pName As String = Nothing
         If pUpdate.UpdateInfo.ProductName.StartsWith("Package_for_KB") Then
           Dim sArticle As String = pUpdate.UpdateInfo.ProductName.Substring(pUpdate.UpdateInfo.ProductName.IndexOf("KB"))
@@ -857,7 +1262,6 @@
             pName = sReleaseName & " for " & sParentProd
           End If
         End If
-
         If Not pUpdate.UpdateInfo.CustomProperties Is Nothing Then
           Dim sSPLevel As String = Nothing
           For Each sProp In pUpdate.UpdateInfo.CustomProperties
@@ -874,7 +1278,6 @@
             End If
           End If
         End If
-
         Dim lvItem As New ListViewItem(pName)
         If pUpdate.Remove Then
           lvItem.Checked = False
@@ -894,21 +1297,16 @@
           ttName = pUpdate.UpdateInfo.ProductName
           If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.ProductVersion) Then ttName &= " v" & pUpdate.UpdateInfo.ProductVersion
         End If
-
         Dim ttDescr As String = en & pUpdate.UpdateInfo.Description
-
         Dim ttState As String = Nothing
         If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.State) Then ttState = en & "State: " & pUpdate.UpdateInfo.State
-
         Dim ttCreation As String = Nothing
         If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.CreationTime) Then ttCreation = en & "Created: " & pUpdate.UpdateInfo.CreationTime
-
         Dim ttInstalled As String = Nothing
         If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.InstallTime) Then
           ttInstalled = en & "Installed: " & pUpdate.UpdateInfo.InstallTime
           If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.InstallClient) AndAlso Not pUpdate.UpdateInfo.InstallClient = "DISM Package Manager Provider" Then ttInstalled &= " by " & pUpdate.UpdateInfo.InstallClient
         End If
-
         Dim ttCompany As String = Nothing
         If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.Company) Then
           ttCompany = en & pUpdate.UpdateInfo.Company
@@ -916,13 +1314,10 @@
         ElseIf Not String.IsNullOrEmpty(pUpdate.UpdateInfo.Copyright) Then
           ttCompany = en & pUpdate.UpdateInfo.Copyright
         End If
-
         Dim ttArch As String = en & pUpdate.Ident.Architecture
         If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.ReleaseType) Then ttArch &= " " & pUpdate.UpdateInfo.ReleaseType
-
         Dim ttLang As String = Nothing
         If Not String.IsNullOrEmpty(pUpdate.Ident.Language) AndAlso Not pUpdate.Ident.Language = "Neutral" Then ttLang = en & "Language: " & pUpdate.Ident.Language
-
         Dim ttCustom As String = Nothing
         If Not pUpdate.UpdateInfo.CustomProperties Is Nothing Then
           For Each sProp In pUpdate.UpdateInfo.CustomProperties
@@ -944,7 +1339,6 @@
             Loop
           End If
         End If
-
         Dim ttFeature As String = Nothing
         If Not pUpdate.UpdateInfo.FeatureList Is Nothing Then
           For Each sFeat In pUpdate.UpdateInfo.FeatureList
@@ -964,7 +1358,6 @@
             Loop
           End If
         End If
-
         lvItem.ToolTipText = IIf(String.IsNullOrEmpty(ttName), "", ttName & vbNewLine) &
                              IIf(String.IsNullOrEmpty(ttDescr), "", ttDescr & vbNewLine) &
                              IIf(String.IsNullOrEmpty(ttState), "", ttState & vbNewLine) &
@@ -994,6 +1387,61 @@
     lvUpdates.Sort()
     lvUpdates.Tag = Nothing
   End Sub
+  Private Function GetVersions(VerString As String) As Version()
+    If Not VerString.Contains(".") Then Return {New Version(0, 0), New Version(0, 0)}
+    Dim ver() As String = Split(VerString, ".", 4)
+    If ver.Length = 4 Then
+      Return {New Version(ver(0), ver(1)), New Version(ver(2), ver(3))}
+    ElseIf ver.Length = 3 Then
+      Return {New Version(ver(0), ver(1)), New Version(ver(2), 0)}
+    ElseIf ver.Length = 2 Then
+      Return {New Version(ver(0), ver(1)), New Version(0, 0)}
+    Else
+      Return {New Version(ver(0), 0), New Version(0, 0)}
+    End If
+  End Function
+  Private Function ConvertOSVerToID(OSVer As Version) As String
+    If OSVer.Major = 6 Then
+      If OSVer.Minor = 1 Then Return "Windows 7"
+    ElseIf OSVer.Major = 7 Then
+      If OSVer.Minor = 1 Then
+        Return "Windows 8"
+      ElseIf OSVer.Minor = 2 Then
+        Return "Windows 8.1"
+      End If
+    ElseIf OSVer.Major > 7 And OSVer.Major < 12 Then
+      Return "Internet Explorer " & OSVer.Major
+    End If
+    Return "Windows " & OSVer.Major & "." & OSVer.Minor
+  End Function
+#Region "Resize Updates"
+  Private Sub ResizeUpdates()
+    If Me.InvokeRequired Then
+      Me.Invoke(New MethodInvoker(AddressOf ResizeUpdates))
+      Return
+    End If
+    Dim tUpdates As New Threading.Timer(New Threading.TimerCallback(AddressOf AsyncResizeUpdates), Nothing, 200, System.Threading.Timeout.Infinite)
+  End Sub
+  Private Sub AsyncResizeUpdates()
+    If Me.InvokeRequired Then
+      Me.Invoke(New MethodInvoker(AddressOf AsyncResizeUpdates))
+      Return
+    End If
+    If bLoading Then Return
+    If lvUpdates.Columns.Count = 0 Then Return
+    If lvUpdates.ClientSize.Width = 0 Then Return
+    If lvUpdates.Items.Count > 0 Then
+      lvUpdates.Columns(1).AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent)
+      If lvUpdates.Columns(1).Width < 90 Then lvUpdates.Columns(1).Width = 90
+    Else
+      lvUpdates.Columns(1).Width = 0
+    End If
+    Dim packageSize As Integer = lvUpdates.ClientSize.Width - lvUpdates.Columns(1).Width - 2
+    If Not lvUpdates.Columns(0).Width = packageSize Then lvUpdates.Columns(0).Width = packageSize
+  End Sub
+#End Region
+#End Region
+#Region "Drivers"
   Private Sub DisplayDrivers()
     If lvDriverClass.Items.Count > 0 Then Return
     If DriverData Is Nothing Then
@@ -1009,9 +1457,7 @@
     lvDriverProvider.ReadOnly = True
     lvDriverINF.Items.Clear()
     lvDriverINF.ReadOnly = True
-
     Dim ClassList As New SortedList(Of String, Driver)
-
     For Each pDriver As Driver In DriverData
       Dim sGroupKey As String = "lviUnknown"
       If Not String.IsNullOrEmpty(pDriver.ClassGUID) Then sGroupKey = GetDriverClassName(pDriver.ClassGUID)
@@ -1025,7 +1471,6 @@
         imlDriverClass.Images.Add(sGroupKey, pDriver.ClassIcon)
       Else
         If Not ClassList(sGroupKey).BootCritical = pDriver.BootCritical Then
-          Debug.Print(GetValidDriverDescription(pDriver) & " BootCritical Hidden!")
           Dim classDriver As New Driver
           classDriver.ClassName = ClassList(sGroupKey).ClassName
           classDriver.ClassDescription = ClassList(sGroupKey).ClassDescription
@@ -1035,7 +1480,6 @@
         End If
       End If
     Next
-
     For Each cDriver As KeyValuePair(Of String, Driver) In ClassList
       If lvDriverClass.Items.ContainsKey(cDriver.Key) Then Continue For
       Dim sGroupTitle As String = GetValidDriverDescription(cDriver.Value)
@@ -1050,7 +1494,6 @@
     lvDriverClass.ReadOnly = (lvDriverClass.Items.Count = 0)
     ResizeDrivers()
   End Sub
-
   Private Function GetValidDriverDescription(pDriver As Driver) As String
     If Not String.IsNullOrEmpty(pDriver.ClassDescription) AndAlso Not pDriver.ClassDescription = "Unknown device class" Then
       Return pDriver.ClassDescription
@@ -1060,527 +1503,46 @@
       Return "Unknown device class"
     End If
   End Function
-
   Private Function GetDriverClassName(GUID As String) As String
     Return "lvi" & GUID.Replace("-", "").Replace("{", "").Replace("}", "").ToUpper
   End Function
-
-  Private Sub lvDriverClass_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles lvDriverClass.SelectedIndexChanged
-    If lvDriverClass.SelectedItems.Count = 0 Then
-      lvDriverProvider.Items.Clear()
-      lvDriverProvider.ReadOnly = True
-      lvDriverINF.Items.Clear()
-      lvDriverINF.ReadOnly = True
+#Region "Resize Drivers"
+  Private Sub ResizeDrivers()
+    If Me.InvokeRequired Then
+      Me.Invoke(New MethodInvoker(AddressOf ResizeDrivers))
       Return
     End If
-    lvDriverINF.Items.Clear()
-    lvDriverINF.ReadOnly = True
-    Dim sDriverClassName As String = lvDriverClass.SelectedItems(0).Name
-    Dim CompanyList As New SortedList(Of String, String)
-    For Each pDriver As Driver In DriverData
-      If Not GetDriverClassName(pDriver.ClassGUID) = sDriverClassName Then Continue For
-      Dim sProviderKey As String = "lviUnknown"
-      If Not String.IsNullOrEmpty(pDriver.ProviderName) Then sProviderKey = "lvi" & pDriver.ProviderName.Replace(" ", "_")
-      If Not CompanyList.ContainsKey(sProviderKey) Then CompanyList.Add(sProviderKey, pDriver.ProviderName)
-    Next
-    For Each cDriver As KeyValuePair(Of String, String) In CompanyList
-      If lvDriverProvider.Items.ContainsKey(cDriver.Key) Then Continue For
-      Dim sProviderTitle As String = "Unknown"
-      If Not String.IsNullOrEmpty(cDriver.Value) Then sProviderTitle = GetUpdateCompany(cDriver.Value, CompanyList.Values.ToArray)
-      Dim nameExists As Boolean = False
-      For Each item As ListViewItem In lvDriverProvider.Items
-        If item.Text = sProviderTitle Then
-          nameExists = True
-          Exit For
-        End If
-      Next
-      If Not nameExists Then
-        imlDriverCompany.Images.Add(cDriver.Key, GetDriverCompanyIcon(sProviderTitle))
-        lvDriverProvider.Items.Add(cDriver.Key, sProviderTitle, cDriver.Key)
-      End If
-
-    Next
-    lvDriverProvider.ReadOnly = (lvDriverProvider.Items.Count = 0)
-    ResizeDrivers()
-    If lvDriverProvider.Items.Count > 0 Then lvDriverProvider.Items(0).Selected = True
+    Dim tDrivers As New Threading.Timer(New Threading.TimerCallback(AddressOf AsyncResizeDrivers), Nothing, 200, System.Threading.Timeout.Infinite)
   End Sub
-
-  Private Sub lvDriverProvider_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles lvDriverProvider.SelectedIndexChanged
-    If lvDriverClass.SelectedItems.Count = 0 Then
-      lvDriverProvider.Items.Clear()
-      lvDriverProvider.ReadOnly = True
-      lvDriverINF.Items.Clear()
-      lvDriverINF.ReadOnly = True
+  Private Sub AsyncResizeDrivers()
+    If Me.InvokeRequired Then
+      Me.Invoke(New MethodInvoker(AddressOf AsyncResizeDrivers))
       Return
     End If
-    If lvDriverProvider.SelectedItems.Count = 0 Then
-      lvDriverINF.Items.Clear()
-      lvDriverINF.ReadOnly = True
-      Return
-    End If
-
-    Dim sDriverClassName As String = lvDriverClass.SelectedItems(0).Name
-    Dim CompanyList As New SortedList(Of String, String)
-    For Each pDriver As Driver In DriverData
-      If Not GetDriverClassName(pDriver.ClassGUID) = sDriverClassName Then Continue For
-      Dim sProviderKey As String = "lviUnknown"
-      If Not String.IsNullOrEmpty(pDriver.ProviderName) Then sProviderKey = "lvi" & pDriver.ProviderName.Replace(" ", "_")
-      If Not CompanyList.ContainsKey(sProviderKey) Then CompanyList.Add(sProviderKey, pDriver.ProviderName)
-    Next
-    Dim sDriverCompanyName As String = lvDriverProvider.SelectedItems(0).Text
-    For Each pDriver As Driver In DriverData
-      If Not GetDriverClassName(pDriver.ClassGUID) = sDriverClassName Then Continue For
-      If Not GetUpdateCompany(pDriver.ProviderName, CompanyList.Values.ToArray) = sDriverCompanyName Then Continue For
-      Dim sDeviceKey As String = "lviUnknown"
-      If Not String.IsNullOrEmpty(pDriver.PublishedName) Then sDeviceKey = "lvi" & pDriver.PublishedName.Replace(" ", "_")
-      Dim sDeviceTitle As String = "Unknown"
-      If Not String.IsNullOrEmpty(pDriver.PublishedName) Then sDeviceTitle = pDriver.PublishedName
-      If Not lvDriverINF.Items.ContainsKey(sDeviceKey) Then
-        imlDriverINF.Images.Add(sDeviceKey, pDriver.DriverIcon)
-        Dim lvDeviceItem As ListViewItem = lvDriverINF.Items.Add(sDeviceKey, sDeviceTitle, sDeviceKey)
-        lvDeviceItem.SubItems.Add(pDriver.Version)
-        Dim en As String = ChrW(&H2003)
-        Dim ttPublishedName As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.PublishedName) Then
-          ttPublishedName = pDriver.PublishedName
-          If Not String.IsNullOrEmpty(pDriver.Version) Then ttPublishedName &= " v" & pDriver.Version
-        End If
-        Dim ttOriginalFileName As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.OriginalFileName) Then ttOriginalFileName = en & "Original File Name: " & pDriver.OriginalFileName
-        Dim ttDriverStorePath As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.DriverStorePath) Then ttDriverStorePath = en & "Driver Store Path: " & pDriver.DriverStorePath
-        Dim ttInBox As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.InBox) Then ttInBox = en & "In-Box: " & pDriver.InBox
-        Dim ttClassName As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.ClassName) Then
-          ttClassName = en & "Class Name: " & pDriver.ClassName
-          If Not String.IsNullOrEmpty(pDriver.ClassDescription) Then ttClassName &= " (" & pDriver.ClassDescription & ")"
-        ElseIf Not String.IsNullOrEmpty(pDriver.ClassDescription) Then
-          ttClassName = en & "Class Description: " & pDriver.ClassDescription
-        End If
-        Dim ttClassGUID As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.ClassGUID) Then ttClassGUID = en & "Class GUID: " & pDriver.ClassGUID
-        Dim ttProviderName As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.ProviderName) Then ttProviderName = en & "Provider: " & pDriver.ProviderName
-        Dim ttDate As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.Date) Then ttDate = en & "Date: " & pDriver.Date
-        Dim ttArch As String = Nothing
-        If pDriver.Architectures IsNot Nothing AndAlso pDriver.Architectures.Count > 0 Then ttArch = en & "Supported Architectures: " & Join(pDriver.Architectures.ToArray, ", ")
-        Dim ttBootCritical As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.BootCritical) Then ttBootCritical = en & "Boot Critical: " & pDriver.BootCritical
-
-        lvDeviceItem.ToolTipText = IIf(String.IsNullOrEmpty(ttPublishedName), "", ttPublishedName & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttOriginalFileName), "", ttOriginalFileName & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttDriverStorePath), "", ttDriverStorePath & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttInBox), "", ttInBox & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttClassName), "", ttClassName & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttClassGUID), "", ttClassGUID & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttProviderName), "", ttProviderName & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttDate), "", ttDate & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttArch), "", ttArch & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttBootCritical), "", ttBootCritical & vbNewLine)
-        lvDeviceItem.Checked = Not pDriver.Remove
-      End If
-    Next
-    lvDriverINF.ReadOnly = (lvDriverINF.Items.Count = 0)
-    ResizeDrivers()
-    If lvDriverINF.Items.Count > 0 Then
-      lvDriverINF.Items(0).Selected = True
-    End If
-  End Sub
-
-  Private Sub lvDriverINF_ItemChecked(sender As Object, e As System.Windows.Forms.ItemCheckedEventArgs) Handles lvDriverINF.ItemChecked
-    If lvDriverINF.SelectedItems.Count = 0 Then Return
-    Dim sDriverClassName As String = lvDriverClass.SelectedItems(0).Name
-    Dim CompanyList As New SortedList(Of String, String)
-    For Each pDriver As Driver In DriverData
-      If Not GetDriverClassName(pDriver.ClassGUID) = sDriverClassName Then Continue For
-      Dim sProviderKey As String = "lviUnknown"
-      If Not String.IsNullOrEmpty(pDriver.ProviderName) Then sProviderKey = "lvi" & pDriver.ProviderName.Replace(" ", "_")
-      If Not CompanyList.ContainsKey(sProviderKey) Then CompanyList.Add(sProviderKey, pDriver.ProviderName)
-    Next
-    Dim sDriverCompanyName As String = lvDriverProvider.SelectedItems(0).Text
-    Dim sDriverINFName As String = lvDriverINF.SelectedItems(0).Text
-    For I As Integer = 0 To DriverData.Count - 1
-      If Not GetDriverClassName(DriverData(I).ClassGUID) = sDriverClassName Then Continue For
-      If Not GetUpdateCompany(DriverData(I).ProviderName, CompanyList.Values.ToArray) = sDriverCompanyName Then Continue For
-      If Not DriverData(I).PublishedName = sDriverINFName Then Continue For
-      Dim newData As Driver = DriverData(I)
-      newData.Remove = Not lvDriverINF.SelectedItems(0).Checked
-      DriverData(I) = newData
-      Exit For
-    Next
-  End Sub
-
-  Private Sub lvDriverINF_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles lvDriverINF.MouseDoubleClick
-    If lvDriverINF.SelectedItems.Count = 0 Then Return
-    Dim sDriverClassName As String = lvDriverClass.SelectedItems(0).Name
-    Dim CompanyList As New SortedList(Of String, String)
-    For Each pDriver As Driver In DriverData
-      If Not GetDriverClassName(pDriver.ClassGUID) = sDriverClassName Then Continue For
-      Dim sProviderKey As String = "lviUnknown"
-      If Not String.IsNullOrEmpty(pDriver.ProviderName) Then sProviderKey = "lvi" & pDriver.ProviderName.Replace(" ", "_")
-      If Not CompanyList.ContainsKey(sProviderKey) Then CompanyList.Add(sProviderKey, pDriver.ProviderName)
-    Next
-    Dim sDriverCompanyName As String = lvDriverProvider.SelectedItems(0).Text
-    Dim sDriverINFName As String = lvDriverINF.SelectedItems(0).Text
-    For Each pDriver As Driver In DriverData
-      If Not GetDriverClassName(pDriver.ClassGUID) = sDriverClassName Then Continue For
-      If Not GetUpdateCompany(pDriver.ProviderName, CompanyList.Values.ToArray) = sDriverCompanyName Then Continue For
-      If Not pDriver.PublishedName = sDriverINFName Then Continue For
-      Dim driverProps As frmDriverProps
-      driverProps = New frmDriverProps(pDriver)
-      driverProps.Show(Me)
-      Exit For
-    Next
-  End Sub
-
-  Private Function GetVersions(VerString As String) As Version()
-    If Not VerString.Contains(".") Then Return {New Version(0, 0), New Version(0, 0)}
-    Dim ver() As String = Split(VerString, ".", 4)
-    If ver.Length = 4 Then
-      Return {New Version(ver(0), ver(1)), New Version(ver(2), ver(3))}
-    ElseIf ver.Length = 3 Then
-      Return {New Version(ver(0), ver(1)), New Version(ver(2), 0)}
-    ElseIf ver.Length = 2 Then
-      Return {New Version(ver(0), ver(1)), New Version(0, 0)}
-    Else
-      Return {New Version(ver(0), 0), New Version(0, 0)}
-    End If
-  End Function
-
-  Private Function ConvertOSVerToID(OSVer As Version) As String
-    If OSVer.Major = 6 Then
-      If OSVer.Minor = 1 Then Return "Windows 7"
-    ElseIf OSVer.Major = 7 Then
-      If OSVer.Minor = 1 Then
-        Return "Windows 8"
-      ElseIf OSVer.Minor = 2 Then
-        Return "Windows 8.1"
-      End If
-    ElseIf OSVer.Major > 7 And OSVer.Major < 12 Then
-      Return "Internet Explorer " & OSVer.Major
-    End If
-    Return "Windows " & OSVer.Major & "." & OSVer.Minor
-  End Function
-
-  Private Sub cmdLoadFeatures_Click(sender As Object, e As EventArgs) Handles cmdLoadFeatures.Click
-    ToggleUI(False)
-    frmMain.LoadPackageFeatures(WIMIdenifier, txtIndex.Text)
-    Dim lvItem As ListViewItem = Nothing
-    For Each item As ListViewItem In frmMain.lvImages.Items
-      If item.SubItems(1).Text = originalPackageName Then
-        lvItem = item
-        Exit For
-      End If
-    Next
-    ToggleUI(True)
-    If lvItem IsNot Nothing Then
-      If UBound(lvItem.Tag) > 1 AndAlso lvItem.Tag(2) IsNot Nothing Then
-        FeatureData = lvItem.Tag(2)
-        DisplayFeatures()
-        PositionViews()
-      Else
-        MsgDlg(Me, "The Features list could not be loaded. See the Output Console for details.", "Error loading features.", "Feature List Empty", MessageBoxButtons.OK, TaskDialogIcon.Bad)
+    If bLoading Then Return
+    If Not lvDriverClass.Columns.Count = 0 Then
+      If Not lvDriverClass.ClientSize.Width = 0 Then
+        lvDriverClass.Columns(0).Width = lvDriverClass.ClientSize.Width - 2
       End If
     End If
-  End Sub
-
-  Private Sub cmdLoadUpdates_Click(sender As Object, e As EventArgs) Handles cmdLoadUpdates.Click
-    ToggleUI(False)
-    frmMain.LoadPackageUpdates(WIMIdenifier, txtIndex.Text)
-    Dim lvItem As ListViewItem = Nothing
-    For Each item As ListViewItem In frmMain.lvImages.Items
-      If item.SubItems(1).Text = originalPackageName Then
-        lvItem = item
-        Exit For
-      End If
-    Next
-    ToggleUI(True)
-    If lvItem IsNot Nothing Then
-      If UBound(lvItem.Tag) > 0 AndAlso lvItem.Tag(1) IsNot Nothing Then
-        Dim Package As ImagePackage = lvItem.Tag(1)
-        UpdateData = Package.IntegratedUpdateList
-        DisplayUpdates()
-        PositionViews()
-      Else
-        MsgDlg(Me, "The Integrated Updates list could not be loaded. See the Output Console for details.", "Error loading integrated updates.", "Update List Empty", MessageBoxButtons.OK, TaskDialogIcon.Bad)
+    If Not lvDriverProvider.Columns.Count = 0 Then
+      If Not lvDriverProvider.ClientSize.Width = 0 Then
+        lvDriverProvider.Columns(0).Width = lvDriverProvider.ClientSize.Width - 2
       End If
     End If
-  End Sub
-
-  Private Sub cmdLoadDrivers_Click(sender As System.Object, e As System.EventArgs) Handles cmdLoadDrivers.Click
-    ToggleUI(False)
-    frmMain.LoadPackageDrivers(WIMIdenifier, txtIndex.Text)
-    Dim lvItem As ListViewItem = Nothing
-    For Each item As ListViewItem In frmMain.lvImages.Items
-      If item.SubItems(1).Text = originalPackageName Then
-        lvItem = item
-        Exit For
-      End If
-    Next
-    ToggleUI(True)
-    If lvItem IsNot Nothing Then
-      If UBound(lvItem.Tag) > 2 AndAlso lvItem.Tag(3) IsNot Nothing Then
-        DriverData = lvItem.Tag(3)
-        DisplayDrivers()
-        PositionViews()
-      Else
-        MsgDlg(Me, "The Driver list could not be loaded. See the Output Console for details.", "Error loading drivers.", "Driver List Empty", MessageBoxButtons.OK, TaskDialogIcon.Bad)
-      End If
-    End If
-  End Sub
-
-  Private Sub tvFeatures_AfterCheck(sender As Object, e As System.Windows.Forms.TreeViewEventArgs) Handles tvFeatures.AfterCheck
-    If tvFeatures.Tag IsNot Nothing Then Return
-    If e.Node.ToolTipText = "Node Group - Not a Feature" Then
-      If e.Node.Checked Then e.Node.Checked = False
-    Else
-      Dim RequiredFeatures As New Collections.Generic.Dictionary(Of String, String())
-      Dim featureRows() As String = Split(My.Resources.RequiredFeatureList, vbNewLine)
-      For Each row In featureRows
-        If row.Contains("|") Then
-          Dim RowSplit() As String = Split(row, "|", 2)
-          RequiredFeatures.Add(RowSplit(0), Split(RowSplit(1), ";"))
-        End If
-      Next
-      If e.Node.Checked Then
-        If RequiredFeatures.ContainsKey(e.Node.Text) Then
-          For Each sRequirement As String In RequiredFeatures(e.Node.Text)
-            Dim requiredNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find("tvn" & sRequirement.Replace(" ", "_"), True))
-            If requiredNode Is Nothing Then
-              MsgDlg(Me, "The feature " & e.Node.Text & " requires another feature, " & sRequirement & ", which could not be found!", "A required feature is missing from the feature list.", "Windows Features", MessageBoxButtons.OK, TaskDialogIcon.Information)
-              e.Node.Checked = False
-            Else
-              If Not requiredNode.Checked Then requiredNode.Checked = True
-            End If
-          Next
-        End If
-        If e.Node.Parent IsNot Nothing Then
-          If Not e.Node.Parent.Checked Then e.Node.Parent.Checked = True
-        End If
-      Else
-        If e.Node.Nodes IsNot Nothing Then
-          For Each childNode As TreeNode In e.Node.Nodes
-            childNode.Checked = False
-          Next
-        End If
-      End If
-      For I As Integer = 0 To FeatureData.Count - 1
-        If FeatureData(I).FeatureName = CType(e.Node.Tag, Feature).FeatureName Then
-          Dim newData As Feature = FeatureData(I)
-          newData.Enable = e.Node.Checked
-          FeatureData(I) = newData
-          Exit For
-        End If
-      Next
-    End If
-  End Sub
-
-  Private Sub tvFeatures_BeforeCheck(sender As Object, e As System.Windows.Forms.TreeViewCancelEventArgs) Handles tvFeatures.BeforeCheck
-    If tvFeatures.Tag IsNot Nothing Then Return
-    If e.Node.ToolTipText = "Node Group - Not a Feature" Then
-      If Not e.Node.Checked Then e.Cancel = True
-    Else
-      Dim RequiredFeatures As New Collections.Generic.Dictionary(Of String, String())
-      Dim featureRows() As String = Split(My.Resources.RequiredFeatureList, vbNewLine)
-      For Each row In featureRows
-        If row.Contains("|") Then
-          Dim RowSplit() As String = Split(row, "|", 2)
-          RequiredFeatures.Add(RowSplit(0), Split(RowSplit(1), ";"))
-        End If
-      Next
-      If e.Node.Checked Then
-        Dim RequiredFor As New List(Of String)
-        Dim SearchList As List(Of String) = GetFullNodeList(e.Node)
-        For Each Feature In RequiredFeatures
-          For Each toFind In SearchList
-            If Feature.Value.Contains(toFind) Then
-              Dim requiredNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find("tvn" & Feature.Key.Replace(" ", "_"), True))
-              Dim isRequired As Boolean = False
-              If requiredNode IsNot Nothing Then
-                If requiredNode.Checked Then isRequired = True
-              End If
-              If isRequired And Not RequiredFor.Contains(Feature.Key) Then RequiredFor.Add(Feature.Key)
-            End If
-          Next
-        Next
-        If Not e.Action = TreeViewAction.Unknown Then
-          Dim sLearnMoreURL As String = Nothing
-          If e.Node.ToolTipText.Contains("Link: ") Then sLearnMoreURL = e.Node.ToolTipText.Substring(e.Node.ToolTipText.IndexOf("Link: ") + 6)
-          If String.IsNullOrEmpty(sLearnMoreURL) Then
-            If RequiredFor.Count > 0 Then
-              If MsgDlg(Me, Join(RequiredFor.ToArray, vbNewLine), "The following Windows features will also be turned off because they are dependent on " & e.Node.Text & ". Do you want to continue?", "Windows Features", MessageBoxButtons.YesNo, TaskDialogIcon.Warning, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.No Then
-                e.Cancel = True
-                Return
-              End If
-            End If
-          Else
-            If RequiredFor.Count > 0 Then
-              If MsgDlg(Me, Join(RequiredFor.ToArray, vbNewLine) & vbNewLine & "Other Windows features and programs on your computer might also be affected, including default settings." & vbNewLine & "<a href=""" & sLearnMoreURL & """>Go online to learn more</a>", "The following Windows features will also be turned off because they are dependent on " & e.Node.Text & ". Do you want to continue?", "Windows Features", MessageBoxButtons.YesNo, TaskDialogIcon.Warning, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.No Then
-                e.Cancel = True
-                Return
-              End If
-            Else
-              If MsgDlg(Me, "<a href=""" & sLearnMoreURL & """>Go online to learn more</a>", "Turning off " & e.Node.Text & " might affect other Windows features and programs installed on your computer, including default settings. Do you want to continue?", "Windows Features", MessageBoxButtons.YesNo, TaskDialogIcon.Information, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.No Then
-                e.Cancel = True
-              End If
-            End If
-          End If
-        End If
-        For Each Feature In RequiredFor
-          Dim requiredNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find("tvn" & Feature.Replace(" ", "_"), True))
-          If requiredNode IsNot Nothing Then
-            If requiredNode.Checked Then requiredNode.Checked = False
-          End If
-        Next
-      End If
-    End If
-  End Sub
-
-  Private Function GetFullNodeList(fromNode As TreeNode) As List(Of String)
-    Dim lNodes As New List(Of String)
-    lNodes.Add(fromNode.Text)
-    If fromNode.Nodes IsNot Nothing Then
-      For Each node As TreeNode In fromNode.Nodes
-        lNodes.AddRange(GetFullNodeList(node))
-      Next
-    End If
-    Return lNodes
-  End Function
-
-  Private Function FilterFind(Of T)(Results() As T) As T
-    If Results.Length = 0 Then
-      Return Nothing
-    ElseIf Results.Length = 1 Then
-      Return Results(0)
-    Else
-      Return Results(0)
-    End If
-  End Function
-
-  Private Sub tvFeatures_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles tvFeatures.MouseUp
-    If e.Button = Windows.Forms.MouseButtons.Right Then
-      selFeature = tvFeatures.HitTest(e.X, e.Y).Node
-      If selFeature IsNot Nothing Then
-        If selFeature.Nodes Is Nothing OrElse selFeature.Nodes.Count = 0 Then
-          Dim collapsed As Boolean = False
-          Dim expanded As Boolean = False
-          If selFeature.Parent IsNot Nothing Then
-            If selFeature.Parent.IsExpanded Then
-              expanded = True
-            Else
-              collapsed = True
-            End If
-          End If
-          mnuFeatureExpand.Enabled = collapsed
-          mnuFeatureCollapse.Enabled = expanded
+    If Not lvDriverINF.Columns.Count = 0 Then
+      If Not lvDriverINF.ClientSize.Width = 0 Then
+        If lvDriverINF.Items.Count = 0 Then
+          lvDriverINF.Columns(1).Width = 0
         Else
-          Dim collapsed As Boolean = False
-          Dim expanded As Boolean = False
-          If selFeature.Parent IsNot Nothing Then
-            If selFeature.Parent.IsExpanded Then
-              expanded = True
-            Else
-              collapsed = True
-            End If
-          End If
-          If selFeature.IsExpanded Then
-            expanded = True
-          Else
-            collapsed = True
-          End If
-          For Each tvNode As TreeNode In selFeature.Nodes
-            IterateNodes(tvNode, expanded, collapsed)
-          Next
-          mnuFeatureExpand.Enabled = collapsed
-          mnuFeatureCollapse.Enabled = expanded
+          lvDriverINF.Columns(1).AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent)
+          If lvDriverINF.Columns(1).Width > lvDriverINF.ClientSize.Width / 2 Then lvDriverINF.Columns(1).Width = 0
         End If
-        Dim collapsedAll As Boolean = False
-        Dim expandedAll As Boolean = False
-        For Each tvNode As TreeNode In tvFeatures.Nodes
-          IterateNodes(tvNode, expandedAll, collapsedAll)
-        Next
-        mnuFeatureExpandAll.Enabled = collapsedAll
-        mnuFeatureCollapseAll.Enabled = expandedAll
-        mnuFeatureEnabled.Checked = selFeature.Checked
-        mnuFeatures.Show(tvFeatures, e.Location)
+        lvDriverINF.Columns(0).Width = lvDriverINF.ClientSize.Width - lvDriverINF.Columns(1).Width - 2
       End If
     End If
   End Sub
-
-  Private Sub IterateNodes(tvNode As TreeNode, ByRef expanded As Boolean, ByRef collapsed As Boolean)
-    If tvNode.Nodes IsNot Nothing AndAlso tvNode.Nodes.Count > 0 Then
-      If tvNode.IsExpanded Then
-        expanded = True
-      Else
-        collapsed = True
-      End If
-      For Each tvSubNode As TreeNode In tvNode.Nodes
-        IterateNodes(tvSubNode, expanded, collapsed)
-      Next
-    End If
-  End Sub
-
-  Private Sub mnuFeatureEnabled_Click(sender As System.Object, e As System.EventArgs) Handles mnuFeatureEnabled.Click
-    If selFeature IsNot Nothing Then
-      selFeature.Checked = Not selFeature.Checked
-    End If
-  End Sub
-
-  Private Sub mnuFeatureExpandAll_Click(sender As System.Object, e As System.EventArgs) Handles mnuFeatureExpandAll.Click
-    tvFeatures.ExpandAll()
-  End Sub
-
-  Private Sub mnuFeatureExpand_Click(sender As System.Object, e As System.EventArgs) Handles mnuFeatureExpand.Click
-    If selFeature IsNot Nothing Then
-      selFeature.ExpandAll()
-    End If
-  End Sub
-
-  Private Sub mnuFeatureCollapse_Click(sender As System.Object, e As System.EventArgs) Handles mnuFeatureCollapse.Click
-    If selFeature IsNot Nothing Then
-      If selFeature.IsExpanded Then
-        selFeature.Collapse(False)
-      ElseIf selFeature.Parent IsNot Nothing AndAlso selFeature.Parent.IsExpanded Then
-        selFeature.Parent.Collapse(False)
-      End If
-    End If
-  End Sub
-
-  Private Sub mnuFeatureCollapseAll_Click(sender As System.Object, e As System.EventArgs) Handles mnuFeatureCollapseAll.Click
-    tvFeatures.CollapseAll()
-  End Sub
-
-  Private Sub lvUpdates_ItemChecked(sender As Object, e As System.Windows.Forms.ItemCheckedEventArgs) Handles lvUpdates.ItemChecked
-    If lvUpdates.Tag IsNot Nothing Then Return
-    For I As Integer = 0 To UpdateData.Count - 1
-      If UpdateData(I).Identity = CType(e.Item.Tag, Update_Integrated).Identity Then
-        Dim newData As Update_Integrated = UpdateData(I)
-        newData.Remove = Not e.Item.Checked
-        UpdateData(I) = newData
-        Exit For
-      End If
-    Next
-  End Sub
-
-  Private Sub lvUpdates_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles lvUpdates.MouseUp
-    If e.Button = Windows.Forms.MouseButtons.Right Then
-      selUpdate = lvUpdates.GetItemAt(e.X, e.Y)
-      If selUpdate IsNot Nothing Then
-        mnuUpdateInclude.Checked = selUpdate.Checked
-        mnuUpdates.Show(lvUpdates, e.Location)
-      End If
-    End If
-  End Sub
-
-  Private Sub mnuUpdateInclude_Click(sender As System.Object, e As System.EventArgs) Handles mnuUpdateInclude.Click
-    If selUpdate IsNot Nothing Then
-      If selUpdate.Checked Then
-        selUpdate.Checked = False
-      Else
-        selUpdate.Checked = True
-      End If
-    End If
-  End Sub
+#End Region
+#End Region
+#End Region
 End Class
