@@ -1,0 +1,23 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/transitional.dtd">
+<html lang="en-US">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <title>ISO Features - Split Method</title>
+  <link rel="stylesheet" type="text/css" href="/help.css">
+ </head>
+ <body>
+  <img src="/icons/1.7.5.png" alt="" style="float: right;">
+  <h3>Section 1.7.5</h3>
+  <h1>Split Method</h1>
+  <hr>
+  <p>The Split Method chooses how files will be split to fit your installer on limited disc space. This is the only ISO Feature which applies to <a href="/1_SLIPS7REAM_Interface/1.1_INSTALL.WIM.htm" title="SLIPS7REAM Interface - INSTALL.WIM">WIM</a> files as well, and therefore does not require the <a href="/1_SLIPS7REAM_Interface/1.6_Save_to_ISO.htm" title="SLIPS7REAM Interface - Save to ISO">Save to ISO</a> checkbox to be checked.</p>
+  <p>There are three options to choose from:</p>
+  <ul>
+   <li><b>Single File</b>: The WIM will not be split and all data will be placed into a single ISO.</li>
+   <li><b>Split WIM</b>: The WIM will be split into smaller SWM files, each of which will be the size you define, at most (see Size Limit below). Each WIM will be stored on one ISO file. This can be particularly useful if you need an ISO 9960 File System but have a WIM larger than 4 GB.</li>
+   <li><b>Split ISO</b>: The WIM will be split into smaller SWM files which will each be contained in smaller ISO files. The ISO files will be the size you define, at most (see Size Limit below), while the WIM files will be about 350 MB smaller allowing for installer data. In some cases, a disc may contain more than one SWM. <i>This option is only available if the Save to ISO checkbox is checked.</i></li>
+  </ul>
+  <hr>
+  <p><b>Size Limit</b>: This field determines the maximum size of the SWM or ISO file. A few default values are included in the list to help you choose a limit automatically, but any value can be entered manually. All sizes are converted to MB after being entered. The size <i>can not</i> be less than 351 MB if the Split Method (see Above) is set to &quot;Split ISO&quot;.</p>
+ </body>
+</html>

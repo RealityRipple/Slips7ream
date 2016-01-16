@@ -1,0 +1,266 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<!-- Sitemap 1.0 -->
+</HEAD><BODY>
+<OBJECT type="text/site properties">
+	<param name="Window Styles" value="0x800025">
+</OBJECT>
+<UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Welcome to SLIPS7REAM Help">
+		<param name="Local" value="welcome.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="SLIPS7REAM Interface">
+		<param name="Local" value="1_SLIPS7REAM_Interface/1.0_SLIPS7REAM_Interface.htm">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="INSTALL.WIM">
+			<param name="Local" value="1_SLIPS7REAM_Interface\1.1_INSTALL.WIM.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Merge WIM">
+			<param name="Local" value="1_SLIPS7REAM_Interface\1.2_Merge_WIM.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Image Packages">
+			<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Parse Packages">
+				<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Package Properties">
+				<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Windows Features">
+					<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Integrated Windows Updates">
+					<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Integrated Drivers">
+					<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+					</OBJECT>
+			</UL>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Service Pack">
+			<param name="Local" value="1_SLIPS7REAM_Interface\1.4_Service_Pack.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Updates">
+			<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.0_Updates.htm">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Add Updates">
+				<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Update Properties">
+				<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Driver Properties">
+				<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+				</OBJECT>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Save to ISO">
+			<param name="Local" value="1_SLIPS7REAM_Interface\1.6_Save_to_ISO.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="ISO Features">
+			<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="ISO Label">
+				<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Unlock All Editions">
+				<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="UEFI Boot">
+				<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="File System">
+				<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Split Method">
+				<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+				</OBJECT>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Process Priority">
+			<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="On Completion">
+			<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Configuration">
+		<param name="Local" value="2_Configuration\2.0_Configuration.htm">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Temp Directory Path">
+			<param name="Local" value="2_Configuration\2.1_Temp_Directory_Path.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="x86 Update Whitelist">
+			<param name="Local" value="2_Configuration\2.2_Update_Whitelist.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Command Timeout">
+			<param name="Local" value="2_Configuration\2.3_Command_Timeout.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Alert on Complete">
+			<param name="Local" value="2_Configuration\2.4_Alert_on_Complete.htm">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Slipstream Process">
+		<param name="Local" value="3_Slipstream_Process\3.0_Slipstream_Process.htm">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Integration Tutorial (ISO)">
+			<param name="Local" value="3_Slipstream_Process\3.1_Integration_Tutorial_(ISO).htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Integration Tutorial (WIM)">
+			<param name="Local" value="3_Slipstream_Process\3.2_Integration_Tutorial_(WIM).htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="All-in-One Tutorial">
+			<param name="Local" value="3_Slipstream_Process\3.3_All-in-One_Tutorial.htm">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Included External Tools">
+		<param name="Local" value="4_Included_External_Tools\4.0_Included_External_Tools.htm">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="DISM">
+			<param name="Local" value="4_Included_External_Tools\4.1_DISM.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="ImageX">
+			<param name="Local" value="4_Included_External_Tools\4.2_ImageX.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="OSCDIMG">
+			<param name="Local" value="4_Included_External_Tools\4.3_OSCDIMG.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="IntlCFG">
+			<param name="Local" value="4_Included_External_Tools\4.4_IntlCFG.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="7z.dll">
+			<param name="Local" value="4_Included_External_Tools\4.5_7z.dll.htm">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Glossary of Terms">
+		<param name="Local" value="5_Glossary_of_Terms\5.0_Glossary_of_Terms.htm">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="32-bit / x86">
+			<param name="Local" value="5_Glossary_of_Terms\5.1_32-bit.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="64-bit / x64 / amd64">
+			<param name="Local" value="5_Glossary_of_Terms\5.2_64-bit.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Disc / ISO">
+			<param name="Local" value="5_Glossary_of_Terms\5.3_Disc.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="DISM">
+			<param name="Local" value="5_Glossary_of_Terms\5.4_DISM.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Driver">
+			<param name="Local" value="5_Glossary_of_Terms\5.5_Driver.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="File System">
+			<param name="Local" value="5_Glossary_of_Terms\5.6_File_System.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="IA64 / Itanium">
+			<param name="Local" value="5_Glossary_of_Terms\5.7_IA64.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Image / WIM">
+			<param name="Local" value="5_Glossary_of_Terms\5.8_Image.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Image Package">
+			<param name="Local" value="5_Glossary_of_Terms\5.9_Image_Package.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Integrated Driver">
+			<param name="Local" value="5_Glossary_of_Terms\5.10_Integrated_Driver.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Integrated Windows Update">
+			<param name="Local" value="5_Glossary_of_Terms\5.11_Integrated_Windows_Update.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Package">
+			<param name="Local" value="5_Glossary_of_Terms\5.12_Package.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Service Pack">
+			<param name="Local" value="5_Glossary_of_Terms\5.13_Service_Pack.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Slipstream">
+			<param name="Local" value="5_Glossary_of_Terms\5.14_Slipstream.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Split">
+			<param name="Local" value="5_Glossary_of_Terms\5.15_Split.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="UEFI">
+			<param name="Local" value="5_Glossary_of_Terms\5.16_UEFI.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Windows Feature">
+			<param name="Local" value="5_Glossary_of_Terms\5.17_Windows_Feature.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Windows Update">
+			<param name="Local" value="5_Glossary_of_Terms\5.18_Windows_Update.htm">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Important Links">
+		<param name="Local" value="6.0_Important_Links.htm">
+		</OBJECT>
+</UL>
+</BODY></HTML>

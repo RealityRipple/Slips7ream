@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/transitional.dtd">
+<html lang="en-US">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <title>SLIPS7REAM Interface - Driver Properties</title>
+  <link rel="stylesheet" type="text/css" href="/help.css">
+ </head>
+ <body>
+  <img src="/icons/1.5.3.png" alt="" style="float: right;">
+  <h3>Section 1.5.3</h3>
+  <h1>Driver Properties</h1>
+  <hr>
+  <p>The Driver Properties Window can be a little confusing. Each driver contains some basic information about the driver and the driver's Class, as well as a list of compatible Architectures. For each architecture, there's a list of compatible Hardware, each with its own details including Hardware IDs, which contain relevant Compatible and Exclude IDs.</p>
+  <ul>
+   <li><b>Original Name</b>: Only included in Integrated Drivers. This was the name of the INF before it was integrated.</li>
+   <li><b>Published Name</b>: In Integrated Drivers, this is the new name of the INF after integration. In the Updates list, this is the path where the driver INF file is located.</li>
+   <li><b>Driver Store Path</b>: In Integrated Drivers, this is the location where the INF and any other Driver files are stored. In the Updates list, this is the same as the Published Name.</li>
+   <li><b>In-Box</b>: Only included in Integrated Drivers. Determines if the driver is In-Box or Out-of-Box (whether or not it came with Windows, basically).</li>
+   <li><b>Provider Name</b>: The company that wrote the Driver. Not necessarily the same as the Hardware Manufacturer.</li>
+   <li><b>Date</b>: This is the date the driver was written.</li>
+   <li><b>Version</b>: This is the version of the driver. The driver version is usually the same as the OS version for drivers that came with Windows.</li>
+   <li><b>Boot Critical</b>: If Yes, then this driver is critical for booting Windows when in use.</li>
+   <li><b>Driver Class</b>
+    <ul>
+     <li><b>Name</b>: The Class Name, identifying what kind of hardware this driver describes.</li>
+     <li><b>Description</b>: Usually a slightly more descriptive version of the Class Name.</li>
+     <li><b>GUID</b>: The Class GUID, which universally identifies the Driver Class.</li>
+    </ul>
+   </li>
+   <li><b>Architecture</b>: The Architecture combobox includes all compatible CPU Architectures included in the driver. Selecting an Architecture entry will re-populate the Hardware combobox (see Below).</a>
+   <li><b>Hardware</b>: The Hardware combobox includes all compatible hardware for the selected CPU Architecture included in the driver. Selecting a Hardware entry will re-populate the Hardware Description entries (see Below).</a>
+   <li><b>Hardware Description</b>
+    <ul>
+     <li><b>Service Name</b>: The short name of the Windows Service which this driver is attached to.</li>
+     <li><b>Architecture</b>: Usually redundant with the Architecture combobox (see Above).</li> 
+     <li><b>Manufacturer</b>: The name of the company that created the hardware.</li>
+     <li><b>Hardware IDs</b>: A list of all the Hardware IDs supported by this driver. Selecting an ID will re-populate the Compatible IDs and Exclude IDs lists (see Below).</li>
+     <li><b>Compatible IDs</b>: A list of any Hardware IDs that should be included in support along with the selected Hardware ID (see Above).</li>
+     <li><b>Exclude IDs</b>: A list of any Hardware IDs that should be excluded from support in the range defined by the selected Hardware ID (see Above).</li>
+    </ul>
+   </li>
+  </ul>
+ </body>
+</html>

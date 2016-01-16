@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/transitional.dtd">
+<html lang="en-US">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <title>SLIPS7REAM Interface - Add Updates</title>
+  <link rel="stylesheet" type="text/css" href="/help.css">
+ </head>
+ <body>
+  <img src="/icons/1.5.1.png" alt="" style="float: right;">
+  <h3>Section 1.5.1</h3>
+  <h1>Add Updates</h1>
+  <hr>
+  <p>You can add Updates, Language Packs, and Drivers to the <a href="/1_SLIPS7REAM_Interface/1.5_Updates/1.5.0_Updates.htm" title="SLIPS7REAM Interface - Updates">Updates list</a> by clicking the &quot;Add Updates...&quot; button or by dragging files or folders into the list. SLIPS7REAM supports Windows Updates in <b>MSU</b> or <b>CAB</b> format, Language Packs in <b>MLC</b>, <b>EXE</b>, <b>MSI</b>, or <b>LP.CAB</b> format, and Drivers in <b>INF</b> format.</p>
+  <p>SLIPS7REAM will also compare files in the Updates list and the <a href="/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.1_Parse_Packages.htm" title="SLIPS7REAM Interface - Image Packages - Parse Packages">Integrated Packages</a> lists. If any update or language pack is already integrated, SLIPS7REAM will prompt you, either with a warning about its inclusion or by letting you select the version you wish to use if they are different versions. Drivers are compared by Class GUID, Date, Version, Architectures, and Hardware IDs (ignoring IA64 architectures and Hardware IDs) because drivers don't interfere with each other.</p>
+  <p>There are certain caveats and issues when adding Updates:</p>
+  <ul>
+   <li>
+    Internet Explorer integration has prerequisites which are not included in the Setup EXE.<br>
+    Internet Explorer 10 requires:
+    <ol>
+     <li><a href="http://support.microsoft.com/?kbid=2729094" title="KB2729094 - Update for the Segoe UI symbol font in Windows 7" target="_blank">KB2729094 <img src="/link.png" alt=""></a></li>
+     <li><a href="http://support.microsoft.com/?kbid=2731771" title="KB2731771 - Update that provides new APIs for conversion between local time and UTC in Windows 7" target="_blank">KB2731771 <img src="/link.png" alt=""></a></li>
+     <li><a href="http://support.microsoft.com/?kbid=2533623" title="KB2533623 - Insecure library loading could allow remote code execution" target="_blank">KB2533623 <img src="/link.png" title=""></a></li>
+     <li><a href="http://support.microsoft.com/?kbid=2670838" title="KB2670838 - Platform Update for Windows 7" target="_blank">KB2670838 <img src="/link.png" title=""></a></li>
+     <li><a href="http://support.microsoft.com/?kbid=2786081" title="KB2786081 - Internet Explorer 10 does not save credentials for a website after you log off or restart a computer that is running Windows 7 SP1" target="_blank">KB2786081 <img src="/link.png" alt=""></a></li>
+     <li><a href="http://support.microsoft.com/?kbid=2639308" title="KB2639308 - Update for the ASLR feature in Windows 7" target="_blank">KB2639308 <img src="/link.png" alt=""></a></li>
+    </ol>
+    Internet Explorer 11 requires:
+    <ol>
+     <li><a href="http://support.microsoft.com/?kbid=2729094" title="KB2729094 - Update for the Segoe UI symbol font in Windows 7" target="_blank">KB2729094 <img src="/link.png" alt=""></a></li>
+     <li><a href="http://support.microsoft.com/?kbid=2731771" title="KB2731771 - Update that provides new APIs for conversion between local time and UTC in Windows 7" target="_blank">KB2731771 <img src="/link.png" alt=""></a></li>
+     <li><a href="http://support.microsoft.com/?kbid=2533623" title="KB2533623 - Insecure library loading could allow remote code execution" target="_blank">KB2533623 <img src="/link.png" alt=""></a></li>
+     <li><a href="http://support.microsoft.com/?kbid=2670838" title="KB2670838 - Platform Update for Windows 7" target="_blank">KB2670838 <img src="/link.png" alt=""></a></li>
+     <li><a href="http://support.microsoft.com/?kbid=2786081" title="KB2786081 - Internet Explorer 10 does not save credentials for a website after you log off or restart a computer that is running Windows 7 SP1" target="_blank">KB2786081 <img src="/link.png" alt=""></a></li>
+     <li><a href="http://support.microsoft.com/?kbid=2639308" title="KB2639308 - Update for the ASLR feature in Windows 7" target="_blank">KB2639308 <img src="/link.png" alt=""></a></li>
+     <li><a href="http://support.microsoft.com/?kbid=2834140" title="KB2834140 - &quot;0x00000050&quot; Stop Error after Update 2670838 on Windows 7 SP1" target="_blank">KB2834140 <img src="/link.png" alt=""></a></li>
+     <li><a href="http://support.microsoft.com/?kbid=2888049" title="KB2888049 - Update that improves the network performance of Internet Explorer 11 in Windows 7 SP1" target="_blank">KB2888049 <img src="/link.png" alt=""></a></li>
+     <li><a href="http://support.microsoft.com/?kbid=2882822" title="KB2882822 - Update adds ITraceRelogger interface support to Windows 7 SP1" target="_blank">KB2882822 <img src="/link.png" alt=""></a></li>
+    </ol>
+   </li>
+   <li>The .NET Framework 4.0 and above can not be integrated.</li>
+   <li>The Malicious Software Removal Tool can not be integrated.</li>
+   <li>Windows Defender updates can not be integrated.</li>
+   <li>The Update Readiness Tool (KB947821) can not be integrated.</li>
+   <li>KB2533552 (now defunct) can not be integrated.</li>
+   <li>KB3035583 should not be integrated (it just notifies you about Windows 10 anyway).</li>
+   <li>KB2647753 v2 does not integrate correctly. You can get v4 (or above) from the <a href="http://catalog.update.microsoft.com" title="Microsoft Update Catalog" target="_blank">Microsoft Update Catalog <img src="/link.png" alt=""></a>.</li>
+   <li>KB2830477 requires KB2574819 and 2857650.</li>
+   <li>The Language Packs for ca-ES, cy-GB, hi-IN, is-IS, and sr-Cyrl-CS have been superseded by Service Pack 1 and do not integrate into SP1 Images correctly.</li>
+  </ul>
+  <p>There are also requirements for most Language Packs:</p>
+  <ul>
+   <li>The Language Packs for af-ZA, sq-AL, am-ET, hy-AM, as-IN, bn-BD, bn-IN, prs-AF, fil-PH, ka-GE, gu-IN, ha-Latn-NG, hi-IN, is-IS, ig-NG, id-ID, iu-Latn-CA, ga-IE, kn-IN, km-KH, sw-KE, kok-IN, mk-MK, ms-MY, ms-BN, ml-IN, mt-MT, mi-NZ, mr-IN, ne-NP, or-IN, fa-IR, pa-IN, nso-ZA, tn-ZA, si-LK, ta-IN, te-IN, ur-PK, vi-VN, cy-GB, xh-ZA, yo-NG, and zu-ZA require the <i>English</i> Language Pack.</li>
+   <li>The Language Packs for gl-ES and quz-PE require the <i>Spanish</i> Language Pack.</li>
+   <li>The Language Pack for nn-NO requires the <i>Norwegian (Bokmål)</i> Language Pack.</li>
+   <li>The Language Packs for ky-KG and tt-RU require the <i>Russian</i> Language Pack.</li>
+   <li>The Language Packs for eu-ES and ca-ES require either the <i>French</i> or <i>Spanish</i> Language Pack.</li>
+   <li>The Language Packs for bs-Cyrl-BA and bs-Latn-BA require either the <i>English</i>, <i>Croatian</i>, or <i>Serbian (Latin)</i> Language Pack.</li>
+   <li>The Language Pack for sr-Cyrl-CS requires either the <i>English</i> or <i>Serbian (Latin)</i> Language Pack.</li>
+   <li>The Language Pack for lb-LU requires either the <i>English</i> or <i>French</i> Language Pack.</li>
+   <li>The Language Packs for az-Latn-SZ, kk-KZ, mn-MN, tk-TM, and uz-latn-UZ require either the <i>English</i> or <i>Russian</i> Language Pack.</li>
+  </ul>
+ </body>
+</html>

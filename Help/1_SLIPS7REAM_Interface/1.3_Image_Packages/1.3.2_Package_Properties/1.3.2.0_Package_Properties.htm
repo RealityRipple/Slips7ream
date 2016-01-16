@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/transitional.dtd">
+<html lang="en-US">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <title>Image Packages - Package Properties</title>
+  <link rel="stylesheet" type="text/css" href="/help.css">
+ </head>
+ <body>
+  <img src="/icons/1.3.2.0.png" alt="" style="float: right;">
+  <h3>Section 1.3.2</h3>
+  <h1>Package Properties</h1>
+  <hr>
+  <p>Each <a href="/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.0_Image_Packages.htm" title="SLIPS7REAM Interface - Image Packages">Image Package</a> has a range of detailed properties describing the Package. SLIPS7REAM allows you to view all of these properties through an advanced Image Package Properties Window. Below is a description of each entry.</p>
+  <ul>
+   <li><b>Index</b>: This is the index of the Image Package in its parent WIM file. Indexes start from 1. This is the order in which the Installer will list your Operating System choices.</li>
+   <li><b>Name</b>: The name by which the Image Package is identified when working with WIM files. The Name can be edited to be anything you want, but will not show up in the Installer.</li>
+   <li><b>Description</b>: A simple description of the Operating System, used by the Installer. Usually this is the same as the Name.</li>
+   <li><b>Size</b>: The total size of the Image Package once extracted, not the actual file size of the compressed Image Package.</li>
+   <li><b>Architecture</b>: This identifies the architecture of the Windows 7 Image Package as either x86 or x64.</li>
+   <li><b>HAL</b>: The Hardware Application Layer used by the OS, which, as far as I know, is always &quot;acpiapic&quot;.</li>
+   <li><b>Version</b>: The Operating System Version for Windows 7 is always 6.1. Windows 7 RTM is 6.1.7600, Service Pack 1 is 6.1.7601. No other versions currently exist.</li>
+   <li><b>Service Pack Level</b>: This value is 0 for Windows 7 RTM and 1 for Service Pack 1.</li>
+   <li><b>Service Pack Build</b>: The Build number is usually seen at the end of the Version (above) in a full OS Version.</li>
+   <li><b>Edition</b>: The Edition of Windows 7 contained in this Image Package.</li>
+   <li><b>Installation</b>: The target Installation type for this Operating System. Windows 7 is always &quot;Client&quot;.</li>
+   <li><b>Product Type</b>: The product type of Windows 7 is always &quot;WinNT&quot;.</li>
+   <li><b>Product Suite</b>: The product suite of Windows 7 is always &quot;Terminal Server&quot;.</li>
+   <li><b>System Root</b>: This is the folder where all the Windows files are stored. Windows 7 uses &quot;WINDOWS&quot;, though this may be modifiable.</li>
+   <li><b>File Count</b>: The total number of files contained in this Image Package.</li>
+   <li><b>Directory Count</b>: The total number of folders contained in this Image Package.</li>
+   <li><b>Created</b>: The date this Image Package was created. This is the date shown by the Installer.</li>
+   <li><b>Modified</b>: The date this Image Package was last modified. This date is <i>not</i> shown in the Installer.</li>
+   <li><b>Languages</b>: This is a list of all the languages which are integrated into this Image Package.</li>
+  </ul>
+ </body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/transitional.dtd">
+<html lang="en-US">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <title>SLIPS7REAM Interface - Process Priority</title>
+  <link rel="stylesheet" type="text/css" href="/help.css">
+ </head>
+ <body>
+  <img src="/icons/1.8.png" alt="" style="float: right;">
+  <h3>Section 1.8</h3>
+  <h1>Process Priority</h1>
+  <hr>
+  <p>You can set the Work Priority of SLIPS7REAM quickly using the Process Priority combo field. This will also set the priority of any <a href="/4_Included_External_Tools/4.0_Included_External_Tools.htm" title="Included External Tools">external processes</a> used by SLIPS7REAM. By default, Normal is the best option, but you can select other options depending on what other tasks your computer is running:</p>
+  <ul>
+   <li><b>Realtime</b>: SLIPS7REAM will have the highest possible priority. (This can cause other applications to hang or your computer to become unresponsive.)</li>
+   <li><b>High</b>: SLIPS7REAM will be in the top priority list, using all available processor time.</li>
+   <li><b>Above Normal</b>: SLIPS7REAM will take priority over normal tasks without interfering with higher priority processes.</li>
+   <li><b>Normal</b>: The default priority value.</li>
+   <li><b>Below Normal</b>: SLIPS7REAM will allow other processes to take precedence. This option is best if you want SLIPS7REAM to run in the background.</li>
+   <li><b>Low</b>: SLIPS7REAM will only run on idle time, and will be pre-empted by normal program use.</li>
+  </ul>
+  <p><b>CAUTION</b>: Use extreme care when specifying High or Realtime. The threads of a process with Realtime priority preempt the threads of all other processes, including operating system processes performing important tasks, and can cause disk caches not to flush or cause the mouse to be unresponsive.</p>
+ </body>
+</html>

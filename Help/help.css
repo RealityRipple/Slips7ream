@@ -1,0 +1,40 @@
+body
+{
+ color: #000000;
+ background-color: #FFFFE1;
+}
+h1
+{
+ text-indent: 0.5em;
+}
+h2
+{
+ font-size: 110%;
+}
+h3
+{
+ text-indent: 1em;
+ color: #000040;
+}
+ul
+{
+ list-style-image: url('/bullet.png');
+ margin-top: 0.25em;
+}
+li
+{
+ margin-bottom: 0.25em;
+}
+ol
+{
+ list-style-image: none;
+ margin-top: 0.25em;
+}
+a, a:visited
+{
+ color: #3466CC;
+}
+img
+{
+ border: 0;
+}
