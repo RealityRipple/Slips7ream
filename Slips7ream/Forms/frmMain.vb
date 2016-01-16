@@ -2793,11 +2793,11 @@
         If SelIndex > -1 Then
           If Not I = SelIndex Then Continue For
         End If
-        Dim progVal As Integer = I * 3
-        Dim progMax As Integer = (PackageCount + 1) * 3
+        Dim progVal As Integer = (I - 1) * 4
+        Dim progMax As Integer = (PackageCount) * 4
         If SelIndex > -1 Then
           progVal = 0
-          progMax = 3
+          progMax = 4
         End If
         SetProgress(progVal, progMax)
         Dim Package As ImagePackage = GetDISMPackageData(WIMFile, I)
@@ -2824,6 +2824,8 @@
             End If
           End If
         End If
+        progVal += 1
+        SetProgress(progVal, progMax)
         SetStatus("Mounting " & Package.Name & " Package...")
         If InitDISM(WIMFile, I, Mount) Then
           If StopRun Then Return
@@ -3634,9 +3636,14 @@
       SetRawTotal(realTotalVal - 1, realTotalMax)
       Return
     End If
-    Dim denominator As Integer = realTotalMax * pbIndividual.Maximum
-    Dim numerator As Integer = ((realTotalVal - 1) * pbIndividual.Maximum) + pbIndividual.Value
-    SetRawTotal(numerator, denominator)
+    If realTotalVal > 0 Then
+      Dim denominator As Integer = realTotalMax * pbIndividual.Maximum
+      Dim numerator As Integer = ((realTotalVal - 1) * pbIndividual.Maximum) + pbIndividual.Value
+      SetRawTotal(numerator, denominator)
+    Else
+      If Maximum < 1 Then Maximum = 1
+      SetRawTotal(Value, Maximum)
+    End If
   End Sub
   Private Sub SetRawTotal(Value As Integer, Maximum As Integer)
     pbTotal.Maximum = 10000
@@ -4588,14 +4595,22 @@
       Me.Invoke(New RunWithReturnRetCallBack(AddressOf AsyncRunWithReturnErrorRet), Index, Output)
       Return
     End If
-    If Output IsNot Nothing And ReturnProgress Then
+    If String.IsNullOrEmpty(Output) Then
+      WriteToOutput(Nothing)
+      Return
+    End If
+    If ReturnProgress Then
       If Output.Contains("% complete") Then
         Dim ProgI As String = Output.Substring(0, Output.IndexOf("%"))
         SetSubProgress(Val(ProgI), 100)
       End If
       WriteToOutput(Output)
     Else
-      WriteToOutput("<ERROR> " & Output)
+      If Output.Contains("% complete") Then
+        WriteToOutput(Output)
+      Else
+        WriteToOutput("<ERROR> " & Output)
+      End If
     End If
   End Sub
   Private Sub RunWithReturnOutputHandler(sender As Object, e As DataReceivedEventArgs)
@@ -4726,7 +4741,34 @@
       iTotalMax += 1
       If Not String.IsNullOrEmpty(txtSP64.Text) Then iTotalMax += 1
     End If
-    If Not String.IsNullOrEmpty(txtISO.Text) Then iTotalMax += 3
+    If Not String.IsNullOrEmpty(txtISO.Text) Then
+      iTotalMax += 2
+      If cmbLimitType.SelectedIndex > 0 Then iTotalMax += 1
+    Else
+      iTotalMax += 1
+    End If
+    Dim DoIntegratedUpdates As Boolean = False
+    Dim DoFeatures As Boolean = False
+    Dim DoIntegratedDrivers As Boolean = False
+    For Each lvRow As ListViewItem In lvImages.Items
+      If lvRow.Checked Then
+        If Not DoIntegratedUpdates Then
+          Dim TestIntegratedUpdates As List(Of Update_Integrated) = CType(lvRow.Tag(1), ImagePackage).IntegratedUpdateList
+          If TestIntegratedUpdates IsNot Nothing AndAlso TestIntegratedUpdates.Count > 0 Then DoIntegratedUpdates = True
+        End If
+        If Not DoFeatures Then
+          Dim TestFeatures As List(Of Feature) = lvRow.Tag(2)
+          If TestFeatures IsNot Nothing AndAlso TestFeatures.Count > 0 Then DoFeatures = True
+        End If
+        If Not DoIntegratedDrivers Then
+          Dim TestIntegratedDrivers As List(Of Driver) = lvRow.Tag(3)
+          If TestIntegratedDrivers IsNot Nothing AndAlso TestIntegratedDrivers.Count > 0 Then DoIntegratedDrivers = True
+        End If
+      End If
+    Next
+    If DoIntegratedUpdates Then iTotalMax += 1
+    If DoFeatures Then iTotalMax += 1
+    If DoIntegratedUpdates Then iTotalMax += 1
     SetTotal(iTotalVal, iTotalMax)
     SetProgress(0, 1)
     pbTotal.Style = ProgressBarStyle.Continuous
@@ -4742,11 +4784,11 @@
       SetStatus("Calculating Time...")
       If IO.Path.GetExtension(txtWIM.Text).ToLower = ".iso" Then
         SetProgress(0, 1)
+        iTotalVal += 1
+        SetTotal(iTotalVal, iTotalMax)
         SetStatus("Extracting Image from ISO...")
         WriteToOutput("Extracting ""INSTALL.WIM"" from """ & txtWIM.Text & """ to """ & Work & """...")
         ExtractAFile(txtWIM.Text, Work, "INSTALL.WIM")
-        iTotalVal += 1
-        SetTotal(iTotalVal, iTotalMax)
         WIMFile = Work & "INSTALL.WIM"
       Else
         WIMFile = txtWIM.Text
@@ -4756,6 +4798,9 @@
       ToggleInputs(True)
       Return
     End If
+    SetProgress(0, 1)
+    iTotalVal += 1
+    SetTotal(iTotalVal, iTotalMax)
     SetDisp(MNGList.Delete)
     SetTitle("Merging Image Packages", "Merging all WIM packages into single WIM...")
     SetStatus("Checking Merge...")
@@ -5003,9 +5048,11 @@
         End If
       End If
     End If
-    SetDisp(MNGList.Copy)
-    SetTitle("Adding Windows Updates", "Integrating update data into WIM packages...")
-    If ImageFeatures IsNot Nothing AndAlso ImageFeatures.Length > 0 Then
+    If DoFeatures Then
+      SetDisp(MNGList.Copy)
+      SetTitle("Toggling Windows Features", "Enabling and disabling selected Features in WIM packages...")
+      iTotalVal += 1
+      SetTotal(iTotalVal, iTotalMax)
       SetStatus("Toggling Features...")
       If IntegratedFeatures(WIMFile, ImageFeatures.ToArray) Then
         SetStatus("Features Toggled!")
@@ -5021,7 +5068,11 @@
         Return
       End If
     End If
-    If ImageIntegratedUpdates IsNot Nothing AndAlso ImageIntegratedUpdates.Length > 0 Then
+    If DoIntegratedUpdates Then
+      SetDisp(MNGList.Copy)
+      SetTitle("Removing Integrated Updates", "Removing selected integrated Windows Updates from WIM packages...")
+      iTotalVal += 1
+      SetTotal(iTotalVal, iTotalMax)
       SetStatus("Removing Updates...")
       If IntegratedUpdates(WIMFile, ImageIntegratedUpdates.ToArray) Then
         SetStatus("Updates Removed!")
@@ -5037,7 +5088,11 @@
         Return
       End If
     End If
-    If ImageDrivers IsNot Nothing AndAlso ImageDrivers.Length > 0 Then
+    If DoIntegratedDrivers Then
+      SetDisp(MNGList.Copy)
+      SetTitle("Removing Integrated Drivers", "Removing selected integrated Drivers from WIM packages...")
+      iTotalVal += 1
+      SetTotal(iTotalVal, iTotalMax)
       SetStatus("Removing Drivers...")
       If IntegratedDrivers(WIMFile, ImageDrivers) Then
         SetStatus("Drivers Removed!")
@@ -5048,6 +5103,8 @@
         Return
       End If
     End If
+    SetDisp(MNGList.Copy)
+    SetTitle("Adding Windows Updates", "Integrating update data into WIM packages...")
     Dim NoMount As Boolean = True
     If UpdateFiles.Count > 0 Then
       SetStatus("Integrating Updates...")
@@ -5071,6 +5128,7 @@
       InitDISM(WIMFile, GetDISMPackages(WIMFile), Mount)
       NoMount = False
     End If
+    SetProgress(0, 1)
     iTotalVal += 1
     SetTotal(iTotalVal, iTotalMax)
     SetDisp(MNGList.Move)
@@ -5207,10 +5265,10 @@
           Return
         End If
       Next
-      SetProgress(0, 1)
-      iTotalVal += 1
-      SetTotal(iTotalVal, iTotalMax)
       If cmbLimitType.SelectedIndex > 0 Then
+        SetProgress(0, 1)
+        iTotalVal += 1
+        SetTotal(iTotalVal, iTotalMax)
         Dim splUEFI As Boolean = chkUEFI.Checked
         Dim limVal As String = cmbLimit.Text
         If limVal.Contains("(") Then limVal = limVal.Substring(0, limVal.IndexOf("("))
