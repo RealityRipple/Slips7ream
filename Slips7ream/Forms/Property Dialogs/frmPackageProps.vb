@@ -145,108 +145,107 @@
   End Sub
   Private Sub tvFeatures_BeforeCheck(sender As Object, e As System.Windows.Forms.TreeViewCancelEventArgs) Handles tvFeatures.BeforeCheck
     If tvFeatures.Tag IsNot Nothing Then Return
-    If e.Node.ToolTipText = "Node Group - Not a Feature" Then
+    If e.Node.ToolTipText.StartsWith("Node Group") Then
       If Not e.Node.Checked Then e.Cancel = True
-    Else
-      Dim RequiredFeatures As New Collections.Generic.Dictionary(Of String, String())
-      Dim featureRows() As String = Split(My.Resources.RequiredFeatureList, vbNewLine)
-      For Each row In featureRows
-        If row.Contains("|") Then
-          Dim RowSplit() As String = Split(row, "|", 2)
-          RequiredFeatures.Add(RowSplit(0), Split(RowSplit(1), ";"))
+      Return
+    End If
+    Dim RequiredFeatures As New Collections.Generic.Dictionary(Of String, String())
+    Dim featureRows() As String = Split(My.Resources.RequiredFeatureList, vbNewLine)
+    For Each row In featureRows
+      If row.Contains("|") Then
+        Dim RowSplit() As String = Split(row, "|", 2)
+        RequiredFeatures.Add(RowSplit(0), Split(RowSplit(1), ";"))
+      End If
+    Next
+    If Not e.Node.Checked Then Return
+    Dim RequiredFor As New List(Of String)
+    Dim SearchList As List(Of String) = GetFullNodeList(e.Node)
+    For Each Feature In RequiredFeatures
+      For Each toFind In SearchList
+        If Feature.Value.Contains(toFind) Then
+          Dim requiredNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find("tvn" & Feature.Key.Replace(" ", "_"), True))
+          Dim isRequired As Boolean = False
+          If requiredNode IsNot Nothing Then
+            If requiredNode.Checked Then isRequired = True
+          End If
+          If isRequired And Not RequiredFor.Contains(Feature.Key) Then RequiredFor.Add(Feature.Key)
         End If
       Next
-      If e.Node.Checked Then
-        Dim RequiredFor As New List(Of String)
-        Dim SearchList As List(Of String) = GetFullNodeList(e.Node)
-        For Each Feature In RequiredFeatures
-          For Each toFind In SearchList
-            If Feature.Value.Contains(toFind) Then
-              Dim requiredNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find("tvn" & Feature.Key.Replace(" ", "_"), True))
-              Dim isRequired As Boolean = False
-              If requiredNode IsNot Nothing Then
-                If requiredNode.Checked Then isRequired = True
-              End If
-              If isRequired And Not RequiredFor.Contains(Feature.Key) Then RequiredFor.Add(Feature.Key)
-            End If
-          Next
-        Next
-        If Not e.Action = TreeViewAction.Unknown Then
-          Dim sLearnMoreURL As String = Nothing
-          If e.Node.ToolTipText.Contains("Link: ") Then sLearnMoreURL = e.Node.ToolTipText.Substring(e.Node.ToolTipText.IndexOf("Link: ") + 6)
-          If String.IsNullOrEmpty(sLearnMoreURL) Then
-            If RequiredFor.Count > 0 Then
-              If MsgDlg(Me, Join(RequiredFor.ToArray, vbNewLine), "The following Windows features will also be turned off because they are dependent on " & e.Node.Text & ". Do you want to continue?", "Windows Features", MessageBoxButtons.YesNo, TaskDialogIcon.Warning, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.No Then
-                e.Cancel = True
-                Return
-              End If
-            End If
-          Else
-            If RequiredFor.Count > 0 Then
-              If MsgDlg(Me, Join(RequiredFor.ToArray, vbNewLine) & vbNewLine & "Other Windows features and programs on your computer might also be affected, including default settings." & vbNewLine & "<a href=""" & sLearnMoreURL & """>Go online to learn more</a>", "The following Windows features will also be turned off because they are dependent on " & e.Node.Text & ". Do you want to continue?", "Windows Features", MessageBoxButtons.YesNo, TaskDialogIcon.Warning, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.No Then
-                e.Cancel = True
-                Return
-              End If
-            Else
-              If MsgDlg(Me, "<a href=""" & sLearnMoreURL & """>Go online to learn more</a>", "Turning off " & e.Node.Text & " might affect other Windows features and programs installed on your computer, including default settings. Do you want to continue?", "Windows Features", MessageBoxButtons.YesNo, TaskDialogIcon.Information, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.No Then
-                e.Cancel = True
-              End If
-            End If
+    Next
+    If Not e.Action = TreeViewAction.Unknown Then
+      Dim sLearnMoreURL As String = Nothing
+      If e.Node.ToolTipText.Contains("Link: ") Then sLearnMoreURL = e.Node.ToolTipText.Substring(e.Node.ToolTipText.IndexOf("Link: ") + 6)
+      If String.IsNullOrEmpty(sLearnMoreURL) Then
+        If RequiredFor.Count > 0 Then
+          If MsgDlg(Me, Join(RequiredFor.ToArray, vbNewLine), "The following Windows features will also be turned off because they are dependent on " & e.Node.Text & ". Do you want to continue?", "Windows Features", MessageBoxButtons.YesNo, TaskDialogIcon.Warning, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.No Then
+            e.Cancel = True
+            Return
           End If
         End If
-        For Each Feature In RequiredFor
-          Dim requiredNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find("tvn" & Feature.Replace(" ", "_"), True))
-          If requiredNode IsNot Nothing Then
-            If requiredNode.Checked Then requiredNode.Checked = False
+      Else
+        If RequiredFor.Count > 0 Then
+          If MsgDlg(Me, Join(RequiredFor.ToArray, vbNewLine) & vbNewLine & "Other Windows features and programs on your computer might also be affected, including default settings." & vbNewLine & "<a href=""" & sLearnMoreURL & """>Go online to learn more</a>", "The following Windows features will also be turned off because they are dependent on " & e.Node.Text & ". Do you want to continue?", "Windows Features", MessageBoxButtons.YesNo, TaskDialogIcon.Warning, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.No Then
+            e.Cancel = True
+            Return
           End If
-        Next
+        Else
+          If MsgDlg(Me, "<a href=""" & sLearnMoreURL & """>Go online to learn more</a>", "Turning off " & e.Node.Text & " might affect other Windows features and programs installed on your computer, including default settings. Do you want to continue?", "Windows Features", MessageBoxButtons.YesNo, TaskDialogIcon.Information, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.No Then
+            e.Cancel = True
+          End If
+        End If
       End If
     End If
+    For Each Feature In RequiredFor
+      Dim requiredNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find("tvn" & Feature.Replace(" ", "_"), True))
+      If requiredNode IsNot Nothing Then
+        If requiredNode.Checked Then requiredNode.Checked = False
+      End If
+    Next
   End Sub
   Private Sub tvFeatures_AfterCheck(sender As Object, e As System.Windows.Forms.TreeViewEventArgs) Handles tvFeatures.AfterCheck
     If tvFeatures.Tag IsNot Nothing Then Return
-    If e.Node.ToolTipText = "Node Group - Not a Feature" Then
+    If e.Node.ToolTipText.StartsWith("Node Group") Then
       If e.Node.Checked Then e.Node.Checked = False
-    Else
-      Dim RequiredFeatures As New Collections.Generic.Dictionary(Of String, String())
-      Dim featureRows() As String = Split(My.Resources.RequiredFeatureList, vbNewLine)
-      For Each row In featureRows
-        If row.Contains("|") Then
-          Dim RowSplit() As String = Split(row, "|", 2)
-          RequiredFeatures.Add(RowSplit(0), Split(RowSplit(1), ";"))
-        End If
-      Next
-      If e.Node.Checked Then
-        If RequiredFeatures.ContainsKey(e.Node.Text) Then
-          For Each sRequirement As String In RequiredFeatures(e.Node.Text)
-            Dim requiredNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find("tvn" & sRequirement.Replace(" ", "_"), True))
-            If requiredNode Is Nothing Then
-              MsgDlg(Me, "The feature " & e.Node.Text & " requires another feature, " & sRequirement & ", which could not be found!", "A required feature is missing from the feature list.", "Windows Features", MessageBoxButtons.OK, TaskDialogIcon.Information)
-              e.Node.Checked = False
-            Else
-              If Not requiredNode.Checked Then requiredNode.Checked = True
-            End If
-          Next
-        End If
-        If e.Node.Parent IsNot Nothing Then
-          If Not e.Node.Parent.Checked Then e.Node.Parent.Checked = True
-        End If
-      Else
-        If e.Node.Nodes IsNot Nothing Then
-          For Each childNode As TreeNode In e.Node.Nodes
-            childNode.Checked = False
-          Next
-        End If
-      End If
-      For I As Integer = 0 To FeatureData.Count - 1
-        If FeatureData(I).FeatureName = CType(e.Node.Tag, Feature).FeatureName Then
-          Dim newData As Feature = FeatureData(I)
-          newData.Enable = e.Node.Checked
-          FeatureData(I) = newData
-          Exit For
-        End If
-      Next
+      Return
     End If
+    Dim RequiredFeatures As New Collections.Generic.Dictionary(Of String, String())
+    Dim featureRows() As String = Split(My.Resources.RequiredFeatureList, vbNewLine)
+    For Each row In featureRows
+      If row.Contains("|") Then
+        Dim RowSplit() As String = Split(row, "|", 2)
+        RequiredFeatures.Add(RowSplit(0), Split(RowSplit(1), ";"))
+      End If
+    Next
+    If e.Node.Checked Then
+      If RequiredFeatures.ContainsKey(e.Node.Text) Then
+        For Each sRequirement As String In RequiredFeatures(e.Node.Text)
+          Dim requiredNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find("tvn" & sRequirement.Replace(" ", "_"), True))
+          If requiredNode Is Nothing Then
+            MsgDlg(Me, "The feature " & e.Node.Text & " requires another feature, " & sRequirement & ", which could not be found!", "A required feature is missing from the feature list.", "Windows Features", MessageBoxButtons.OK, TaskDialogIcon.Information)
+            e.Node.Checked = False
+          Else
+            If Not requiredNode.Checked Then requiredNode.Checked = True
+          End If
+        Next
+      End If
+      If e.Node.Parent IsNot Nothing Then
+        If Not e.Node.Parent.Checked Then e.Node.Parent.Checked = True
+      End If
+    Else
+      If e.Node.Nodes IsNot Nothing Then
+        For Each childNode As TreeNode In e.Node.Nodes
+          childNode.Checked = False
+        Next
+      End If
+    End If
+    For I As Integer = 0 To FeatureData.Count - 1
+      If FeatureData(I).FeatureName = CType(e.Node.Tag, Feature).FeatureName Then
+        Dim newData As Feature = FeatureData(I)
+        newData.Enable = e.Node.Checked
+        FeatureData(I) = newData
+        Exit For
+      End If
+    Next
   End Sub
   Private Sub tvFeatures_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles tvFeatures.MouseUp
     If e.Button = Windows.Forms.MouseButtons.Right Then
@@ -345,49 +344,6 @@
       End If
     End If
   End Sub
-  Private Sub cmdLoadUpdates_Click(sender As Object, e As EventArgs) Handles cmdLoadUpdates.Click
-    ToggleUI(False)
-    frmMain.LoadPackageUpdates(WIMIdenifier, txtIndex.Text)
-    Dim lvItem As ListViewItem = Nothing
-    For Each item As ListViewItem In frmMain.lvImages.Items
-      If item.SubItems(1).Text = originalPackageName Then
-        lvItem = item
-        Exit For
-      End If
-    Next
-    ToggleUI(True)
-    If lvItem IsNot Nothing Then
-      If UBound(lvItem.Tag) > 0 AndAlso lvItem.Tag(1) IsNot Nothing Then
-        Dim Package As ImagePackage = lvItem.Tag(1)
-        UpdateData = Package.IntegratedUpdateList
-        DisplayUpdates()
-        PositionViews()
-      Else
-        MsgDlg(Me, "The Integrated Updates list could not be loaded. See the Output Console for details.", "Error loading integrated updates.", "Update List Empty", MessageBoxButtons.OK, TaskDialogIcon.Bad)
-      End If
-    End If
-  End Sub
-  Private Sub cmdLoadDrivers_Click(sender As System.Object, e As System.EventArgs) Handles cmdLoadDrivers.Click
-    ToggleUI(False)
-    frmMain.LoadPackageDrivers(WIMIdenifier, txtIndex.Text)
-    Dim lvItem As ListViewItem = Nothing
-    For Each item As ListViewItem In frmMain.lvImages.Items
-      If item.SubItems(1).Text = originalPackageName Then
-        lvItem = item
-        Exit For
-      End If
-    Next
-    ToggleUI(True)
-    If lvItem IsNot Nothing Then
-      If UBound(lvItem.Tag) > 2 AndAlso lvItem.Tag(3) IsNot Nothing Then
-        DriverData = lvItem.Tag(3)
-        DisplayDrivers()
-        PositionViews()
-      Else
-        MsgDlg(Me, "The Driver list could not be loaded. See the Output Console for details.", "Error loading drivers.", "Driver List Empty", MessageBoxButtons.OK, TaskDialogIcon.Bad)
-      End If
-    End If
-  End Sub
 #End Region
 #Region "Updates"
   Private Sub expUpdates_Opened(sender As System.Object, e As System.EventArgs) Handles expUpdates.Opened
@@ -425,6 +381,28 @@
         selUpdate.Checked = False
       Else
         selUpdate.Checked = True
+      End If
+    End If
+  End Sub
+  Private Sub cmdLoadUpdates_Click(sender As Object, e As EventArgs) Handles cmdLoadUpdates.Click
+    ToggleUI(False)
+    frmMain.LoadPackageUpdates(WIMIdenifier, txtIndex.Text)
+    Dim lvItem As ListViewItem = Nothing
+    For Each item As ListViewItem In frmMain.lvImages.Items
+      If item.SubItems(1).Text = originalPackageName Then
+        lvItem = item
+        Exit For
+      End If
+    Next
+    ToggleUI(True)
+    If lvItem IsNot Nothing Then
+      If UBound(lvItem.Tag) > 0 AndAlso lvItem.Tag(1) IsNot Nothing Then
+        Dim Package As ImagePackage = lvItem.Tag(1)
+        UpdateData = Package.IntegratedUpdateList
+        DisplayUpdates()
+        PositionViews()
+      Else
+        MsgDlg(Me, "The Integrated Updates list could not be loaded. See the Output Console for details.", "Error loading integrated updates.", "Update List Empty", MessageBoxButtons.OK, TaskDialogIcon.Bad)
       End If
     End If
   End Sub
@@ -601,6 +579,27 @@
       driverProps.Show(Me)
       Exit For
     Next
+  End Sub
+  Private Sub cmdLoadDrivers_Click(sender As System.Object, e As System.EventArgs) Handles cmdLoadDrivers.Click
+    ToggleUI(False)
+    frmMain.LoadPackageDrivers(WIMIdenifier, txtIndex.Text)
+    Dim lvItem As ListViewItem = Nothing
+    For Each item As ListViewItem In frmMain.lvImages.Items
+      If item.SubItems(1).Text = originalPackageName Then
+        lvItem = item
+        Exit For
+      End If
+    Next
+    ToggleUI(True)
+    If lvItem IsNot Nothing Then
+      If UBound(lvItem.Tag) > 2 AndAlso lvItem.Tag(3) IsNot Nothing Then
+        DriverData = lvItem.Tag(3)
+        DisplayDrivers()
+        PositionViews()
+      Else
+        MsgDlg(Me, "The Driver list could not be loaded. See the Output Console for details.", "Error loading drivers.", "Driver List Empty", MessageBoxButtons.OK, TaskDialogIcon.Bad)
+      End If
+    End If
   End Sub
 #End Region
 #End Region
@@ -897,7 +896,9 @@
             Dim newNode As TreeNode = tvFeatures.Nodes.Add(ParentFeatures(FeatureDisplayName))
             newNode.Name = "tvn" & ParentFeatures(FeatureDisplayName).Replace(" ", "_")
             newNode.Nodes.Add(tvItem)
-            newNode.ToolTipText = "Node Group - Not a Feature"
+            newNode.ToolTipText = "Node Group" & vbNewLine &
+                                  en & "This is a group containing related features." & vbNewLine &
+                                  en & "Node groups are not features and can not be enabled."
             Dim ParentKeyID As String = Nothing
             For Each key In imlFeatures.Images.Keys
               If ParentFeatures(FeatureDisplayName).ToLower.Replace(" ", "_") = key Then
@@ -919,6 +920,7 @@
               newNode.ImageKey = "Unknown"
             End If
             newNode.SelectedImageKey = newNode.ImageKey
+            newNode.Expand()
           Else
             parentNode.Nodes.Add(tvItem)
           End If
