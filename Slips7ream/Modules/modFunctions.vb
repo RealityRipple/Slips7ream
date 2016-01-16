@@ -635,10 +635,9 @@ Public Module modFunctions
       If frmMain.pbTotal.Value > 0 And frmMain.pbTotal.Maximum > 1 Then doProg = False
       Dim sDirs() As String = IO.Directory.GetDirectories(Directory)
       Dim sFiles() As String = IO.Directory.GetFiles(Directory)
+      If sDirs.Count > 1 And doProg Then frmMain.SetTotal(0, sDirs.Count - 1)
       For I As Integer = 0 To sDirs.Count - 1
-        If sDirs.Count > 1 Then
-          If doProg Then frmMain.SetTotal(I, sDirs.Count - 1)
-        End If
+        If sDirs.Count > 1 And doProg Then frmMain.SetTotal(I, sDirs.Count - 1)
         SlowDeleteDirectory(sDirs(I), OnDirectoryNotEmpty)
         If I Mod 25 = 0 Then
           If frmMain.StopRun Then Return
@@ -646,6 +645,7 @@ Public Module modFunctions
         End If
       Next
       If sFiles.Count > 0 Then
+        If sFiles.Count > 1 And doProg Then frmMain.SetProgress(0, sFiles.Count - 1)
         For I As Integer = 0 To sFiles.Count - 1
           If sFiles.Count > 1 And doProg Then frmMain.SetProgress(I, sFiles.Count - 1)
           Try
