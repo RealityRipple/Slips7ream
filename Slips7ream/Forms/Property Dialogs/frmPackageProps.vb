@@ -177,19 +177,19 @@
       If e.Node.ToolTipText.Contains("Link: ") Then sLearnMoreURL = e.Node.ToolTipText.Substring(e.Node.ToolTipText.IndexOf("Link: ") + 6)
       If String.IsNullOrEmpty(sLearnMoreURL) Then
         If RequiredFor.Count > 0 Then
-          If MsgDlg(Me, Join(RequiredFor.ToArray, vbNewLine), "The following Windows features will also be turned off because they are dependent on " & e.Node.Text & ". Do you want to continue?", "Windows Features", MessageBoxButtons.YesNo, TaskDialogIcon.Warning, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.No Then
+          If MsgDlg(Me, Join(RequiredFor.ToArray, vbNewLine), "The following Windows features will also be turned off because they are dependent on " & e.Node.Text & ". Do you want to continue?", "Windows Features", MessageBoxButtons.YesNo, TaskDialogIcon.Warning, MessageBoxDefaultButton.Button1, , "Dependent Features") = Windows.Forms.DialogResult.No Then
             e.Cancel = True
             Return
           End If
         End If
       Else
         If RequiredFor.Count > 0 Then
-          If MsgDlg(Me, Join(RequiredFor.ToArray, vbNewLine) & vbNewLine & "Other Windows features and programs on your computer might also be affected, including default settings." & vbNewLine & "<a href=""" & sLearnMoreURL & """>Go online to learn more</a>", "The following Windows features will also be turned off because they are dependent on " & e.Node.Text & ". Do you want to continue?", "Windows Features", MessageBoxButtons.YesNo, TaskDialogIcon.Warning, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.No Then
+          If MsgDlg(Me, Join(RequiredFor.ToArray, vbNewLine) & vbNewLine & "Other Windows features and programs on your computer might also be affected, including default settings." & vbNewLine & "<a href=""" & sLearnMoreURL & """>Go online to learn more</a>", "The following Windows features will also be turned off because they are dependent on " & e.Node.Text & ". Do you want to continue?", "Windows Features", MessageBoxButtons.YesNo, TaskDialogIcon.Warning, MessageBoxDefaultButton.Button1, , "Dependent Features") = Windows.Forms.DialogResult.No Then
             e.Cancel = True
             Return
           End If
         Else
-          If MsgDlg(Me, "<a href=""" & sLearnMoreURL & """>Go online to learn more</a>", "Turning off " & e.Node.Text & " might affect other Windows features and programs installed on your computer, including default settings. Do you want to continue?", "Windows Features", MessageBoxButtons.YesNo, TaskDialogIcon.Information, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.No Then
+          If MsgDlg(Me, "<a href=""" & sLearnMoreURL & """>Go online to learn more</a>", "Turning off " & e.Node.Text & " might affect other Windows features and programs installed on your computer, including default settings. Do you want to continue?", "Windows Features", MessageBoxButtons.YesNo, TaskDialogIcon.Information, MessageBoxDefaultButton.Button1, , "Dependent Features") = Windows.Forms.DialogResult.No Then
             e.Cancel = True
           End If
         End If
@@ -221,7 +221,7 @@
         For Each sRequirement As String In RequiredFeatures(e.Node.Text)
           Dim requiredNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find("tvn" & sRequirement.Replace(" ", "_"), True))
           If requiredNode Is Nothing Then
-            MsgDlg(Me, "The feature " & e.Node.Text & " requires another feature, " & sRequirement & ", which could not be found!", "A required feature is missing from the feature list.", "Windows Features", MessageBoxButtons.OK, TaskDialogIcon.Information)
+            MsgDlg(Me, "The feature " & e.Node.Text & " requires another feature, " & sRequirement & ", which could not be found!", "A required feature is missing from the feature list.", "Windows Features", MessageBoxButtons.OK, TaskDialogIcon.Information, , , "Missing Feature")
             e.Node.Checked = False
           Else
             If Not requiredNode.Checked Then requiredNode.Checked = True
@@ -340,7 +340,7 @@
         DisplayFeatures()
         PositionViews()
       Else
-        MsgDlg(Me, "The Features list could not be loaded. See the Output Console for details.", "Error loading features.", "Feature List Empty", MessageBoxButtons.OK, TaskDialogIcon.Bad)
+        MsgDlg(Me, "The Features list could not be loaded. See the Output Console for details.", "Error loading features.", "Feature List Empty", MessageBoxButtons.OK, TaskDialogIcon.Bad, , , "No Features")
       End If
     End If
   End Sub
@@ -402,7 +402,7 @@
         DisplayUpdates()
         PositionViews()
       Else
-        MsgDlg(Me, "The Integrated Updates list could not be loaded. See the Output Console for details.", "Error loading integrated updates.", "Update List Empty", MessageBoxButtons.OK, TaskDialogIcon.Bad)
+        MsgDlg(Me, "The Integrated Updates list could not be loaded. See the Output Console for details.", "Error loading integrated updates.", "Update List Empty", MessageBoxButtons.OK, TaskDialogIcon.Bad, , , "No Updates")
       End If
     End If
   End Sub
@@ -597,7 +597,7 @@
         DisplayDrivers()
         PositionViews()
       Else
-        MsgDlg(Me, "The Driver list could not be loaded. See the Output Console for details.", "Error loading drivers.", "Driver List Empty", MessageBoxButtons.OK, TaskDialogIcon.Bad)
+        MsgDlg(Me, "The Driver list could not be loaded. See the Output Console for details.", "Error loading drivers.", "Driver List Empty", MessageBoxButtons.OK, TaskDialogIcon.Bad, , , "No Drivers")
       End If
     End If
   End Sub

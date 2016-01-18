@@ -29,11 +29,12 @@
         .FileName = "Slips7ream",
         .Filter = "Directories|",
         .OverwritePrompt = False,
-        .ShowHelp = False,
+        .ShowHelp = True,
         .InitialDirectory = IIf(String.IsNullOrEmpty(txtTemp.Text), IO.Path.GetTempPath, IO.Path.GetDirectoryName(IO.Path.GetDirectoryName(IIf(txtTemp.Text.EndsWith(IO.Path.DirectorySeparatorChar), txtTemp.Text, txtTemp.Text & IO.Path.DirectorySeparatorChar)))),
         .Title = "Select a Directory for SLIPS7REAM to work in...",
         .ValidateNames = True
       }
+      AddHandler dirDlg.HelpRequest, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "2_Configuration\2.1_Temp_Directory_Path.htm")
       If dirDlg.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then txtTemp.Text = IIf(dirDlg.FileName.EndsWith(IO.Path.DirectorySeparatorChar), dirDlg.FileName, dirDlg.FileName & IO.Path.DirectorySeparatorChar)
     End Using
   End Sub
@@ -68,11 +69,12 @@
         .CheckFileExists = True,
         .FileName = "Slips7ream",
         .Filter = "Sound Files|*.wav|All Files|*.*",
-        .ShowHelp = False,
+        .ShowHelp = True,
         .InitialDirectory = defDir,
         .Title = "Select an Alert sound to play when SLIPS7REAM is done...",
         .ValidateNames = True
       }
+      AddHandler alertDlg.HelpRequest, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "2_Configuration\2.4_Alert_on_Complete.htm")
       If alertDlg.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then txtAlertPath.Text = alertDlg.FileName
     End Using
   End Sub
@@ -92,10 +94,10 @@
       Try
         My.Computer.Audio.Play(txtAlertPath.Text, AudioPlayMode.Background)
       Catch ex As Exception
-        MsgDlg(Me, "The Alert sound file failed to play!", "File could not be played.", "Alert File Error", MessageBoxButtons.OK, TaskDialogIcon.MusicFile, , ex.Message)
+        MsgDlg(Me, "The Alert sound file failed to play!", "File could not be played.", "Alert File Error", MessageBoxButtons.OK, TaskDialogIcon.MusicFile, , ex.Message, "Alert File Failure")
       End Try
     Else
-      MsgDlg(Me, "The Alert sound file does not exist!", "File could not be played.", "Alert File Error", MessageBoxButtons.OK, TaskDialogIcon.MusicFile)
+      MsgDlg(Me, "The Alert sound file does not exist!", "File could not be played.", "Alert File Error", MessageBoxButtons.OK, TaskDialogIcon.MusicFile, , , "Alert File Missing")
     End If
   End Sub
   Private Sub lblDonate_LinkClicked(sender As System.Object, e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles lblDonate.LinkClicked
@@ -109,7 +111,7 @@
       mySettings.TempDir = txtTemp.Text
     Else
       txtTemp.Focus()
-      MsgDlg(Me, "Please choose a directory that exists to put the Temp directory in.", "Unable to find parent directory.", "Folder Not Found", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder, , """" & sDir & """ does not exist.")
+      MsgDlg(Me, "Please choose a directory that exists to put the Temp directory in.", "Unable to find parent directory.", "Folder Not Found", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder, , """" & sDir & """ does not exist.", "Temp Folder Not Found")
       Return
     End If
     mySettings.x86WhiteList = Split(txtWhitelist.Text, vbNewLine)

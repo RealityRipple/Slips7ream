@@ -235,7 +235,7 @@
           sProc = "update parsing"
           sTitle = "Loading Updates"
       End Select
-      If MsgDlg(Me, "Do you want to cancel the " & sProc & " proceess and close SLIPS7REAM?", "SLIPS7REAM is busy " & sActivity & ".", "Stop " & sTitle & " and Close?", MessageBoxButtons.YesNo, TaskDialogIcon.Question, MessageBoxDefaultButton.Button2) = Windows.Forms.DialogResult.No Then
+      If MsgDlg(Me, "Do you want to cancel the " & sProc & " proceess and close SLIPS7REAM?", "SLIPS7REAM is busy " & sActivity & ".", "Stop " & sTitle & " and Close?", MessageBoxButtons.YesNo, TaskDialogIcon.Question, MessageBoxDefaultButton.Button2, , "Stop " & sTitle & " and Close") = Windows.Forms.DialogResult.No Then
         e.Cancel = True
         Return
       End If
@@ -610,6 +610,8 @@
       cdlBrowse.Filter = "INSTALL.WIM Sources|*.WIM;*.ISO|INSTALL.WIM|*.WIM|Windows 7 ISO|*.ISO|All Files|*.*"
       cdlBrowse.Title = "Choose INSTALL.WIM Image..."
       cdlBrowse.ShowReadOnly = False
+      cdlBrowse.ShowHelp = True
+      AddHandler cdlBrowse.HelpRequest, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.1_INSTALL.WIM.htm")
       If Not String.IsNullOrEmpty(txtWIM.Text) Then cdlBrowse.InitialDirectory = txtWIM.Text
       If cdlBrowse.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
         txtWIM.Text = cdlBrowse.FileName
@@ -684,6 +686,8 @@
       cdlBrowse.Filter = "Service Pack EXE|*.EXE|All Files|*.*"
       cdlBrowse.Title = "Choose Windows 7 Service Pack 1 EXE..."
       cdlBrowse.ShowReadOnly = False
+      cdlBrowse.ShowHelp = True
+      AddHandler cdlBrowse.HelpRequest, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.4_Service_Pack.htm")
       If Not String.IsNullOrEmpty(txtSP.Text) Then cdlBrowse.InitialDirectory = txtSP.Text
       If cdlBrowse.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
         txtSP.Text = cdlBrowse.FileName
@@ -708,6 +712,8 @@
       cdlBrowse.Filter = "Service Pack EXE|*.EXE|All Files|*.*"
       cdlBrowse.Title = "Choose Windows 7 x64 Service Pack 1 EXE..."
       cdlBrowse.ShowReadOnly = False
+      cdlBrowse.ShowHelp = True
+      AddHandler cdlBrowse.HelpRequest, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.4_Service_Pack.htm")
       If Not String.IsNullOrEmpty(txtSP64.Text) Then cdlBrowse.InitialDirectory = txtSP64.Text
       If cdlBrowse.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
         txtSP64.Text = cdlBrowse.FileName
@@ -879,7 +885,7 @@
       End If
       RedoColumns()
       If FailCollection.Count > 0 Then
-        MsgDlg(Me, "Some files could not be added to the Update List." & vbNewLine & "Click View Details to see a complete list.", "Unable to add files to the Update List.", "Error Adding Updates", MessageBoxButtons.OK, TaskDialogIcon.WindowsUpdate, , CleanupFailures(FailCollection))
+        MsgDlg(Me, "Some files could not be added to the Update List." & vbNewLine & "Click View Details to see a complete list.", "Unable to add files to the Update List.", "Error Adding Updates", MessageBoxButtons.OK, TaskDialogIcon.WindowsUpdate, , CleanupFailures(FailCollection), "Error Adding Updates")
       End If
       SetStatus("Idle")
     Else
@@ -1042,6 +1048,8 @@
       cdlBrowse.Title = "Add Windows Updates..."
       cdlBrowse.Multiselect = True
       cdlBrowse.ShowReadOnly = False
+      cdlBrowse.ShowHelp = True
+      AddHandler cdlBrowse.HelpRequest, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm")
       If cdlBrowse.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
         Dim FailCollection As New List(Of String)
         Dim FileCount As Integer = cdlBrowse.FileNames.Count
@@ -1099,7 +1107,7 @@
         End If
         RedoColumns()
         If FailCollection.Count > 0 Then
-          MsgDlg(Me, "Some files could not be added to the Update List." & vbNewLine & "Click View Details to see a complete list.", "Unable to add files to the Update List.", "Error Adding Updates", MessageBoxButtons.OK, TaskDialogIcon.WindowsUpdate, , CleanupFailures(FailCollection))
+          MsgDlg(Me, "Some files could not be added to the Update List." & vbNewLine & "Click View Details to see a complete list.", "Unable to add files to the Update List.", "Error Adding Updates", MessageBoxButtons.OK, TaskDialogIcon.WindowsUpdate, , CleanupFailures(FailCollection), "Error Adding Updates")
         End If
       End If
     End Using
@@ -1671,7 +1679,7 @@
   End Sub
   Private Sub cmdClearMSU_Click(sender As System.Object, e As System.EventArgs) Handles cmdClearMSU.Click
     If lvMSU.Items.Count > 0 Then
-      If MsgDlg(Me, IIf(lvMSU.Items.Count > 2, "All " & lvMSU.Items.Count & " updates", "All updates") & " will be removed from the list.", "Do you want to clear the Update List?", "Remove All Updates", MessageBoxButtons.YesNo, TaskDialogIcon.Delete, MessageBoxDefaultButton.Button2) = Windows.Forms.DialogResult.Yes Then
+      If MsgDlg(Me, IIf(lvMSU.Items.Count > 2, "All " & lvMSU.Items.Count & " updates", "All updates") & " will be removed from the list.", "Do you want to clear the Update List?", "Remove All Updates", MessageBoxButtons.YesNo, TaskDialogIcon.Delete, MessageBoxDefaultButton.Button2, , "Remove All Updates") = Windows.Forms.DialogResult.Yes Then
         lvMSU.Items.Clear()
         SetStatus("Idle")
         RedoColumns()
@@ -2273,6 +2281,8 @@
       cdlBrowse.Filter = "Windows 7 ISO|*.ISO|All Files|*.*"
       cdlBrowse.Title = "Choose ISO to Save Image To"
       cdlBrowse.ShowReadOnly = False
+      cdlBrowse.ShowHelp = True
+      AddHandler cdlBrowse.HelpRequest, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.6_Save_to_ISO.htm")
       If Not String.IsNullOrEmpty(txtISO.Text) Then cdlBrowse.InitialDirectory = txtISO.Text
       If cdlBrowse.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
         txtISO.Text = cdlBrowse.FileName
@@ -2436,6 +2446,8 @@
       cdlBrowse.Filter = "INSTALL.WIM Sources|*.WIM;*.ISO|INSTALL.WIM|*.WIM|Windows 7 ISO|*.ISO|All Files|*.*"
       cdlBrowse.Title = "Choose INSTALL.WIM Image to Merge"
       cdlBrowse.ShowReadOnly = False
+      cdlBrowse.ShowHelp = True
+      AddHandler cdlBrowse.HelpRequest, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.2_Merge_WIM.htm")
       If Not String.IsNullOrEmpty(txtMerge.Text) Then cdlBrowse.InitialDirectory = txtMerge.Text
       If cdlBrowse.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
         txtMerge.Text = cdlBrowse.FileName
@@ -2681,7 +2693,7 @@
   End Sub
   Private Sub cmdLoadPackages_Click(sender As System.Object, e As System.EventArgs) Handles cmdLoadPackages.Click
     If (Not chkLoadFeatures.Checked) And (Not chkLoadUpdates.Checked) And (Not chkLoadDrivers.Checked) Then
-      MsgDlg(Me, "You must select which data you wish to load from the Image Packages before beginning the procedure.", "No Data Selected", "Parse Image Packages", MessageBoxButtons.OK, TaskDialogIcon.ControlPanel)
+      MsgDlg(Me, "You must select which data you wish to load from the Image Packages before beginning the procedure.", "No Data Selected", "Parse Image Packages", MessageBoxButtons.OK, TaskDialogIcon.ControlPanel, , , "No Parse Data Selected")
       Return
     End If
     cmdLoadPackages.Image = My.Resources.u_i
@@ -3383,10 +3395,10 @@
         Try
           Process.Start("explorer.exe", "/select," & sPath)
         Catch ex As Exception
-          MsgDlg(Me, "Unable to open the folder for """ & sPath & """!", "Unable to open folder.", "Folder was not found.", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder, , ex.Message)
+          MsgDlg(Me, "Unable to open the folder for """ & sPath & """!", "Unable to open folder.", "Folder was not found.", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder, , ex.Message, "Open Folder Folder Missing")
         End Try
       Else
-        MsgDlg(Me, "Unable to find the file """ & sPath & """!", "Unable to find completed Image.", "File was not found.", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder)
+        MsgDlg(Me, "Unable to find the file """ & sPath & """!", "Unable to find completed Image.", "File was not found.", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder, , , "Open Folder File Missing")
       End If
     End If
   End Sub
@@ -3419,7 +3431,7 @@
             sProc = "update parsing"
             sTitle = "Loading Updates"
         End Select
-        If MsgDlg(Me, "Do you want to cancel the " & sProc & " proceess?", "SLIPS7REAM is busy " & sActivity & ".", "Stop " & sTitle & "?", MessageBoxButtons.YesNo, TaskDialogIcon.Question, MessageBoxDefaultButton.Button2) = Windows.Forms.DialogResult.No Then
+        If MsgDlg(Me, "Do you want to cancel the " & sProc & " proceess?", "SLIPS7REAM is busy " & sActivity & ".", "Stop " & sTitle & "?", MessageBoxButtons.YesNo, TaskDialogIcon.Question, MessageBoxDefaultButton.Button2, , "Stop " & sTitle) = Windows.Forms.DialogResult.No Then
           Return
         End If
       End If
@@ -4143,15 +4155,15 @@
     Select Case sRet
       Case "OK"
       Case "CRC Error"
-        MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction " & sRet)
       Case "Data Error"
-        MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction " & sRet)
       Case "Unsupported Method"
-        MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction " & sRet)
       Case "File Not Found"
-        MsgDlg(Me, "Unable to find files in " & IO.Path.GetFileName(Source) & "!", "The files were not found.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        MsgDlg(Me, "Unable to find files in " & IO.Path.GetFileName(Source) & "!", "The files were not found.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction " & sRet)
       Case Else
-        MsgDlg(Me, sRet, "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        MsgDlg(Me, sRet, "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction Error")
     End Select
   End Sub
   Private Sub AsyncExtractAllFiles(Obj As Object)
@@ -4208,15 +4220,15 @@
     Select Case sRet
       Case "OK"
       Case "CRC Error"
-        MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction " & sRet)
       Case "Data Error"
-        MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction " & sRet)
       Case "Unsupported Method"
-        MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to extract files!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction " & sRet)
       Case "File Not Found"
-        MsgDlg(Me, "Unable to find files in " & IO.Path.GetFileName(Source) & "!", "The files were not found.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        MsgDlg(Me, "Unable to find files in " & IO.Path.GetFileName(Source) & "!", "The files were not found.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction " & sRet)
       Case Else
-        MsgDlg(Me, sRet, "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        MsgDlg(Me, sRet, "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction Error")
     End Select
   End Sub
   Private Sub AsyncExtractFiles(Obj As Object)
@@ -4277,15 +4289,15 @@
     Select Case sRet
       Case "OK"
       Case "CRC Error"
-        MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to extract """ & File & """!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to extract """ & File & """!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction " & sRet)
       Case "Data Error"
-        MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to extract """ & File & """!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to extract """ & File & """!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction " & sRet)
       Case "Unsupported Method"
-        MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to extract """ & File & """!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to extract """ & File & """!", "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction " & sRet)
       Case "File Not Found"
-        MsgDlg(Me, "Unable to find """ & File & """ in " & IO.Path.GetFileName(Source) & "!", "The file was not found.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        MsgDlg(Me, "Unable to find """ & File & """ in " & IO.Path.GetFileName(Source) & "!", "The file was not found.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction " & sRet)
       Case Else
-        MsgDlg(Me, sRet, "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+        MsgDlg(Me, sRet, "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction Error")
     End Select
   End Sub
   Private Sub AsyncExtractAFile(Obj As Object)
@@ -4350,17 +4362,17 @@
     Else
       Select Case sRet
         Case "CRC Error"
-          MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to read the file list!", "There was an error while reading.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+          MsgDlg(Me, "CRC Error in " & IO.Path.GetFileName(Source) & " while attempting to read the file list!", "There was an error while reading.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction " & sRet)
         Case "Data Error"
-          MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to read the file list!", "There was an error while reading.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+          MsgDlg(Me, "Data Error in " & IO.Path.GetFileName(Source) & " while attempting to read the file list!", "There was an error while reading.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction " & sRet)
         Case "Unsupported Method"
-          MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to read the file list!", "There was an error while extracting.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+          MsgDlg(Me, "Unsupported Method in " & IO.Path.GetFileName(Source) & " while attempting to read the file list!", "There was an error while extracting.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction " & sRet)
         Case "File Not Found"
-          MsgDlg(Me, "Unable to read any files in " & IO.Path.GetFileName(Source) & "!", "Files were not found.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+          MsgDlg(Me, "Unable to read any files in " & IO.Path.GetFileName(Source) & "!", "Files were not found.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction " & sRet)
         Case "File List Busy"
-          MsgDlg(Me, "Unable to read the file list in " & IO.Path.GetFileName(Source) & "!", "File list was busy.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+          MsgDlg(Me, "Unable to read the file list in " & IO.Path.GetFileName(Source) & "!", "File list was busy.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction " & sRet)
         Case Else
-          MsgDlg(Me, sRet, "There was an error while reading.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+          MsgDlg(Me, sRet, "There was an error while reading.", "File read error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction Error")
       End Select
       Return Nothing
     End If
@@ -4423,15 +4435,15 @@
     If Message = "OK" Then
       Return False
     ElseIf Message.StartsWith("CRC Error") Then
-      MsgDlg(Me, "CRC Error in compressed file!" & vbNewLine & Message.Substring(Message.IndexOf("|") + 1), "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+      MsgDlg(Me, "CRC Error in compressed file!" & vbNewLine & Message.Substring(Message.IndexOf("|") + 1), "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction CRC Error")
     ElseIf Message.StartsWith("Data Error") Then
-      MsgDlg(Me, "Data Error in compressed file!" & vbNewLine & Message.Substring(Message.IndexOf("|") + 1), "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+      MsgDlg(Me, "Data Error in compressed file!" & vbNewLine & Message.Substring(Message.IndexOf("|") + 1), "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction Data Error")
     ElseIf Message.StartsWith("Unsupported Method") Then
-      MsgDlg(Me, "Unsupported Method in compressed file!" & vbNewLine & Message.Substring(Message.IndexOf("|") + 1), "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+      MsgDlg(Me, "Unsupported Method in compressed file!" & vbNewLine & Message.Substring(Message.IndexOf("|") + 1), "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction Unsupported Method")
     ElseIf Message.StartsWith("File Not Found") Then
-      MsgDlg(Me, "Unable to find expected file in compressed file!" & vbNewLine & Message.Substring(Message.IndexOf("|") + 1), "The file was not found.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+      MsgDlg(Me, "Unable to find expected file in compressed file!" & vbNewLine & Message.Substring(Message.IndexOf("|") + 1), "The file was not found.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction File Not Found")
     Else
-      MsgDlg(Me, Message, "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error)
+      MsgDlg(Me, Message, "There was an error while extracting.", "File extraction error.", MessageBoxButtons.OK, TaskDialogIcon.Error, , , "Extraction Error")
     End If
     Return True
   End Function
@@ -4721,7 +4733,7 @@
         SetStatus("Active Mount Detected!")
         cmdConfig.Focus()
         Beep()
-        MsgDlg(Me, "The selected Temp directory has an active mount that could not be removed. Please restart your computer or change your Temp directory before continuing.", "Active mount has been detected.", "Unable to Begin Slipstream Process", MessageBoxButtons.OK, TaskDialogIcon.DriveLocked)
+        MsgDlg(Me, "The selected Temp directory has an active mount that could not be removed. Please restart your computer or change your Temp directory before continuing.", "Active mount has been detected.", "Unable to Begin Slipstream Process", MessageBoxButtons.OK, TaskDialogIcon.DriveLocked, , , "Active Mount")
         Return
       End If
       SetStatus("Clearing Old Data...")
@@ -5217,7 +5229,7 @@
               WriteToOutput("Deleting """ & sUEFIBootDir & """...")
               SlowDeleteDirectory(sUEFIBootDir, FileIO.DeleteDirectoryOption.DeleteAllContents)
               chkUEFI.Checked = False
-              MsgDlg(Me, "Unable to find the file """ & IO.Path.DirectorySeparatorChar & "Windows" & IO.Path.DirectorySeparatorChar & "Boot" & IO.Path.DirectorySeparatorChar & "EFI" & IO.Path.DirectorySeparatorChar & "bootmgfw.efi"" in Image!", "Unable to enable UEFI Boot.", "File was not found.", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder)
+              MsgDlg(Me, "Unable to find the file """ & IO.Path.DirectorySeparatorChar & "Windows" & IO.Path.DirectorySeparatorChar & "Boot" & IO.Path.DirectorySeparatorChar & "EFI" & IO.Path.DirectorySeparatorChar & "bootmgfw.efi"" in Image!", "Unable to enable UEFI Boot.", "File was not found.", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder, , , "EFI File Not Found")
             End If
           Else
             chkUEFI.Checked = False
@@ -5225,7 +5237,7 @@
           End If
         Else
           chkUEFI.Checked = False
-          MsgDlg(Me, "Unable to find the folder """ & IO.Path.DirectorySeparatorChar & "efi" & IO.Path.DirectorySeparatorChar & "microsoft" & IO.Path.DirectorySeparatorChar & "boot" & IO.Path.DirectorySeparatorChar & """ in ISO!", "Unable to enable UEFI Boot.", "Folder was not found.", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder)
+          MsgDlg(Me, "Unable to find the folder """ & IO.Path.DirectorySeparatorChar & "efi" & IO.Path.DirectorySeparatorChar & "microsoft" & IO.Path.DirectorySeparatorChar & "boot" & IO.Path.DirectorySeparatorChar & """ in ISO!", "Unable to enable UEFI Boot.", "Folder was not found.", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder, , , "EFI Folder Not Found")
         End If
       End If
       If Not NoMount Then

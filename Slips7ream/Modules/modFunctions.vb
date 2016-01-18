@@ -690,7 +690,7 @@ Public Module modFunctions
     If sRet = "OK" Then
       Return True
     Else
-      MsgDlg(frmMain, sRet, "Unable to " & IIf(Move, "move ", "copy ") & IO.Path.GetFileNameWithoutExtension(File) & ".", "File Transfer Failure", MessageBoxButtons.OK, TaskDialogIcon.HardDrive)
+      MsgDlg(frmMain, sRet, "Unable to " & IIf(Move, "move ", "copy ") & IO.Path.GetFileNameWithoutExtension(File) & ".", "File Transfer Failure", MessageBoxButtons.OK, TaskDialogIcon.HardDrive, "Slow Copy File Transfer Failure")
       Return False
     End If
   End Function
@@ -1736,7 +1736,7 @@ Public Module modFunctions
     Error2 = &HFFFE
     Warning2 = &HFFFF
   End Enum
-  Public Function MsgDlg(owner As Form, Text As String, Optional Title As String = Nothing, Optional Caption As String = Nothing, Optional Buttons As MessageBoxButtons = MessageBoxButtons.OK, Optional Icon As TaskDialogIcon = TaskDialogIcon.None, Optional DefaultButton As MessageBoxDefaultButton = MessageBoxDefaultButton.Button1, Optional Details As String = Nothing) As DialogResult
+  Public Function MsgDlg(owner As Form, Text As String, Optional Title As String = Nothing, Optional Caption As String = Nothing, Optional Buttons As MessageBoxButtons = MessageBoxButtons.OK, Optional Icon As TaskDialogIcon = TaskDialogIcon.None, Optional DefaultButton As MessageBoxDefaultButton = MessageBoxDefaultButton.Button1, Optional Details As String = Nothing, Optional HelpTopic As String = Nothing) As DialogResult
     If owner.Name = "frmMain" Then
       Dim main As frmMain = owner
       If main.pbTotal.Visible AndAlso main.taskBar IsNot Nothing Then main.taskBar.SetProgressState(main.Handle, TaskbarLib.TBPFLAG.TBPF_ERROR)
@@ -1859,6 +1859,12 @@ Public Module modFunctions
               dlgMessage.Controls.Add(cmdRetry)
               dlgMessage.Controls.Add(cmdIgnore)
           End Select
+          If Not String.IsNullOrEmpty(HelpTopic) Then
+            Dim cmdHelp As New TaskDialogButton("cmdHelp", "&Help")
+            cmdHelp.Default = False
+            AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, HelpTopicPath(HelpTopic))
+            dlgMessage.Controls.Add(cmdHelp)
+          End If
           If Not String.IsNullOrEmpty(Details) Then
             dlgMessage.DetailsExpanded = False
             dlgMessage.DetailsCollapsedLabel = "View Details"
@@ -1872,7 +1878,7 @@ Public Module modFunctions
           Try
             ret = dlgMessage.Show()
           Catch ex As Exception
-            Return MsgDlgLegacy(owner, Text, Title, Caption, Buttons, Icon, DefaultButton, Details)
+            Return MsgDlgLegacy(owner, Text, Title, Caption, Buttons, Icon, DefaultButton, Details, HelpTopic)
           End Try
           Select Case ret
             Case TaskDialogResult.Yes : Return DialogResult.Yes
@@ -1885,7 +1891,7 @@ Public Module modFunctions
           Return DialogResult.None
         End Using
       Else
-        Return MsgDlgLegacy(owner, Text, Title, Caption, Buttons, Icon, DefaultButton, Details)
+        Return MsgDlgLegacy(owner, Text, Title, Caption, Buttons, Icon, DefaultButton, Details, HelpTopic)
       End If
     Finally
       If owner.Name = "frmMain" Then
@@ -1905,7 +1911,7 @@ Public Module modFunctions
     Catch ex As Exception
     End Try
   End Sub
-  Private Function MsgDlgLegacy(owner As Form, Text As String, Optional Title As String = Nothing, Optional Caption As String = Nothing, Optional Buttons As MessageBoxButtons = MessageBoxButtons.OK, Optional Icon As TaskDialogIcon = TaskDialogIcon.None, Optional DefaultButton As MessageBoxDefaultButton = MessageBoxDefaultButton.Button1, Optional Details As String = Nothing) As DialogResult
+  Private Function MsgDlgLegacy(owner As Form, Text As String, Optional Title As String = Nothing, Optional Caption As String = Nothing, Optional Buttons As MessageBoxButtons = MessageBoxButtons.OK, Optional Icon As TaskDialogIcon = TaskDialogIcon.None, Optional DefaultButton As MessageBoxDefaultButton = MessageBoxDefaultButton.Button1, Optional Details As String = Nothing, Optional HelpTopic As String = Nothing) As DialogResult
     Dim Content As String
     If String.IsNullOrEmpty(Title) And String.IsNullOrEmpty(Text) Then
       Content = String.Empty
@@ -1931,7 +1937,46 @@ Public Module modFunctions
           Case MessageBoxButtons.AbortRetryIgnore : msgIcon = MessageBoxIcon.Warning
         End Select
     End Select
-    Return MessageBox.Show(owner, Content, Caption, Buttons, msgIcon, DefaultButton)
+    If Not String.IsNullOrEmpty(HelpTopic) Then
+      Return MessageBox.Show(owner, Content, Caption, Buttons, msgIcon, DefaultButton, 0, "S7M.chm", HelpNavigator.Topic, HelpTopicPath(HelpTopic))
+    Else
+      Return MessageBox.Show(owner, Content, Caption, Buttons, msgIcon, DefaultButton)
+    End If
+  End Function
+  Private Function HelpTopicPath(helpTopic As String) As String
+    Select Case helpTopic
+      Case "Error Adding Updates" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.1_Error_Adding_Updates.htm"
+      Case "Remove All Updates" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.2_Remove_All_Updates.htm"
+      Case "No Parse Data Selected" : Return "1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm"
+      Case "Open Folder File Missing" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.3_Open_Folder_Missing.htm#file"
+      Case "Open Folder Folder Missing" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.3_Open_Folder_Missing.htm#folder"
+      Case "Extraction CRC Error" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.4_Extraction_Error.htm#crc_error"
+      Case "Extraction Data Error" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.4_Extraction_Error.htm#data_error"
+      Case "Extraction Unsupported Method" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.4_Extraction_Error.htm#unsupported_method"
+      Case "Extraction File Not Found" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.4_Extraction_Error.htm#file_not_found"
+      Case "Extraction Error" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.4_Extraction_Error.htm#other_error"
+      Case "Active Mount" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.5_Active_Mount.htm"
+      Case "EFI File Not Found" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.6_EFI_Missing.htm#file_not_found"
+      Case "EFI Folder Not Found" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.6_EFI_Missing.htm#folder_not_found"
+      Case "Stop Integrating" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.7_Interrupt.htm#integration"
+      Case "Stop Integrating and Close" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.7_Interrupt.htm#integration_close"
+      Case "Stop Loading Package Data" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.7_Interrupt.htm#packages"
+      Case "Stop Loading Package Data and Close" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.7_Interrupt.htm#packages_close"
+      Case "Stop Loading Updates" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.7_Interrupt.htm#updates"
+      Case "Stop Loading Updates and Close" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.7_Interrupt.htm#updates_close"
+      Case "Alert File Failure" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.8_Alert_Problem.htm#failure"
+      Case "Alert File Missing" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.8_Alert_Problem.htm#missing"
+      Case "Temp Folder Not Found" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.9_Temp_Folder_Missing.htm"
+      Case "Dependent Features" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.10_Dependent_Features.htm"
+      Case "Missing Feature" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.10_Dependent_Features.htm#missing"
+      Case "No Features" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.11_Package_Failure.htm#features"
+      Case "No Updates" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.11_Package_Failure.htm#updates"
+      Case "No Drivers" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.11_Package_Failure.htm#drivers"
+      Case "Slow Copy File Transfer Failure" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.12_File_Transfer_Failure.htm"
+      Case Else
+        Debug.Print("No Help Page for """ & helpTopic & """")
+        Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.0_Dialogs.htm"
+    End Select
   End Function
 #End Region
 End Module
