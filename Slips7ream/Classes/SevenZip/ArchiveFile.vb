@@ -63,7 +63,7 @@ Namespace Extraction
       If archive Is Nothing Then Throw New ArgumentNullException("archive")
       Me.m_archive = archive
       Me.c_format = ArchiveFormat.GetClassIdFromKnownFormat(format)
-      If Not archive.Exists Then Throw New FileNotFoundException("archive")
+      If Not archive.Exists Then Throw New FileNotFoundException("Empty List supplied")
       current = archive
     End Sub
     Public Event ExtractFile As EventHandler(Of ExtractFileEventArgs) Implements IArchiveFile.ExtractFile
