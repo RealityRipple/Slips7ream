@@ -1,4 +1,5 @@
-﻿Public Class frmConfig
+﻿Imports Microsoft.WindowsAPICodePack.Dialogs
+Public Class frmConfig
   Private mySettings As MySettings
   Private Sub frmConfig_Load(sender As Object, e As System.EventArgs) Handles Me.Load
     mySettings = New MySettings
@@ -20,22 +21,26 @@
     chkDefault.Checked = String.IsNullOrEmpty(mySettings.AlertNoisePath)
   End Sub
   Private Sub cmdTemp_Click(sender As System.Object, e As System.EventArgs) Handles cmdTemp.Click
-    Using dirDlg As New SaveFileDialog With
-      {
-        .AddExtension = False,
-        .CheckPathExists = True,
-        .CheckFileExists = False,
-        .CreatePrompt = False,
-        .FileName = "Slips7ream",
-        .Filter = "Directories|",
-        .OverwritePrompt = False,
-        .ShowHelp = True,
-        .InitialDirectory = IIf(String.IsNullOrEmpty(txtTemp.Text), IO.Path.GetTempPath, IO.Path.GetDirectoryName(IO.Path.GetDirectoryName(IIf(txtTemp.Text.EndsWith(IO.Path.DirectorySeparatorChar), txtTemp.Text, txtTemp.Text & IO.Path.DirectorySeparatorChar)))),
-        .Title = "Select a Directory for SLIPS7REAM to work in...",
-        .ValidateNames = True
-      }
-      AddHandler dirDlg.HelpRequest, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "2_Configuration\2.1_Temp_Directory_Path.htm")
-      If dirDlg.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then txtTemp.Text = IIf(dirDlg.FileName.EndsWith(IO.Path.DirectorySeparatorChar), dirDlg.FileName, dirDlg.FileName & IO.Path.DirectorySeparatorChar)
+    Using cdlBrowse As New CommonOpenFileDialog
+      cdlBrowse.AllowNonFileSystemItems = False
+      cdlBrowse.Title = "Select a Directory for SLIPS7REAM to work in..."
+      cdlBrowse.AddToMostRecentlyUsedList = True
+      cdlBrowse.EnsureFileExists = True
+      cdlBrowse.EnsurePathExists = True
+      cdlBrowse.EnsureReadOnly = False
+      cdlBrowse.EnsureValidNames = True
+      cdlBrowse.IsFolderPicker = True
+      cdlBrowse.Multiselect = False
+      cdlBrowse.NavigateToShortcut = True
+      cdlBrowse.RestoreDirectory = False
+      cdlBrowse.ShowPlacesList = True
+      cdlBrowse.CookieIdentifier = New Guid("00000000-0000-0000-0000-000000000011")
+      cdlBrowse.AddPlace(IO.Path.GetTempPath, Microsoft.WindowsAPICodePack.Shell.FileDialogAddPlaceLocation.Top)
+      Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
+      cdlBrowse.Controls.Add(cmdHelp)
+      AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "2_Configuration\2.1_Temp_Directory_Path.htm")
+      cdlBrowse.InitialDirectory = IIf(String.IsNullOrEmpty(txtTemp.Text), IO.Path.GetTempPath, IO.Path.GetDirectoryName(IO.Path.GetDirectoryName(IIf(txtTemp.Text.EndsWith(IO.Path.DirectorySeparatorChar), txtTemp.Text, txtTemp.Text & IO.Path.DirectorySeparatorChar))))
+      If cdlBrowse.ShowDialog(Me.Handle) = CommonFileDialogResult.Ok Then txtTemp.Text = IO.Path.Combine(cdlBrowse.FileName, "Slips7ream") & IO.Path.DirectorySeparatorChar
     End Using
   End Sub
   Private Sub txtTimeout_KeyUp(sender As Object, e As System.EventArgs) Handles txtTimeout.KeyUp, txtTimeout.ValueChanged
@@ -58,24 +63,31 @@
   Private Sub cmdAlertBrowse_Click(sender As System.Object, e As System.EventArgs) Handles cmdAlertBrowse.Click
     Dim defDir As String
     If String.IsNullOrEmpty(txtAlertPath.Text) Then
-      defDir = My.Computer.FileSystem.SpecialDirectories.MyDocuments & IO.Path.DirectorySeparatorChar
+      defDir = Environment.GetFolderPath(Environment.SpecialFolder.Windows) & "\Media\"
     Else
       defDir = IO.Path.GetDirectoryName(txtAlertPath.Text)
     End If
-    Using alertDlg As New OpenFileDialog With
-      {
-        .AddExtension = False,
-        .CheckPathExists = True,
-        .CheckFileExists = True,
-        .FileName = "Slips7ream",
-        .Filter = "Sound Files|*.wav|All Files|*.*",
-        .ShowHelp = True,
-        .InitialDirectory = defDir,
-        .Title = "Select an Alert sound to play when SLIPS7REAM is done...",
-        .ValidateNames = True
-      }
-      AddHandler alertDlg.HelpRequest, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "2_Configuration\2.4_Alert_on_Complete.htm")
-      If alertDlg.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then txtAlertPath.Text = alertDlg.FileName
+    Using cdlBrowse As New CommonOpenFileDialog
+      cdlBrowse.AllowNonFileSystemItems = False
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("Sound Files", "WAV"))
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("All Files", "*"))
+      cdlBrowse.Title = "Select an Alert sound to play when SLIPS7REAM is done..."
+      cdlBrowse.AddToMostRecentlyUsedList = True
+      cdlBrowse.EnsureFileExists = True
+      cdlBrowse.EnsurePathExists = True
+      cdlBrowse.EnsureReadOnly = False
+      cdlBrowse.EnsureValidNames = True
+      cdlBrowse.Multiselect = False
+      cdlBrowse.NavigateToShortcut = True
+      cdlBrowse.RestoreDirectory = False
+      cdlBrowse.ShowPlacesList = True
+      cdlBrowse.CookieIdentifier = New Guid("00000000-0000-0000-0000-000000000012")
+      cdlBrowse.AddPlace(Environment.GetFolderPath(Environment.SpecialFolder.Windows) & "\Media\", Microsoft.WindowsAPICodePack.Shell.FileDialogAddPlaceLocation.Top)
+      Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
+      cdlBrowse.Controls.Add(cmdHelp)
+      AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "2_Configuration\2.4_Alert_on_Complete.htm")
+      cdlBrowse.InitialDirectory = defDir
+      If cdlBrowse.ShowDialog(Me.Handle) = CommonFileDialogResult.Ok Then txtAlertPath.Text = cdlBrowse.FileName
     End Using
   End Sub
   Private Sub chkDefault_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles chkDefault.CheckedChanged

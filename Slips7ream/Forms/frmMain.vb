@@ -1,4 +1,5 @@
-﻿Public Class frmMain
+﻿Imports Microsoft.WindowsAPICodePack.Dialogs
+Public Class frmMain
   Implements IMessageFilter
   Public StopRun As Boolean = False
   Friend taskBar As TaskbarLib.TaskbarList
@@ -606,16 +607,27 @@
     End If
   End Sub
   Private Sub cmdWIM_Click(sender As System.Object, e As System.EventArgs) Handles cmdWIM.Click
-    Using cdlBrowse As New OpenFileDialog
-      cdlBrowse.Filter = "INSTALL.WIM Sources|*.WIM;*.ISO|INSTALL.WIM|*.WIM|Windows 7 ISO|*.ISO|All Files|*.*"
+    Using cdlBrowse As New CommonOpenFileDialog
+      cdlBrowse.AllowNonFileSystemItems = False
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("INSTALL.WIM Sources", "WIM,ISO"))
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("INSTALL.WIM", "WIM"))
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("Windows 7 ISO", "ISO"))
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("All Files", "*"))
       cdlBrowse.Title = "Choose INSTALL.WIM Image..."
-      cdlBrowse.ShowReadOnly = False
-      cdlBrowse.ShowHelp = True
-      AddHandler cdlBrowse.HelpRequest, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.1_INSTALL.WIM.htm")
-      If Not String.IsNullOrEmpty(txtWIM.Text) Then cdlBrowse.InitialDirectory = txtWIM.Text
-      If cdlBrowse.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
-        txtWIM.Text = cdlBrowse.FileName
-      End If
+      cdlBrowse.AddToMostRecentlyUsedList = True
+      cdlBrowse.EnsureFileExists = True
+      cdlBrowse.EnsurePathExists = True
+      cdlBrowse.EnsureReadOnly = True
+      cdlBrowse.EnsureValidNames = True
+      cdlBrowse.Multiselect = False
+      cdlBrowse.NavigateToShortcut = True
+      cdlBrowse.RestoreDirectory = False
+      cdlBrowse.ShowPlacesList = True
+      cdlBrowse.CookieIdentifier = New Guid("00000000-0000-0000-0000-000000000001")
+      Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
+      cdlBrowse.Controls.Add(cmdHelp)
+      AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.1_INSTALL.WIM.htm")
+      If cdlBrowse.ShowDialog(Me.Handle) = CommonFileDialogResult.Ok Then txtWIM.Text = cdlBrowse.FileName
     End Using
   End Sub
 #End Region
@@ -682,16 +694,26 @@
     SetStatus("Idle")
   End Sub
   Private Sub cmdSP_Click(sender As System.Object, e As System.EventArgs) Handles cmdSP.Click
-    Using cdlBrowse As New OpenFileDialog
-      cdlBrowse.Filter = "Service Pack EXE|*.EXE|All Files|*.*"
+    Using cdlBrowse As New CommonOpenFileDialog
+      cdlBrowse.AllowNonFileSystemItems = False
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("Service Pack EXE", "EXE"))
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("All Files", "*"))
       cdlBrowse.Title = "Choose Windows 7 Service Pack 1 EXE..."
-      cdlBrowse.ShowReadOnly = False
-      cdlBrowse.ShowHelp = True
-      AddHandler cdlBrowse.HelpRequest, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.4_Service_Pack.htm")
+      cdlBrowse.AddToMostRecentlyUsedList = True
+      cdlBrowse.EnsureFileExists = True
+      cdlBrowse.EnsurePathExists = True
+      cdlBrowse.EnsureReadOnly = True
+      cdlBrowse.EnsureValidNames = True
+      cdlBrowse.Multiselect = False
+      cdlBrowse.NavigateToShortcut = True
+      cdlBrowse.RestoreDirectory = False
+      cdlBrowse.ShowPlacesList = True
+      cdlBrowse.CookieIdentifier = New Guid("00000000-0000-0000-0000-000000000003")
+      Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
+      cdlBrowse.Controls.Add(cmdHelp)
+      AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.4_Service_Pack.htm")
       If Not String.IsNullOrEmpty(txtSP.Text) Then cdlBrowse.InitialDirectory = txtSP.Text
-      If cdlBrowse.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
-        txtSP.Text = cdlBrowse.FileName
-      End If
+      If cdlBrowse.ShowDialog(Me.Handle) = CommonFileDialogResult.Ok Then txtSP.Text = cdlBrowse.FileName
     End Using
   End Sub
 #Region "64-Bit"
@@ -708,16 +730,26 @@
     SetStatus("Idle")
   End Sub
   Private Sub cmdSP64_Click(sender As System.Object, e As System.EventArgs) Handles cmdSP64.Click
-    Using cdlBrowse As New OpenFileDialog
-      cdlBrowse.Filter = "Service Pack EXE|*.EXE|All Files|*.*"
+    Using cdlBrowse As New CommonOpenFileDialog
+      cdlBrowse.AllowNonFileSystemItems = False
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("Service Pack EXE", "EXE"))
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("All Files", "*"))
       cdlBrowse.Title = "Choose Windows 7 x64 Service Pack 1 EXE..."
-      cdlBrowse.ShowReadOnly = False
-      cdlBrowse.ShowHelp = True
-      AddHandler cdlBrowse.HelpRequest, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.4_Service_Pack.htm")
+      cdlBrowse.AddToMostRecentlyUsedList = True
+      cdlBrowse.EnsureFileExists = True
+      cdlBrowse.EnsurePathExists = True
+      cdlBrowse.EnsureReadOnly = True
+      cdlBrowse.EnsureValidNames = True
+      cdlBrowse.Multiselect = False
+      cdlBrowse.NavigateToShortcut = True
+      cdlBrowse.RestoreDirectory = False
+      cdlBrowse.ShowPlacesList = True
+      cdlBrowse.CookieIdentifier = New Guid("00000000-0000-0000-0000-000000000004")
+      Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
+      cdlBrowse.Controls.Add(cmdHelp)
+      AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.4_Service_Pack.htm")
       If Not String.IsNullOrEmpty(txtSP64.Text) Then cdlBrowse.InitialDirectory = txtSP64.Text
-      If cdlBrowse.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
-        txtSP64.Text = cdlBrowse.FileName
-      End If
+      If cdlBrowse.ShowDialog(Me.Handle) = CommonFileDialogResult.Ok Then txtSP64.Text = cdlBrowse.FileName
     End Using
   End Sub
 #End Region
@@ -770,7 +802,7 @@
                 props.lblKBLink.Visible = True
               End If
             End If
-            props.ttLink.SetTooltip(props.lblKBLink, msuData.SupportLink)
+            props.ttLink.SetToolTip(props.lblKBLink, msuData.SupportLink)
             props.Show(Me)
           End If
         End If
@@ -1043,14 +1075,27 @@
   Private Sub cmdAddMSU_Click(sender As System.Object, e As System.EventArgs) Handles cmdAddMSU.Click
     ReplaceAllOldUpdates = TriState.UseDefault
     ReplaceAllNewUpdates = TriState.UseDefault
-    Using cdlBrowse As New OpenFileDialog
-      cdlBrowse.Filter = "All Packages|*.MSU;*.CAB;*.MLC;*.EXE;*.MSI;*.INF|Windows Updates|*.MSU;*.CAB|Language Packs|*.MLC;*.EXE;*.MSI;LP.CAB|Drivers|*.INF|All Files|*.*"
+    Using cdlBrowse As New CommonOpenFileDialog
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("All Packages", "MSU,CAB,MLC,EXE,MSI,INF"))
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("Windows Updates", "MSU,CAB"))
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("Language Packs", "MLC,EXE,MSI,CAB"))
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("Drivers", "INF"))
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("All Files", "*"))
       cdlBrowse.Title = "Add Windows Updates..."
+      cdlBrowse.AddToMostRecentlyUsedList = True
+      cdlBrowse.EnsureFileExists = True
+      cdlBrowse.EnsurePathExists = True
+      cdlBrowse.EnsureReadOnly = True
+      cdlBrowse.EnsureValidNames = True
       cdlBrowse.Multiselect = True
-      cdlBrowse.ShowReadOnly = False
-      cdlBrowse.ShowHelp = True
-      AddHandler cdlBrowse.HelpRequest, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm")
-      If cdlBrowse.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
+      cdlBrowse.NavigateToShortcut = True
+      cdlBrowse.RestoreDirectory = False
+      cdlBrowse.ShowPlacesList = True
+      cdlBrowse.CookieIdentifier = New Guid("00000000-0000-0000-0000-000000000005")
+      Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
+      cdlBrowse.Controls.Add(cmdHelp)
+      AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm")
+      If cdlBrowse.ShowDialog(Me.Handle) = Windows.Forms.DialogResult.OK Then
         Dim FailCollection As New List(Of String)
         Dim FileCount As Integer = cdlBrowse.FileNames.Count
         If FileCount > 2 Then
@@ -1065,7 +1110,7 @@
           SetStatus("Reading Update Information...")
         End If
         lvMSU.SuspendLayout()
-        For I As Integer = 0 To cdlBrowse.FileNames.Length - 1
+        For I As Integer = 0 To cdlBrowse.FileNames.Count - 1
           Dim sUpdate As String = cdlBrowse.FileNames(I)
           If FileCount > 2 Then
             SetTotal(I + 1, FileCount)
@@ -1290,11 +1335,11 @@
             ElseIf ReplaceAllOldUpdates = TriState.False Then
               Return New AddResult(True)
             Else
-              Dim sbRet As Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult = IntegratedUpdateSelectionBox(Me, msuData, InImage, PList.ToArray, always, Comparison.Newer)
-              If sbRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.Yes Then
+              Dim sbRet As TaskDialogResult = IntegratedUpdateSelectionBox(Me, msuData, InImage, PList.ToArray, always, Comparison.Newer)
+              If sbRet = TaskDialogResult.Yes Then
                 If always Then ReplaceAllOldUpdates = TriState.True
                 OnlyUp = True
-              ElseIf sbRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.No Then
+              ElseIf sbRet = TaskDialogResult.No Then
                 If always Then ReplaceAllOldUpdates = TriState.False
                 Return New AddResult(True)
               Else
@@ -1308,11 +1353,11 @@
             ElseIf ReplaceAllNewUpdates = TriState.False Then
               Return New AddResult(True)
             Else
-              Dim sbRet As Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult = IntegratedUpdateSelectionBox(Me, msuData, InImage, PList.ToArray, always, Comparison.Older)
-              If sbRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.Yes Then
+              Dim sbRet As TaskDialogResult = IntegratedUpdateSelectionBox(Me, msuData, InImage, PList.ToArray, always, Comparison.Older)
+              If sbRet = TaskDialogResult.Yes Then
                 If always Then ReplaceAllNewUpdates = TriState.True
                 OnlyDown = True
-              ElseIf sbRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.No Then
+              ElseIf sbRet = TaskDialogResult.No Then
                 If always Then ReplaceAllNewUpdates = TriState.False
                 Return New AddResult(True)
               Else
@@ -1320,15 +1365,15 @@
               End If
             End If
           Else
-            Dim sRet As Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult = IntegratedUpdateSelectionBox(Me, msuData, InImage, PList.ToArray, False, Comparison.Mixed)
-            If sRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.Ok Then
-            ElseIf sRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.Yes Then
+            Dim sRet As TaskDialogResult = IntegratedUpdateSelectionBox(Me, msuData, InImage, PList.ToArray, False, Comparison.Mixed)
+            If sRet = TaskDialogResult.Ok Then
+            ElseIf sRet = TaskDialogResult.Yes Then
               OnlyUp = True
-            ElseIf sRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.No Then
+            ElseIf sRet = TaskDialogResult.No Then
               OnlyDown = True
-            ElseIf sRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.Close Then
+            ElseIf sRet = TaskDialogResult.Close Then
               Return New AddResult(True)
-            ElseIf sRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.Cancel Then
+            ElseIf sRet = TaskDialogResult.Cancel Then
               Return New AddResult(False)
             End If
           End If
@@ -1349,11 +1394,11 @@
             ElseIf ReplaceAllOldUpdates = TriState.False Then
               Return New AddResult(True)
             Else
-              Dim sbRet As Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult = UpdateSelectionBox(Me, msuData, itemData, always)
-              If sbRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.Yes Then
+              Dim sbRet As TaskDialogResult = UpdateSelectionBox(Me, msuData, itemData, always)
+              If sbRet = TaskDialogResult.Yes Then
                 If always Then ReplaceAllOldUpdates = TriState.True
                 item.Remove()
-              ElseIf sbRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.No Then
+              ElseIf sbRet = TaskDialogResult.No Then
                 If always Then ReplaceAllOldUpdates = TriState.False
                 Return New AddResult(True)
               Else
@@ -1366,11 +1411,11 @@
             ElseIf ReplaceAllNewUpdates = TriState.False Then
               Return New AddResult(True)
             Else
-              Dim sbRet As Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult = UpdateSelectionBox(Me, msuData, itemData, always)
-              If sbRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.Yes Then
+              Dim sbRet As TaskDialogResult = UpdateSelectionBox(Me, msuData, itemData, always)
+              If sbRet = TaskDialogResult.Yes Then
                 If always Then ReplaceAllNewUpdates = TriState.True
                 item.Remove()
-              ElseIf sbRet = Microsoft.WindowsAPICodePack.Dialogs.TaskDialogResult.No Then
+              ElseIf sbRet = TaskDialogResult.No Then
                 If always Then ReplaceAllNewUpdates = TriState.False
                 Return New AddResult(True)
               Else
@@ -1831,7 +1876,7 @@
               props.lblKBLink.Visible = True
             End If
           End If
-          props.ttLink.SetTooltip(props.lblKBLink, msuData.SupportLink)
+          props.ttLink.SetToolTip(props.lblKBLink, msuData.SupportLink)
           props.Show(Me)
         End If
       End If
@@ -2277,16 +2322,26 @@
   End Sub
 #End Region
   Private Sub cmdISO_Click(sender As System.Object, e As System.EventArgs) Handles cmdISO.Click
-    Using cdlBrowse As New OpenFileDialog
-      cdlBrowse.Filter = "Windows 7 ISO|*.ISO|All Files|*.*"
-      cdlBrowse.Title = "Choose ISO to Save Image To"
-      cdlBrowse.ShowReadOnly = False
-      cdlBrowse.ShowHelp = True
-      AddHandler cdlBrowse.HelpRequest, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.6_Save_to_ISO.htm")
+    Using cdlBrowse As New CommonOpenFileDialog
+      cdlBrowse.AllowNonFileSystemItems = False
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("Windows 7 ISO", "ISO"))
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("All Files", "*"))
+      cdlBrowse.Title = "Choose ISO to Save Image To..."
+      cdlBrowse.AddToMostRecentlyUsedList = True
+      cdlBrowse.EnsureFileExists = True
+      cdlBrowse.EnsurePathExists = True
+      cdlBrowse.EnsureReadOnly = True
+      cdlBrowse.EnsureValidNames = True
+      cdlBrowse.Multiselect = False
+      cdlBrowse.NavigateToShortcut = True
+      cdlBrowse.RestoreDirectory = False
+      cdlBrowse.ShowPlacesList = True
+      cdlBrowse.CookieIdentifier = New Guid("00000000-0000-0000-0000-000000000006")
+      Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
+      cdlBrowse.Controls.Add(cmdHelp)
+      AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.6_Save_to_ISO.htm")
       If Not String.IsNullOrEmpty(txtISO.Text) Then cdlBrowse.InitialDirectory = txtISO.Text
-      If cdlBrowse.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
-        txtISO.Text = cdlBrowse.FileName
-      End If
+      If cdlBrowse.ShowDialog(Me.Handle) = CommonFileDialogResult.Ok Then txtISO.Text = cdlBrowse.FileName
     End Using
   End Sub
   Private Sub cmbISOFormat_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cmbISOFormat.SelectedIndexChanged
@@ -2442,16 +2497,28 @@
     End If
   End Sub
   Private Sub cmdMerge_Click(sender As System.Object, e As System.EventArgs) Handles cmdMerge.Click
-    Using cdlBrowse As New OpenFileDialog
-      cdlBrowse.Filter = "INSTALL.WIM Sources|*.WIM;*.ISO|INSTALL.WIM|*.WIM|Windows 7 ISO|*.ISO|All Files|*.*"
-      cdlBrowse.Title = "Choose INSTALL.WIM Image to Merge"
-      cdlBrowse.ShowReadOnly = False
-      cdlBrowse.ShowHelp = True
-      AddHandler cdlBrowse.HelpRequest, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.2_Merge_WIM.htm")
+    Using cdlBrowse As New CommonOpenFileDialog
+      cdlBrowse.AllowNonFileSystemItems = False
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("INSTALL.WIM Sources", "WIM,ISO"))
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("INSTALL.WIM", "WIM"))
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("Windows 7 ISO", "ISO"))
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("All Files", "*"))
+      cdlBrowse.Title = "Choose INSTALL.WIM Image to Merge..."
+      cdlBrowse.AddToMostRecentlyUsedList = True
+      cdlBrowse.EnsureFileExists = True
+      cdlBrowse.EnsurePathExists = True
+      cdlBrowse.EnsureReadOnly = True
+      cdlBrowse.EnsureValidNames = True
+      cdlBrowse.Multiselect = False
+      cdlBrowse.NavigateToShortcut = True
+      cdlBrowse.RestoreDirectory = False
+      cdlBrowse.ShowPlacesList = True
+      cdlBrowse.CookieIdentifier = New Guid("00000000-0000-0000-0000-000000000002")
+      Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
+      cdlBrowse.Controls.Add(cmdHelp)
+      AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.2_Merge_WIM.htm")
       If Not String.IsNullOrEmpty(txtMerge.Text) Then cdlBrowse.InitialDirectory = txtMerge.Text
-      If cdlBrowse.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
-        txtMerge.Text = cdlBrowse.FileName
-      End If
+      If cdlBrowse.ShowDialog(Me.Handle) = CommonFileDialogResult.Ok Then txtMerge.Text = cdlBrowse.FileName
     End Using
   End Sub
 #End Region
@@ -2683,7 +2750,7 @@
     Else
       sListText = sList(0) & ", " & sList(1) & ", and " & sList(2)
     End If
-    ttInfo.SetTooltip(cmdLoadPackages, "Begin Image Package Parsing procedure to gather information about " & sListText & "." & vbNewLine & vbNewLine &
+    ttInfo.SetToolTip(cmdLoadPackages, "Begin Image Package Parsing procedure to gather information about " & sListText & "." & vbNewLine & vbNewLine &
                                        "(This is optional - if you know which files are already integrated, you can save time by skipping this.)")
     If Me.Tag Is Nothing Then
       If Not chkLoadFeatures.Checked = mySettings.LoadFeatures Then mySettings.LoadFeatures = chkLoadFeatures.Checked
@@ -3531,9 +3598,9 @@
     End If
     sTitleText = Title
     If String.IsNullOrWhiteSpace(Tooltip) Then
-      ttInfo.SetTooltip(pctTitle, Nothing)
+      ttInfo.SetToolTip(pctTitle, Nothing)
     Else
-      ttInfo.SetTooltip(pctTitle, Tooltip)
+      ttInfo.SetToolTip(pctTitle, Tooltip)
     End If
   End Sub
   Private realProgVal, realProgMax As Integer
@@ -3619,9 +3686,9 @@
     End If
     pbIndividual.Value = (Value / Maximum) * 10000
     If Value = 0 And Maximum = 1 And pbIndividual.Style = ProgressBarStyle.Marquee Then
-      ttInfo.SetTooltip(pbIndividual, "Progress: Indeterminate")
+      ttInfo.SetToolTip(pbIndividual, "Progress: Indeterminate")
     Else
-      ttInfo.SetTooltip(pbIndividual, "Progress: " & FormatPercent(Value / Maximum, 2, TriState.True, TriState.False, TriState.False))
+      ttInfo.SetToolTip(pbIndividual, "Progress: " & FormatPercent(Value / Maximum, 2, TriState.True, TriState.False, TriState.False))
     End If
   End Sub
   Public Sub SetTotal(Value As Integer, Maximum As Integer)
@@ -3664,7 +3731,7 @@
       Application.DoEvents()
     End If
     pbTotal.Value = (Value / Maximum) * 10000
-    ttInfo.SetTooltip(pbTotal, "Total Progress: " & FormatPercent(Value / Maximum, 2, TriState.True, TriState.False, TriState.False))
+    ttInfo.SetToolTip(pbTotal, "Total Progress: " & FormatPercent(Value / Maximum, 2, TriState.True, TriState.False, TriState.False))
     Try
       If taskBar IsNot Nothing Then
         If Value > 0 Then
@@ -3708,8 +3775,8 @@
   Private Sub expOutput_Opened(sender As System.Object, e As System.EventArgs) Handles expOutput.Opened
     ttInfo.Hide(expOutput)
     ttInfo.Hide(expOutput.pctExpander)
-    ttInfo.SetTooltip(expOutput, "Hide Output console.")
-    ttInfo.SetTooltip(expOutput.pctExpander, "Hide Output console.")
+    ttInfo.SetToolTip(expOutput, "Hide Output console.")
+    ttInfo.SetToolTip(expOutput.pctExpander, "Hide Output console.")
     If outputWindow Then
       frmOutput.Show(Me)
       frmOutput.Location = New Point(Me.Left, Me.Bottom)
