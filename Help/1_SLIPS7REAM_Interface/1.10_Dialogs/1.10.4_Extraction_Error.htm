@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/transitional.dtd">
+<html lang="en-US">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <title>Dialogs - Extraction Error</title>
+  <link rel="stylesheet" type="text/css" href="/help.css">
+ </head>
+ <body>
+  <img src="/icons/1.10.4.png" alt="" style="float: right;">
+  <h3>Section 1.10.4</h3>
+  <h1>Extraction Error</h1>
+  <hr>
+  <p>SLIPS7REAM deals with many forms of compressed files, and occasionally there are problems when dealing with compression. Most often, these problems are caused by corrupt files or unexpected compression types. SLIPS7REAM tries to notify you about any such problems with one of the error messages below.</p>
+  <hr> 
+  <a name="crc_error"></a>
+  <p>If you receive a <b>CRC Error</b>, then the file has been modified somehow, and the compressed data may not be what you expect, or it may be corrupt. CRC stands for Cyclic Redundancy Check, a simple algorithm that generates a (relatively) small &quot;checksum&quot; number based on the contents of the file, allowing software to quickly determine if anything has changed in the file. One bit out of place will produce a drastically different result, and if the checksum values are at all different, an error is thrown.</p>
+  <p>You may want to retry the file, in case the error was a mistake, but usually this error means the compressed file in question is bad. You should re-download the file from its original source over a good network connection to ensure a clean copy.</p>
+  <hr>
+  <a name="data_error"></a>
+  <p>If SLIPS7REAM throws a <b>Data Error</b> during extraction of a compressed file, the compressed data is probably corrupted. Basically, this error is the same as the CRC error above, except that the file you're working with doesn't have a CRC checksum, so the error cropped up during decompression instead of the initial check.</p>
+  <hr>
+  <a name="unsupported_method"></a>
+  <p>An <b>Unsupported Method</b> error message usually means that the file is compressed using a compression method that is foreign to SLIPS7REAM. If you receive this error message, please make sure the file in question is a standard file of its type (Windows Update, Language Pack, etc..) from Microsoft or another legitimate source. Some third-party packages may use proprietary compression methods which are not supported by SLIPS7REAM.</p>
+  <hr>
+  <a name="file_not_found"></a>
+  <p>The <b>File Not Found</b> error typically means that the compressed file does not have a list of its contents, or that the file expected to be extracted does not exist in the list. Chances are in either instance that the file in question is not the right file for use in the slipstream process, such as a type of update that is not supported by SLIPS7REAM, or a third-party package.</p>
+  <hr>
+  <a name="other_error"></a>
+  <p>If you receive any other error messages, they will typically include further details as to the kind of issue that occurred during extraction. Hopefully, the error message will provide you with the details necessary to resolve the problem yourself. If you receive an error you do not understand, please <a href="mailto:webmaster@RealityRipple.com" title="Send an E-Mail to webmaster@RealityRipple.com">contact me</a> and I'll try to assist you, and maybe include a more detailed error message in a future version of SLIPS7REAM.</p>
+ </body>
+</html>

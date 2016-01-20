@@ -113,6 +113,60 @@
 			<param name="Name" value="On Completion">
 			<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
 			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Dialogs">
+			<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.0_Dialogs.htm">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Unable to add files to the Update List">
+				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.1_Error_Adding_Updates.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Do you want to clear the Update List?">
+				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.2_Remove_All_Updates.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Error when Opening Folder">
+				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.3_Open_Folder_Missing.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Extraction Error">
+				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.4_Extraction_Error.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Active mount has been detected">
+				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.5_Active_Mount.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Unable to enable UEFI Boot">
+				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.6_EFI_Missing.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Cancel">
+				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.7_Interrupt.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="File could not be played">
+				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.8_Alert_Problem.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Unable to find parent directory">
+				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.9_Temp_Folder_Missing.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Dependent Windows features will be turned off">
+				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.10_Dependent_Features.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Error loading packages">
+				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.11_Package_Failure.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Unable to transfer file">
+				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.12_File_Transfer_Failure.htm">
+				</OBJECT>
+		</UL>
 	</UL>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Configuration">
