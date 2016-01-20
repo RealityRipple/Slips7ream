@@ -756,8 +756,10 @@ Public Module modFunctions
         End Using
         If Move Then IO.File.Delete(File)
       End If
+      c_SlowCopyRet(cIndex) = "OK"
+    Else
+      c_SlowCopyRet(cIndex) = "File Not Found"
     End If
-    c_SlowCopyRet(cIndex) = "OK"
   End Sub
   Public Enum UpdateType
     MSU
