@@ -13,7 +13,7 @@ Language=0x409 English (United States)
 Title=Help for SLIPS7REAM
 
 [WINDOWS]
-Slips7ream="Help for SLIPS7REAM","Table of Contents.hhc","Index.hhk","welcome.htm","welcome.htm",,,"5_Glossary_of_Terms\5.0_Glossary_of_Terms.htm","Glossary",0x2520,,0x8206c,[1101,188,1876,746],,,,,,,0
+Slips7ream="Help for SLIPS7REAM 3.0","Table of Contents.hhc","Index.hhk","welcome.htm","welcome.htm",,,"5_Glossary_of_Terms\5.0_Glossary_of_Terms.htm","Glossary",0x2520,,0x8004c,[1101,188,1876,746],,,,,,,0
 
 
 [FILES]
@@ -168,7 +168,6 @@ icons\5.16.png
 icons\5.17.png
 icons\5.18.png
 icons\6.0.png
-
 
 [INFOTYPES]
 
