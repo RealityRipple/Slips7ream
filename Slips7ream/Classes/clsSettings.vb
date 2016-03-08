@@ -10,6 +10,7 @@
   Private c_DefaultSplit As Integer = 0
   Private c_SplitVal As String
   Private c_LastUpdate As Date = New Date(1970, 1, 1)
+  Private c_LastNag As Date = New Date(1970, 1, 1)
   Private c_PlayAlertNoise As Boolean
   Private c_AlertNoisePath As String
   Private c_LoadFeatures As Boolean
@@ -111,6 +112,15 @@
     End Get
     Set(value As Date)
       c_LastUpdate = value
+      Save()
+    End Set
+  End Property
+  Public Property LastNag As Date
+    Get
+      Return c_LastNag
+    End Get
+    Set(value As Date)
+      c_LastNag = value
       Save()
     End Set
   End Property
@@ -241,6 +251,11 @@
     Else
       c_LastUpdate = My.Settings.LastUpdate
     End If
+    If Hive.GetValueNames.Contains("Last Nag") Then
+      c_LastNag = Date.FromBinary(Hive.GetValue("Last Nag", New Date(1970, 1, 1)))
+    Else
+      c_LastNag = New Date(1970, 1, 1)
+    End If
     If Hive.GetSubKeyNames.Contains("Alert") Then
       Dim alert As Microsoft.Win32.RegistryKey = Hive.OpenSubKey("Alert")
       c_PlayAlertNoise = (alert.GetValue(String.Empty, "N") = "Y")
@@ -288,6 +303,7 @@
     c_DefaultSplit = My.Settings.DefaultSplit
     c_SplitVal = My.Settings.SplitVal
     c_LastUpdate = My.Settings.LastUpdate
+    c_LastNag = New Date(1970, 1, 1)
     c_PlayAlertNoise = False
     c_AlertNoisePath = String.Empty
     c_LoadFeatures = False
@@ -313,6 +329,7 @@
     ActiveHive.SetValue("Default Split", c_DefaultSplit, Microsoft.Win32.RegistryValueKind.DWord)
     ActiveHive.SetValue("Split Value", c_SplitVal, Microsoft.Win32.RegistryValueKind.String)
     ActiveHive.SetValue("Last Update", c_LastUpdate.ToBinary, Microsoft.Win32.RegistryValueKind.QWord)
+    ActiveHive.SetValue("Last Nag", c_LastNag.ToBinary, Microsoft.Win32.RegistryValueKind.QWord)
     If Not ActiveHive.GetSubKeyNames.Contains("Alert") Then ActiveHive.CreateSubKey("Alert")
     ActiveHive.OpenSubKey("Alert", True).SetValue(String.Empty, IIf(c_PlayAlertNoise, "Y", "N"))
     ActiveHive.OpenSubKey("Alert", True).SetValue("Path", c_AlertNoisePath)

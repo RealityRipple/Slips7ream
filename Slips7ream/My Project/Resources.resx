@@ -250,33 +250,6 @@ Windows Communication Foundation HTTP Activation|.NET Extensibility;Request Filt
 Windows Communication Foundation Non-HTTP Activation|Windows Process Activation Service;.NET Environment;Configuration APIs;Process Model
 MSMQ HTTP Support|IIS Metabase and IIS 6 configuration compatibility;IIS Management Console;.NET Extensibility;ISAPI Extensions;Default Document;Directory Browsing;HTTP Errors;HTTP Redirection;Static Content;HTTP Logging;Logging Tools;Request Monitor;Tracing;Static Content Compression;Request Filtering</value>
   </data>
-  <data name="shoot_em" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\tetris\shoot_em.ogg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="tetris" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\tetris\tetris.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="tetris_down" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\tetris\sounds\down.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="tetris_four" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\tetris\sounds\four.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="tetris_gameover" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\tetris\sounds\gameover.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="tetris_level" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\tetris\sounds\level.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="tetris_move" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\tetris\sounds\move.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="tetris_rotate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\tetris\sounds\rotate.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="tetris_row" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\tetris\sounds\row.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="win" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\win.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -727,9 +700,6 @@ MSMQ HTTP Support|IIS Metabase and IIS 6 configuration compatibility;IIS Managem
   <data name="company_oem" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\companies\oem.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="company_acer" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\companies\acer.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="company_dell" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\companies\dell.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -774,5 +744,11 @@ MSMQ HTTP Support|IIS Metabase and IIS 6 configuration compatibility;IIS Managem
   </data>
   <data name="load_update" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\load_update.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="star" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\star.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="company_acer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\companies\acer.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

@@ -1756,85 +1756,12 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized resource of type System.Byte[].
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
         '''</summary>
-        Friend ReadOnly Property shoot_em() As Byte()
+        Friend ReadOnly Property star() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("shoot_em", resourceCulture)
-                Return CType(obj,Byte())
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        '''</summary>
-        Friend ReadOnly Property tetris() As System.Drawing.Icon
-            Get
-                Dim obj As Object = ResourceManager.GetObject("tetris", resourceCulture)
-                Return CType(obj,System.Drawing.Icon)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
-        '''</summary>
-        Friend ReadOnly Property tetris_down() As System.IO.UnmanagedMemoryStream
-            Get
-                Return ResourceManager.GetStream("tetris_down", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
-        '''</summary>
-        Friend ReadOnly Property tetris_four() As System.IO.UnmanagedMemoryStream
-            Get
-                Return ResourceManager.GetStream("tetris_four", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
-        '''</summary>
-        Friend ReadOnly Property tetris_gameover() As System.IO.UnmanagedMemoryStream
-            Get
-                Return ResourceManager.GetStream("tetris_gameover", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
-        '''</summary>
-        Friend ReadOnly Property tetris_level() As System.IO.UnmanagedMemoryStream
-            Get
-                Return ResourceManager.GetStream("tetris_level", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
-        '''</summary>
-        Friend ReadOnly Property tetris_move() As System.IO.UnmanagedMemoryStream
-            Get
-                Return ResourceManager.GetStream("tetris_move", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
-        '''</summary>
-        Friend ReadOnly Property tetris_rotate() As System.IO.UnmanagedMemoryStream
-            Get
-                Return ResourceManager.GetStream("tetris_rotate", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
-        '''</summary>
-        Friend ReadOnly Property tetris_row() As System.IO.UnmanagedMemoryStream
-            Get
-                Return ResourceManager.GetStream("tetris_row", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("star", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
         

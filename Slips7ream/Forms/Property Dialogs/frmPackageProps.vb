@@ -1380,6 +1380,15 @@
         lvItem.Tag = pUpdate
         Dim sGroupName As String = "Unknown"
         If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.ReleaseType) Then sGroupName = pUpdate.UpdateInfo.ReleaseType
+        If sGroupName = "Security Update" Then
+          If Not String.IsNullOrEmpty(pUpdate.Ident.Version) Then
+            If Split(pUpdate.Ident.Version, ".", 4)(0) > 7 Then
+              sGroupName &= " for Internet Explorer"
+            Else
+              sGroupName &= " for Windows"
+            End If
+          End If
+        End If
         Dim sGroupKey As String = "lvgUnknown"
         If Not String.IsNullOrEmpty(sGroupName) Then sGroupKey = "lvg" & sGroupName.Replace(" ", "_")
         lvUpdates.Items.Add(lvItem)

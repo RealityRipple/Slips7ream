@@ -156,6 +156,12 @@
     <Compile Include="Forms\frmConfig.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\frmDonate.Designer.vb">
+      <DependentUpon>frmDonate.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmDonate.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\frmFS.Designer.vb">
       <DependentUpon>frmFS.vb</DependentUpon>
     </Compile>
@@ -185,18 +191,6 @@
       <DependentUpon>frmPackageProps.vb</DependentUpon>
     </Compile>
     <Compile Include="Forms\Property Dialogs\frmPackageProps.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Tetris\frmTetris.Designer.vb">
-      <DependentUpon>frmTetris.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Tetris\frmTetris.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Tetris\frmTetrisHelp.designer.vb">
-      <DependentUpon>frmTetrisHelp.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Tetris\frmTetrisHelp.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\Property Dialogs\frmUpdateProps.Designer.vb">
@@ -240,6 +234,10 @@
       <DependentUpon>frmConfig.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmDonate.resx">
+      <DependentUpon>frmDonate.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmFS.resx">
       <DependentUpon>frmFS.vb</DependentUpon>
       <SubType>Designer</SubType>
@@ -257,12 +255,6 @@
     <EmbeddedResource Include="Forms\Property Dialogs\frmPackageProps.resx">
       <DependentUpon>frmPackageProps.vb</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Tetris\frmTetris.resx">
-      <DependentUpon>frmTetris.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Tetris\frmTetrisHelp.resx">
-      <DependentUpon>frmTetrisHelp.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Property Dialogs\frmUpdateProps.resx">
       <DependentUpon>frmUpdateProps.vb</DependentUpon>
@@ -292,6 +284,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\star.jpg" />
     <None Include="Resources\load_update.png" />
     <None Include="Resources\load_feature.png" />
     <None Include="Resources\load_driver.png" />
@@ -463,15 +456,6 @@
     <None Include="Resources\u_a.png" />
     <None Include="Resources\win.png" />
     <None Include="Resources\play.png" />
-    <None Include="Resources\tetris\sounds\row.wav" />
-    <None Include="Resources\tetris\sounds\rotate.wav" />
-    <None Include="Resources\tetris\sounds\move.wav" />
-    <None Include="Resources\tetris\sounds\level.wav" />
-    <None Include="Resources\tetris\sounds\gameover.wav" />
-    <None Include="Resources\tetris\sounds\four.wav" />
-    <None Include="Resources\tetris\sounds\down.wav" />
-    <None Include="Resources\tetris\shoot_em.ogg" />
-    <None Include="Resources\tetris\tetris.ico" />
     <None Include="Resources\copy.mng" />
     <None Include="Resources\delete.mng" />
     <None Include="Resources\move.mng" />

@@ -466,7 +466,7 @@ Public Class frmMain
     If Enabled Then
       cmdClose.Text = "&Close"
       Me.CancelButton = Nothing
-      SetStatus("Idle")
+      If Not lblActivity.Tag = "Complete!" Then SetStatus("Idle")
     Else
       cmdClose.Text = "&Cancel"
       Me.CancelButton = cmdClose
@@ -500,8 +500,27 @@ Public Class frmMain
     Catch ex As Exception
     End Try
   End Sub
-  Private Sub pctTitle_DoubleClick(sender As Object, e As System.EventArgs) Handles pctTitle.DoubleClick
-    frmTetris.Show()
+  Private Sub AskForDonations()
+    Try
+      If Math.Abs(DateDiff(DateInterval.Minute, Process.GetCurrentProcess.StartTime, Now)) > 30 Then
+        If Now.Month = 5 Or Now.Month = 9 Or Now.Month = 12 Then
+          If Now.DayOfWeek = DayOfWeek.Saturday Or Now.DayOfWeek = DayOfWeek.Sunday Then
+            Dim lastAsk As Long = DateDiff(DateInterval.Month, mySettings.LastNag, Now)
+            If lastAsk > 6 Or lastAsk < -24 Then
+              mySettings.LastNag = Today
+              frmDonate.Show()
+            End If
+          End If
+        End If
+      End If
+    Catch
+    End Try
+  End Sub
+  Public Sub ClickedDonate()
+    Try
+      mySettings.LastNag = DateAdd(DateInterval.Month, 24, Today)
+    Catch ex As Exception
+    End Try
   End Sub
 #Region "Menus"
   Private Sub mnuOutput_Popup(sender As System.Object, e As System.EventArgs) Handles mnuOutput.Popup
@@ -609,21 +628,22 @@ Public Class frmMain
   Private Sub cmdWIM_Click(sender As System.Object, e As System.EventArgs) Handles cmdWIM.Click
     Using cdlBrowse As New CommonOpenFileDialog
       cdlBrowse.AllowNonFileSystemItems = False
-      cdlBrowse.Filters.Add(New CommonFileDialogFilter("INSTALL.WIM Sources", "WIM,ISO"))
-      cdlBrowse.Filters.Add(New CommonFileDialogFilter("INSTALL.WIM", "WIM"))
-      cdlBrowse.Filters.Add(New CommonFileDialogFilter("Windows 7 ISO", "ISO"))
-      cdlBrowse.Filters.Add(New CommonFileDialogFilter("All Files", "*"))
-      cdlBrowse.Title = "Choose INSTALL.WIM Image..."
       cdlBrowse.AddToMostRecentlyUsedList = True
+      cdlBrowse.CookieIdentifier = New Guid("00000000-0000-0000-0000-000000000001")
+      cdlBrowse.DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
       cdlBrowse.EnsureFileExists = True
       cdlBrowse.EnsurePathExists = True
       cdlBrowse.EnsureReadOnly = True
       cdlBrowse.EnsureValidNames = True
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("INSTALL.WIM Sources", "WIM,ISO"))
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("INSTALL.WIM", "WIM"))
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("Windows 7 ISO", "ISO"))
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("All Files", "*"))
       cdlBrowse.Multiselect = False
       cdlBrowse.NavigateToShortcut = True
       cdlBrowse.RestoreDirectory = False
       cdlBrowse.ShowPlacesList = True
-      cdlBrowse.CookieIdentifier = New Guid("00000000-0000-0000-0000-000000000001")
+      cdlBrowse.Title = "Choose INSTALL.WIM Image..."
       Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
       cdlBrowse.Controls.Add(cmdHelp)
       AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.1_INSTALL.WIM.htm")
@@ -696,19 +716,24 @@ Public Class frmMain
   Private Sub cmdSP_Click(sender As System.Object, e As System.EventArgs) Handles cmdSP.Click
     Using cdlBrowse As New CommonOpenFileDialog
       cdlBrowse.AllowNonFileSystemItems = False
-      cdlBrowse.Filters.Add(New CommonFileDialogFilter("Service Pack EXE", "EXE"))
-      cdlBrowse.Filters.Add(New CommonFileDialogFilter("All Files", "*"))
-      cdlBrowse.Title = "Choose Windows 7 Service Pack 1 EXE..."
       cdlBrowse.AddToMostRecentlyUsedList = True
+      cdlBrowse.CookieIdentifier = New Guid("00000000-0000-0000-0000-000000000003")
+      If Not String.IsNullOrEmpty(txtWIM.Text) AndAlso IO.File.Exists(txtWIM.Text) Then
+        cdlBrowse.DefaultDirectory = IO.Path.GetDirectoryName(txtWIM.Text)
+      Else
+        cdlBrowse.DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+      End If
       cdlBrowse.EnsureFileExists = True
       cdlBrowse.EnsurePathExists = True
       cdlBrowse.EnsureReadOnly = True
       cdlBrowse.EnsureValidNames = True
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("Service Pack EXE", "EXE"))
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("All Files", "*"))
       cdlBrowse.Multiselect = False
       cdlBrowse.NavigateToShortcut = True
       cdlBrowse.RestoreDirectory = False
       cdlBrowse.ShowPlacesList = True
-      cdlBrowse.CookieIdentifier = New Guid("00000000-0000-0000-0000-000000000003")
+      cdlBrowse.Title = "Choose Windows 7 Service Pack 1 EXE..."
       Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
       cdlBrowse.Controls.Add(cmdHelp)
       AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.4_Service_Pack.htm")
@@ -732,19 +757,28 @@ Public Class frmMain
   Private Sub cmdSP64_Click(sender As System.Object, e As System.EventArgs) Handles cmdSP64.Click
     Using cdlBrowse As New CommonOpenFileDialog
       cdlBrowse.AllowNonFileSystemItems = False
-      cdlBrowse.Filters.Add(New CommonFileDialogFilter("Service Pack EXE", "EXE"))
-      cdlBrowse.Filters.Add(New CommonFileDialogFilter("All Files", "*"))
-      cdlBrowse.Title = "Choose Windows 7 x64 Service Pack 1 EXE..."
       cdlBrowse.AddToMostRecentlyUsedList = True
+      cdlBrowse.CookieIdentifier = New Guid("00000000-0000-0000-0000-000000000004")
+      If Not String.IsNullOrEmpty(txtSP.Text) AndAlso IO.File.Exists(txtSP.Text) Then
+        cdlBrowse.DefaultDirectory = IO.Path.GetDirectoryName(txtSP.Text)
+      Else
+        If Not String.IsNullOrEmpty(txtWIM.Text) AndAlso IO.File.Exists(txtWIM.Text) Then
+          cdlBrowse.DefaultDirectory = IO.Path.GetDirectoryName(txtWIM.Text)
+        Else
+          cdlBrowse.DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+        End If
+      End If
       cdlBrowse.EnsureFileExists = True
       cdlBrowse.EnsurePathExists = True
       cdlBrowse.EnsureReadOnly = True
       cdlBrowse.EnsureValidNames = True
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("Service Pack EXE", "EXE"))
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("All Files", "*"))
       cdlBrowse.Multiselect = False
       cdlBrowse.NavigateToShortcut = True
       cdlBrowse.RestoreDirectory = False
       cdlBrowse.ShowPlacesList = True
-      cdlBrowse.CookieIdentifier = New Guid("00000000-0000-0000-0000-000000000004")
+      cdlBrowse.Title = "Choose Windows 7 x64 Service Pack 1 EXE..."
       Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
       cdlBrowse.Controls.Add(cmdHelp)
       AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.4_Service_Pack.htm")
@@ -1076,22 +1110,31 @@ Public Class frmMain
     ReplaceAllOldUpdates = TriState.UseDefault
     ReplaceAllNewUpdates = TriState.UseDefault
     Using cdlBrowse As New CommonOpenFileDialog
+      cdlBrowse.AddToMostRecentlyUsedList = True
+      cdlBrowse.CookieIdentifier = New Guid("00000000-0000-0000-0000-000000000005")
+      If Not String.IsNullOrEmpty(txtSP.Text) AndAlso IO.File.Exists(txtSP.Text) Then
+        cdlBrowse.DefaultDirectory = IO.Path.GetDirectoryName(txtSP.Text)
+      Else
+        If Not String.IsNullOrEmpty(txtWIM.Text) AndAlso IO.File.Exists(txtWIM.Text) Then
+          cdlBrowse.DefaultDirectory = IO.Path.GetDirectoryName(txtWIM.Text)
+        Else
+          cdlBrowse.DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+        End If
+      End If
+      cdlBrowse.EnsureFileExists = True
+      cdlBrowse.EnsurePathExists = True
+      cdlBrowse.EnsureReadOnly = True
+      cdlBrowse.EnsureValidNames = True
       cdlBrowse.Filters.Add(New CommonFileDialogFilter("All Packages", "MSU,CAB,MLC,EXE,MSI,INF"))
       cdlBrowse.Filters.Add(New CommonFileDialogFilter("Windows Updates", "MSU,CAB"))
       cdlBrowse.Filters.Add(New CommonFileDialogFilter("Language Packs", "MLC,EXE,MSI,CAB"))
       cdlBrowse.Filters.Add(New CommonFileDialogFilter("Drivers", "INF"))
       cdlBrowse.Filters.Add(New CommonFileDialogFilter("All Files", "*"))
-      cdlBrowse.Title = "Add Windows Updates..."
-      cdlBrowse.AddToMostRecentlyUsedList = True
-      cdlBrowse.EnsureFileExists = True
-      cdlBrowse.EnsurePathExists = True
-      cdlBrowse.EnsureReadOnly = True
-      cdlBrowse.EnsureValidNames = True
       cdlBrowse.Multiselect = True
       cdlBrowse.NavigateToShortcut = True
       cdlBrowse.RestoreDirectory = False
       cdlBrowse.ShowPlacesList = True
-      cdlBrowse.CookieIdentifier = New Guid("00000000-0000-0000-0000-000000000005")
+      cdlBrowse.Title = "Add Windows Updates..."
       Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
       cdlBrowse.Controls.Add(cmdHelp)
       AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm")
@@ -2324,19 +2367,24 @@ Public Class frmMain
   Private Sub cmdISO_Click(sender As System.Object, e As System.EventArgs) Handles cmdISO.Click
     Using cdlBrowse As New CommonOpenFileDialog
       cdlBrowse.AllowNonFileSystemItems = False
-      cdlBrowse.Filters.Add(New CommonFileDialogFilter("Windows 7 ISO", "ISO"))
-      cdlBrowse.Filters.Add(New CommonFileDialogFilter("All Files", "*"))
-      cdlBrowse.Title = "Choose ISO to Save Image To..."
       cdlBrowse.AddToMostRecentlyUsedList = True
+      cdlBrowse.CookieIdentifier = New Guid("00000000-0000-0000-0000-000000000006")
+      If Not String.IsNullOrEmpty(txtWIM.Text) AndAlso IO.File.Exists(txtWIM.Text) Then
+        cdlBrowse.DefaultDirectory = IO.Path.GetDirectoryName(txtWIM.Text)
+      Else
+        cdlBrowse.DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+      End If
       cdlBrowse.EnsureFileExists = True
       cdlBrowse.EnsurePathExists = True
       cdlBrowse.EnsureReadOnly = True
       cdlBrowse.EnsureValidNames = True
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("Windows 7 ISO", "ISO"))
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("All Files", "*"))
       cdlBrowse.Multiselect = False
       cdlBrowse.NavigateToShortcut = True
       cdlBrowse.RestoreDirectory = False
       cdlBrowse.ShowPlacesList = True
-      cdlBrowse.CookieIdentifier = New Guid("00000000-0000-0000-0000-000000000006")
+      cdlBrowse.Title = "Choose ISO to Save Image To..."
       Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
       cdlBrowse.Controls.Add(cmdHelp)
       AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.6_Save_to_ISO.htm")
@@ -2499,21 +2547,26 @@ Public Class frmMain
   Private Sub cmdMerge_Click(sender As System.Object, e As System.EventArgs) Handles cmdMerge.Click
     Using cdlBrowse As New CommonOpenFileDialog
       cdlBrowse.AllowNonFileSystemItems = False
-      cdlBrowse.Filters.Add(New CommonFileDialogFilter("INSTALL.WIM Sources", "WIM,ISO"))
-      cdlBrowse.Filters.Add(New CommonFileDialogFilter("INSTALL.WIM", "WIM"))
-      cdlBrowse.Filters.Add(New CommonFileDialogFilter("Windows 7 ISO", "ISO"))
-      cdlBrowse.Filters.Add(New CommonFileDialogFilter("All Files", "*"))
-      cdlBrowse.Title = "Choose INSTALL.WIM Image to Merge..."
       cdlBrowse.AddToMostRecentlyUsedList = True
+      cdlBrowse.CookieIdentifier = New Guid("00000000-0000-0000-0000-000000000002")
+      If Not String.IsNullOrEmpty(txtWIM.Text) AndAlso IO.File.Exists(txtWIM.Text) Then
+        cdlBrowse.DefaultDirectory = IO.Path.GetDirectoryName(txtWIM.Text)
+      Else
+        cdlBrowse.DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+      End If
       cdlBrowse.EnsureFileExists = True
       cdlBrowse.EnsurePathExists = True
       cdlBrowse.EnsureReadOnly = True
       cdlBrowse.EnsureValidNames = True
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("INSTALL.WIM Sources", "WIM,ISO"))
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("INSTALL.WIM", "WIM"))
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("Windows 7 ISO", "ISO"))
+      cdlBrowse.Filters.Add(New CommonFileDialogFilter("All Files", "*"))
       cdlBrowse.Multiselect = False
       cdlBrowse.NavigateToShortcut = True
       cdlBrowse.RestoreDirectory = False
       cdlBrowse.ShowPlacesList = True
-      cdlBrowse.CookieIdentifier = New Guid("00000000-0000-0000-0000-000000000002")
+      cdlBrowse.Title = "Choose INSTALL.WIM Image to Merge..."
       Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
       cdlBrowse.Controls.Add(cmdHelp)
       AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.2_Merge_WIM.htm")
@@ -3091,6 +3144,12 @@ Public Class frmMain
           SetProgress(progVal, progMax)
           SetStatus("Populating " & Package.Name & " Package Update List...")
           Dim upList As List(Of Update_Integrated) = GetDISMPackageItems(Mount, Package)
+          For J As Integer = 0 To upList.Count - 1
+            SetProgress(progVal * upList.Count + (J + 1), progMax * upList.Count)
+            SetStatus("Parsing " & Package.Name & " Package Update " & (J + 1) & " of " & upList.Count & ": " & upList(J).Ident.Name & "...")
+            GetDISMPackageItemData(Mount, upList(J))
+            If StopRun Then Return
+          Next
           If StopRun Then Return
           progVal += 1
           SetProgress(progVal, progMax)
@@ -3546,6 +3605,7 @@ Public Class frmMain
       HideActivityTT()
       ShowActivityTT()
     End If
+    AddToLog(lblActivity.Tag & " (" & pbIndividual.Value & "/" & pbIndividual.Maximum & " - " & FormatPercent(pbIndividual.Value / pbIndividual.Maximum, 1, TriState.True, TriState.False, TriState.False) & ") [" & pbTotal.Value & "/" & pbTotal.Maximum & " - " & FormatPercent(pbTotal.Value / pbTotal.Maximum, 1, TriState.True, TriState.False, TriState.False) & "]")
     Application.DoEvents()
   End Sub
   Private Sub lblActivity_SizeChanged(sender As Object, e As System.EventArgs) Handles lblActivity.SizeChanged
@@ -3690,6 +3750,7 @@ Public Class frmMain
     Else
       ttInfo.SetToolTip(pbIndividual, "Progress: " & FormatPercent(Value / Maximum, 2, TriState.True, TriState.False, TriState.False))
     End If
+    AddToLog(lblActivity.Tag & " (" & pbIndividual.Value & "/" & pbIndividual.Maximum & " - " & FormatPercent(pbIndividual.Value / pbIndividual.Maximum, 1, TriState.True, TriState.False, TriState.False) & ") [" & pbTotal.Value & "/" & pbTotal.Maximum & " - " & FormatPercent(pbTotal.Value / pbTotal.Maximum, 1, TriState.True, TriState.False, TriState.False) & "]")
   End Sub
   Public Sub SetTotal(Value As Integer, Maximum As Integer)
     If Me.InvokeRequired Then
@@ -3743,6 +3804,7 @@ Public Class frmMain
       End If
     Catch ex As Exception
     End Try
+    AddToLog(lblActivity.Tag & " (" & pbIndividual.Value & "/" & pbIndividual.Maximum & " - " & FormatPercent(pbIndividual.Value / pbIndividual.Maximum, 1, TriState.True, TriState.False, TriState.False) & ") [" & pbTotal.Value & "/" & pbTotal.Maximum & " - " & FormatPercent(pbTotal.Value / pbTotal.Maximum, 1, TriState.True, TriState.False, TriState.False) & "]")
     Application.DoEvents()
   End Sub
   Private Sub expOutput_Closed(sender As Object, e As System.EventArgs) Handles expOutput.Closed
@@ -4813,9 +4875,10 @@ Public Class frmMain
       End Try
     End If
     Dim iTotalVal As Integer = 0
-    Dim iTotalMax As Integer = 4
+    Dim iTotalMax As Integer = 3
     If IO.Path.GetExtension(txtWIM.Text).ToLower = ".iso" Then iTotalMax += 1
-    If lvMSU.Items.Count > 0 Then iTotalMax += 1
+    If chkMerge.Checked AndAlso IO.Path.GetExtension(txtMerge.Text).ToLower = ".iso" Then iTotalMax += 1
+    If lvMSU.Items.Count > 0 Then iTotalMax += 2
     If Not String.IsNullOrEmpty(txtSP.Text) Then
       iTotalMax += 1
       If Not String.IsNullOrEmpty(txtSP64.Text) Then iTotalMax += 1
@@ -4823,8 +4886,6 @@ Public Class frmMain
     If Not String.IsNullOrEmpty(txtISO.Text) Then
       iTotalMax += 2
       If cmbLimitType.SelectedIndex > 0 Then iTotalMax += 1
-    Else
-      iTotalMax += 1
     End If
     Dim DoIntegratedUpdates As Boolean = False
     Dim DoFeatures As Boolean = False
@@ -4860,7 +4921,6 @@ Public Class frmMain
       Beep()
       Return
     Else
-      SetStatus("Calculating Time...")
       If IO.Path.GetExtension(txtWIM.Text).ToLower = ".iso" Then
         SetProgress(0, 1)
         iTotalVal += 1
@@ -4878,8 +4938,6 @@ Public Class frmMain
       Return
     End If
     SetProgress(0, 1)
-    iTotalVal += 1
-    SetTotal(iTotalVal, iTotalMax)
     SetDisp(MNGList.Delete)
     SetTitle("Merging Image Packages", "Merging all WIM packages into single WIM...")
     SetStatus("Checking Merge...")
@@ -4888,7 +4946,7 @@ Public Class frmMain
       If String.IsNullOrEmpty(txtMerge.Text) OrElse Not IO.File.Exists(txtMerge.Text) Then
         ToggleInputs(True)
         SetStatus("Missing Merge File!")
-        txtSP.Focus()
+        txtMerge.Focus()
         Beep()
         Return
       Else
@@ -4912,6 +4970,8 @@ Public Class frmMain
       If Not IO.Directory.Exists(MergeWorkExtract) Then IO.Directory.CreateDirectory(MergeWorkExtract)
       If IO.Path.GetExtension(MergeFile).ToLower = ".iso" Then
         SetProgress(0, 1)
+        iTotalVal += 1
+        SetTotal(iTotalVal, iTotalMax)
         SetStatus("Extracting Merge Image from ISO...")
         WriteToOutput("Extracting ""INSTALL.WIM"" from """ & MergeFile & """ to """ & MergeWorkExtract & """...")
         ExtractAFile(MergeFile, MergeWorkExtract, "INSTALL.WIM")
@@ -4925,6 +4985,7 @@ Public Class frmMain
       ToggleInputs(True)
       Return
     End If
+    SetProgress(0, 1)
     iTotalVal += 1
     SetTotal(iTotalVal, iTotalMax)
     Dim iProgVal As Integer = 0
@@ -5186,6 +5247,9 @@ Public Class frmMain
     SetTitle("Adding Windows Updates", "Integrating update data into WIM packages...")
     Dim NoMount As Boolean = True
     If UpdateFiles.Count > 0 Then
+      SetProgress(0, 1)
+      iTotalVal += 1
+      SetTotal(iTotalVal, iTotalMax)
       SetStatus("Integrating Updates...")
       If IntegrateFiles(WIMFile, UpdateFiles.ToArray, RemoveFiles.ToArray, iTotalVal, iTotalMax) Then
         SetStatus("Updates Integrated!")
@@ -5207,9 +5271,13 @@ Public Class frmMain
       InitDISM(WIMFile, GetDISMPackages(WIMFile), Mount)
       NoMount = False
     End If
+    '\/ not sure if this is needed
+    AddToLog("\/ not sure if this is needed")
     SetProgress(0, 1)
     iTotalVal += 1
     SetTotal(iTotalVal, iTotalMax)
+    AddToLog("/\ possibly deletable")
+    '/\ possibly deletable
     SetDisp(MNGList.Move)
     If Not String.IsNullOrEmpty(ISOFile) Then
       SetTitle("Generating ISO", "Preparing WIMs and file structures, and writing ISO data...")
@@ -5807,8 +5875,6 @@ Public Class frmMain
         Return
       End If
     Else
-      iTotalVal += 1
-      SetTotal(iTotalVal, iTotalMax)
       SetTitle("Generating WIM", "Preparing WIMs and file structure...")
       If Not NoMount Then
         SetProgress(0, 1)
@@ -7456,4 +7522,93 @@ Public Class frmMain
     Return False
   End Function
 #End Region
+#Region "Update Check"
+  Private Sub tmrUpdateCheck_Tick(sender As System.Object, e As System.EventArgs) Handles tmrUpdateCheck.Tick
+    tmrUpdateCheck.Stop()
+    If mySettings.LastUpdate.Year = 1970 Then mySettings.LastUpdate = Today
+    If DateDiff(DateInterval.Day, mySettings.LastUpdate, Today) > 13 Then
+      mySettings.LastUpdate = Today
+      cUpdate = New clsUpdate
+      Dim updateCaller As New MethodInvoker(AddressOf cUpdate.CheckVersion)
+      updateCaller.BeginInvoke(Nothing, Nothing)
+    End If
+  End Sub
+  Private Sub cUpdate_CheckingVersion(sender As Object, e As System.EventArgs) Handles cUpdate.CheckingVersion
+    SetStatus("Checking for new Version...")
+  End Sub
+  Private Sub cUpdate_CheckProgressChanged(sender As Object, e As clsUpdate.ProgressEventArgs) Handles cUpdate.CheckProgressChanged
+    SetStatus("Checking for new Version... (" & e.ProgressPercentage & "%)")
+  End Sub
+  Private Sub cUpdate_CheckResult(sender As Object, e As clsUpdate.CheckEventArgs) Handles cUpdate.CheckResult
+    If Me.InvokeRequired Then
+      Me.Invoke(New EventHandler(Of clsUpdate.CheckEventArgs)(AddressOf cUpdate_CheckResult), sender, e)
+    Else
+      If e.Cancelled Then
+        SetStatus("Update Check Cancelled!")
+      ElseIf e.Error IsNot Nothing Then
+        SetStatus("Update Check Failed: " & e.Error.Message & "!")
+      Else
+        If e.Result = clsUpdate.CheckEventArgs.ResultType.NewUpdate Then
+          SetStatus("New Version Available!")
+          If MsgDlg(Me, "Would you like to update now?", "SLIPS7REAM v" & e.Version & " is available!", "Application Update", MessageBoxButtons.YesNo, TaskDialogIcon.InternetRJ45) = Windows.Forms.DialogResult.Yes Then
+            cUpdate.DownloadUpdate(WorkDir & "Setup.exe")
+          End If
+        Else
+          SetStatus("Idle")
+          AskForDonations()
+        End If
+      End If
+    End If
+  End Sub
+  Private Sub cUpdate_DownloadingUpdate(sender As Object, e As System.EventArgs) Handles cUpdate.DownloadingUpdate
+    SetStatus("Downloading New Version - Waiting for Response...")
+  End Sub
+  Private Sub cUpdate_DownloadResult(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs) Handles cUpdate.DownloadResult
+    If Me.InvokeRequired Then
+      Me.Invoke(New System.ComponentModel.AsyncCompletedEventHandler(AddressOf cUpdate_CheckResult), sender, e)
+    Else
+      If e.Cancelled Then
+        SetStatus("Update Download Cancelled!")
+      ElseIf e.Error IsNot Nothing Then
+        SetStatus("Update Download Failed: " & e.Error.Message & "!")
+      Else
+        cUpdate.Dispose()
+        SetStatus("Download Complete!")
+        Application.DoEvents()
+        If My.Computer.FileSystem.FileExists(WorkDir & "Setup.exe") Then
+          Do
+            Try
+              Shell(WorkDir & "Setup.exe /silent", AppWinStyle.NormalFocus, False)
+              Exit Do
+            Catch ex As Exception
+              If MsgDlg(Me, "If you have User Account Control enabled, please allow the SLIPS7REAM Installer to run." & vbNewLine & "Would you like to attempt to run the update again?", "There was an error starting the update.", "Application Update Failure", MessageBoxButtons.YesNo, TaskDialogIcon.ShieldUAC, , ex.Message) = Windows.Forms.DialogResult.No Then Exit Do
+            End Try
+          Loop
+          Application.Exit()
+        Else
+          SetStatus("Update Failure!")
+        End If
+      End If
+    End If
+  End Sub
+  Private Sub cUpdate_UpdateProgressChanged(sender As Object, e As clsUpdate.ProgressEventArgs) Handles cUpdate.UpdateProgressChanged
+    SetStatus("Downloading New Version - " & ByteSize(e.BytesReceived) & " of " & ByteSize(e.TotalBytesToReceive) & "... (" & e.ProgressPercentage & "%)")
+  End Sub
+#End Region
+  Private Sub AddToLog(Message As String)
+    Dim logPath As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SLIPS7REAM.log")
+    If IO.File.Exists(logPath) Then
+      Dim logLines() As String = IO.File.ReadAllLines(logPath, System.Text.Encoding.GetEncoding(28591))
+      If logLines.Last = Message Then Return
+      Array.Resize(Of String)(logLines, logLines.Length + 1)
+      logLines(logLines.Length - 1) = Message
+      IO.File.WriteAllLines(logPath, logLines, System.Text.Encoding.GetEncoding(28591))
+    Else
+      IO.File.WriteAllText(logPath, Message, System.Text.Encoding.GetEncoding(28591))
+    End If
+  End Sub
+
+  Private Sub pctTitle_Click(sender As System.Object, e As System.EventArgs) Handles pctTitle.Click
+    frmDonate.Show()
+  End Sub
 End Class
