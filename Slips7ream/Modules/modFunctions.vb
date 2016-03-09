@@ -437,7 +437,7 @@ Public Module modFunctions
       Case "terratec electronic" : Return My.Resources.company_terratec_electronic
       Case "toshiba" : Return My.Resources.company_toshiba
       Case "via technologies" : Return My.Resources.company_via_technologies
-      Case "vidzmedia pte ltd" : Return My.Resources.company_oem
+      Case "vidzmedia pte ltd" : Return My.Resources.company_vidzmedia_pte_ltd
       Case "vixs systems" : Return My.Resources.company_vixs_systems
       Case "xerox" : Return My.Resources.company_xerox
       Case Else : Return My.Resources.company_oem

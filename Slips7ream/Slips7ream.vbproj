@@ -284,6 +284,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <Content Include="Resources\companies\vidzmedia_pte_ltd.ico" />
     <None Include="Resources\star.jpg" />
     <None Include="Resources\load_update.png" />
     <None Include="Resources\load_feature.png" />
@@ -323,7 +324,6 @@
     <None Include="Resources\companies\microsoft.ico" />
     <None Include="Resources\companies\lumanate.ico" />
     <None Include="Resources\companies\lsi.ico" />
-    <None Include="Resources\companies\lexmark.ico" />
     <None Include="Resources\companies\kyocera.ico" />
     <None Include="Resources\companies\kworld.ico" />
     <None Include="Resources\companies\konica_minolta.ico" />
