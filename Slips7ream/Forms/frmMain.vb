@@ -22,6 +22,16 @@ Public Class frmMain
   Private windowChangedSize As Boolean
   Private mySettings As MySettings
   Private outputWindow As Boolean = False
+  Private PrerequisiteList() As Prerequisite = {New Prerequisite("2592687:2574819"),
+                                                New Prerequisite("2830477:2574819,2857650"),
+                                                New Prerequisite("2841134:2533623,2639308,2670838,2729094,2731771,2786081,2834140,2882822,2888049,2849696,2849697"),
+                                                New Prerequisite("2923545:2830477"),
+                                                New Prerequisite("2965788:2830477"),
+                                                New Prerequisite("2984976:2830477,2984972,2592687"),
+                                                New Prerequisite("3020388:2830477"),
+                                                New Prerequisite("3042058:3020369"),
+                                                New Prerequisite("3075226:2830477"),
+                                                New Prerequisite("3126446:2830477")}
   Private Enum MNGList
     Move
     Copy
@@ -51,6 +61,20 @@ Public Class frmMain
     Retail
     OEM
   End Enum
+  Private Structure Prerequisite
+    Public KBWithRequirement As String
+    Public Requirement() As String
+    Public Sub New(Input As String)
+      If Not Input.Contains(":") Then Return
+      Dim splitInput() As String = Split(Input, ":", 2)
+      KBWithRequirement = splitInput(0)
+      If Not splitInput(1).Contains(",") Then
+        Requirement = {splitInput(1)}
+      Else
+        Requirement = Split(splitInput(1), ",")
+      End If
+    End Sub
+  End Structure
 #Region "GUI"
   Public Sub New()
     InitializeComponent()
@@ -398,13 +422,13 @@ Public Class frmMain
       pctOutputTear.Image = bTitle.Clone
     End Using
   End Sub
-  Private Delegate Sub ToggleInputsInvoker(Enabled As Boolean)
-  Private Sub ToggleInputs(Enabled As Boolean)
+  Private Delegate Sub ToggleInputsInvoker(bEnabled As Boolean, sStatus As String)
+  Private Sub ToggleInputs(bEnabled As Boolean, Optional sStatus As String = Nothing)
     If Me.InvokeRequired Then
-      Me.Invoke(New ToggleInputsInvoker(AddressOf ToggleInputs), Enabled)
+      Me.Invoke(New ToggleInputsInvoker(AddressOf ToggleInputs), bEnabled, sStatus)
       Return
     End If
-    If Enabled Then
+    If bEnabled Then
       RunActivity = 0
       Me.Cursor = Cursors.Default
       tmrAnimation.Stop()
@@ -414,68 +438,77 @@ Public Class frmMain
       tmrAnimation.Start()
     End If
     pnlSlips7ream.SuspendLayout()
-    lblWIM.Enabled = Enabled
-    txtWIM.Enabled = Enabled
-    cmdWIM.Enabled = Enabled
-    chkSP.Enabled = Enabled
-    txtSP.Enabled = IIf(Enabled, chkSP.Checked, Enabled)
-    cmdSP.Enabled = IIf(Enabled, chkSP.Checked, Enabled)
-    lblSP64.Enabled = IIf(Enabled, chkSP.Checked, Enabled)
-    txtSP64.Enabled = IIf(Enabled, chkSP.Checked, Enabled)
-    cmdSP64.Enabled = IIf(Enabled, chkSP.Checked, Enabled)
-    lblMSU.Enabled = Enabled
-    lvMSU.ReadOnly = Not Enabled
-    cmdAddMSU.Enabled = Enabled
-    cmdRemMSU.Enabled = IIf(Enabled, lvMSU.SelectedItems.Count > 0, Enabled)
-    cmdClearMSU.Enabled = IIf(Enabled, lvMSU.Items.Count > 0, Enabled)
-    If RunComplete Then
-      cmdBegin.Text = "Rerun"
-      cmdOpenFolder.Visible = True
+    lblWIM.Enabled = bEnabled
+    txtWIM.Enabled = bEnabled
+    cmdWIM.Enabled = bEnabled
+    chkSP.Enabled = bEnabled
+    txtSP.Enabled = IIf(bEnabled, chkSP.Checked, bEnabled)
+    cmdSP.Enabled = IIf(bEnabled, chkSP.Checked, bEnabled)
+    lblSP64.Enabled = IIf(bEnabled, chkSP.Checked, bEnabled)
+    txtSP64.Enabled = IIf(bEnabled, chkSP.Checked, bEnabled)
+    cmdSP64.Enabled = IIf(bEnabled, chkSP.Checked, bEnabled)
+    lblMSU.Enabled = bEnabled
+    lvMSU.ReadOnly = Not bEnabled
+    cmdAddMSU.Enabled = bEnabled
+    cmdRemMSU.Enabled = IIf(bEnabled, lvMSU.SelectedItems.Count > 0, bEnabled)
+    cmdClearMSU.Enabled = IIf(bEnabled, lvMSU.Items.Count > 0, bEnabled)
+    If bEnabled Then
+      If RunComplete Then
+        cmdBegin.Text = "Rerun"
+        cmdOpenFolder.Visible = True
+      Else
+        cmdBegin.Text = "&Begin"
+        cmdOpenFolder.Visible = False
+      End If
     Else
       cmdBegin.Text = "&Begin"
       cmdOpenFolder.Visible = False
     End If
-    cmdBegin.Visible = Enabled
-    chkISO.Enabled = Enabled
-    txtISO.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
-    cmdISO.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
-    lblISOFeatures.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
-    chkUnlock.Enabled = IIf(Enabled, chkISO.Checked And (chkUnlock.Tag Is Nothing), Enabled)
-    chkUEFI.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
-    lblISOLabel.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
-    txtISOLabel.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
-    lblISOFS.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
-    cmbISOFormat.Enabled = IIf(Enabled, chkISO.Checked, Enabled)
-    cmbLimitType.Enabled = Enabled
+    cmdBegin.Visible = bEnabled
+    chkISO.Enabled = bEnabled
+    txtISO.Enabled = IIf(bEnabled, chkISO.Checked, bEnabled)
+    cmdISO.Enabled = IIf(bEnabled, chkISO.Checked, bEnabled)
+    lblISOFeatures.Enabled = IIf(bEnabled, chkISO.Checked, bEnabled)
+    chkUnlock.Enabled = IIf(bEnabled, chkISO.Checked And (chkUnlock.Tag Is Nothing), bEnabled)
+    chkUEFI.Enabled = IIf(bEnabled, chkISO.Checked, bEnabled)
+    lblISOLabel.Enabled = IIf(bEnabled, chkISO.Checked, bEnabled)
+    txtISOLabel.Enabled = IIf(bEnabled, chkISO.Checked, bEnabled)
+    lblISOFS.Enabled = IIf(bEnabled, chkISO.Checked, bEnabled)
+    cmbISOFormat.Enabled = IIf(bEnabled, chkISO.Checked, bEnabled)
+    cmbLimitType.Enabled = bEnabled
     If chkISO.Checked Then
       If Not cmbLimitType.Items.Contains("Split ISO") Then cmbLimitType.Items.Add("Split ISO")
     Else
       If cmbLimitType.Items.Contains("Split ISO") Then cmbLimitType.Items.Remove("Split ISO")
     End If
     If cmbLimitType.SelectedIndex = -1 Then cmbLimitType.SelectedIndex = 0
-    cmbLimit.Enabled = IIf(Enabled, cmbLimitType.SelectedIndex > 0, Enabled)
-    chkMerge.Enabled = Enabled
-    txtMerge.Enabled = IIf(Enabled, chkMerge.Checked, Enabled)
-    cmdMerge.Enabled = IIf(Enabled, chkMerge.Checked, Enabled)
-    lblImages.Enabled = Enabled
-    chkLoadFeatures.Enabled = IIf(Enabled, Not String.IsNullOrEmpty(txtWIM.Text), False)
-    chkLoadUpdates.Enabled = IIf(Enabled, Not String.IsNullOrEmpty(txtWIM.Text), False)
-    chkLoadDrivers.Enabled = IIf(Enabled, Not String.IsNullOrEmpty(txtWIM.Text), False)
-    cmdLoadPackages.Enabled = IIf(Enabled, Not String.IsNullOrEmpty(txtWIM.Text) And (chkLoadFeatures.Checked Or chkLoadUpdates.Checked Or chkLoadDrivers.Checked), False)
-    lvImages.ReadOnly = Not Enabled
-    If Enabled Then
+    cmbLimit.Enabled = IIf(bEnabled, cmbLimitType.SelectedIndex > 0, bEnabled)
+    chkMerge.Enabled = bEnabled
+    txtMerge.Enabled = IIf(bEnabled, chkMerge.Checked, bEnabled)
+    cmdMerge.Enabled = IIf(bEnabled, chkMerge.Checked, bEnabled)
+    lblImages.Enabled = bEnabled
+    chkLoadFeatures.Enabled = IIf(bEnabled, Not String.IsNullOrEmpty(txtWIM.Text), False)
+    chkLoadUpdates.Enabled = IIf(bEnabled, Not String.IsNullOrEmpty(txtWIM.Text), False)
+    chkLoadDrivers.Enabled = IIf(bEnabled, Not String.IsNullOrEmpty(txtWIM.Text), False)
+    cmdLoadPackages.Enabled = IIf(bEnabled, Not String.IsNullOrEmpty(txtWIM.Text) And (chkLoadFeatures.Checked Or chkLoadUpdates.Checked Or chkLoadDrivers.Checked), False)
+    lvImages.ReadOnly = Not bEnabled
+    If bEnabled Then
       cmdClose.Text = "&Close"
       Me.CancelButton = Nothing
-      If Not lblActivity.Tag = "Complete!" Then SetStatus("Idle")
+      If String.IsNullOrEmpty(sStatus) Then
+        SetStatus("Idle")
+      Else
+        SetStatus(sStatus)
+      End If
     Else
       cmdClose.Text = "&Cancel"
       Me.CancelButton = cmdClose
     End If
-    cmdConfig.Visible = Enabled
+    cmdConfig.Visible = bEnabled
     cmdClose.Enabled = True
-    If pbTotal.Visible = Enabled Then
-      pbTotal.Visible = Not Enabled
-      pbIndividual.Visible = Not Enabled
+    If pbTotal.Visible = bEnabled Then
+      pbTotal.Visible = Not bEnabled
+      pbIndividual.Visible = Not bEnabled
       If Me.WindowState = FormWindowState.Normal Then
         If pbTotal.Visible Then
           Me.Height += HeightDifferentialB
@@ -486,8 +519,8 @@ Public Class frmMain
         End If
       End If
     End If
-    pbTotal.Visible = Not Enabled
-    pbIndividual.Visible = Not Enabled
+    pbTotal.Visible = Not bEnabled
+    pbIndividual.Visible = Not bEnabled
     If Not pbTotal.Visible Then pbTotal.Value = 0
     If Not pbIndividual.Visible Then pbIndividual.Value = 0
     pnlSlips7ream.ResumeLayout(True)
@@ -902,7 +935,6 @@ Public Class frmMain
         SetTitle("Parsing Update Information", "Reading data from update files...")
         ToggleInputs(False)
         SetTotal(0, FileCount)
-        If taskBar IsNot Nothing Then taskBar.SetProgressState(Me.Handle, TaskbarLib.TBPFLAG.TBPF_NORMAL)
         SetProgress(0, 0)
         SetStatus("Reading Update Information...")
       End If
@@ -913,7 +945,6 @@ Public Class frmMain
         If FileCount > 2 Then
           iProg += 1
           SetTotal(iProg, FileCount)
-          If taskBar IsNot Nothing Then taskBar.SetProgressValue(Me.Handle, pbTotal.Value, pbTotal.Maximum)
           Application.DoEvents()
           If StopRun Then
             SetProgress(0, 1)
@@ -946,7 +977,6 @@ Public Class frmMain
       lvMSU.ResumeLayout(True)
       If FileCount > 2 Then
         SetProgress(0, 1)
-        If taskBar IsNot Nothing Then taskBar.SetProgressState(Me.Handle, TaskbarLib.TBPFLAG.TBPF_NOPROGRESS)
         ToggleInputs(True)
       End If
       RedoColumns()
@@ -1148,7 +1178,6 @@ Public Class frmMain
           SetTitle("Parsing Update Information", "Reading data from update files...")
           ToggleInputs(False)
           SetTotal(0, FileCount)
-          If taskBar IsNot Nothing Then taskBar.SetProgressState(Me.Handle, TaskbarLib.TBPFLAG.TBPF_NORMAL)
           SetProgress(0, 0)
           SetStatus("Reading Update Information...")
         End If
@@ -1157,7 +1186,6 @@ Public Class frmMain
           Dim sUpdate As String = cdlBrowse.FileNames(I)
           If FileCount > 2 Then
             SetTotal(I + 1, FileCount)
-            If taskBar IsNot Nothing Then taskBar.SetProgressValue(Me.Handle, pbTotal.Value, pbTotal.Maximum)
             Application.DoEvents()
             If StopRun Then
               SetProgress(0, 1)
@@ -1190,7 +1218,6 @@ Public Class frmMain
         lvMSU.ResumeLayout(True)
         If FileCount > 2 Then
           SetProgress(0, 1)
-          If taskBar IsNot Nothing Then taskBar.SetProgressState(Me.Handle, TaskbarLib.TBPFLAG.TBPF_NOPROGRESS)
           ToggleInputs(True)
         End If
         RedoColumns()
@@ -1481,78 +1508,94 @@ Public Class frmMain
       ttItem &= vbNewLine & en & msuData.AppliesTo & " " & msuData.Architecture & IIf(bWhitelist, " [Whitelisted for 64-bit]", "")
       If Not String.IsNullOrEmpty(msuData.BuildDate) Then ttItem &= vbNewLine & en & "Built: " & msuData.BuildDate
       ttItem &= vbNewLine & en & ShortenPath(msuData.Path)
-      lvItem.BackColor = IIf(bWhitelist, SystemColors.GradientInactiveCaption, SystemColors.Window)
-      Select Case msuData.KBArticle
-        Case "2647753"
-          If msuData.Ident.Version = "6.1.2.0" Then
-            lvItem.ForeColor = Color.Red
-            ttItem &= vbNewLine & en & "Version 2 may not integrate correctly. SLIPS7REAM suggests using Version 4 from the Microsoft Update Catalog."
+      lvItem.BackColor = IIf(bWhitelist, SystemColors.GradientInactiveCaption, lvMSU.BackColor)
+      If msuData.KBArticle = "2647753" And msuData.Ident.Version = "6.1.2.0" Then
+        lvItem.ForeColor = Color.Red
+        ttItem &= vbNewLine & en & "Version 2 may not integrate correctly. SLIPS7REAM suggests using Version 4 from the Microsoft Update Catalog."
+      End If
+      If PrerequisiteList.Length > 0 Then
+        For Each prereq As Prerequisite In PrerequisiteList
+          If msuData.KBArticle = prereq.KBWithRequirement And prereq.Requirement.Length > 0 Then
+            Dim Req(prereq.Requirement.Length - 1) As Boolean
+            For I As Integer = 0 To Req.Length - 1
+              Req(I) = False
+            Next
+            If lvImages.Items.Count > 0 Then
+              For Each searchImage As ListViewItem In lvImages.Items
+                Dim searchItem As ImagePackage = searchImage.Tag(1)
+                If searchItem.IntegratedUpdateList IsNot Nothing AndAlso searchItem.IntegratedUpdateList.Count > 0 Then
+                  For Each searchPackage As Update_Integrated In searchItem.IntegratedUpdateList
+                    For I As Integer = 0 To prereq.Requirement.Length - 1
+                      If searchPackage.Ident.Name.Contains(prereq.Requirement(I)) Then Req(I) = True
+                    Next
+                  Next
+                End If
+              Next
+            End If
+            If lvMSU.Items.Count > 0 Then
+              For Each searchItem As ListViewItem In lvMSU.Items
+                Dim searchData As Update_File = searchItem.Tag(0)
+                For I As Integer = 0 To prereq.Requirement.Length - 1
+                  If searchData.KBArticle = prereq.Requirement(I) Then Req(I) = True
+                Next
+                If Not Req.Contains(False) Then Exit For
+              Next
+            End If
+            If Req.Contains(False) Then
+              lvItem.ForeColor = Color.Orange
+              If prereq.Requirement.Length = 1 Then
+                ttItem &= vbNewLine & en & "Please make sure KB" & prereq.Requirement(0) & " is also integrated."
+              ElseIf prereq.Requirement.Length = 2 Then
+                ttItem &= vbNewLine & en & "Please make sure KB" & prereq.Requirement(0) & " and KB" & prereq.Requirement(1) & " are also integrated."
+              Else
+                Dim sKBList As String = Nothing
+                For I As Integer = 0 To prereq.Requirement.Length - 2
+                  sKBList &= "KB" & prereq.Requirement(I) & ", "
+                Next
+                sKBList &= "and KB" & prereq.Requirement(prereq.Requirement.Length - 1)
+                ttItem &= vbNewLine & en & "Please make sure " & sKBList & " are also integrated."
+              End If
+            End If
           End If
-        Case "2830477"
-          Dim Req1 As Boolean = False
-          Dim Req2 As Boolean = False
-          If lvImages.Items.Count > 0 Then
-            For Each searchImage As ListViewItem In lvImages.Items
-              Dim searchItem As ImagePackage = searchImage.Tag(1)
-              If searchItem.IntegratedUpdateList IsNot Nothing AndAlso searchItem.IntegratedUpdateList.Count > 0 Then
-                For Each searchPackage As Update_Integrated In searchItem.IntegratedUpdateList
-                  If searchPackage.Ident.Name.Contains("2574819") Then Req1 = True
-                  If searchPackage.Ident.Name.Contains("2857650") Then Req2 = True
+          For Each sReq As String In prereq.Requirement
+            If msuData.KBArticle = sReq Then
+              Dim Req As Boolean = False
+              If prereq.Requirement.Length < 2 Then
+                Req = True
+              Else
+                Dim Reqs(prereq.Requirement.Length - 1) As Boolean
+                For I As Integer = 0 To Reqs.Length - 1
+                  Reqs(I) = False
+                Next
+                For I As Integer = 0 To prereq.Requirement.Length - 1
+                  If prereq.Requirement(I) = sReq Then
+                    Reqs(I) = True
+                    Continue For
+                  End If
+                  For Each searchItem As ListViewItem In lvMSU.Items
+                    Dim searchData As Update_File = searchItem.Tag(0)
+                    If searchData.KBArticle = prereq.Requirement(I) Then
+                      Reqs(I) = True
+                      Exit For
+                    End If
+                  Next
+                Next
+                Req = Not Reqs.Contains(False)
+              End If
+              If Req Then
+                For Each searchItem As ListViewItem In lvMSU.Items
+                  Dim searchData As Update_File = searchItem.Tag(0)
+                  If searchData.KBArticle = prereq.KBWithRequirement Then
+                    searchItem.ForeColor = lvMSU.ForeColor
+                    If searchItem.ToolTipText.Contains("Please make sure") Then searchItem.ToolTipText = searchItem.ToolTipText.Substring(0, searchItem.ToolTipText.LastIndexOf(vbNewLine))
+                    Exit For
+                  End If
                 Next
               End If
-            Next
-          End If
-          If lvMSU.Items.Count > 0 Then
-            For Each searchItem As ListViewItem In lvMSU.Items
-              Dim searchData As Update_File = searchItem.Tag(0)
-              If searchData.KBArticle = "2574819" Then Req1 = True
-              If searchData.KBArticle = "2857650" Then Req2 = True
-              If Req1 And Req1 Then Exit For
-            Next
-          End If
-          If Not Req1 Or Not Req2 Then
-            lvItem.ForeColor = Color.Orange
-            ttItem &= vbNewLine & en & "Please make sure KB2574819 and KB2857650 are also integrated."
-          End If
-        Case "2574819"
-          Dim Req As Boolean = False
-          For Each searchItem As ListViewItem In lvMSU.Items
-            Dim searchData As Update_File = searchItem.Tag(0)
-            If searchData.KBArticle = "2857650" Then
-              Req = True
-              Exit For
             End If
           Next
-          If Req Then
-            For Each searchItem As ListViewItem In lvMSU.Items
-              Dim searchData As Update_File = searchItem.Tag(0)
-              If searchData.KBArticle = "2830477" Then
-                searchItem.ForeColor = lvMSU.ForeColor
-                searchItem.ToolTipText = searchItem.ToolTipText.Substring(0, searchItem.ToolTipText.LastIndexOf(vbNewLine))
-                Exit For
-              End If
-            Next
-          End If
-        Case "2857650"
-          Dim Req As Boolean = False
-          For Each searchItem As ListViewItem In lvMSU.Items
-            Dim searchData As Update_File = searchItem.Tag(0)
-            If searchData.KBArticle = "2574819" Then
-              Req = True
-              Exit For
-            End If
-          Next
-          If Req Then
-            For Each searchItem As ListViewItem In lvMSU.Items
-              Dim searchData As Update_File = searchItem.Tag(0)
-              If searchData.KBArticle = "2830477" Then
-                searchItem.ForeColor = lvMSU.ForeColor
-                searchItem.ToolTipText = searchItem.ToolTipText.Substring(0, searchItem.ToolTipText.LastIndexOf(vbNewLine))
-                Exit For
-              End If
-            Next
-          End If
-      End Select
+        Next
+      End If
       If msuData.Ident.Name = "Microsoft-Windows-LIP-LanguagePack-Package" Then
         Dim langList As New List(Of String)
         Dim hasSP As Boolean = False
@@ -1662,7 +1705,6 @@ Public Class frmMain
         End If
       End If
       lvItem.ToolTipText = ttItem
-      lvItem.BackColor = lvMSU.BackColor
       Select Case GetUpdateType(msuData.Path)
         Case UpdateType.MSU
           lvItem.ImageKey = "MSU"
@@ -1748,6 +1790,114 @@ Public Class frmMain
       Return Join(FailCollection.ToArray, vbNewLine)
     End If
   End Function
+  Private Sub SetRequirements()
+    Dim en As String = ChrW(&H2003)
+    If PrerequisiteList.Length > 0 Then
+      For U As Integer = 0 To lvMSU.Items.Count - 1
+        Dim lvItem As ListViewItem = lvMSU.Items(U)
+        Dim msuData As Update_File = lvItem.Tag(0)
+        If msuData.Name = "DRIVER" Then Continue For
+        For Each prereq As Prerequisite In PrerequisiteList
+          If msuData.KBArticle = prereq.KBWithRequirement And prereq.Requirement.Length > 0 Then
+            Dim Req(prereq.Requirement.Length - 1) As Boolean
+            For I As Integer = 0 To Req.Length - 1
+              Req(I) = False
+            Next
+            If lvImages.Items.Count > 0 Then
+              For Each searchImage As ListViewItem In lvImages.Items
+                Dim searchItem As ImagePackage = searchImage.Tag(1)
+                If searchItem.IntegratedUpdateList IsNot Nothing AndAlso searchItem.IntegratedUpdateList.Count > 0 Then
+                  For Each searchPackage As Update_Integrated In searchItem.IntegratedUpdateList
+                    For I As Integer = 0 To prereq.Requirement.Length - 1
+                      If searchPackage.Ident.Name.Contains(prereq.Requirement(I)) Then Req(I) = True
+                      If Not String.IsNullOrEmpty(searchPackage.UpdateInfo.Name) AndAlso searchPackage.UpdateInfo.Name.Contains(prereq.Requirement(I)) Then Req(I) = True
+                    Next
+                  Next
+                End If
+              Next
+            End If
+            If lvMSU.Items.Count > 0 Then
+              For Each searchItem As ListViewItem In lvMSU.Items
+                Dim searchData As Update_File = searchItem.Tag(0)
+                For I As Integer = 0 To prereq.Requirement.Length - 1
+                  If searchData.KBArticle = prereq.Requirement(I) Then Req(I) = True
+                Next
+                If Not Req.Contains(False) Then Exit For
+              Next
+            End If
+            If Req.Contains(False) Then
+              lvItem.ForeColor = Color.Orange
+              If prereq.Requirement.Length = 1 Then
+                If Not lvItem.ToolTipText.Contains(vbNewLine & en & "Please make sure KB" & prereq.Requirement(0) & " is also integrated.") Then lvItem.ToolTipText &= vbNewLine & en & "Please make sure KB" & prereq.Requirement(0) & " is also integrated."
+              ElseIf prereq.Requirement.Length = 2 Then
+                If Not lvItem.ToolTipText.Contains(vbNewLine & en & "Please make sure KB" & prereq.Requirement(0) & " and KB" & prereq.Requirement(1) & " are also integrated.") Then lvItem.ToolTipText &= vbNewLine & en & "Please make sure KB" & prereq.Requirement(0) & " and KB" & prereq.Requirement(1) & " are also integrated."
+              Else
+                Dim sKBList As String = Nothing
+                For I As Integer = 0 To prereq.Requirement.Length - 2
+                  sKBList &= "KB" & prereq.Requirement(I) & ", "
+                Next
+                sKBList &= "and KB" & prereq.Requirement(prereq.Requirement.Length - 1)
+                If Not lvItem.ToolTipText.Contains(vbNewLine & en & "Please make sure " & sKBList & " are also integrated.") Then lvItem.ToolTipText &= vbNewLine & en & "Please make sure " & sKBList & " are also integrated."
+              End If
+            ElseIf lvItem.ForeColor = Color.Orange And Not msuData.Ident.Name = "Microsoft-Windows-LIP-LanguagePack-Package" Then
+              lvItem.ForeColor = lvMSU.ForeColor
+              If lvItem.ToolTipText.Contains(vbNewLine & en & "Please make sure ") Then
+                Dim FirstHalf As String = lvItem.ToolTipText.Substring(0, lvItem.ToolTipText.IndexOf(vbNewLine & en & "Please make sure "))
+                Dim SecondHalf As String = Nothing
+                If lvItem.ToolTipText.Substring(lvItem.ToolTipText.IndexOf(vbNewLine & en & "Please make sure ") + 2).Contains(vbNewLine) Then SecondHalf = lvItem.ToolTipText.Substring(lvItem.ToolTipText.IndexOf(vbNewLine, lvItem.ToolTipText.IndexOf(vbNewLine & en & "Please make sure ") + 2))
+                lvItem.ToolTipText = FirstHalf & SecondHalf
+              End If
+            End If
+          End If
+          For Each sReq As String In prereq.Requirement
+            If msuData.KBArticle = sReq Then
+              Dim Req As Boolean = False
+              If prereq.Requirement.Length < 2 Then
+                Req = True
+              Else
+                Dim Reqs(prereq.Requirement.Length - 1) As Boolean
+                For I As Integer = 0 To Reqs.Length - 1
+                  Reqs(I) = False
+                Next
+                For I As Integer = 0 To prereq.Requirement.Length - 1
+                  If prereq.Requirement(I) = sReq Then
+                    Reqs(I) = True
+                    Continue For
+                  End If
+                  For Each searchItem As ListViewItem In lvMSU.Items
+                    Dim searchData As Update_File = searchItem.Tag(0)
+                    If searchData.KBArticle = prereq.Requirement(I) Then
+                      Reqs(I) = True
+                      Exit For
+                    End If
+                  Next
+                Next
+                Req = Not Reqs.Contains(False)
+              End If
+              If Req Then
+                For Each searchItem As ListViewItem In lvMSU.Items
+                  Dim searchData As Update_File = searchItem.Tag(0)
+                  If searchData.KBArticle = prereq.KBWithRequirement Then
+                    searchItem.ForeColor = lvMSU.ForeColor
+                    If searchItem.ToolTipText.Contains("Please make sure") Then searchItem.ToolTipText = searchItem.ToolTipText.Substring(0, searchItem.ToolTipText.LastIndexOf(vbNewLine))
+                    Exit For
+                  End If
+                Next
+              ElseIf lvItem.ForeColor = Color.Orange And Not msuData.Ident.Name = "Microsoft-Windows-LIP-LanguagePack-Package" Then
+                lvItem.ForeColor = lvMSU.ForeColor
+                If lvItem.ToolTipText.Contains(vbNewLine & en & "Please make sure ") Then
+                  Dim FirstHalf As String = lvItem.ToolTipText.Substring(0, lvItem.ToolTipText.IndexOf(vbNewLine & en & "Please make sure "))
+                  Dim SecondHalf As String = Nothing
+                  If lvItem.ToolTipText.Substring(lvItem.ToolTipText.IndexOf(vbNewLine & en & "Please make sure ") + 2).Contains(vbNewLine) Then SecondHalf = lvItem.ToolTipText.Substring(lvItem.ToolTipText.IndexOf(vbNewLine, lvItem.ToolTipText.IndexOf(vbNewLine & en & "Please make sure ") + 2))
+                  lvItem.ToolTipText = FirstHalf & SecondHalf
+                End If
+              End If
+            End If
+          Next
+        Next
+      Next
+    End If
+  End Sub
   Private Sub cmdRemMSU_Click(sender As System.Object, e As System.EventArgs) Handles cmdRemMSU.Click
     If lvMSU.Items.Count > 0 Then
       Dim lIndex As Integer = -1
@@ -1759,8 +1909,10 @@ Public Class frmMain
         If lIndex >= lvMSU.Items.Count Then lIndex = lvMSU.Items.Count - 1
         lvMSU.Items(lIndex).Selected = True
       End If
+      SetRequirements()
       SetStatus("Idle")
       RedoColumns()
+      cmdRemMSU.Focus()
     Else
       Beep()
     End If
@@ -2670,6 +2822,7 @@ Public Class frmMain
         Exit For
       End If
     Next
+    SetRequirements()
   End Sub
   Private Sub lvImages_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles lvImages.MouseUp
     If e.Button = Windows.Forms.MouseButtons.Right Then
@@ -2920,6 +3073,7 @@ Public Class frmMain
       If StopRun Then Return
       totalVal += 1
       SetTotal(totalVal, totalMax)
+      SetProgress(0, 1)
       SetStatus("Populating Image Package List...")
       For I As Integer = 1 To PackageCount
         If SelIndex > -1 Then
@@ -3041,6 +3195,7 @@ Public Class frmMain
         Return
       End If
     Loop
+    SetRequirements()
     tListUp = Nothing
     SetTotal(0, 1)
     SetProgress(0, 1)
@@ -3096,6 +3251,7 @@ Public Class frmMain
       If StopRun Then Return
       totalVal += 1
       SetTotal(totalVal, totalMax)
+      SetProgress(0, 1)
       SetStatus("Populating Image Package List...")
       For I As Integer = 1 To PackageCount
         If selIndex > -1 Then
@@ -3273,6 +3429,7 @@ Public Class frmMain
       If StopRun Then Return
       totalVal += 1
       SetTotal(totalVal, totalMax)
+      SetProgress(0, 1)
       SetStatus("Populating Image Package List...")
       For I As Integer = 1 To PackageCount
         If selIndex > -1 Then
@@ -3573,7 +3730,7 @@ Public Class frmMain
     If Me.InvokeRequired Then
       Return Me.Invoke(New GetStatusInvoker(AddressOf GetStatus))
     Else
-      Return lblActivity.Text
+      Return lblActivity.Tag
     End If
   End Function
   Private ActivityMouse As Boolean
@@ -3605,11 +3762,10 @@ Public Class frmMain
       HideActivityTT()
       ShowActivityTT()
     End If
-    AddToLog(lblActivity.Tag & " (" & pbIndividual.Value & "/" & pbIndividual.Maximum & " - " & FormatPercent(pbIndividual.Value / pbIndividual.Maximum, 1, TriState.True, TriState.False, TriState.False) & ") [" & pbTotal.Value & "/" & pbTotal.Maximum & " - " & FormatPercent(pbTotal.Value / pbTotal.Maximum, 1, TriState.True, TriState.False, TriState.False) & "]")
     Application.DoEvents()
   End Sub
   Private Sub lblActivity_SizeChanged(sender As Object, e As System.EventArgs) Handles lblActivity.SizeChanged
-    SetActivityText(lblActivity.Tag)
+    SetActivityText(GetStatus)
   End Sub
   Private Sub SetActivityText(Message As String)
     lblActivity.Tag = Message
@@ -3642,9 +3798,9 @@ Public Class frmMain
     ActivityMouse = False
   End Sub
   Private Sub ShowActivityTT()
-    If String.IsNullOrEmpty(lblActivity.Tag) Then Return
-    If Not lblActivity.Tag = lblActivity.Text Then
-      ttActivity.Show(lblActivity.Tag, lblActivity, -3, -2, Integer.MaxValue)
+    If String.IsNullOrEmpty(GetStatus) Then Return
+    If Not GetStatus() = lblActivity.Text Then
+      ttActivity.Show(GetStatus, lblActivity, -3, -2, Integer.MaxValue)
     End If
   End Sub
   Private Sub HideActivityTT()
@@ -3750,7 +3906,6 @@ Public Class frmMain
     Else
       ttInfo.SetToolTip(pbIndividual, "Progress: " & FormatPercent(Value / Maximum, 2, TriState.True, TriState.False, TriState.False))
     End If
-    AddToLog(lblActivity.Tag & " (" & pbIndividual.Value & "/" & pbIndividual.Maximum & " - " & FormatPercent(pbIndividual.Value / pbIndividual.Maximum, 1, TriState.True, TriState.False, TriState.False) & ") [" & pbTotal.Value & "/" & pbTotal.Maximum & " - " & FormatPercent(pbTotal.Value / pbTotal.Maximum, 1, TriState.True, TriState.False, TriState.False) & "]")
   End Sub
   Public Sub SetTotal(Value As Integer, Maximum As Integer)
     If Me.InvokeRequired Then
@@ -3804,7 +3959,6 @@ Public Class frmMain
       End If
     Catch ex As Exception
     End Try
-    AddToLog(lblActivity.Tag & " (" & pbIndividual.Value & "/" & pbIndividual.Maximum & " - " & FormatPercent(pbIndividual.Value / pbIndividual.Maximum, 1, TriState.True, TriState.False, TriState.False) & ") [" & pbTotal.Value & "/" & pbTotal.Maximum & " - " & FormatPercent(pbTotal.Value / pbTotal.Maximum, 1, TriState.True, TriState.False, TriState.False) & "]")
     Application.DoEvents()
   End Sub
   Private Sub expOutput_Closed(sender As Object, e As System.EventArgs) Handles expOutput.Closed
@@ -4300,9 +4454,6 @@ Public Class frmMain
     Source = Obj(0)
     Destination = Obj(1)
     cIndex = Obj(2)
-    Dim sStatus As String = GetStatus()
-    If sStatus.EndsWith("...") Then sStatus = sStatus.Substring(0, sStatus.Length - 3)
-    If sStatus.Contains(" (File ") Then sStatus = sStatus.Substring(0, sStatus.IndexOf(" (File"))
     If Not Destination.EndsWith(IO.Path.DirectorySeparatorChar) Then Destination &= IO.Path.DirectorySeparatorChar
     Extractor = New Extraction.ArchiveFile(New IO.FileInfo(Source), GetUpdateCompression(Source))
     Try
@@ -4366,10 +4517,6 @@ Public Class frmMain
     Destination = Obj(1)
     Except = Obj(2)
     cIndex = Obj(3)
-    Dim sStatus As String = GetStatus()
-    If sStatus.EndsWith("...") Then sStatus = sStatus.Substring(0, sStatus.Length - 3)
-    If sStatus.Contains(" (File ") Then sStatus = sStatus.Substring(0, sStatus.IndexOf(" (File"))
-    If Not Destination.EndsWith(IO.Path.DirectorySeparatorChar) Then Destination &= IO.Path.DirectorySeparatorChar
     Extractor = New Extraction.ArchiveFile(New IO.FileInfo(Source), GetUpdateCompression(Source))
     Try
       Extractor.Open()
@@ -4858,8 +5005,7 @@ Public Class frmMain
     If IO.Directory.Exists(WorkDir) Then
       SetProgress(0, 1)
       If Not CleanMounts() Then
-        ToggleInputs(True)
-        SetStatus("Active Mount Detected!")
+        ToggleInputs(True, "Active Mount Detected!")
         cmdConfig.Focus()
         Beep()
         MsgDlg(Me, "The selected Temp directory has an active mount that could not be removed. Please restart your computer or change your Temp directory before continuing.", "Active mount has been detected.", "Unable to Begin Slipstream Process", MessageBoxButtons.OK, TaskDialogIcon.DriveLocked, , , "Active Mount")
@@ -4915,8 +5061,7 @@ Public Class frmMain
     SetDisp(MNGList.Copy)
     SetStatus("Checking WIM...")
     If String.IsNullOrEmpty(txtWIM.Text) OrElse Not IO.File.Exists(txtWIM.Text) Then
-      ToggleInputs(True)
-      SetStatus("Missing WIM File!")
+      ToggleInputs(True, "Missing WIM File!")
       txtWIM.Focus()
       Beep()
       Return
@@ -4944,8 +5089,7 @@ Public Class frmMain
     Dim MergeFile As String = Nothing
     If chkMerge.Checked Then
       If String.IsNullOrEmpty(txtMerge.Text) OrElse Not IO.File.Exists(txtMerge.Text) Then
-        ToggleInputs(True)
-        SetStatus("Missing Merge File!")
+        ToggleInputs(True, "Missing Merge File!")
         txtMerge.Focus()
         Beep()
         Return
@@ -5020,8 +5164,7 @@ Public Class frmMain
         If ExportWIM(RowImage, RowIndex, NewWIM, RowName) Then
           Continue For
         Else
-          ToggleInputs(True)
-          SetStatus("Failed to Merge WIM """ & RowName & """")
+          ToggleInputs(True, "Failed to Merge WIM """ & RowName & """")
           Return
         End If
       End If
@@ -5044,8 +5187,7 @@ Public Class frmMain
     Dim BakWIM As String = WorkDir & IO.Path.DirectorySeparatorChar & IO.Path.GetFileNameWithoutExtension(WIMFile & "_BAK.WIM")
     WriteToOutput("Copying """ & WIMFile & """ to """ & BakWIM & """...")
     If Not SlowCopyFile(WIMFile, BakWIM, True) Then
-      ToggleInputs(True)
-      SetStatus("Failed to back up Install WIM!")
+      ToggleInputs(True, "Failed to back up Install WIM!")
       Return
     End If
     SetStatus("Moving Generated WIM...")
@@ -5054,11 +5196,9 @@ Public Class frmMain
       SetStatus("Generated WIM Move Failed! Reverting to Old WIM...")
       WriteToOutput("Copying """ & BakWIM & """ to """ & WIMFile & """...")
       If Not SlowCopyFile(BakWIM, WIMFile, True) Then
-        ToggleInputs(True)
-        SetStatus("Generated WIM Move Failed! Original WIM Restore Failed!")
+        ToggleInputs(True, "Generated WIM Move Failed! Original WIM Restore Failed!")
       Else
-        ToggleInputs(True)
-        SetStatus("Generated WIM Move Failed! Original WIM Restored.")
+        ToggleInputs(True, "Generated WIM Move Failed! Original WIM Restored.")
       End If
       Return
     End If
@@ -5079,8 +5219,7 @@ Public Class frmMain
     Dim SPFile As String = Nothing
     If chkSP.Checked Then
       If String.IsNullOrEmpty(txtSP.Text) OrElse Not IO.File.Exists(txtSP.Text) Then
-        ToggleInputs(True)
-        SetStatus("Missing Service Pack File!")
+        ToggleInputs(True, "Missing Service Pack File!")
         txtSP.Focus()
         Beep()
         Return
@@ -5095,8 +5234,7 @@ Public Class frmMain
       If String.IsNullOrEmpty(txtSP64.Text) Then
         SP64File = Nothing
       ElseIf Not IO.File.Exists(txtSP64.Text) Then
-        ToggleInputs(True)
-        SetStatus("Missing x64 Service Pack File!")
+        ToggleInputs(True, "Missing x64 Service Pack File!")
         txtSP64.Focus()
         Beep()
         Return
@@ -5110,8 +5248,7 @@ Public Class frmMain
     Dim ISOFile As String = Nothing
     If chkISO.Checked Then
       If String.IsNullOrEmpty(txtISO.Text) OrElse Not IO.File.Exists(txtISO.Text) Then
-        ToggleInputs(True)
-        SetStatus("Missing ISO File!")
+        ToggleInputs(True, "Missing ISO File!")
         txtISO.Focus()
         Beep()
         Return
@@ -5146,9 +5283,8 @@ Public Class frmMain
           SetTotal(iTotalVal, iTotalMax)
           SetStatus("Service Pack Integrated!")
         Else
-          Dim sMsg As String = lblActivity.Text
-          ToggleInputs(True)
-          lblActivity.Text = sMsg
+          Dim sMsg As String = GetStatus()
+          ToggleInputs(True, sMsg)
           Return
         End If
         If StopRun Then
@@ -5162,9 +5298,8 @@ Public Class frmMain
           SetTotal(iTotalVal, iTotalMax)
           SetStatus("x86 Service Pack Integrated!")
         Else
-          Dim sMsg As String = lblActivity.Text
-          ToggleInputs(True)
-          lblActivity.Text = sMsg
+          Dim sMsg As String = GetStatus()
+          ToggleInputs(True, sMsg)
           Return
         End If
         If StopRun Then
@@ -5177,9 +5312,8 @@ Public Class frmMain
           SetTotal(iTotalVal, iTotalMax)
           SetStatus("x64 Service Pack Integrated!")
         Else
-          Dim sMsg As String = lblActivity.Text
-          ToggleInputs(True)
-          lblActivity.Text = sMsg
+          Dim sMsg As String = GetStatus()
+          ToggleInputs(True, sMsg)
           Return
         End If
         If StopRun Then
@@ -5197,9 +5331,8 @@ Public Class frmMain
       If IntegratedFeatures(WIMFile, ImageFeatures.ToArray) Then
         SetStatus("Features Toggled!")
       Else
-        Dim sMsg As String = lblActivity.Text
-        ToggleInputs(True)
-        lblActivity.Text = sMsg
+        Dim sMsg As String = GetStatus()
+        ToggleInputs(True, sMsg)
         Return
       End If
       If StopRun Then
@@ -5217,9 +5350,8 @@ Public Class frmMain
       If IntegratedUpdates(WIMFile, ImageIntegratedUpdates.ToArray) Then
         SetStatus("Updates Removed!")
       Else
-        Dim sMsg As String = lblActivity.Text
-        ToggleInputs(True)
-        lblActivity.Text = sMsg
+        Dim sMsg As String = GetStatus()
+        ToggleInputs(True, sMsg)
         Return
       End If
       If StopRun Then
@@ -5237,9 +5369,8 @@ Public Class frmMain
       If IntegratedDrivers(WIMFile, ImageDrivers) Then
         SetStatus("Drivers Removed!")
       Else
-        Dim sMsg As String = lblActivity.Text
-        ToggleInputs(True)
-        lblActivity.Text = sMsg
+        Dim sMsg As String = GetStatus()
+        ToggleInputs(True, sMsg)
         Return
       End If
     End If
@@ -5255,9 +5386,8 @@ Public Class frmMain
         SetStatus("Updates Integrated!")
         NoMount = False
       Else
-        Dim sMsg As String = lblActivity.Text
-        ToggleInputs(True)
-        lblActivity.Text = sMsg
+        Dim sMsg As String = GetStatus()
+        ToggleInputs(True, sMsg)
         Return
       End If
       If StopRun Then
@@ -5272,11 +5402,9 @@ Public Class frmMain
       NoMount = False
     End If
     '\/ not sure if this is needed
-    AddToLog("\/ not sure if this is needed")
     SetProgress(0, 1)
     iTotalVal += 1
     SetTotal(iTotalVal, iTotalMax)
-    AddToLog("/\ possibly deletable")
     '/\ possibly deletable
     SetDisp(MNGList.Move)
     If Not String.IsNullOrEmpty(ISOFile) Then
@@ -5330,10 +5458,9 @@ Public Class frmMain
         SetStatus("Updating Language INIs...")
         SetProgress(0, 1)
         If Not UpdateLang(ISODir) Then
-          Dim sMsg As String = lblActivity.Text
+          Dim sMsg As String = GetStatus()
           If Not NoMount Then DiscardDISM(Mount)
-          ToggleInputs(True)
-          lblActivity.Text = sMsg
+          ToggleInputs(True, sMsg)
           Return
         End If
         SetStatus("Updated Language INIs!")
@@ -5380,8 +5507,7 @@ Public Class frmMain
         SetStatus("Saving Final Image Package...")
         If Not SaveDISM(Mount) Then
           DiscardDISM(Mount)
-          ToggleInputs(True)
-          SetStatus("Failed to Save Final Image Package!")
+          ToggleInputs(True, "Failed to Save Final Image Package!")
           Return
         End If
       End If
@@ -5403,8 +5529,7 @@ Public Class frmMain
         If ExportWIM(WIMFile, RowIndex, ISOWIMFile, RowName) Then
           Continue For
         Else
-          ToggleInputs(True)
-          SetStatus("Failed to Integrate WIM Package """ & RowName & """")
+          ToggleInputs(True, "Failed to Integrate WIM Package """ & RowName & """")
           Return
         End If
         If StopRun Then
@@ -5455,8 +5580,7 @@ Public Class frmMain
                     Dim sNewFile As String = sIDir & IO.Path.DirectorySeparatorChar & "sources" & IO.Path.DirectorySeparatorChar & IO.Path.GetFileName(File)
                     WriteToOutput("Copying """ & File & """ to """ & sNewFile & """...")
                     If Not SlowCopyFile(File, sNewFile, True) Then
-                      ToggleInputs(True)
-                      SetStatus("Failed to move Install WIM #" & WIMNumber & "!")
+                      ToggleInputs(True, "Failed to move Install WIM #" & WIMNumber & "!")
                       Return
                     End If
                     If WIMNumber = Math.Floor(ISOSplit / WIMSplit) Or I = FilesInOrder.Count - 1 Then
@@ -5478,8 +5602,7 @@ Public Class frmMain
                                 REM Default
                               Case Windows.Forms.DialogResult.Cancel
                                 REM STOP
-                                ToggleInputs(True)
-                                SetStatus("ISO creation cancelled by user!")
+                                ToggleInputs(True, "ISO creation cancelled by user!")
                                 Return
                             End Select
                           End Using
@@ -5519,8 +5642,7 @@ Public Class frmMain
                   End If
                 Next
               Else
-                ToggleInputs(True)
-                SetStatus("Failed to Split WIM!")
+                ToggleInputs(True, "Failed to Split WIM!")
                 Return
               End If
             ElseIf Math.Floor(ISOSplit / WIMSplit) = 1 Then
@@ -5549,8 +5671,7 @@ Public Class frmMain
                     Dim sNewFile As String = sIDir & IO.Path.DirectorySeparatorChar & "sources" & IO.Path.DirectorySeparatorChar & IO.Path.GetFileName(File)
                     WriteToOutput("Copying """ & File & """ to """ & sNewFile & """...")
                     If Not SlowCopyFile(File, sNewFile, True) Then
-                      ToggleInputs(True)
-                      SetStatus("Failed to move Install WIM #" & discNo & "!")
+                      ToggleInputs(True, "Failed to move Install WIM #" & discNo & "!")
                       Return
                     End If
                     WriteToOutput("Extracting Files from """ & Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip"" to """ & sIDir & """...")
@@ -5571,8 +5692,7 @@ Public Class frmMain
                               REM Default
                             Case Windows.Forms.DialogResult.Cancel
                               REM STOP
-                              ToggleInputs(True)
-                              SetStatus("ISO creation cancelled by user!")
+                              ToggleInputs(True, "ISO creation cancelled by user!")
                               Return
                           End Select
                         End Using
@@ -5605,8 +5725,7 @@ Public Class frmMain
                   End If
                 Next
               Else
-                ToggleInputs(True)
-                SetStatus("Failed to Split WIM!")
+                ToggleInputs(True, "Failed to Split WIM!")
                 Return
               End If
             Else
@@ -5632,8 +5751,7 @@ Public Class frmMain
                     Dim sNewFile As String = sIDir & IO.Path.DirectorySeparatorChar & "sources" & IO.Path.DirectorySeparatorChar & "install.swm"
                     WriteToOutput("Copying """ & File & """ to """ & sNewFile & """...")
                     If Not SlowCopyFile(File, sNewFile, True) Then
-                      ToggleInputs(True)
-                      SetStatus("Failed to move Primary Install WIM!")
+                      ToggleInputs(True, "Failed to move Primary Install WIM!")
                       Return
                     End If
                     WriteToOutput("Extracting Files from """ & Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip"" to """ & sIDir & """...")
@@ -5654,8 +5772,7 @@ Public Class frmMain
                               REM Default
                             Case Windows.Forms.DialogResult.Cancel
                               REM STOP
-                              ToggleInputs(True)
-                              SetStatus("ISO creation cancelled by user!")
+                              ToggleInputs(True, "ISO creation cancelled by user!")
                               Return
                           End Select
                         End Using
@@ -5694,8 +5811,7 @@ Public Class frmMain
                     Dim sNewFile As String = sIDir & IO.Path.DirectorySeparatorChar & "sources" & IO.Path.DirectorySeparatorChar & IO.Path.GetFileName(File)
                     WriteToOutput("Copying """ & File & """ to """ & sNewFile & """...")
                     If Not SlowCopyFile(File, sNewFile, True) Then
-                      ToggleInputs(True)
-                      SetStatus("Failed to move Install WIM #" & discNo & "!")
+                      ToggleInputs(True, "Failed to move Install WIM #" & discNo & "!")
                       Return
                     End If
                     WriteToOutput("Extracting Files from """ & Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip"" to """ & sIDir & """...")
@@ -5716,8 +5832,7 @@ Public Class frmMain
                               REM Default
                             Case Windows.Forms.DialogResult.Cancel
                               REM STOP
-                              ToggleInputs(True)
-                              SetStatus("ISO creation cancelled by user!")
+                              ToggleInputs(True, "ISO creation cancelled by user!")
                               Return
                           End Select
                         End Using
@@ -5750,8 +5865,7 @@ Public Class frmMain
                   End If
                 Next
               Else
-                ToggleInputs(True)
-                SetStatus("Failed to Split WIM!")
+                ToggleInputs(True, "Failed to Split WIM!")
                 Return
               End If
             End If
@@ -5765,8 +5879,7 @@ Public Class frmMain
                 IO.File.Delete(ISOWIMFile)
               End If
             Else
-              ToggleInputs(True)
-              SetStatus("Failed to Split WIM!")
+              ToggleInputs(True, "Failed to Split WIM!")
               Return
             End If
           End If
@@ -5781,8 +5894,7 @@ Public Class frmMain
                 IO.File.Delete(ISOWIMFile)
               End If
             Else
-              ToggleInputs(True)
-              SetStatus("Failed to Split WIM!")
+              ToggleInputs(True, "Failed to Split WIM!")
               Return
             End If
           End If
@@ -5804,8 +5916,7 @@ Public Class frmMain
                   REM Default
                 Case Windows.Forms.DialogResult.Cancel
                   REM STOP
-                  ToggleInputs(True)
-                  SetStatus("ISO creation cancelled by user!")
+                  ToggleInputs(True, "ISO creation cancelled by user!")
                   Return
               End Select
             End Using
@@ -5831,8 +5942,7 @@ Public Class frmMain
       SetStatus("Making Backup of Old ISO...")
       WriteToOutput("Copying """ & ISOFile & """ to """ & ISOFile & ".del""...")
       If Not SlowCopyFile(ISOFile, ISOFile & ".del", True) Then
-        ToggleInputs(True)
-        SetStatus("Failed to back up ISO!")
+        ToggleInputs(True, "Failed to back up ISO!")
         Return
       End If
       iTotalVal += 1
@@ -5869,8 +5979,7 @@ Public Class frmMain
         SetStatus("ISO Build Failed! Restoring Old ISO...")
         WriteToOutput("Copying """ & ISOFile & ".del"" to """ & ISOFile & """...")
         If Not SlowCopyFile(ISOFile & ".del", ISOFile, True) Then
-          ToggleInputs(True)
-          SetStatus("ISO Build and backup ISO restore failed!")
+          ToggleInputs(True, "ISO Build and backup ISO restore failed!")
         End If
         Return
       End If
@@ -5881,8 +5990,7 @@ Public Class frmMain
         SetStatus("Saving Final Image Package...")
         If Not SaveDISM(Mount) Then
           DiscardDISM(Mount)
-          ToggleInputs(True)
-          SetStatus("Failed to Save Final Image Package!")
+          ToggleInputs(True, "Failed to Save Final Image Package!")
           Return
         End If
       End If
@@ -5891,8 +5999,7 @@ Public Class frmMain
       SetProgress(0, 1)
       WriteToOutput("Copying """ & WIMFile & """ to """ & OldWIM & """...")
       If Not SlowCopyFile(WIMFile, OldWIM, True) Then
-        ToggleInputs(True)
-        SetStatus("Failed to back up Install WIM!")
+        ToggleInputs(True, "Failed to back up Install WIM!")
         Return
       End If
       Dim NewWIMPackageCount As Integer = GetDISMPackages(OldWIM)
@@ -5905,8 +6012,7 @@ Public Class frmMain
         If ExportWIM(OldWIM, RowIndex, WIMFile, RowName) Then
           Continue For
         Else
-          ToggleInputs(True)
-          SetStatus("Failed to Compress WIM """ & RowName & """")
+          ToggleInputs(True, "Failed to Compress WIM """ & RowName & """")
           Return
         End If
         If StopRun Then
@@ -5929,8 +6035,7 @@ Public Class frmMain
               WriteToOutput("Deleting """ & WIMFile & """...")
               IO.File.Delete(WIMFile)
             Else
-              ToggleInputs(True)
-              SetStatus("Failed to Split WIM!")
+              ToggleInputs(True, "Failed to Split WIM!")
               Return
             End If
           End If
@@ -5939,17 +6044,13 @@ Public Class frmMain
     End If
     SetProgress(0, 100)
     SetTotal(0, 100)
-    ToggleInputs(True)
-    SetStatus("Complete!")
+    RunComplete = True
+    ToggleInputs(True, "Complete!")
     Select Case cmbCompletion.SelectedIndex
       Case 0
         REM done
-        RunComplete = True
-        ToggleInputs(True)
       Case 1
         REM play alert noise
-        RunComplete = True
-        ToggleInputs(True)
         If String.IsNullOrEmpty(mySettings.AlertNoisePath) Then
           Dim tada As String = Environment.GetFolderPath(Environment.SpecialFolder.Windows) & "\Media\tada.wav"
           If IO.File.Exists(tada) Then
@@ -5980,8 +6081,6 @@ Public Class frmMain
         End If
       Case 2
         REM close
-        RunComplete = True
-        ToggleInputs(True)
         Me.Close()
       Case 3
         REM shut down
@@ -5993,9 +6092,7 @@ Public Class frmMain
         Process.Start("shutdown", "/r /t 0 /d p:0:0 /f")
       Case 5
         REM sleep
-        RunComplete = True
         CloseCleanup()
-        ToggleInputs(True)
         Application.SetSuspendState(PowerState.Suspend, False, False)
         Me.Close()
     End Select
@@ -6003,8 +6100,7 @@ Public Class frmMain
   Private Function IntegrateFiles(WIMPath As String, MSUData() As Update_File, Remove()() As Update_Integrated, ByRef iTotalVal As Integer, iTotalMax As Integer) As Boolean
     Dim PackageCount As Integer = GetDISMPackages(WIMPath)
     If PackageCount < 1 Then
-      ToggleInputs(True)
-      SetStatus("No packages in WIM!")
+      ToggleInputs(True, "No packages in WIM!")
       Return False
     End If
     If MSUData.Length < 1 Then Return True
@@ -6076,6 +6172,8 @@ Public Class frmMain
         End If
       End If
     Next
+    SortForRequirement(MSU_32)
+    SortForRequirement(MSU_64)
     SetProgress(0, 0)
     pbMax = 1
     pbVal = 0
@@ -6102,8 +6200,7 @@ Public Class frmMain
         SetStatus("Loading Image Package """ & tmpDISM.Name & """...")
         If Not InitDISM(WIMPath, tmpDISM.Index, Mount) Then
           DiscardDISM(Mount)
-          ToggleInputs(True)
-          SetStatus("Failed to Load Image Package """ & tmpDISM.Name & """!")
+          ToggleInputs(True, "Failed to Load Image Package """ & tmpDISM.Name & """!")
           Return False
         End If
         If StopRun Then
@@ -6119,8 +6216,7 @@ Public Class frmMain
               SetStatus((I + 1).ToString.Trim & "/" & RMV_32.Count.ToString & " - Removing " & GetUpdateName(RMV_32(I).Ident) & " from " & tmpDISM.Name & "...")
               If Not RemovePackageItemFromDISM(Mount, RMV_32(I).Identity) Then
                 DiscardDISM(Mount)
-                ToggleInputs(True)
-                SetStatus("Failed to remove " & GetUpdateName(RMV_32(I).Ident) & " from " & tmpDISM.Name & "!")
+                ToggleInputs(True, "Failed to remove " & GetUpdateName(RMV_32(I).Ident) & " from " & tmpDISM.Name & "!")
                 Return False
               End If
             End If
@@ -6152,8 +6248,7 @@ Public Class frmMain
             Case UpdateType.MSU, UpdateType.CAB, UpdateType.LP
               If Not AddPackageItemToDISM(Mount, tmpMSU.Path) Then
                 DiscardDISM(Mount)
-                ToggleInputs(True)
-                SetStatus("Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
+                ToggleInputs(True, "Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
                 Return False
               End If
               If upType = UpdateType.LP Then LangChange = True
@@ -6173,8 +6268,7 @@ Public Class frmMain
                       bFound = True
                       If Not AddPackageItemToDISM(Mount, Extracted(J)) Then
                         DiscardDISM(Mount)
-                        ToggleInputs(True)
-                        SetStatus("Failed to integrate " & shownName & " (" & IO.Path.GetFileName(Extracted(J)) & ") into " & tmpDISM.Name & "!")
+                        ToggleInputs(True, "Failed to integrate " & shownName & " (" & IO.Path.GetFileName(Extracted(J)) & ") into " & tmpDISM.Name & "!")
                         Return False
                       End If
                       Exit For
@@ -6183,15 +6277,13 @@ Public Class frmMain
                   If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
                   If Not bFound Then
                     DiscardDISM(Mount)
-                    ToggleInputs(True)
-                    SetStatus("Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
+                    ToggleInputs(True, "Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
                     Return False
                   End If
                 Else
                   If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
                   DiscardDISM(Mount)
-                  ToggleInputs(True)
-                  SetStatus("Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
+                  ToggleInputs(True, "Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
                   Return False
                 End If
               ElseIf fInfo.OriginalFilename = "mergedwusetup.exe" Then
@@ -6206,8 +6298,7 @@ Public Class frmMain
                     IO.File.Delete(tmpCAB)
                   End If
                   DiscardDISM(Mount)
-                  ToggleInputs(True)
-                  SetStatus("Failed to extract " & shownName & " from EXE to CAB!")
+                  ToggleInputs(True, "Failed to extract " & shownName & " from EXE to CAB!")
                   Return False
                 End If
                 Dim cabList() As String = ExtractFilesList(tmpCAB)
@@ -6221,8 +6312,7 @@ Public Class frmMain
                       IO.File.Delete(tmpCAB)
                     End If
                     DiscardDISM(Mount)
-                    ToggleInputs(True)
-                    SetStatus("Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
+                    ToggleInputs(True, "Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
                     Return False
                   Else
                     Dim useCab1 As String = "WUClient-SelfUpdate-ActiveX.cab"
@@ -6241,8 +6331,7 @@ Public Class frmMain
                         IO.File.Delete(WorkDir & useEXE)
                       End If
                       DiscardDISM(Mount)
-                      ToggleInputs(True)
-                      SetStatus("Failed to integrate " & shownName & " (" & useCab1 & ") into " & tmpDISM.Name & "!")
+                      ToggleInputs(True, "Failed to integrate " & shownName & " (" & useCab1 & ") into " & tmpDISM.Name & "!")
                       Return False
                     End If
                     If Not IO.File.Exists(WorkDir & useCab2) Then
@@ -6255,8 +6344,7 @@ Public Class frmMain
                         IO.File.Delete(WorkDir & useEXE)
                       End If
                       DiscardDISM(Mount)
-                      ToggleInputs(True)
-                      SetStatus("Failed to integrate " & shownName & " (" & useCab2 & ") into " & tmpDISM.Name & "!")
+                      ToggleInputs(True, "Failed to integrate " & shownName & " (" & useCab2 & ") into " & tmpDISM.Name & "!")
                       Return False
                     End If
                     If Not IO.File.Exists(WorkDir & useCab3) Then
@@ -6269,8 +6357,7 @@ Public Class frmMain
                         IO.File.Delete(WorkDir & useEXE)
                       End If
                       DiscardDISM(Mount)
-                      ToggleInputs(True)
-                      SetStatus("Failed to integrate " & shownName & " (" & useCab3 & ") into " & tmpDISM.Name & "!")
+                      ToggleInputs(True, "Failed to integrate " & shownName & " (" & useCab3 & ") into " & tmpDISM.Name & "!")
                       Return False
                     End If
                     If Not AddPackageItemToDISM(Mount, WorkDir & useCab1) Then
@@ -6283,8 +6370,7 @@ Public Class frmMain
                         IO.File.Delete(WorkDir & useEXE)
                       End If
                       DiscardDISM(Mount)
-                      ToggleInputs(True)
-                      SetStatus("Failed to integrate " & shownName & " (" & useCab1 & ") into " & tmpDISM.Name & "!")
+                      ToggleInputs(True, "Failed to integrate " & shownName & " (" & useCab1 & ") into " & tmpDISM.Name & "!")
                       Return False
                     End If
                     If Not AddPackageItemToDISM(Mount, WorkDir & useCab2) Then
@@ -6297,8 +6383,7 @@ Public Class frmMain
                         IO.File.Delete(WorkDir & useEXE)
                       End If
                       DiscardDISM(Mount)
-                      ToggleInputs(True)
-                      SetStatus("Failed to integrate " & shownName & " (" & useCab2 & ") into " & tmpDISM.Name & "!")
+                      ToggleInputs(True, "Failed to integrate " & shownName & " (" & useCab2 & ") into " & tmpDISM.Name & "!")
                       Return False
                     End If
                     If Not AddPackageItemToDISM(Mount, WorkDir & useCab3) Then
@@ -6311,8 +6396,7 @@ Public Class frmMain
                         IO.File.Delete(WorkDir & useEXE)
                       End If
                       DiscardDISM(Mount)
-                      ToggleInputs(True)
-                      SetStatus("Failed to integrate " & shownName & " (" & useCab3 & ") into " & tmpDISM.Name & "!")
+                      ToggleInputs(True, "Failed to integrate " & shownName & " (" & useCab3 & ") into " & tmpDISM.Name & "!")
                       Return False
                     End If
                   End If
@@ -6322,8 +6406,7 @@ Public Class frmMain
                     IO.File.Delete(tmpCAB)
                   End If
                   DiscardDISM(Mount)
-                  ToggleInputs(True)
-                  SetStatus("Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
+                  ToggleInputs(True, "Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
                 End If
                 If IO.File.Exists(tmpCAB) Then
                   WriteToOutput("Deleting """ & tmpCAB & """...")
@@ -6341,8 +6424,7 @@ Public Class frmMain
                     IO.File.Delete(tmpCAB)
                   End If
                   DiscardDISM(Mount)
-                  ToggleInputs(True)
-                  SetStatus("Failed to extract " & shownName & " from EXE to CAB!")
+                  ToggleInputs(True, "Failed to extract " & shownName & " from EXE to CAB!")
                   Return False
                 End If
                 Dim cabList() As String = ExtractFilesList(tmpCAB)
@@ -6353,8 +6435,7 @@ Public Class frmMain
                       IO.File.Delete(tmpCAB)
                     End If
                     DiscardDISM(Mount)
-                    ToggleInputs(True)
-                    SetStatus("Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
+                    ToggleInputs(True, "Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
                     Return False
                   End If
                 Else
@@ -6363,8 +6444,7 @@ Public Class frmMain
                     IO.File.Delete(tmpCAB)
                   End If
                   DiscardDISM(Mount)
-                  ToggleInputs(True)
-                  SetStatus("Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
+                  ToggleInputs(True, "Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
                 End If
                 If IO.File.Exists(tmpCAB) Then
                   WriteToOutput("Deleting """ & tmpCAB & """...")
@@ -6386,8 +6466,7 @@ Public Class frmMain
                   IO.File.Delete(tmpCAB)
                 End If
                 DiscardDISM(Mount)
-                ToggleInputs(True)
-                SetStatus("Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
+                ToggleInputs(True, "Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
                 Return False
               End If
               If IO.File.Exists(tmpCAB) Then
@@ -6415,8 +6494,7 @@ Public Class frmMain
                       IO.File.Delete(tmpCAB)
                     End If
                     DiscardDISM(Mount)
-                    ToggleInputs(True)
-                    SetStatus("Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
+                    ToggleInputs(True, "Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
                     Return False
                   End If
                   If IO.File.Exists(tmpCAB) Then
@@ -6426,14 +6504,12 @@ Public Class frmMain
                   LangChange = True
                 Else
                   DiscardDISM(Mount)
-                  ToggleInputs(True)
-                  SetStatus("Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
+                  ToggleInputs(True, "Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
                   Return False
                 End If
               Else
                 DiscardDISM(Mount)
-                ToggleInputs(True)
-                SetStatus("Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
+                ToggleInputs(True, "Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
                 Return False
               End If
               If IO.Directory.Exists(MSIPath) Then SlowDeleteDirectory(MSIPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
@@ -6441,8 +6517,7 @@ Public Class frmMain
             Case UpdateType.INF
               If Not AddDriverToDISM(Mount, tmpMSU.Path, False, True) Then
                 DiscardDISM(Mount)
-                ToggleInputs(True)
-                SetStatus("Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
+                ToggleInputs(True, "Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
                 Return False
               End If
           End Select
@@ -6465,8 +6540,7 @@ Public Class frmMain
           SetStatus("Saving Image Package """ & tmpDISM.Name & """...")
           If Not SaveDISM(Mount) Then
             DiscardDISM(Mount)
-            ToggleInputs(True)
-            SetStatus("Failed to Save Image Package """ & tmpDISM.Name & """!")
+            ToggleInputs(True, "Failed to Save Image Package """ & tmpDISM.Name & """!")
             Return False
           End If
         End If
@@ -6484,8 +6558,7 @@ Public Class frmMain
         SetStatus("Loading Image Package """ & tmpDISM.Name & """...")
         If Not InitDISM(WIMPath, tmpDISM.Index, Mount) Then
           DiscardDISM(Mount)
-          ToggleInputs(True)
-          SetStatus("Failed to Load Image Package """ & tmpDISM.Name & """!")
+          ToggleInputs(True, "Failed to Load Image Package """ & tmpDISM.Name & """!")
           Return False
         End If
         If StopRun Then
@@ -6501,8 +6574,7 @@ Public Class frmMain
               SetStatus((I + 1).ToString.Trim & "/" & RMV_64.Count.ToString & " - Removing " & RMV_64(I).Ident.Name & " from " & tmpDISM.Name & "...")
               If Not RemovePackageItemFromDISM(Mount, RMV_64(I).Identity) Then
                 DiscardDISM(Mount)
-                ToggleInputs(True)
-                SetStatus("Failed to remove " & RMV_64(I).Ident.Name & " from " & tmpDISM.Name & "!")
+                ToggleInputs(True, "Failed to remove " & RMV_64(I).Ident.Name & " from " & tmpDISM.Name & "!")
                 Return False
               End If
             End If
@@ -6534,8 +6606,7 @@ Public Class frmMain
             Case UpdateType.MSU, UpdateType.CAB, UpdateType.LP
               If Not AddPackageItemToDISM(Mount, tmpMSU.Path) Then
                 DiscardDISM(Mount)
-                ToggleInputs(True)
-                SetStatus("Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
+                ToggleInputs(True, "Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
                 Return False
               End If
               If upType = UpdateType.LP Then LangChange = True
@@ -6555,8 +6626,7 @@ Public Class frmMain
                       bFound = True
                       If Not AddPackageItemToDISM(Mount, Extracted(J)) Then
                         DiscardDISM(Mount)
-                        ToggleInputs(True)
-                        SetStatus("Failed to integrate " & shownName & " (" & IO.Path.GetFileName(Extracted(J)) & ") into " & tmpDISM.Name & "!")
+                        ToggleInputs(True, "Failed to integrate " & shownName & " (" & IO.Path.GetFileName(Extracted(J)) & ") into " & tmpDISM.Name & "!")
                         Return False
                       End If
                       Exit For
@@ -6565,15 +6635,13 @@ Public Class frmMain
                   If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
                   If Not bFound Then
                     DiscardDISM(Mount)
-                    ToggleInputs(True)
-                    SetStatus("Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
+                    ToggleInputs(True, "Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
                     Return False
                   End If
                 Else
                   If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
                   DiscardDISM(Mount)
-                  ToggleInputs(True)
-                  SetStatus("Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
+                  ToggleInputs(True, "Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
                   Return False
                 End If
               ElseIf fInfo.OriginalFilename = "mergedwusetup.exe" Then
@@ -6588,8 +6656,7 @@ Public Class frmMain
                     IO.File.Delete(tmpCAB)
                   End If
                   DiscardDISM(Mount)
-                  ToggleInputs(True)
-                  SetStatus("Failed to extract " & shownName & " from EXE to CAB!")
+                  ToggleInputs(True, "Failed to extract " & shownName & " from EXE to CAB!")
                   Return False
                 End If
                 Dim cabList() As String = ExtractFilesList(tmpCAB)
@@ -6603,8 +6670,7 @@ Public Class frmMain
                       IO.File.Delete(tmpCAB)
                     End If
                     DiscardDISM(Mount)
-                    ToggleInputs(True)
-                    SetStatus("Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
+                    ToggleInputs(True, "Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
                     Return False
                   Else
                     Dim useCab1 As String = "WUClient-SelfUpdate-ActiveX.cab"
@@ -6623,8 +6689,7 @@ Public Class frmMain
                         IO.File.Delete(WorkDir & useEXE)
                       End If
                       DiscardDISM(Mount)
-                      ToggleInputs(True)
-                      SetStatus("Failed to integrate " & shownName & " (" & useCab1 & ") into " & tmpDISM.Name & "!")
+                      ToggleInputs(True, "Failed to integrate " & shownName & " (" & useCab1 & ") into " & tmpDISM.Name & "!")
                       Return False
                     End If
                     If Not IO.File.Exists(WorkDir & useCab2) Then
@@ -6637,8 +6702,7 @@ Public Class frmMain
                         IO.File.Delete(WorkDir & useEXE)
                       End If
                       DiscardDISM(Mount)
-                      ToggleInputs(True)
-                      SetStatus("Failed to integrate " & shownName & " (" & useCab2 & ") into " & tmpDISM.Name & "!")
+                      ToggleInputs(True, "Failed to integrate " & shownName & " (" & useCab2 & ") into " & tmpDISM.Name & "!")
                       Return False
                     End If
                     If Not IO.File.Exists(WorkDir & useCab3) Then
@@ -6651,8 +6715,7 @@ Public Class frmMain
                         IO.File.Delete(WorkDir & useEXE)
                       End If
                       DiscardDISM(Mount)
-                      ToggleInputs(True)
-                      SetStatus("Failed to integrate " & shownName & " (" & useCab3 & ") into " & tmpDISM.Name & "!")
+                      ToggleInputs(True, "Failed to integrate " & shownName & " (" & useCab3 & ") into " & tmpDISM.Name & "!")
                       Return False
                     End If
                     If Not AddPackageItemToDISM(Mount, WorkDir & useCab1) Then
@@ -6665,8 +6728,7 @@ Public Class frmMain
                         IO.File.Delete(WorkDir & useEXE)
                       End If
                       DiscardDISM(Mount)
-                      ToggleInputs(True)
-                      SetStatus("Failed to integrate " & shownName & " (" & useCab1 & ") into " & tmpDISM.Name & "!")
+                      ToggleInputs(True, "Failed to integrate " & shownName & " (" & useCab1 & ") into " & tmpDISM.Name & "!")
                       Return False
                     End If
                     If Not AddPackageItemToDISM(Mount, WorkDir & useCab2) Then
@@ -6679,8 +6741,7 @@ Public Class frmMain
                         IO.File.Delete(WorkDir & useEXE)
                       End If
                       DiscardDISM(Mount)
-                      ToggleInputs(True)
-                      SetStatus("Failed to integrate " & shownName & " (" & useCab2 & ") into " & tmpDISM.Name & "!")
+                      ToggleInputs(True, "Failed to integrate " & shownName & " (" & useCab2 & ") into " & tmpDISM.Name & "!")
                       Return False
                     End If
                     If Not AddPackageItemToDISM(Mount, WorkDir & useCab3) Then
@@ -6693,8 +6754,7 @@ Public Class frmMain
                         IO.File.Delete(WorkDir & useEXE)
                       End If
                       DiscardDISM(Mount)
-                      ToggleInputs(True)
-                      SetStatus("Failed to integrate " & shownName & " (" & useCab3 & ") into " & tmpDISM.Name & "!")
+                      ToggleInputs(True, "Failed to integrate " & shownName & " (" & useCab3 & ") into " & tmpDISM.Name & "!")
                       Return False
                     End If
                   End If
@@ -6704,8 +6764,7 @@ Public Class frmMain
                     IO.File.Delete(tmpCAB)
                   End If
                   DiscardDISM(Mount)
-                  ToggleInputs(True)
-                  SetStatus("Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
+                  ToggleInputs(True, "Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
                 End If
                 If IO.File.Exists(tmpCAB) Then
                   WriteToOutput("Deleting """ & tmpCAB & """...")
@@ -6723,8 +6782,7 @@ Public Class frmMain
                     IO.File.Delete(tmpCAB)
                   End If
                   DiscardDISM(Mount)
-                  ToggleInputs(True)
-                  SetStatus("Failed to extract " & shownName & " from EXE to CAB!")
+                  ToggleInputs(True, "Failed to extract " & shownName & " from EXE to CAB!")
                   Return False
                 End If
                 Dim cabList() As String = ExtractFilesList(tmpCAB)
@@ -6735,8 +6793,7 @@ Public Class frmMain
                       IO.File.Delete(tmpCAB)
                     End If
                     DiscardDISM(Mount)
-                    ToggleInputs(True)
-                    SetStatus("Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
+                    ToggleInputs(True, "Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
                     Return False
                   End If
                 Else
@@ -6745,8 +6802,7 @@ Public Class frmMain
                     IO.File.Delete(tmpCAB)
                   End If
                   DiscardDISM(Mount)
-                  ToggleInputs(True)
-                  SetStatus("Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
+                  ToggleInputs(True, "Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
                 End If
                 If IO.File.Exists(tmpCAB) Then
                   WriteToOutput("Deleting """ & tmpCAB & """...")
@@ -6768,8 +6824,7 @@ Public Class frmMain
                   IO.File.Delete(tmpCAB)
                 End If
                 DiscardDISM(Mount)
-                ToggleInputs(True)
-                SetStatus("Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
+                ToggleInputs(True, "Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
                 Return False
               End If
               If IO.File.Exists(tmpCAB) Then
@@ -6797,8 +6852,7 @@ Public Class frmMain
                       IO.File.Delete(tmpCAB)
                     End If
                     DiscardDISM(Mount)
-                    ToggleInputs(True)
-                    SetStatus("Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
+                    ToggleInputs(True, "Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
                     Return False
                   End If
                   If IO.File.Exists(tmpCAB) Then
@@ -6808,14 +6862,12 @@ Public Class frmMain
                   LangChange = True
                 Else
                   DiscardDISM(Mount)
-                  ToggleInputs(True)
-                  SetStatus("Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
+                  ToggleInputs(True, "Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
                   Return False
                 End If
               Else
                 DiscardDISM(Mount)
-                ToggleInputs(True)
-                SetStatus("Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
+                ToggleInputs(True, "Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
                 Return False
               End If
               If IO.Directory.Exists(MSIPath) Then SlowDeleteDirectory(MSIPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
@@ -6823,8 +6875,7 @@ Public Class frmMain
             Case UpdateType.INF
               If Not AddDriverToDISM(Mount, tmpMSU.Path, False, True) Then
                 DiscardDISM(Mount)
-                ToggleInputs(True)
-                SetStatus("Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
+                ToggleInputs(True, "Failed to integrate " & shownName & " into " & tmpDISM.Name & "!")
                 Return False
               End If
           End Select
@@ -6845,8 +6896,7 @@ Public Class frmMain
           SetStatus("Saving Image Package """ & tmpDISM.Name & """...")
           If Not SaveDISM(Mount) Then
             DiscardDISM(Mount)
-            ToggleInputs(True)
-            SetStatus("Failed to Save Image Package """ & tmpDISM.Name & """!")
+            ToggleInputs(True, "Failed to Save Image Package """ & tmpDISM.Name & """!")
             Return False
           End If
         End If
@@ -6907,8 +6957,7 @@ Public Class frmMain
       WriteToOutput("Deleting """ & Extract64 & """...")
       IO.File.Delete(Extract64)
     Else
-      ToggleInputs(True)
-      SetStatus("No KB976932.cab to extract!")
+      ToggleInputs(True, "No KB976932.cab to extract!")
       Return False
     End If
     pbVal += 1
@@ -6925,8 +6974,7 @@ Public Class frmMain
       WriteToOutput("Deleting """ & Extract & """...")
       IO.File.Delete(Extract)
     Else
-      ToggleInputs(True)
-      SetStatus("No NestedMPPcontent.cab to extract!")
+      ToggleInputs(True, "No NestedMPPcontent.cab to extract!")
       Return False
     End If
     If StopRun Then
@@ -6940,8 +6988,7 @@ Public Class frmMain
       SetStatus("Preparing Service Pack (Modifying update.ses)...")
       UpdateSES(Update)
     Else
-      ToggleInputs(True)
-      SetStatus("No update.ses to modify!")
+      ToggleInputs(True, "No update.ses to modify!")
       Return False
     End If
     If StopRun Then
@@ -6955,8 +7002,7 @@ Public Class frmMain
       SetStatus("Preparing Service Pack (Modifying update.mum)...")
       UpdateMUM(Update)
     Else
-      ToggleInputs(True)
-      SetStatus("No update.mum to modify!")
+      ToggleInputs(True, "No update.mum to modify!")
       Return False
     End If
     If StopRun Then
@@ -6974,8 +7020,7 @@ Public Class frmMain
       SetStatus("Preparing Service Pack (Modifying KB976933.mum)...")
       UpdateMUM(Update64)
     Else
-      ToggleInputs(True)
-      SetStatus("No KB976933.mum to modify!")
+      ToggleInputs(True, "No KB976933.mum to modify!")
       Return False
     End If
     If StopRun Then
@@ -7005,8 +7050,7 @@ Public Class frmMain
         WriteToOutput("Deleting """ & Extract & """...")
         IO.File.Delete(Extract)
       Else
-        ToggleInputs(True)
-        SetStatus("No KB976933-LangsCab" & I.ToString.Trim & ".cab to extract!")
+        ToggleInputs(True, "No KB976933-LangsCab" & I.ToString.Trim & ".cab to extract!")
         Return False
       End If
       If StopRun Then
@@ -7032,8 +7076,7 @@ Public Class frmMain
         SetStatus("Integrating Service Pack (Loading " & dismData.Name & ")...")
         If Not InitDISM(WIMPath, I, Mount) Then
           DiscardDISM(Mount)
-          ToggleInputs(True)
-          SetStatus("Failed to Load Image Package """ & dismData.Name & """!")
+          ToggleInputs(True, "Failed to Load Image Package """ & dismData.Name & """!")
           Return False
         End If
         If StopRun Then
@@ -7046,8 +7089,7 @@ Public Class frmMain
         SetStatus("Integrating Service Pack into " & dismData.Name & "...")
         If Not AddPackageItemToDISM(Mount, Work & "SP1") Then
           DiscardDISM(Mount)
-          ToggleInputs(True)
-          SetStatus("Failed to Add Service Pack to Image Package """ & dismData.Name & """!")
+          ToggleInputs(True, "Failed to Add Service Pack to Image Package """ & dismData.Name & """!")
           Return False
         End If
         If StopRun Then
@@ -7060,8 +7102,7 @@ Public Class frmMain
         SetStatus("Integrating Service Pack (Saving " & dismData.Name & ")...")
         If Not SaveDISM(Mount) Then
           DiscardDISM(Mount)
-          ToggleInputs(True)
-          SetStatus("Failed to Save Image Package """ & dismData.Name & """!")
+          ToggleInputs(True, "Failed to Save Image Package """ & dismData.Name & """!")
           Return False
         End If
         If StopRun Then
@@ -7070,8 +7111,7 @@ Public Class frmMain
         End If
       Next
     Else
-      ToggleInputs(True)
-      SetStatus("No packages in WIM!")
+      ToggleInputs(True, "No packages in WIM!")
       Return False
     End If
     SetProgress(0, pbMax)
@@ -7083,8 +7123,7 @@ Public Class frmMain
   Private Function IntegratedFeatures(WIMPath As String, FeatureData() As List(Of Feature)) As Boolean
     Dim PackageCount As Integer = GetDISMPackages(WIMPath)
     If PackageCount < 1 Then
-      ToggleInputs(True)
-      SetStatus("No packages in WIM!")
+      ToggleInputs(True, "No packages in WIM!")
       Return False
     End If
     If FeatureData.Length < 1 Then Return True
@@ -7108,8 +7147,7 @@ Public Class frmMain
         Dim tmpDISM As ImagePackage = GetDISMPackageData(WIMPath, I)
         If Not InitDISM(WIMPath, tmpDISM.Index, Mount) Then
           DiscardDISM(Mount)
-          ToggleInputs(True)
-          SetStatus("Failed to Load Image Package """ & tmpDISM.Name & """!")
+          ToggleInputs(True, "Failed to Load Image Package """ & tmpDISM.Name & """!")
           Return False
         End If
         If StopRun Then
@@ -7125,8 +7163,7 @@ Public Class frmMain
               SetStatus((J + 1).ToString.Trim & "/" & FeatureData(I - 1).Count.ToString & " - Enabling " & FeatureData(I - 1)(J).DisplayName & " in " & tmpDISM.Name & "...")
               If Not EnableDISMFeature(Mount, FeatureData(I - 1)(J).FeatureName) Then
                 DiscardDISM(Mount)
-                ToggleInputs(True)
-                SetStatus("Failed to eneable " & FeatureData(I - 1)(J).DisplayName & " in " & tmpDISM.Name & "!")
+                ToggleInputs(True, "Failed to eneable " & FeatureData(I - 1)(J).DisplayName & " in " & tmpDISM.Name & "!")
                 Return False
               End If
             End If
@@ -7135,8 +7172,7 @@ Public Class frmMain
               SetStatus((J + 1).ToString.Trim & "/" & FeatureData(I - 1).Count.ToString & " - Disabling " & FeatureData(I - 1)(J).DisplayName & " in " & tmpDISM.Name & "...")
               If Not DisableDISMFeature(Mount, FeatureData(I - 1)(J).FeatureName) Then
                 DiscardDISM(Mount)
-                ToggleInputs(True)
-                SetStatus("Failed to disable " & FeatureData(I - 1)(J).DisplayName & " in " & tmpDISM.Name & "!")
+                ToggleInputs(True, "Failed to disable " & FeatureData(I - 1)(J).DisplayName & " in " & tmpDISM.Name & "!")
                 Return False
               End If
             End If
@@ -7145,8 +7181,7 @@ Public Class frmMain
         SetStatus("Saving Image Package """ & tmpDISM.Name & """...")
         If Not SaveDISM(Mount) Then
           DiscardDISM(Mount)
-          ToggleInputs(True)
-          SetStatus("Failed to Save Image Package """ & tmpDISM.Name & """!")
+          ToggleInputs(True, "Failed to Save Image Package """ & tmpDISM.Name & """!")
           Return False
         End If
         If StopRun Then
@@ -7161,8 +7196,7 @@ Public Class frmMain
   Private Function IntegratedUpdates(WIMPath As String, UpdateData() As List(Of Update_Integrated)) As Boolean
     Dim PackageCount As Integer = GetDISMPackages(WIMPath)
     If PackageCount < 1 Then
-      ToggleInputs(True)
-      SetStatus("No packages in WIM!")
+      ToggleInputs(True, "No packages in WIM!")
       Return False
     End If
     If UpdateData.Length < 1 Then Return True
@@ -7187,8 +7221,7 @@ Public Class frmMain
         SetStatus("Loading Image Package """ & tmpDISM.Name & """...")
         If Not InitDISM(WIMPath, tmpDISM.Index, Mount) Then
           DiscardDISM(Mount)
-          ToggleInputs(True)
-          SetStatus("Failed to Load Image Package """ & tmpDISM.Name & """!")
+          ToggleInputs(True, "Failed to Load Image Package """ & tmpDISM.Name & """!")
           Return False
         End If
         If StopRun Then
@@ -7203,8 +7236,7 @@ Public Class frmMain
             SetStatus((J + 1).ToString.Trim & "/" & UpdateData(I - 1).Count.ToString & " - Removing " & UpdateData(I - 1)(J).Ident.Name & " from " & tmpDISM.Name & "...")
             If Not RemovePackageItemFromDISM(Mount, UpdateData(I - 1)(J).Identity) Then
               DiscardDISM(Mount)
-              ToggleInputs(True)
-              SetStatus("Failed to remove " & UpdateData(I - 1)(J).Ident.Name & " from " & tmpDISM.Name & "!")
+              ToggleInputs(True, "Failed to remove " & UpdateData(I - 1)(J).Ident.Name & " from " & tmpDISM.Name & "!")
               Return False
             End If
           End If
@@ -7217,8 +7249,7 @@ Public Class frmMain
         SetStatus("Saving Image Package """ & tmpDISM.Name & """...")
         If Not SaveDISM(Mount) Then
           DiscardDISM(Mount)
-          ToggleInputs(True)
-          SetStatus("Failed to Save Image Package """ & tmpDISM.Name & """!")
+          ToggleInputs(True, "Failed to Save Image Package """ & tmpDISM.Name & """!")
           Return False
         End If
         If StopRun Then
@@ -7233,8 +7264,7 @@ Public Class frmMain
   Private Function IntegratedDrivers(WIMPath As String, DriverData() As List(Of Driver)) As Boolean
     Dim PackageCount As Integer = GetDISMPackages(WIMPath)
     If PackageCount < 1 Then
-      ToggleInputs(True)
-      SetStatus("No packages in WIM!")
+      ToggleInputs(True, "No packages in WIM!")
       Return False
     End If
     If DriverData.Length < 1 Then Return True
@@ -7258,8 +7288,7 @@ Public Class frmMain
         Dim tmpDISM As ImagePackage = GetDISMPackageData(WIMPath, I)
         If Not InitDISM(WIMPath, tmpDISM.Index, Mount) Then
           DiscardDISM(Mount)
-          ToggleInputs(True)
-          SetStatus("Failed to Load Image Package """ & tmpDISM.Name & """!")
+          ToggleInputs(True, "Failed to Load Image Package """ & tmpDISM.Name & """!")
           Return False
         End If
         If StopRun Then
@@ -7274,8 +7303,7 @@ Public Class frmMain
             SetStatus((J + 1).ToString.Trim & "/" & DriverData(I - 1).Count.ToString & " - Removing " & DriverData(I - 1)(J).PublishedName & " from " & tmpDISM.Name & "...")
             If Not RemoveDriverFromDISM(Mount, DriverData(I - 1)(J).PublishedName) Then
               DiscardDISM(Mount)
-              ToggleInputs(True)
-              SetStatus("Failed to remove " & DriverData(I - 1)(J).PublishedName & " from " & tmpDISM.Name & "!")
+              ToggleInputs(True, "Failed to remove " & DriverData(I - 1)(J).PublishedName & " from " & tmpDISM.Name & "!")
               Return False
             End If
           End If
@@ -7288,8 +7316,7 @@ Public Class frmMain
         SetStatus("Saving Image Package """ & tmpDISM.Name & """...")
         If Not SaveDISM(Mount) Then
           DiscardDISM(Mount)
-          ToggleInputs(True)
-          SetStatus("Failed to Save Image Package """ & tmpDISM.Name & """!")
+          ToggleInputs(True, "Failed to Save Image Package """ & tmpDISM.Name & """!")
           Return False
         End If
         If StopRun Then
@@ -7474,6 +7501,26 @@ Public Class frmMain
     End If
     Return False
   End Function
+  Private Sub SortForRequirement(ByRef msuList As List(Of Update_File))
+    For I As Integer = 0 To msuList.Count - 1
+      CheckForRequirement(msuList, I)
+    Next
+  End Sub
+  Private Sub CheckForRequirement(ByRef msuList As List(Of Update_File), Index As Integer)
+    For I As Integer = 0 To PrerequisiteList.Length - 1
+      If msuList(Index).KBArticle = PrerequisiteList(I).KBWithRequirement Then
+        For J As Integer = Index + 1 To msuList.Count - 1
+          If PrerequisiteList(I).Requirement.Contains(msuList(J).KBArticle) Then
+            Dim moveItem As Update_File = msuList(J)
+            msuList.RemoveAt(J)
+            msuList.Insert(Index, moveItem)
+            CheckForRequirement(msuList, Index)
+          End If
+        Next
+        Exit For
+      End If
+    Next
+  End Sub
   Private Function FindBigFiles(directory As String) As List(Of String)
     Dim myFileList As New List(Of String)
     For Each sFile As String In My.Computer.FileSystem.GetFiles(directory)
@@ -7528,16 +7575,17 @@ Public Class frmMain
     If mySettings.LastUpdate.Year = 1970 Then mySettings.LastUpdate = Today
     If DateDiff(DateInterval.Day, mySettings.LastUpdate, Today) > 13 Then
       mySettings.LastUpdate = Today
+      SetStatus("Beginning Update Check...")
       cUpdate = New clsUpdate
       Dim updateCaller As New MethodInvoker(AddressOf cUpdate.CheckVersion)
       updateCaller.BeginInvoke(Nothing, Nothing)
     End If
   End Sub
   Private Sub cUpdate_CheckingVersion(sender As Object, e As System.EventArgs) Handles cUpdate.CheckingVersion
-    SetStatus("Checking for new Version...")
+    If GetStatus() = "Beginning Update Check..." Or GetStatus() = "Checking for new Version..." Then SetStatus("Checking for new Version...")
   End Sub
   Private Sub cUpdate_CheckProgressChanged(sender As Object, e As clsUpdate.ProgressEventArgs) Handles cUpdate.CheckProgressChanged
-    SetStatus("Checking for new Version... (" & e.ProgressPercentage & "%)")
+    If GetStatus() = "Beginning Update Check..." Or GetStatus() = "Checking for new Version..." Then SetStatus("Checking for new Version... (" & e.ProgressPercentage & "%)")
   End Sub
   Private Sub cUpdate_CheckResult(sender As Object, e As clsUpdate.CheckEventArgs) Handles cUpdate.CheckResult
     If Me.InvokeRequired Then
@@ -7595,20 +7643,4 @@ Public Class frmMain
     SetStatus("Downloading New Version - " & ByteSize(e.BytesReceived) & " of " & ByteSize(e.TotalBytesToReceive) & "... (" & e.ProgressPercentage & "%)")
   End Sub
 #End Region
-  Private Sub AddToLog(Message As String)
-    Dim logPath As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SLIPS7REAM.log")
-    If IO.File.Exists(logPath) Then
-      Dim logLines() As String = IO.File.ReadAllLines(logPath, System.Text.Encoding.GetEncoding(28591))
-      If logLines.Last = Message Then Return
-      Array.Resize(Of String)(logLines, logLines.Length + 1)
-      logLines(logLines.Length - 1) = Message
-      IO.File.WriteAllLines(logPath, logLines, System.Text.Encoding.GetEncoding(28591))
-    Else
-      IO.File.WriteAllText(logPath, Message, System.Text.Encoding.GetEncoding(28591))
-    End If
-  End Sub
-
-  Private Sub pctTitle_Click(sender As System.Object, e As System.EventArgs) Handles pctTitle.Click
-    frmDonate.Show()
-  End Sub
 End Class
