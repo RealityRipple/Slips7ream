@@ -41,5 +41,8 @@ Windows6.3-KB2849696-x86</Value>
     <Setting Name="LastUpdate" Type="System.DateTime" Scope="User">
       <Value Profile="(Default)">1970-01-01</Value>
     </Setting>
+    <Setting Name="AutoISOLabel" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

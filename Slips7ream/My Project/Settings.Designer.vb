@@ -198,6 +198,18 @@ Namespace My
                 Me("LastUpdate") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property AutoISOLabel() As Boolean
+            Get
+                Return CType(Me("AutoISOLabel"),Boolean)
+            End Get
+            Set
+                Me("AutoISOLabel") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

@@ -3,12 +3,17 @@ Imports System.Runtime.InteropServices
 Public Module modFunctions
   Public Declare Function WindowFromPoint Lib "user32" (pt As Point) As IntPtr
   Public Declare Function SendMessageA Lib "user32" (hWnd As IntPtr, msg As Integer, wParam As IntPtr, lParam As IntPtr) As IntPtr
+  Private Declare Function PostMessageA Lib "user32" (hWnd As IntPtr, msg As Integer, wParam As Integer, lParam As Integer) As Boolean
+  Private Declare Function GetScrollPos Lib "user32" (hWnd As IntPtr, nBar As Integer) As Integer
+  Private Declare Function GetScrollRange Lib "user32" (hWnd As IntPtr, nBar As Integer, ByRef pMin As Integer, ByRef pMax As Integer) As Boolean
+  Private Declare Function SetScrollPos Lib "user32" (hWnd As IntPtr, nBar As Integer, nPos As Integer, bRedraw As Boolean) As Integer
   Private Declare Function SetupDiGetClassImageList Lib "setupapi" (ByRef classImageListData As SP_CLASSIMAGELIST_DATA) As Boolean
   Private Declare Function SetupDiGetClassImageIndex Lib "setupapi" (classImageListData As SP_CLASSIMAGELIST_DATA, classGUID As Guid, ByRef imageIndex As Int16) As Boolean
   Private Declare Function SetupDiDestroyClassImageList Lib "setupapi" (ByRef classImageListData As SP_CLASSIMAGELIST_DATA) As Boolean
   Private Declare Function DestroyIcon Lib "user32" (handle As IntPtr) As Boolean
   Private Declare Function ImageList_GetIcon Lib "comctl32" (hIML As IntPtr, index As Integer, flags As Integer) As IntPtr
   Private Declare Function ExtractIconEx Lib "shell32" (lpszFile As String, nIconIndex As Int16, phiconLarge() As IntPtr, phiconSmall() As IntPtr, nIcons As UInt16) As UInt16
+  Private Declare Auto Function GetShortPathName Lib "kernel32.dll" (ByVal lpszLongPath As String, ByVal lpszShortPath As String, ByVal cchBuffer As Int32) As Int32
   Public Enum ArchitectureList
     x86
     amd64
@@ -603,7 +608,19 @@ Public Module modFunctions
       Return localDir
     End Get
   End Property
-  Private Declare Auto Function GetShortPathName Lib "kernel32.dll" (ByVal lpszLongPath As String, ByVal lpszShortPath As String, ByVal cchBuffer As Int32) As Int32
+  Public Sub AppendTextToTextBox(hTextBox As TextBox, sAppend As String)
+    Dim lVert As Integer = GetScrollPos(hTextBox.Handle, 1)
+    Dim lHigh As Integer = 0
+    GetScrollRange(hTextBox.Handle, 1, 0, lHigh)
+    Dim lRange As Integer = Math.Ceiling(hTextBox.Height / hTextBox.Font.Height)
+    If lHigh - lVert > lRange Then
+      hTextBox.Text &= sAppend
+      SetScrollPos(hTextBox.Handle, 1, lVert, True)
+      PostMessageA(hTextBox.Handle, &H115, 4 + &H10000 * lVert, 0)
+    Else
+      hTextBox.AppendText(sAppend)
+    End If
+  End Sub
   Public Function ShortenPath(Path As String) As String
     Dim count As Integer = GetShortPathName(Path, Nothing, 0)
     Dim strShortPath As String = Space(count)

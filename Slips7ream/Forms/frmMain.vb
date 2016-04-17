@@ -157,6 +157,7 @@ Public Class frmMain
     lvImages.Groups.Add("WIM", "Source Image")
     lvImages.Groups.Add("MERGE", "Merge Image")
     lvImages.ShowGroups = False
+    chkAutoLabel.Checked = mySettings.AutoISOLabel
     If String.IsNullOrEmpty(mySettings.DefaultISOLabel) Then
       txtISOLabel.Text = "GRMCULFRER_EN_DVD"
     Else
@@ -391,14 +392,18 @@ Public Class frmMain
   End Sub
   Private Sub RedoColumns()
     If Not lvMSU.Columns.Count = 0 Then
+      lvMSU.BeginUpdate()
       lvMSU.Columns(1).AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent)
       If lvMSU.Columns(1).Width < 75 Then lvMSU.Columns(1).Width = 75
       Dim msuSize As Integer = lvMSU.ClientSize.Width - lvMSU.Columns(1).Width - 2
       If Not lvMSU.Columns(0).Width = msuSize Then lvMSU.Columns(0).Width = msuSize
+      lvMSU.EndUpdate()
     End If
     If Not lvImages.Columns.Count = 0 Then
+      lvImages.BeginUpdate()
       Dim imagesSize As Integer = lvImages.ClientSize.Width - (lvImages.Columns(0).Width + lvImages.Columns(2).Width) - 2
       If Not lvImages.Columns(1).Width = imagesSize Then lvImages.Columns(1).Width = imagesSize
+      lvImages.EndUpdate()
     End If
     If cmdAddMSU.Enabled Then
       If Not cmdRemMSU.Enabled = (lvMSU.SelectedItems.Count > 0) Then cmdRemMSU.Enabled = (lvMSU.SelectedItems.Count > 0)
@@ -472,6 +477,7 @@ Public Class frmMain
     chkUnlock.Enabled = IIf(bEnabled, chkISO.Checked And (chkUnlock.Tag Is Nothing), bEnabled)
     chkUEFI.Enabled = IIf(bEnabled, chkISO.Checked, bEnabled)
     lblISOLabel.Enabled = IIf(bEnabled, chkISO.Checked, bEnabled)
+    chkAutoLabel.Enabled = IIf(bEnabled, chkISO.Checked, bEnabled)
     txtISOLabel.Enabled = IIf(bEnabled, chkISO.Checked, bEnabled)
     lblISOFS.Enabled = IIf(bEnabled, chkISO.Checked, bEnabled)
     cmbISOFormat.Enabled = IIf(bEnabled, chkISO.Checked, bEnabled)
@@ -631,12 +637,14 @@ Public Class frmMain
       Me.Invoke(New MethodInvoker(AddressOf SetISOtoWIM))
       Return
     End If
-    If IO.Path.GetExtension(txtWIM.Text).ToLower = ".iso" Then
-      chkISO.Checked = True
-      txtISO.Text = txtWIM.Text
-    Else
-      chkISO.Checked = False
-      txtISO.Text = String.Empty
+    If Not chkISO.Checked Or String.IsNullOrEmpty(txtISO.Text) Then
+      If IO.Path.GetExtension(txtWIM.Text).ToLower = ".iso" Then
+        chkISO.Checked = True
+        txtISO.Text = txtWIM.Text
+      Else
+        chkISO.Checked = False
+        txtISO.Text = String.Empty
+      End If
     End If
   End Sub
   Private Sub txtWIM_DragEnter(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles txtWIM.DragEnter
@@ -2090,6 +2098,7 @@ Public Class frmMain
     lblISOFeatures.Enabled = chkISO.Checked
     chkUnlock.Enabled = chkISO.Checked And (chkUnlock.Tag Is Nothing)
     lblISOLabel.Enabled = chkISO.Checked
+    chkAutoLabel.Enabled = chkISO.Checked
     txtISOLabel.Enabled = chkISO.Checked
     lblISOFS.Enabled = chkISO.Checked
     cmbISOFormat.Enabled = chkISO.Checked
@@ -2120,7 +2129,7 @@ Public Class frmMain
     cmdOpenFolder.Visible = False
     Dim foundEI As Boolean = False
     Dim foundCLG As Boolean = False
-    If IO.File.Exists(txtISO.Text) Then
+    If Not String.IsNullOrEmpty(txtISO.Text) AndAlso IO.File.Exists(txtISO.Text) Then
       WriteToOutput("Extracting File List from """ & txtISO.Text & """...")
       Dim sFiles() As String = ExtractFilesList(txtISO.Text)
       If sFiles IsNot Nothing Then
@@ -2151,6 +2160,29 @@ Public Class frmMain
         chkUnlock.Checked = True
         chkUnlock.Enabled = False
       End If
+      If chkAutoLabel.Checked Then
+        WriteToOutput("Extracting Comment from """ & txtISO.Text & """...")
+        Dim sComment As String = ExtractComment(txtISO.Text)
+        If Not String.IsNullOrEmpty(sComment) Then
+          If sComment.Contains(vbLf) Then
+            Dim sParts() As String = Split(sComment, vbLf)
+            For Each part In sParts
+              If Not String.IsNullOrEmpty(part) Then
+                If part.StartsWith("Volume: ") Then
+                  sComment = part.Substring(part.IndexOf(": ") + 2)
+                  Exit For
+                End If
+              End If
+            Next
+          End If
+          txtISOLabel.Text = sComment
+        End If
+      End If
+      SetStatus("Idle")
+    End If
+  End Sub
+  Private Sub chkAutoLabel_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles chkAutoLabel.CheckedChanged
+    If chkAutoLabel.Checked And (Not String.IsNullOrEmpty(txtISO.Text) AndAlso IO.File.Exists(txtISO.Text)) Then
       WriteToOutput("Extracting Comment from """ & txtISO.Text & """...")
       Dim sComment As String = ExtractComment(txtISO.Text)
       If Not String.IsNullOrEmpty(sComment) Then
@@ -2169,6 +2201,7 @@ Public Class frmMain
       End If
       SetStatus("Idle")
     End If
+    mySettings.AutoISOLabel = chkAutoLabel.Checked
   End Sub
   Private Sub txtISOLabel_DragDrop(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles txtISOLabel.DragDrop
     If e.Data.GetFormats(True).Contains("FileDrop") Then
@@ -3896,10 +3929,6 @@ Public Class frmMain
   End Sub
   Private Sub SetRawProgress(Value As Integer, Maximum As Integer)
     pbIndividual.Maximum = 10000
-    If Value > 0 And CInt((Value / Maximum) * 10000) < pbIndividual.Value Then
-      Debug.Print("Progress going backwards from " & FormatPercent(pbIndividual.Value / 10000, 2, TriState.True, TriState.False, TriState.False) & " to " & FormatPercent(Value / Maximum, 2, TriState.True, TriState.False, TriState.False))
-      Application.DoEvents()
-    End If
     pbIndividual.Value = (Value / Maximum) * 10000
     If Value = 0 And Maximum = 1 And pbIndividual.Style = ProgressBarStyle.Marquee Then
       ttInfo.SetToolTip(pbIndividual, "Progress: Indeterminate")
@@ -3942,10 +3971,6 @@ Public Class frmMain
   End Sub
   Private Sub SetRawTotal(Value As Integer, Maximum As Integer)
     pbTotal.Maximum = 10000
-    If Value > 0 And CInt((Value / Maximum) * 10000) < pbTotal.Value Then
-      Debug.Print("Total going backwards from " & FormatPercent(pbTotal.Value / 10000, 2, TriState.True, TriState.False, TriState.False) & " to " & FormatPercent(Value / Maximum, 2, TriState.True, TriState.False, TriState.False))
-      Application.DoEvents()
-    End If
     pbTotal.Value = (Value / Maximum) * 10000
     ttInfo.SetToolTip(pbTotal, "Total Progress: " & FormatPercent(Value / Maximum, 2, TriState.True, TriState.False, TriState.False))
     Try
@@ -4028,9 +4053,11 @@ Public Class frmMain
       Return
     End If
     If outputWindow Then
-      frmOutput.txtOutput.AppendText(Message & vbNewLine)
+      AppendTextToTextBox(frmOutput.txtOutput, Message & vbNewLine)
+      'frmOutput.txtOutput.AppendText(Message & vbNewLine)
     Else
-      txtOutput.AppendText(Message & vbNewLine)
+      AppendTextToTextBox(txtOutput, Message & vbNewLine)
+      'txtOutput.AppendText(Message & vbNewLine)
     End If
   End Sub
   Private tearFrom As Point = Point.Empty
@@ -5055,8 +5082,8 @@ Public Class frmMain
     If DoIntegratedUpdates Then iTotalMax += 1
     If DoFeatures Then iTotalMax += 1
     If DoIntegratedUpdates Then iTotalMax += 1
-    SetTotal(iTotalVal, iTotalMax)
     SetProgress(0, 1)
+    SetTotal(iTotalVal, iTotalMax)
     pbTotal.Style = ProgressBarStyle.Continuous
     SetDisp(MNGList.Copy)
     SetStatus("Checking WIM...")
@@ -5065,18 +5092,25 @@ Public Class frmMain
       txtWIM.Focus()
       Beep()
       Return
-    Else
-      If IO.Path.GetExtension(txtWIM.Text).ToLower = ".iso" Then
-        SetProgress(0, 1)
-        iTotalVal += 1
-        SetTotal(iTotalVal, iTotalMax)
-        SetStatus("Extracting Image from ISO...")
-        WriteToOutput("Extracting ""INSTALL.WIM"" from """ & txtWIM.Text & """ to """ & Work & """...")
-        ExtractAFile(txtWIM.Text, Work, "INSTALL.WIM")
-        WIMFile = Work & "INSTALL.WIM"
-      Else
-        WIMFile = txtWIM.Text
+    End If
+    If chkMerge.Checked Then
+      If String.IsNullOrEmpty(txtMerge.Text) OrElse Not IO.File.Exists(txtMerge.Text) Then
+        ToggleInputs(True, "Missing Merge File!")
+        txtMerge.Focus()
+        Beep()
+        Return
       End If
+    End If
+    If IO.Path.GetExtension(txtWIM.Text).ToLower = ".iso" Then
+      SetProgress(0, 1)
+      iTotalVal += 1
+      SetTotal(iTotalVal, iTotalMax)
+      SetStatus("Extracting Image from ISO...")
+      WriteToOutput("Extracting ""INSTALL.WIM"" from """ & txtWIM.Text & """ to """ & Work & """...")
+      ExtractAFile(txtWIM.Text, Work, "INSTALL.WIM")
+      WIMFile = Work & "INSTALL.WIM"
+    Else
+      WIMFile = txtWIM.Text
     End If
     If StopRun Then
       ToggleInputs(True)
@@ -5087,18 +5121,7 @@ Public Class frmMain
     SetTitle("Merging Image Packages", "Merging all WIM packages into single WIM...")
     SetStatus("Checking Merge...")
     Dim MergeFile As String = Nothing
-    If chkMerge.Checked Then
-      If String.IsNullOrEmpty(txtMerge.Text) OrElse Not IO.File.Exists(txtMerge.Text) Then
-        ToggleInputs(True, "Missing Merge File!")
-        txtMerge.Focus()
-        Beep()
-        Return
-      Else
-        MergeFile = txtMerge.Text
-      End If
-    Else
-      MergeFile = Nothing
-    End If
+    If chkMerge.Checked Then MergeFile = txtMerge.Text
     Dim MergeWIM As String = Nothing
     Dim MergeWork As String = Work & "Merge" & IO.Path.DirectorySeparatorChar
     If Not String.IsNullOrEmpty(MergeFile) Then
@@ -5277,10 +5300,11 @@ Public Class frmMain
     SetTitle("Adding Service Packs", "Integrating Service Pack data into WIM packages...")
     If Not String.IsNullOrEmpty(SPFile) Then
       If String.IsNullOrEmpty(SP64File) Then
+        SetProgress(0, 1)
+        iTotalVal += 1
+        SetTotal(iTotalVal, iTotalMax)
         SetStatus("Integrating Service Pack...")
         If IntegrateSP(WIMFile, SPFile) Then
-          iTotalVal += 1
-          SetTotal(iTotalVal, iTotalMax)
           SetStatus("Service Pack Integrated!")
         Else
           Dim sMsg As String = GetStatus()
@@ -5292,10 +5316,11 @@ Public Class frmMain
           Return
         End If
       Else
+        SetProgress(0, 1)
+        iTotalVal += 1
+        SetTotal(iTotalVal, iTotalMax)
         SetStatus("Integrating x86 Service Pack...")
         If IntegrateSP(WIMFile, SPFile, "86") Then
-          iTotalVal += 1
-          SetTotal(iTotalVal, iTotalMax)
           SetStatus("x86 Service Pack Integrated!")
         Else
           Dim sMsg As String = GetStatus()
@@ -5306,10 +5331,11 @@ Public Class frmMain
           ToggleInputs(True)
           Return
         End If
+        SetProgress(0, 1)
+        iTotalVal += 1
+        SetTotal(iTotalVal, iTotalMax)
         SetStatus("Integrating x64 Service Pack...")
         If IntegrateSP(WIMFile, SP64File, "64") Then
-          iTotalVal += 1
-          SetTotal(iTotalVal, iTotalMax)
           SetStatus("x64 Service Pack Integrated!")
         Else
           Dim sMsg As String = GetStatus()
@@ -5323,10 +5349,11 @@ Public Class frmMain
       End If
     End If
     If DoFeatures Then
-      SetDisp(MNGList.Copy)
-      SetTitle("Toggling Windows Features", "Enabling and disabling selected Features in WIM packages...")
+      SetProgress(0, 1)
       iTotalVal += 1
       SetTotal(iTotalVal, iTotalMax)
+      SetDisp(MNGList.Copy)
+      SetTitle("Toggling Windows Features", "Enabling and disabling selected Features in WIM packages...")
       SetStatus("Toggling Features...")
       If IntegratedFeatures(WIMFile, ImageFeatures.ToArray) Then
         SetStatus("Features Toggled!")
@@ -5342,10 +5369,11 @@ Public Class frmMain
       End If
     End If
     If DoIntegratedUpdates Then
-      SetDisp(MNGList.Copy)
-      SetTitle("Removing Integrated Updates", "Removing selected integrated Windows Updates from WIM packages...")
+      SetProgress(0, 1)
       iTotalVal += 1
       SetTotal(iTotalVal, iTotalMax)
+      SetDisp(MNGList.Copy)
+      SetTitle("Removing Integrated Updates", "Removing selected integrated Windows Updates from WIM packages...")
       SetStatus("Removing Updates...")
       If IntegratedUpdates(WIMFile, ImageIntegratedUpdates.ToArray) Then
         SetStatus("Updates Removed!")
@@ -5361,10 +5389,11 @@ Public Class frmMain
       End If
     End If
     If DoIntegratedDrivers Then
-      SetDisp(MNGList.Copy)
-      SetTitle("Removing Integrated Drivers", "Removing selected integrated Drivers from WIM packages...")
+      SetProgress(0, 1)
       iTotalVal += 1
       SetTotal(iTotalVal, iTotalMax)
+      SetDisp(MNGList.Copy)
+      SetTitle("Removing Integrated Drivers", "Removing selected integrated Drivers from WIM packages...")
       SetStatus("Removing Drivers...")
       If IntegratedDrivers(WIMFile, ImageDrivers) Then
         SetStatus("Drivers Removed!")
@@ -5401,11 +5430,9 @@ Public Class frmMain
       InitDISM(WIMFile, GetDISMPackages(WIMFile), Mount)
       NoMount = False
     End If
-    '\/ not sure if this is needed
     SetProgress(0, 1)
     iTotalVal += 1
     SetTotal(iTotalVal, iTotalMax)
-    '/\ possibly deletable
     SetDisp(MNGList.Move)
     If Not String.IsNullOrEmpty(ISOFile) Then
       SetTitle("Generating ISO", "Preparing WIMs and file structures, and writing ISO data...")
@@ -5416,8 +5443,6 @@ Public Class frmMain
       SetStatus("Extracting ISO contents...")
       WriteToOutput("Extracting Setup Disc files from """ & ISOFile & """ to """ & ISODir & """...")
       ExtractFiles(ISOFile, ISODir, "install.wim")
-      iTotalVal += 1
-      SetTotal(iTotalVal, iTotalMax)
       If chkUnlock.Checked Then
         SetStatus("Unlocking All Editions...")
         If IO.File.Exists(ISODir & "sources" & IO.Path.DirectorySeparatorChar & "ei.cfg") Then
@@ -5512,6 +5537,8 @@ Public Class frmMain
         End If
       End If
       SetProgress(0, 1)
+      iTotalVal += 1
+      SetTotal(iTotalVal, iTotalMax)
       SetStatus("Integrating and Compressing INSTALL.WIM...")
       Dim ISOWIMFile As String = ISODir & "sources" & IO.Path.DirectorySeparatorChar & "install.wim"
       If IO.File.Exists(ISOWIMFile) Then
@@ -5945,6 +5972,7 @@ Public Class frmMain
         ToggleInputs(True, "Failed to back up ISO!")
         Return
       End If
+      SetProgress(0, 1)
       iTotalVal += 1
       SetTotal(iTotalVal, iTotalMax)
       SetProgress(0, 0)

@@ -4,6 +4,7 @@
   Private c_x86WhiteList() As String = {"Windows6.2-KB2764913-x86", "Windows6.2-KB2764916-x86", "Windows6.3-KB2849697-x86", "Windows6.3-KB2849696-x86"}
   Private c_Position As Point = New Point
   Private c_Size As Size = New Size(440, 480)
+  Private c_AutoISOLabel As Boolean = True
   Private c_DefaultISOLabel As String = "GRMCULFRER_EN_DVD"
   Private c_DefaultFS As String = "ISO 9960"
   Private c_Priority As String = "Normal"
@@ -59,6 +60,14 @@
     Set(value As Size)
       c_Size = value
       Save()
+    End Set
+  End Property
+  Public Property AutoISOLabel As Boolean
+    Get
+      Return c_AutoISOLabel
+    End Get
+    Set(value As Boolean)
+      c_AutoISOLabel = value
     End Set
   End Property
   Public Property DefaultISOLabel As String
@@ -221,6 +230,11 @@
       c_Position = My.Settings.Position
       c_Size = My.Settings.Size
     End If
+    If Hive.GetValueNames.Contains("Auto ISO Label") Then
+      c_AutoISOLabel = (Hive.GetValue("Auto ISO Label", IIf(My.Settings.AutoISOLabel, "Y", "N")) = "Y")
+    Else
+      c_AutoISOLabel = My.Settings.AutoISOLabel
+    End If
     If Hive.GetValueNames.Contains("Default ISO Label") Then
       c_DefaultISOLabel = Hive.GetValue("Default ISO Label", My.Settings.DefaultISOLabel)
     Else
@@ -297,6 +311,7 @@
     c_x86WhiteList = Split(My.Settings.x86WhiteList, vbNewLine)
     c_Position = My.Settings.Position
     c_Size = My.Settings.Size
+    c_AutoISOLabel = True
     c_DefaultISOLabel = My.Settings.DefaultISOLabel
     c_DefaultFS = My.Settings.DefaultFS
     c_Priority = My.Settings.Priority
@@ -323,6 +338,7 @@
     ActiveHive.OpenSubKey("Display", True).SetValue("Top", c_Position.Y, Microsoft.Win32.RegistryValueKind.DWord)
     ActiveHive.OpenSubKey("Display", True).SetValue("Width", c_Size.Width, Microsoft.Win32.RegistryValueKind.DWord)
     ActiveHive.OpenSubKey("Display", True).SetValue("Height", c_Size.Height, Microsoft.Win32.RegistryValueKind.DWord)
+    ActiveHive.SetValue("Auto ISO Label", IIf(c_AutoISOLabel, "Y", "N"), Microsoft.Win32.RegistryValueKind.String)
     ActiveHive.SetValue("Default ISO Label", c_DefaultISOLabel, Microsoft.Win32.RegistryValueKind.String)
     ActiveHive.SetValue("Default File System", c_DefaultFS, Microsoft.Win32.RegistryValueKind.String)
     ActiveHive.SetValue("Priority", c_Priority, Microsoft.Win32.RegistryValueKind.String)
@@ -331,11 +347,11 @@
     ActiveHive.SetValue("Last Update", c_LastUpdate.ToBinary, Microsoft.Win32.RegistryValueKind.QWord)
     ActiveHive.SetValue("Last Nag", c_LastNag.ToBinary, Microsoft.Win32.RegistryValueKind.QWord)
     If Not ActiveHive.GetSubKeyNames.Contains("Alert") Then ActiveHive.CreateSubKey("Alert")
-    ActiveHive.OpenSubKey("Alert", True).SetValue(String.Empty, IIf(c_PlayAlertNoise, "Y", "N"))
-    ActiveHive.OpenSubKey("Alert", True).SetValue("Path", c_AlertNoisePath)
+    ActiveHive.OpenSubKey("Alert", True).SetValue(String.Empty, IIf(c_PlayAlertNoise, "Y", "N"), Microsoft.Win32.RegistryValueKind.String)
+    ActiveHive.OpenSubKey("Alert", True).SetValue("Path", c_AlertNoisePath, Microsoft.Win32.RegistryValueKind.String)
     If Not ActiveHive.GetSubKeyNames.Contains("Load Package Data") Then ActiveHive.CreateSubKey("Load Package Data")
-    ActiveHive.OpenSubKey("Load Package Data", True).SetValue("Features", IIf(c_LoadFeatures, "Y", "N"))
-    ActiveHive.OpenSubKey("Load Package Data", True).SetValue("Updates", IIf(c_LoadUpdates, "Y", "N"))
-    ActiveHive.OpenSubKey("Load Package Data", True).SetValue("Drivers", IIf(c_LoadDrivers, "Y", "N"))
+    ActiveHive.OpenSubKey("Load Package Data", True).SetValue("Features", IIf(c_LoadFeatures, "Y", "N"), Microsoft.Win32.RegistryValueKind.String)
+    ActiveHive.OpenSubKey("Load Package Data", True).SetValue("Updates", IIf(c_LoadUpdates, "Y", "N"), Microsoft.Win32.RegistryValueKind.String)
+    ActiveHive.OpenSubKey("Load Package Data", True).SetValue("Drivers", IIf(c_LoadDrivers, "Y", "N"), Microsoft.Win32.RegistryValueKind.String)
   End Sub
 End Class

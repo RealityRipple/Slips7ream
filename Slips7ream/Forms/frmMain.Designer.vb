@@ -78,7 +78,6 @@ Partial Class frmMain
     Me.txtOutput = New System.Windows.Forms.TextBox()
     Me.pctOutputTear = New System.Windows.Forms.PictureBox()
     Me.lblISOLabel = New System.Windows.Forms.Label()
-    Me.txtISOLabel = New System.Windows.Forms.TextBox()
     Me.pnlControl = New System.Windows.Forms.TableLayoutPanel()
     Me.lblPriority = New System.Windows.Forms.Label()
     Me.cmbPriority = New System.Windows.Forms.ComboBox()
@@ -99,6 +98,9 @@ Partial Class frmMain
     Me.lblISOFeatures = New System.Windows.Forms.Label()
     Me.brUpdates = New Slips7ream.LineBreak()
     Me.brISO = New Slips7ream.LineBreak()
+    Me.pnlISOLabel = New System.Windows.Forms.TableLayoutPanel()
+    Me.txtISOLabel = New System.Windows.Forms.TextBox()
+    Me.chkAutoLabel = New System.Windows.Forms.CheckBox()
     Me.tmrUpdateCheck = New System.Windows.Forms.Timer(Me.components)
     Me.tmrAnimation = New System.Windows.Forms.Timer(Me.components)
     Me.mnuOutput = New System.Windows.Forms.ContextMenu()
@@ -250,6 +252,7 @@ Partial Class frmMain
     Me.pnlISOOptions.SuspendLayout()
     Me.pnlMerge.SuspendLayout()
     CType(Me.pctTitle, System.ComponentModel.ISupportInitialize).BeginInit()
+    Me.pnlISOLabel.SuspendLayout()
     Me.SuspendLayout()
     '
     'pnlSlips7ream
@@ -265,7 +268,6 @@ Partial Class frmMain
     Me.pnlSlips7ream.Controls.Add(Me.pnlISO, 1, 6)
     Me.pnlSlips7ream.Controls.Add(Me.pnlProgress, 0, 12)
     Me.pnlSlips7ream.Controls.Add(Me.lblISOLabel, 0, 7)
-    Me.pnlSlips7ream.Controls.Add(Me.txtISOLabel, 1, 7)
     Me.pnlSlips7ream.Controls.Add(Me.pnlControl, 0, 10)
     Me.pnlSlips7ream.Controls.Add(Me.pnlISOOptions, 1, 8)
     Me.pnlSlips7ream.Controls.Add(Me.chkMerge, 0, 2)
@@ -274,6 +276,7 @@ Partial Class frmMain
     Me.pnlSlips7ream.Controls.Add(Me.lblISOFeatures, 0, 8)
     Me.pnlSlips7ream.Controls.Add(Me.brUpdates, 0, 4)
     Me.pnlSlips7ream.Controls.Add(Me.brISO, 0, 9)
+    Me.pnlSlips7ream.Controls.Add(Me.pnlISOLabel, 1, 7)
     Me.pnlSlips7ream.Dock = System.Windows.Forms.DockStyle.Fill
     Me.pnlSlips7ream.Location = New System.Drawing.Point(0, 0)
     Me.pnlSlips7ream.Name = "pnlSlips7ream"
@@ -1112,21 +1115,6 @@ Partial Class frmMain
     Me.lblISOLabel.TabIndex = 7
     Me.lblISOLabel.Text = "ISO &Label:"
     '
-    'txtISOLabel
-    '
-    Me.txtISOLabel.AllowDrop = True
-    Me.txtISOLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtISOLabel.Enabled = False
-    Me.helpS7M.SetHelpKeyword(Me.txtISOLabel, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.1_ISO_Label.htm")
-    Me.helpS7M.SetHelpNavigator(Me.txtISOLabel, System.Windows.Forms.HelpNavigator.Topic)
-    Me.txtISOLabel.Location = New System.Drawing.Point(103, 457)
-    Me.txtISOLabel.MaxLength = 32
-    Me.txtISOLabel.Name = "txtISOLabel"
-    Me.helpS7M.SetShowHelp(Me.txtISOLabel, True)
-    Me.txtISOLabel.Size = New System.Drawing.Size(318, 20)
-    Me.txtISOLabel.TabIndex = 8
-    Me.ttInfo.SetToolTip(Me.txtISOLabel, "Disc Label for ISO.")
-    '
     'pnlControl
     '
     Me.pnlControl.AutoSize = True
@@ -1444,6 +1432,55 @@ Partial Class frmMain
     Me.brISO.Size = New System.Drawing.Size(418, 3)
     Me.brISO.TabIndex = 25
     Me.brISO.TabStop = False
+    '
+    'pnlISOLabel
+    '
+    Me.pnlISOLabel.AutoSize = True
+    Me.pnlISOLabel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.pnlISOLabel.ColumnCount = 2
+    Me.pnlISOLabel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlISOLabel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlISOLabel.Controls.Add(Me.txtISOLabel, 1, 0)
+    Me.pnlISOLabel.Controls.Add(Me.chkAutoLabel, 0, 0)
+    Me.pnlISOLabel.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.pnlISOLabel.Location = New System.Drawing.Point(100, 454)
+    Me.pnlISOLabel.Margin = New System.Windows.Forms.Padding(0)
+    Me.pnlISOLabel.Name = "pnlISOLabel"
+    Me.pnlISOLabel.RowCount = 1
+    Me.pnlISOLabel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+    Me.pnlISOLabel.Size = New System.Drawing.Size(324, 26)
+    Me.pnlISOLabel.TabIndex = 8
+    '
+    'txtISOLabel
+    '
+    Me.txtISOLabel.AllowDrop = True
+    Me.txtISOLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.txtISOLabel.Enabled = False
+    Me.helpS7M.SetHelpKeyword(Me.txtISOLabel, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.1_ISO_Label.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtISOLabel, System.Windows.Forms.HelpNavigator.Topic)
+    Me.txtISOLabel.Location = New System.Drawing.Point(88, 3)
+    Me.txtISOLabel.MaxLength = 32
+    Me.txtISOLabel.Name = "txtISOLabel"
+    Me.helpS7M.SetShowHelp(Me.txtISOLabel, True)
+    Me.txtISOLabel.Size = New System.Drawing.Size(233, 20)
+    Me.txtISOLabel.TabIndex = 1
+    Me.ttInfo.SetToolTip(Me.txtISOLabel, "Disc Label for ISO.")
+    '
+    'chkAutoLabel
+    '
+    Me.chkAutoLabel.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.chkAutoLabel.AutoSize = True
+    Me.chkAutoLabel.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.helpS7M.SetHelpKeyword(Me.chkAutoLabel, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.1_ISO_Label.htm")
+    Me.helpS7M.SetHelpNavigator(Me.chkAutoLabel, System.Windows.Forms.HelpNavigator.Topic)
+    Me.chkAutoLabel.Location = New System.Drawing.Point(3, 4)
+    Me.chkAutoLabel.Name = "chkAutoLabel"
+    Me.helpS7M.SetShowHelp(Me.chkAutoLabel, True)
+    Me.chkAutoLabel.Size = New System.Drawing.Size(79, 18)
+    Me.chkAutoLabel.TabIndex = 0
+    Me.chkAutoLabel.Text = "Read ISO"
+    Me.ttInfo.SetToolTip(Me.chkAutoLabel, "Automatically load the Label of the ISO selected in the Save to ISO field above.")
+    Me.chkAutoLabel.UseVisualStyleBackColor = True
     '
     'tmrUpdateCheck
     '
@@ -2176,6 +2213,8 @@ Partial Class frmMain
     Me.pnlMerge.ResumeLayout(False)
     Me.pnlMerge.PerformLayout()
     CType(Me.pctTitle, System.ComponentModel.ISupportInitialize).EndInit()
+    Me.pnlISOLabel.ResumeLayout(False)
+    Me.pnlISOLabel.PerformLayout()
     Me.ResumeLayout(False)
 
   End Sub
@@ -2220,7 +2259,6 @@ Partial Class frmMain
   Friend WithEvents pbIndividual As System.Windows.Forms.ProgressBar
   Friend WithEvents cmdConfig As System.Windows.Forms.Button
   Friend WithEvents lblISOLabel As System.Windows.Forms.Label
-  Friend WithEvents txtISOLabel As System.Windows.Forms.TextBox
   Friend WithEvents pnlControl As System.Windows.Forms.TableLayoutPanel
   Friend WithEvents lblPriority As System.Windows.Forms.Label
   Friend WithEvents cmbPriority As System.Windows.Forms.ComboBox
@@ -2384,5 +2422,8 @@ Partial Class frmMain
   Friend WithEvents lvImages As Slips7ream.ListViewEx
   Friend WithEvents ttActivity As Slips7ream.ToolTip
   Friend WithEvents helpS7M As System.Windows.Forms.HelpProvider
+  Friend WithEvents pnlISOLabel As System.Windows.Forms.TableLayoutPanel
+  Friend WithEvents txtISOLabel As System.Windows.Forms.TextBox
+  Friend WithEvents chkAutoLabel As System.Windows.Forms.CheckBox
 
 End Class
