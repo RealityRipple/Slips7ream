@@ -11,14 +11,16 @@
   <h1>INSTALL.WIM</h1>
   <hr>
   <p>The INSTALL.WIM field accepts a Windows Image or ISO (if the ISO contains a Windows Image in the &quot;\sources\&quot; folder).</p>
+  <h2>WIM File Type</h2>
   <p>
    If this is a WIM, then all changes are applied directly to the WIM file.<br>
    If you want to keep an unchanged original of the WIM you're working with, make a copy of the original source WIM and select the copy.
   </p>
+  <h2>ISO File Type</h2>
   <p>
    If this is an ISO, then the WIM is extracted to your <a href="/2_Configuration/2.1_Temp_Directory_Path.htm" title="Configuration - Temp Directory Path">Temp Directory</a> and modified there.<br>
    It is recommended that you use the <a href="/1_SLIPS7REAM_Interface/1.6_Save_to_ISO.htm" title="SLIPS7REAM Interface - Save to ISO">Save to ISO</a> to select this or another ISO to save the finalized WIM to, otherwise the WIM will stay in the <a href="/2_Configuration/2.1_Temp_Directory_Path.htm" title="Configuration - Temp Directory Path">Temp Directory</a> and will be deleted when the program is closed or another operation begins.
   </p>
-  <p><b>Note</b>: Enabling Save to ISO does not prevent changes to the INSTALL.WIM file, if it is a WIM file. If you use an ISO, then the changes will only be applied to the ISO file in the Save to ISO field, and <i>this</i> ISO will remain unmodified.</p>
+  <p><b>Note</b>: If you select a <b>WIM</b>-type file, enabling Save to ISO does not prevent changes to the file selected in this field. If you use an <b>ISO</b>-type file for this field, then the changes will only be applied to the ISO file in the Save to ISO field, and <i>this</i> ISO will remain unmodified.</p>
  </body>
 </html>
