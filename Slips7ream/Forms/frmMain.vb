@@ -936,6 +936,10 @@ Public Class frmMain
         Next
         Data = newData.ToArray
       End If
+      Dim lvBGs(lvMSU.Items.Count - 1) As Color
+      For I As Integer = 0 To lvMSU.Items.Count - 1
+        lvBGs(I) = lvMSU.Items(I).BackColor
+      Next
       If FileCount > 2 Then
         RunActivity = 3
         StopRun = False
@@ -947,7 +951,6 @@ Public Class frmMain
         SetStatus("Reading Update Information...")
       End If
       Dim FailCollection As New Collections.Generic.List(Of String)
-      lvMSU.SuspendLayout()
       Dim iProg As Integer = 0
       For Each Item In Data
         If FileCount > 2 Then
@@ -971,10 +974,12 @@ Public Class frmMain
             End If
             If Not addRet.Success Then FailCollection.Add(IIf(String.IsNullOrEmpty(msuData.Name), IO.Path.GetFileNameWithoutExtension(Item), IIf(msuData.Name = "DRIVER", IO.Path.GetFileNameWithoutExtension(msuData.DriverData.DriverStorePath), msuData.Name)) & ": " & addRet.FailReason)
             If Not lvMSU.Columns.Count = 0 Then
+              lvMSU.BeginUpdate()
               lvMSU.Columns(1).AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent)
               If lvMSU.Columns(1).Width < 75 Then lvMSU.Columns(1).Width = 75
               Dim msuSize As Integer = lvMSU.ClientSize.Width - lvMSU.Columns(1).Width - 1
               If Not lvMSU.Columns(0).Width = msuSize Then lvMSU.Columns(0).Width = msuSize
+              lvMSU.EndUpdate()
             End If
           Next
         Else
@@ -982,11 +987,13 @@ Public Class frmMain
         End If
         If Cancelled Then Exit For
       Next
-      lvMSU.ResumeLayout(True)
       If FileCount > 2 Then
         SetProgress(0, 1)
         ToggleInputs(True)
       End If
+      For I As Integer = 0 To lvBGs.Count - 1
+        If Not lvMSU.Items(I).BackColor = lvBGs(I) Then lvMSU.Items(I).BackColor = lvBGs(I)
+      Next
       RedoColumns()
       If FailCollection.Count > 0 Then
         MsgDlg(Me, "Some files could not be added to the Update List." & vbNewLine & "Click View Details to see a complete list.", "Unable to add files to the Update List.", "Error Adding Updates", MessageBoxButtons.OK, TaskDialogIcon.WindowsUpdate, , CleanupFailures(FailCollection), "Error Adding Updates")
@@ -1179,6 +1186,10 @@ Public Class frmMain
       If cdlBrowse.ShowDialog(Me.Handle) = Windows.Forms.DialogResult.OK Then
         Dim FailCollection As New List(Of String)
         Dim FileCount As Integer = cdlBrowse.FileNames.Count
+        Dim lvBGs(lvMSU.Items.Count - 1) As Color
+        For I As Integer = 0 To lvMSU.Items.Count - 1
+          lvBGs(I) = lvMSU.Items(I).BackColor
+        Next
         If FileCount > 2 Then
           RunActivity = 3
           StopRun = False
@@ -1189,7 +1200,6 @@ Public Class frmMain
           SetProgress(0, 0)
           SetStatus("Reading Update Information...")
         End If
-        lvMSU.SuspendLayout()
         For I As Integer = 0 To cdlBrowse.FileNames.Count - 1
           Dim sUpdate As String = cdlBrowse.FileNames(I)
           If FileCount > 2 Then
@@ -1212,10 +1222,12 @@ Public Class frmMain
               End If
               If Not addRet.Success Then FailCollection.Add(IIf(String.IsNullOrEmpty(msuData.Name), IO.Path.GetFileNameWithoutExtension(sUpdate), IIf(msuData.Name = "DRIVER", IO.Path.GetFileNameWithoutExtension(msuData.DriverData.DriverStorePath), msuData.Name)) & ": " & addRet.FailReason)
               If Not lvMSU.Columns.Count = 0 Then
+                lvMSU.BeginUpdate()
                 lvMSU.Columns(1).AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent)
                 If lvMSU.Columns(1).Width < 75 Then lvMSU.Columns(1).Width = 75
                 Dim msuSize As Integer = lvMSU.ClientSize.Width - lvMSU.Columns(1).Width - 1
                 If Not lvMSU.Columns(0).Width = msuSize Then lvMSU.Columns(0).Width = msuSize
+                lvMSU.EndUpdate()
               End If
             Next
           Else
@@ -1223,11 +1235,13 @@ Public Class frmMain
           End If
           If Cancelled Then Exit For
         Next
-        lvMSU.ResumeLayout(True)
         If FileCount > 2 Then
           SetProgress(0, 1)
           ToggleInputs(True)
         End If
+        For I As Integer = 0 To lvBGs.Count - 1
+          If Not lvMSU.Items(I).BackColor = lvBGs(I) Then lvMSU.Items(I).BackColor = lvBGs(I)
+        Next
         RedoColumns()
         If FailCollection.Count > 0 Then
           MsgDlg(Me, "Some files could not be added to the Update List." & vbNewLine & "Click View Details to see a complete list.", "Unable to add files to the Update List.", "Error Adding Updates", MessageBoxButtons.OK, TaskDialogIcon.WindowsUpdate, , CleanupFailures(FailCollection), "Error Adding Updates")
@@ -4053,11 +4067,9 @@ Public Class frmMain
       Return
     End If
     If outputWindow Then
-      AppendTextToTextBox(frmOutput.txtOutput, Message & vbNewLine)
-      'frmOutput.txtOutput.AppendText(Message & vbNewLine)
+      frmOutput.txtOutput.AppendText(Message & vbNewLine)
     Else
-      AppendTextToTextBox(txtOutput, Message & vbNewLine)
-      'txtOutput.AppendText(Message & vbNewLine)
+      txtOutput.AppendText(Message & vbNewLine)
     End If
   End Sub
   Private tearFrom As Point = Point.Empty
@@ -7434,8 +7446,10 @@ Public Class frmMain
         lvItem.ToolTipText = ttItem
         AddToImageList(lvItem)
         If Not lvImages.Columns.Count = 0 Then
+          lvImages.BeginUpdate()
           Dim imagesSize As Integer = lvImages.ClientSize.Width - (lvImages.Columns(0).Width + lvImages.Columns(2).Width) - 1
           If Not lvImages.Columns(1).Width = imagesSize Then lvImages.Columns(1).Width = imagesSize
+          lvImages.EndUpdate()
         End If
       Next
       If tLister2 Is Nothing Then
@@ -7500,8 +7514,10 @@ Public Class frmMain
         lvItem.ToolTipText = ttItem
         AddToImageList(lvItem)
         If Not lvImages.Columns.Count = 0 Then
+          lvImages.BeginUpdate()
           Dim imagesSize As Integer = lvImages.ClientSize.Width - (lvImages.Columns(0).Width + lvImages.Columns(2).Width) - 1
           If Not lvImages.Columns(1).Width = imagesSize Then lvImages.Columns(1).Width = imagesSize
+          lvImages.EndUpdate()
         End If
       Next
       If tLister Is Nothing Then
