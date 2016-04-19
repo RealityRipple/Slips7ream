@@ -153,10 +153,6 @@ Public Class frmMain
     Else
       cmbCompletion.Text = "Do Nothing"
     End If
-    lvImages.ShowGroups = True
-    lvImages.Groups.Add("WIM", "Source Image")
-    lvImages.Groups.Add("MERGE", "Merge Image")
-    lvImages.ShowGroups = False
     chkAutoLabel.Checked = mySettings.AutoISOLabel
     If String.IsNullOrEmpty(mySettings.DefaultISOLabel) Then
       txtISOLabel.Text = "GRMCULFRER_EN_DVD"
@@ -952,6 +948,7 @@ Public Class frmMain
       End If
       Dim FailCollection As New Collections.Generic.List(Of String)
       Dim iProg As Integer = 0
+      lvMSU.BeginUpdate()
       For Each Item In Data
         If FileCount > 2 Then
           iProg += 1
@@ -960,6 +957,7 @@ Public Class frmMain
           If StopRun Then
             SetProgress(0, 1)
             ToggleInputs(True)
+            lvMSU.EndUpdate()
             Return
           End If
         End If
@@ -974,12 +972,12 @@ Public Class frmMain
             End If
             If Not addRet.Success Then FailCollection.Add(IIf(String.IsNullOrEmpty(msuData.Name), IO.Path.GetFileNameWithoutExtension(Item), IIf(msuData.Name = "DRIVER", IO.Path.GetFileNameWithoutExtension(msuData.DriverData.DriverStorePath), msuData.Name)) & ": " & addRet.FailReason)
             If Not lvMSU.Columns.Count = 0 Then
-              lvMSU.BeginUpdate()
+              'lvMSU.BeginUpdate()
               lvMSU.Columns(1).AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent)
               If lvMSU.Columns(1).Width < 75 Then lvMSU.Columns(1).Width = 75
               Dim msuSize As Integer = lvMSU.ClientSize.Width - lvMSU.Columns(1).Width - 1
               If Not lvMSU.Columns(0).Width = msuSize Then lvMSU.Columns(0).Width = msuSize
-              lvMSU.EndUpdate()
+              'lvMSU.EndUpdate()
             End If
           Next
         Else
@@ -995,6 +993,7 @@ Public Class frmMain
         If Not lvMSU.Items(I).BackColor = lvBGs(I) Then lvMSU.Items(I).BackColor = lvBGs(I)
       Next
       RedoColumns()
+      lvMSU.EndUpdate()
       If FailCollection.Count > 0 Then
         MsgDlg(Me, "Some files could not be added to the Update List." & vbNewLine & "Click View Details to see a complete list.", "Unable to add files to the Update List.", "Error Adding Updates", MessageBoxButtons.OK, TaskDialogIcon.WindowsUpdate, , CleanupFailures(FailCollection), "Error Adding Updates")
       End If
@@ -1208,6 +1207,7 @@ Public Class frmMain
             If StopRun Then
               SetProgress(0, 1)
               ToggleInputs(True)
+              lvMSU.EndUpdate()
               Return
             End If
           End If
@@ -2704,25 +2704,12 @@ Public Class frmMain
   Private Sub chkMerge_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles chkMerge.CheckedChanged
     txtMerge.Enabled = chkMerge.Checked
     cmdMerge.Enabled = chkMerge.Checked
-    lvImages.ShowGroups = chkMerge.Checked
     If chkMerge.Checked Then
       txtMerge_TextChanged(txtMerge, New EventArgs)
     Else
       ClearImageList("MERGE")
     End If
-    If lvImages.ShowGroups Then
-      For Each lvItem As ListViewItem In lvImages.Items
-        If lvItem.Tag(0) = "WIM" Then
-          lvItem.Group = lvImages.Groups("WIM")
-        ElseIf lvItem.Tag(0) = "MERGE" Then
-          lvItem.Group = lvImages.Groups("MERGE")
-        End If
-      Next
-    Else
-      For Each lvItem As ListViewItem In lvImages.Items
-        lvItem.Group = Nothing
-      Next
-    End If
+    SortImageList()
     RedoColumns()
   End Sub
   Private Sub txtMerge_DragDrop(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles txtMerge.DragDrop
@@ -2775,6 +2762,22 @@ Public Class frmMain
   End Sub
 #End Region
 #Region "Packages"
+  Private imageOrderCol As Integer
+  Private imageOrderSorting As SortOrder
+  Private Sub lvImages_ColumnClick(sender As Object, e As System.Windows.Forms.ColumnClickEventArgs) Handles lvImages.ColumnClick
+    If e.Column = imageOrderCol Then
+      If imageOrderSorting = SortOrder.Ascending Then
+        imageOrderSorting = SortOrder.Descending
+      Else
+        imageOrderSorting = SortOrder.Ascending
+      End If
+    Else
+      imageOrderCol = e.Column
+      imageOrderSorting = SortOrder.Descending
+    End If
+    SortImageList()
+    RedoColumns()
+  End Sub
   Private Sub lvImages_KeyUp(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles lvImages.KeyUp
     If lvImages.SelectedItems IsNot Nothing AndAlso lvImages.SelectedItems.Count > 0 Then
       If e.KeyCode = Keys.F2 Then
@@ -2903,16 +2906,139 @@ Public Class frmMain
       Return
     End If
     lvImages.Items.Add(lvItem)
-    If chkMerge.Checked Then
-      If lvItem.Tag(0) = "WIM" Then
-        lvItem.Group = lvImages.Groups("WIM")
-      ElseIf lvItem.Tag(0) = "MERGE" Then
-        lvItem.Group = lvImages.Groups("MERGE")
-      End If
-    End If
-    lvItem.BackColor = lvImages.BackColor
+    SortImageList()
+    RedoColumns()
     chkSP_CheckedChanged(chkSP, New EventArgs)
   End Sub
+  Private Sub SortImageList()
+    Dim sortOrder As LVItemSorter.OrderBy = LVItemSorter.OrderBy.Display
+    If imageOrderCol = 1 Then
+      sortOrder = LVItemSorter.OrderBy.OS
+    ElseIf imageOrderCol = 2 Then
+      sortOrder = LVItemSorter.OrderBy.Size
+    End If
+
+    If chkMerge.Checked And sortOrder = LVItemSorter.OrderBy.Display Then
+      lvImages.ShowGroups = True
+      lvImages.Groups.Clear()
+      If imageOrderSorting = Windows.Forms.SortOrder.Ascending Then
+        lvImages.Groups.Add("MERGE", "Merge Image")
+        lvImages.Groups.Add("WIM", "Source Image")
+      Else
+        lvImages.Groups.Add("WIM", "Source Image")
+        lvImages.Groups.Add("MERGE", "Merge Image")
+      End If
+      For Each lvItem As ListViewItem In lvImages.Items
+        lvItem.Group = lvImages.Groups(lvItem.Tag(0))
+        lvItem.BackColor = lvImages.BackColor
+      Next
+    Else
+      If lvImages.Groups.Count > 0 Then
+        lvImages.ShowGroups = True
+        lvImages.Groups.Clear()
+        For Each lvItem As ListViewItem In lvImages.Items
+          lvItem.Group = Nothing
+          lvItem.BackColor = lvImages.BackColor
+        Next
+        lvImages.ShowGroups = False
+      End If
+    End If
+    lvImages.ListViewItemSorter = New LVItemSorter(sortOrder, imageOrderSorting)
+    lvImages.Sort()
+  End Sub
+  Private Class LVItemSorter
+    Implements IComparer
+    Private sortBy As OrderBy
+    Private sortOrdering As SortOrder
+    Public Sub New()
+      Me.New(OrderBy.OS, SortOrder.Ascending)
+    End Sub
+    Public Sub New(Sort As OrderBy, Sorting As SortOrder)
+      sortBy = Sort
+      sortOrdering = Sorting
+    End Sub
+    Public Enum OrderBy
+      Display
+      OS
+      Size
+    End Enum
+    Public Function Compare(x As Object, y As Object) As Integer Implements IComparer.Compare
+      Dim ret As Integer = MakeComparison(CType(x, ListViewItem), CType(y, ListViewItem), sortBy)
+      If sortOrdering = SortOrder.Ascending Then
+        If ret = -1 Then Return 1
+        If ret = 1 Then Return -1
+        Return 0
+      Else
+        Return ret
+      End If
+    End Function
+    Private Function MakeComparison(x As ListViewItem, y As ListViewItem, s As OrderBy)
+      Select Case s
+        Case OrderBy.Display
+          If x.Tag(0) = "WIM" And Not y.Tag(0) = "WIM" Then Return -1
+          If Not x.Tag(0) = "WIM" And y.Tag(0) = "WIM" Then Return 1
+          If Val(x.SubItems(0).Text) > Val(y.SubItems(0).Text) Then Return 1
+          If Val(x.SubItems(0).Text) < Val(y.SubItems(0).Text) Then Return -1
+          Return 0
+        Case OrderBy.OS
+          Dim packageX As ImagePackage = x.Tag(1)
+          Dim packageY As ImagePackage = y.Tag(1)
+          If packageX.Architecture = "x64" And Not packageY.Architecture = "x64" Then Return 1
+          If Not packageX.Architecture = "x64" And packageY.Architecture = "x64" Then Return -1
+          If packageX.SPLevel > packageY.SPLevel Then Return 1
+          If packageX.SPLevel < packageY.SPLevel Then Return -1
+          Dim iX As Integer = 0
+          Dim iY As Integer = 0
+          If packageX.Desc = "Windows 7 STARTER" Then
+            iX = 1
+          ElseIf packageX.Desc = "Windows 7 HOMEBASIC" Then
+            iX = 2
+          ElseIf packageX.Desc = "Windows 7 HOMEPREMIUM" Then
+            iX = 3
+          ElseIf packageX.Desc = "Windows 7 PROFESSIONAL" Then
+            iX = 4
+          ElseIf packageX.Desc = "Windows 7 ULTIMATE" Then
+            iX = 5
+          ElseIf packageX.Desc = "Windows 7 ENTERPRISE" Then
+            iX = 6
+          Else
+            iX = 7
+          End If
+          If packageY.Desc = "Windows 7 STARTER" Then
+            iY = 1
+          ElseIf packageY.Desc = "Windows 7 HOMEBASIC" Then
+            iY = 2
+          ElseIf packageY.Desc = "Windows 7 HOMEPREMIUM" Then
+            iY = 3
+          ElseIf packageY.Desc = "Windows 7 PROFESSIONAL" Then
+            iY = 4
+          ElseIf packageY.Desc = "Windows 7 ULTIMATE" Then
+            iY = 5
+          ElseIf packageY.Desc = "Windows 7 ENTERPRISE" Then
+            iY = 6
+          Else
+            iY = 7
+          End If
+          If iX > iY Then
+            Return 1
+          ElseIf iX < iY Then
+            Return -1
+          End If
+          Return Date.Compare(Date.Parse(packageX.Modified.Replace(" - ", " ")), Date.Parse(packageY.Modified.Replace(" - ", " ")))
+        Case OrderBy.Size
+          Dim packageX As ImagePackage = x.Tag(1)
+          Dim packageY As ImagePackage = y.Tag(1)
+          If packageX.Size > packageY.Size Then
+            Return 1
+          ElseIf packageX.Size < packageY.Size Then
+            Return -1
+          End If
+          Return 0
+        Case Else
+          Return 0
+      End Select
+    End Function
+  End Class
   Private Sub ClearLister(ToClear As String)
     If Me.InvokeRequired Then
       Me.Invoke(New ClearImageListInvoker(AddressOf ClearLister), ToClear)
@@ -3587,7 +3713,7 @@ Public Class frmMain
   End Sub
   Private Sub mnuPackageLocation_Click(sender As System.Object, e As System.EventArgs) Handles mnuPackageLocation.Click
     Dim selItem As ListViewItem = CType(mnuImages.Tag, ListViewItem)
-    If lvImages.ShowGroups Then
+    If chkMerge.Checked Then
       If selItem.Tag(0) = "MERGE" Then
         Process.Start("explorer", "/select,""" & txtMerge.Text & """")
       Else

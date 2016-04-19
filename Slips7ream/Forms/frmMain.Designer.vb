@@ -300,7 +300,7 @@ Partial Class frmMain
     'spltSlips7ream
     '
     Me.pnlSlips7ream.SetColumnSpan(Me.spltSlips7ream, 2)
-    Me.spltSlips7ream.Cursor = System.Windows.Forms.Cursors.Default
+    Me.spltSlips7ream.Cursor = System.Windows.Forms.Cursors.HSplit
     Me.spltSlips7ream.Dock = System.Windows.Forms.DockStyle.Fill
     Me.spltSlips7ream.DrawGrabHandle = True
     Me.spltSlips7ream.Location = New System.Drawing.Point(0, 100)
@@ -364,7 +364,6 @@ Partial Class frmMain
     Me.lvImages.Dock = System.Windows.Forms.DockStyle.Fill
     Me.lvImages.FullRowSelect = True
     Me.lvImages.FullRowTooltip = True
-    Me.lvImages.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
     Me.helpS7M.SetHelpKeyword(Me.lvImages, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.0_Image_Packages.htm")
     Me.helpS7M.SetHelpNavigator(Me.lvImages, System.Windows.Forms.HelpNavigator.Topic)
     Me.lvImages.HideSelection = False

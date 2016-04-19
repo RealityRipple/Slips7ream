@@ -12,5 +12,13 @@
   <hr>
   <p>The Image Packages list is a list of all the Windows Installation Image Packages that are contained within the <a href="/1_SLIPS7REAM_Interface/1.1_INSTALL.WIM.htm" title="SLIPS7REAM Interface - INSTALL.WIM">INSTALL.WIM</a> and <a href="/1_SLIPS7REAM_Interface/1.2_Merge_WIM.htm" title="SLIPS7REAM Interface - Merge WIM">Merge WIM</a> files - if the Merge WIM checkbox is checked, the list is separated into two groups: &quot;Source Image&quot; and &quot;Merge Image&quot;. <a href="/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Package_Properties.htm" title="SLIPS7REAM Interface - Image Packages - Package Properties">Details</a> about a package can be found by double-clicking on it or right-clicking it and choosing the Properties menu item.</p>
   <p>If an Image Package checkbox is unchecked, that package will not be included in the <a href="/3_Slipstream_Process/3.0_Slipstream_Process.htm" title="Slipstream Process">Slipstream Process</a>. Packages can be renamed, but the name will only show up in SLIPS7REAM or other <a href="/4_Included_External_Tools/4.1_DISM.htm" title="Included External Tools - DISM">Disc Image Servicing tools</a>, not in the Windows Installer.</p>
+  <p>
+   You can change the display order of the Image Packages by clicking on the Index, Name, or Size column headers. Each column will sort in either Descending or Ascending order with a second click using the following methods:
+   <ul>
+    <li><b>Index</b>: The Image Packages will be sorted by their Index numbers, grouped by the WIM they came from. This is the default sort order, and the only sort order that separates the INSTALL.WIM from the Merge WIM packages.<br>Note that the Ascending order will put the Merge WIM group first.</li>
+    <li><b>Name</b>: This sort order is a little more complex than it sounds. Image Packages will be organized by their Architectures, Service Pack numbers, OS Type (Starter through Enterprise), and finally last modification date.</li>
+    <li><b>Size</b>: The simplest of the sort orders, this one organizes the Image Packages by their compressed size.</li>
+   </ul>
+  </p>
  </body>
 </html>
