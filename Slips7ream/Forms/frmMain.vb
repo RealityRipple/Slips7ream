@@ -424,6 +424,7 @@ Public Class frmMain
     End Using
   End Sub
   Private Delegate Sub ToggleInputsInvoker(bEnabled As Boolean, sStatus As String)
+  Private msuBGList As New Dictionary(Of String, Color)
   Private Sub ToggleInputs(bEnabled As Boolean, Optional sStatus As String = Nothing)
     If Me.InvokeRequired Then
       Me.Invoke(New ToggleInputsInvoker(AddressOf ToggleInputs), bEnabled, sStatus)
@@ -449,7 +450,18 @@ Public Class frmMain
     txtSP64.Enabled = IIf(bEnabled, chkSP.Checked, bEnabled)
     cmdSP64.Enabled = IIf(bEnabled, chkSP.Checked, bEnabled)
     lblMSU.Enabled = bEnabled
+    If Not bEnabled And msuBGList.Count = 0 Then
+      For Each lvItem As ListViewItem In lvMSU.Items
+        msuBGList.Add(CType(lvItem.Tag(0), Update_File).Identity, lvItem.BackColor)
+      Next
+    End If
     lvMSU.ReadOnly = Not bEnabled
+    If bEnabled And msuBGList.Count > 0 Then
+      For Each lvItem As ListViewItem In lvMSU.Items
+        If msuBGList.ContainsKey(CType(lvItem.Tag(0), Update_File).Identity) Then lvItem.BackColor = msuBGList(CType(lvItem.Tag(0), Update_File).Identity)
+      Next
+      msuBGList.Clear()
+    End If
     cmdAddMSU.Enabled = bEnabled
     cmdRemMSU.Enabled = IIf(bEnabled, lvMSU.SelectedItems.Count > 0, bEnabled)
     cmdClearMSU.Enabled = IIf(bEnabled, lvMSU.Items.Count > 0, bEnabled)
@@ -932,10 +944,6 @@ Public Class frmMain
         Next
         Data = newData.ToArray
       End If
-      Dim lvBGs(lvMSU.Items.Count - 1) As Color
-      For I As Integer = 0 To lvMSU.Items.Count - 1
-        lvBGs(I) = lvMSU.Items(I).BackColor
-      Next
       If FileCount > 2 Then
         RunActivity = 3
         StopRun = False
@@ -989,9 +997,6 @@ Public Class frmMain
         SetProgress(0, 1)
         ToggleInputs(True)
       End If
-      For I As Integer = 0 To lvBGs.Count - 1
-        If Not lvMSU.Items(I).BackColor = lvBGs(I) Then lvMSU.Items(I).BackColor = lvBGs(I)
-      Next
       RedoColumns()
       lvMSU.EndUpdate()
       If FailCollection.Count > 0 Then
@@ -1185,10 +1190,6 @@ Public Class frmMain
       If cdlBrowse.ShowDialog(Me.Handle) = Windows.Forms.DialogResult.OK Then
         Dim FailCollection As New List(Of String)
         Dim FileCount As Integer = cdlBrowse.FileNames.Count
-        Dim lvBGs(lvMSU.Items.Count - 1) As Color
-        For I As Integer = 0 To lvMSU.Items.Count - 1
-          lvBGs(I) = lvMSU.Items(I).BackColor
-        Next
         If FileCount > 2 Then
           RunActivity = 3
           StopRun = False
@@ -1239,9 +1240,6 @@ Public Class frmMain
           SetProgress(0, 1)
           ToggleInputs(True)
         End If
-        For I As Integer = 0 To lvBGs.Count - 1
-          If Not lvMSU.Items(I).BackColor = lvBGs(I) Then lvMSU.Items(I).BackColor = lvBGs(I)
-        Next
         RedoColumns()
         If FailCollection.Count > 0 Then
           MsgDlg(Me, "Some files could not be added to the Update List." & vbNewLine & "Click View Details to see a complete list.", "Unable to add files to the Update List.", "Error Adding Updates", MessageBoxButtons.OK, TaskDialogIcon.WindowsUpdate, , CleanupFailures(FailCollection), "Error Adding Updates")
