@@ -24,6 +24,7 @@ Public Class frmMain
   Private outputWindow As Boolean = False
   Private PrerequisiteList() As Prerequisite = {New Prerequisite("2592687:2574819"),
                                                 New Prerequisite("2830477:2574819,2857650"),
+                                                New Prerequisite("2718695:2533623,2639308,2670838,2729094,2731771,2786081"),
                                                 New Prerequisite("2841134:2533623,2639308,2670838,2729094,2731771,2786081,2834140,2882822,2888049,2849696,2849697"),
                                                 New Prerequisite("2923545:2830477"),
                                                 New Prerequisite("2965788:2830477"),
