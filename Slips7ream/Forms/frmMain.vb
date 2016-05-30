@@ -998,8 +998,8 @@ Public Class frmMain
         SetProgress(0, 1)
         ToggleInputs(True)
       End If
-      RedoColumns()
       lvMSU.EndUpdate()
+      RedoColumns()
       If FailCollection.Count > 0 Then
         MsgDlg(Me, "Some files could not be added to the Update List." & vbNewLine & "Click View Details to see a complete list.", "Unable to add files to the Update List.", "Error Adding Updates", MessageBoxButtons.OK, TaskDialogIcon.WindowsUpdate, , CleanupFailures(FailCollection), "Error Adding Updates")
       End If
