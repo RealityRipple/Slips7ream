@@ -32,6 +32,7 @@ Public Class frmMain
                                                 New Prerequisite("3020388:2830477"),
                                                 New Prerequisite("3042058:3020369"),
                                                 New Prerequisite("3075226:2830477"),
+                                                New Prerequisite("3125574:3020369"),
                                                 New Prerequisite("3126446:2830477")}
   Private Enum MNGList
     Move
@@ -2143,7 +2144,6 @@ Public Class frmMain
     Dim foundEI As Boolean = False
     Dim foundCLG As Boolean = False
     If Not String.IsNullOrEmpty(txtISO.Text) AndAlso IO.File.Exists(txtISO.Text) Then
-      WriteToOutput("Extracting File List from """ & txtISO.Text & """...")
       Dim sFiles() As String = ExtractFilesList(txtISO.Text)
       If sFiles IsNot Nothing Then
         For Each sFile In sFiles
@@ -2174,7 +2174,6 @@ Public Class frmMain
         chkUnlock.Enabled = False
       End If
       If chkAutoLabel.Checked Then
-        WriteToOutput("Extracting Comment from """ & txtISO.Text & """...")
         Dim sComment As String = ExtractComment(txtISO.Text)
         If Not String.IsNullOrEmpty(sComment) Then
           If sComment.Contains(vbLf) Then
@@ -2196,7 +2195,6 @@ Public Class frmMain
   End Sub
   Private Sub chkAutoLabel_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles chkAutoLabel.CheckedChanged
     If chkAutoLabel.Checked And (Not String.IsNullOrEmpty(txtISO.Text) AndAlso IO.File.Exists(txtISO.Text)) Then
-      WriteToOutput("Extracting Comment from """ & txtISO.Text & """...")
       Dim sComment As String = ExtractComment(txtISO.Text)
       If Not String.IsNullOrEmpty(sComment) Then
         If sComment.Contains(vbLf) Then
@@ -2221,7 +2219,6 @@ Public Class frmMain
       Dim Data = e.Data.GetData("FileDrop")
       If Data.Length = 1 Then
         Dim sPath As String = Data(0)
-        WriteToOutput("Extracting Comment from """ & sPath & """...")
         Dim sComment As String = ExtractComment(sPath)
         If Not String.IsNullOrEmpty(sComment) Then txtISOLabel.Text = sComment
       End If
@@ -4185,16 +4182,41 @@ Public Class frmMain
       redrawCaption()
     End If
   End Sub
-  Private Delegate Sub WriteToOutputCallBack(Message As String)
-  Private Sub WriteToOutput(Message As String)
+  Private Enum OutputType
+    Command
+    Output
+  End Enum
+  Private Delegate Sub WriteToOutputCallBack(Message As String, MsgType As OutputType)
+  Private Sub WriteToOutput(Message As String, Optional MsgType As OutputType = OutputType.Command)
     If Me.InvokeRequired Then
-      Me.Invoke(New WriteToOutputCallBack(AddressOf WriteToOutput), Message)
+      Me.Invoke(New WriteToOutputCallBack(AddressOf WriteToOutput), Message, MsgType)
       Return
     End If
-    If outputWindow Then
-      frmOutput.txtOutput.AppendText(Message & vbNewLine)
+    Dim tOutput As TextBox = txtOutput
+    If outputWindow Then tOutput = frmOutput.txtOutput
+    If String.IsNullOrEmpty(Message) Then
+      tOutput.AppendText(vbNewLine)
     Else
-      txtOutput.AppendText(Message & vbNewLine)
+      If MsgType = OutputType.Command Then
+        If tOutput.Text.Contains(vbNewLine) Then
+          Dim outputSplit() As String = Split(tOutput.Text, vbNewLine)
+          If outputSplit.Length > 1 Then
+            If outputSplit(outputSplit.Length - 2).Length < 3 Then
+              tOutput.AppendText(vbNewLine & Message & vbNewLine)
+            ElseIf outputSplit(outputSplit.Length - 2).Substring(0, 3) = "   " Then
+              tOutput.AppendText(vbNewLine & vbNewLine & Message & vbNewLine)
+            Else
+              tOutput.AppendText(vbNewLine & Message & vbNewLine)
+            End If
+          Else
+            tOutput.AppendText(vbNewLine & Message & vbNewLine)
+          End If
+        Else
+          tOutput.AppendText(Message & vbNewLine)
+        End If
+      Else
+        tOutput.AppendText("   " & Message & vbNewLine)
+      End If
     End If
   End Sub
   Private tearFrom As Point = Point.Empty
@@ -4589,6 +4611,7 @@ Public Class frmMain
       Me.Invoke(New ExtractAllFilesInvoker(AddressOf ExtractAllFiles), Source, Destination)
       Return
     End If
+    WriteToOutput("Extracting all files from """ & Source & """...")
     Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractAllFiles))
     Dim cIndex As Integer = c_ExtractRet.Count
     c_ExtractRet.Add(Nothing)
@@ -4599,6 +4622,12 @@ Public Class frmMain
     Loop
     Dim sRet As String = c_ExtractRet(cIndex)
     c_ExtractRet(cIndex) = Nothing
+    If sRet = "OK" Then
+      WriteToOutput("Extraction Complete!", OutputType.Output)
+    Else
+      WriteToOutput(sRet, OutputType.Output)
+    End If
+    If StopRun Then Return
     Select Case sRet
       Case "OK"
       Case "CRC Error"
@@ -4651,6 +4680,7 @@ Public Class frmMain
       Me.Invoke(New ExtractFilesInvoker(AddressOf ExtractFiles), Source, Destination, Except)
       Return
     End If
+    WriteToOutput("Extracting files except ""*" & Except & """ from """ & Source & """...")
     Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractFiles))
     Dim cIndex As Integer = c_ExtractRet.Count
     c_ExtractRet.Add(Nothing)
@@ -4661,6 +4691,12 @@ Public Class frmMain
     Loop
     Dim sRet As String = c_ExtractRet(cIndex)
     c_ExtractRet(cIndex) = Nothing
+    If sRet = "OK" Then
+      WriteToOutput("Extraction Complete!", OutputType.Output)
+    Else
+      WriteToOutput(sRet, OutputType.Output)
+    End If
+    If StopRun Then Return
     Select Case sRet
       Case "OK"
       Case "CRC Error"
@@ -4715,6 +4751,7 @@ Public Class frmMain
       Me.Invoke(New ExtractAFileInvoker(AddressOf ExtractAFile), Source, Destination, File)
       Return
     End If
+    WriteToOutput("Extracting """ & File & """ from """ & Source & """...")
     Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractAFile))
     Dim cIndex As Integer = c_ExtractRet.Count
     c_ExtractRet.Add(Nothing)
@@ -4725,6 +4762,11 @@ Public Class frmMain
     Loop
     Dim sRet As String = c_ExtractRet(cIndex)
     c_ExtractRet(cIndex) = Nothing
+    If sRet = "OK" Then
+      WriteToOutput("Extraction Complete!", OutputType.Output)
+    Else
+      WriteToOutput(sRet, OutputType.Output)
+    End If
     If StopRun Then Return
     Select Case sRet
       Case "OK"
@@ -4787,6 +4829,7 @@ Public Class frmMain
     If Me.InvokeRequired Then
       Return Me.Invoke(New ExtractFilesListInvoker(AddressOf ExtractFilesList), Source)
     End If
+    WriteToOutput("Extracting File List from """ & Source & """...")
     Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractFilesList))
     Dim cIndex As Integer = c_ExtractRet.Count
     c_ExtractRet.Add(Nothing)
@@ -4797,6 +4840,12 @@ Public Class frmMain
     Loop
     Dim sRet As String = c_ExtractRet(cIndex)
     c_ExtractRet(cIndex) = Nothing
+    If sRet.Contains("|") Then
+      WriteToOutput("Extraction Complete!", OutputType.Output)
+    Else
+      WriteToOutput(sRet, OutputType.Output)
+    End If
+    If StopRun Then Return Nothing
     If sRet.Contains("|") Then
       Return Split(sRet, "|")
     Else
@@ -4841,11 +4890,15 @@ Public Class frmMain
     End If
   End Sub
   Private Function ExtractComment(Source As String) As String
+    WriteToOutput("Extracting Comment from """ & Source & """...")
     Extractor = New Extraction.ArchiveFile(New IO.FileInfo(Source), GetUpdateCompression(Source))
     Try
       Extractor.Open()
-      Return Extractor.ArchiveComment
+      Dim sComment = Extractor.ArchiveComment
+      WriteToOutput("Extraction Complete!", OutputType.Output)
+      Return sComment
     Catch ex As Exception
+      WriteToOutput("Error Reading: " & ex.Message, OutputType.Output)
       Extractor.Dispose()
       Extractor = Nothing
       Return Nothing
@@ -4853,6 +4906,11 @@ Public Class frmMain
   End Function
   Private Sub Extractor_ExtractFile(sender As Object, e As Extraction.COM.ExtractFileEventArgs) Handles Extractor.ExtractFile
     If StopRun Then e.ContinueOperation = False
+    If e.Stage = Extraction.COM.ExtractionStage.Extracting Then
+      WriteToOutput("Extracting """ & e.Item.Name & """ to """ & e.Item.Destination.FullName & """...", OutputType.Output)
+    Else
+      WriteToOutput("Extracted """ & e.Item.Name & """!", OutputType.Output)
+    End If
     If Extractor.ExtractionCount() > 1 Then
       If e.Stage = Extraction.COM.ExtractionStage.Done Then
         SetSubProgress(e.Item.Index, Extractor.ItemCount)
@@ -4872,6 +4930,8 @@ Public Class frmMain
   End Sub
   Private Function ExtractFailureAlert(Message As String) As Boolean
     If String.IsNullOrEmpty(Message) Then Return False
+    WriteToOutput(Message, OutputType.Output)
+    If StopRun Then Return True
     If Message = "OK" Then
       Return False
     ElseIf Message.StartsWith("CRC Error") Then
@@ -4985,7 +5045,7 @@ Public Class frmMain
     If Output.StartsWith("!" & vbNewLine) Then
       Output = Output.Substring(3)
     Else
-      WriteToOutput(Output)
+      WriteToOutput(Output, OutputType.Output)
     End If
     c_RunWithReturnRet(Index) = Output
   End Sub
@@ -5039,7 +5099,7 @@ Public Class frmMain
         End If
       End If
       c_RunWithReturnAccumulation(Index) &= Output & vbNewLine
-      WriteToOutput(Output)
+      WriteToOutput(Output, OutputType.Output)
     End If
   End Sub
   Private Sub AsyncRunWithReturnErrorRet(Index As Integer, Output As String)
@@ -5048,7 +5108,7 @@ Public Class frmMain
       Return
     End If
     If String.IsNullOrEmpty(Output) Then
-      WriteToOutput(Nothing)
+      WriteToOutput(Nothing, OutputType.Output)
       Return
     End If
     If ReturnProgress Then
@@ -5056,12 +5116,12 @@ Public Class frmMain
         Dim ProgI As String = Output.Substring(0, Output.IndexOf("%"))
         SetSubProgress(Val(ProgI), 100)
       End If
-      WriteToOutput(Output)
+      WriteToOutput(Output, OutputType.Output)
     Else
       If Output.Contains("% complete") Then
-        WriteToOutput(Output)
+        WriteToOutput(Output, OutputType.Output)
       Else
-        WriteToOutput("<ERROR> " & Output)
+        WriteToOutput("<ERROR> " & Output, OutputType.Output)
       End If
     End If
   End Sub
