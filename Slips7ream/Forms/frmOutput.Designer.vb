@@ -30,11 +30,12 @@ Partial Class frmOutput
     Me.mnuSelectAll = New System.Windows.Forms.MenuItem()
     Me.tmrMove = New System.Windows.Forms.Timer(Me.components)
     Me.txtOutput = New System.Windows.Forms.TextBox()
+    Me.mnuCopyCommands = New System.Windows.Forms.MenuItem()
     Me.SuspendLayout()
     '
     'mnuOutput
     '
-    Me.mnuOutput.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuCopy, Me.mnuClear, Me.mnuSpacer, Me.mnuSelectAll})
+    Me.mnuOutput.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuCopy, Me.mnuCopyCommands, Me.mnuClear, Me.mnuSpacer, Me.mnuSelectAll})
     '
     'mnuCopy
     '
@@ -43,17 +44,17 @@ Partial Class frmOutput
     '
     'mnuClear
     '
-    Me.mnuClear.Index = 1
+    Me.mnuClear.Index = 2
     Me.mnuClear.Text = "C&lear"
     '
     'mnuSpacer
     '
-    Me.mnuSpacer.Index = 2
+    Me.mnuSpacer.Index = 3
     Me.mnuSpacer.Text = "-"
     '
     'mnuSelectAll
     '
-    Me.mnuSelectAll.Index = 3
+    Me.mnuSelectAll.Index = 4
     Me.mnuSelectAll.Text = "Select &All"
     '
     'tmrMove
@@ -71,6 +72,11 @@ Partial Class frmOutput
     Me.txtOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
     Me.txtOutput.Size = New System.Drawing.Size(424, 91)
     Me.txtOutput.TabIndex = 3
+    '
+    'mnuCopyCommands
+    '
+    Me.mnuCopyCommands.Index = 1
+    Me.mnuCopyCommands.Text = "Copy Co&mmands"
     '
     'frmOutput
     '
@@ -94,4 +100,5 @@ Partial Class frmOutput
   Friend WithEvents mnuSelectAll As System.Windows.Forms.MenuItem
   Friend WithEvents tmrMove As System.Windows.Forms.Timer
   Friend WithEvents txtOutput As System.Windows.Forms.TextBox
+  Friend WithEvents mnuCopyCommands As System.Windows.Forms.MenuItem
 End Class

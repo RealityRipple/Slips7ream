@@ -3,6 +3,7 @@ Public Class frmMain
   Implements IMessageFilter
   Public StopRun As Boolean = False
   Friend taskBar As TaskbarLib.TaskbarList
+  Private isStarting As Boolean = False
   Private LangChange As Boolean = False
   Private RunComplete As Boolean = False
   Private RunActivity As Byte = 0
@@ -22,10 +23,43 @@ Public Class frmMain
   Private windowChangedSize As Boolean
   Private mySettings As MySettings
   Private outputWindow As Boolean = False
+  Private UnlockCheckbox As TriState = TriState.UseDefault
+#Region "Data Lists"
+  Public Structure ImagePackageData
+    Public Group As WIMGroup
+    Public Package As ImagePackage
+    Public FeatureList As List(Of Feature)
+    Public DriverList As List(Of Driver)
+    Public Sub New(ImageGroup As WIMGroup, pkgImage As ImagePackage, features As List(Of Feature), drivers As List(Of Driver))
+      Group = ImageGroup
+      Package = pkgImage
+      FeatureList = features
+      DriverList = drivers
+    End Sub
+  End Structure
+  Public Structure MSUData
+    Public Update As Update_File
+    Public ReplaceStyle As Update_Replace
+    Public Enum Update_Replace
+      All
+      OnlyNewer
+      OnlyOlder
+      OnlyMissing
+    End Enum
+    Public Sub New(updateFile As Update_File, updateReplace As Update_Replace)
+      Update = updateFile
+      ReplaceStyle = updateReplace
+    End Sub
+  End Structure
+  Public Shared ImageDataList As New SortedList(Of Integer, ImagePackageData)
+  Public Shared MSUDataList As New SortedList(Of Integer, MSUData)
+  Private SelectedlvImagesItem As ListViewItem
+  Private SelectedlvMSUList As ListView.SelectedListViewItemCollection
+#End Region
   Private PrerequisiteList() As Prerequisite = {New Prerequisite("2592687:2574819"),
                                                 New Prerequisite("2830477:2574819,2857650"),
-                                                New Prerequisite("2718695:2533623,2639308,2670838,2729094,2731771,2786081"),
-                                                New Prerequisite("2841134:2533623,2639308,2670838,2729094,2731771,2786081,2834140,2882822,2888049,2849696,2849697"),
+                                                New Prerequisite("2718695:2533623,2639308,2670838,2729094,2731771,2786081/3125574,2639308,2670838,2729094"),
+                                                New Prerequisite("2841134:2533623,2639308,2670838,2729094,2731771,2786081,2834140,2882822,2888049,2849696,2849697/3125574,2639308,2670838,2729094,2834140,2849696,2849697"),
                                                 New Prerequisite("2923545:2830477"),
                                                 New Prerequisite("2965788:2830477"),
                                                 New Prerequisite("2984976:2830477,2984972,2592687"),
@@ -65,15 +99,31 @@ Public Class frmMain
   End Enum
   Private Structure Prerequisite
     Public KBWithRequirement As String
-    Public Requirement() As String
+    Public Requirement()() As String
     Public Sub New(Input As String)
       If Not Input.Contains(":") Then Return
       Dim splitInput() As String = Split(Input, ":", 2)
       KBWithRequirement = splitInput(0)
-      If Not splitInput(1).Contains(",") Then
-        Requirement = {splitInput(1)}
+      If splitInput(1).Contains("/") Then
+        Dim splitRequirement() As String = Split(splitInput(1), "/", 2)
+        Dim reqCount As Integer = 0
+        For Each reqList In splitRequirement
+          If String.IsNullOrEmpty(reqList) Then Continue For
+          ReDim Preserve Requirement(reqCount)
+          If Not reqList.Contains(",") Then
+            Requirement(reqCount) = {reqList}
+          Else
+            Requirement(reqCount) = Split(reqList, ",")
+          End If
+          reqCount += 1
+        Next
       Else
-        Requirement = Split(splitInput(1), ",")
+        ReDim Requirement(0)
+        If Not splitInput(1).Contains(",") Then
+          Requirement(0) = {splitInput(1)}
+        Else
+          Requirement(0) = Split(splitInput(1), ",")
+        End If
       End If
     End Sub
   End Structure
@@ -89,7 +139,7 @@ Public Class frmMain
     redrawCaption()
   End Sub
   Private Sub frmMain_Load(sender As Object, e As System.EventArgs) Handles Me.Load
-    Me.Tag = "LOADING"
+    isStarting = True
     mySettings = New MySettings
     imlUpdates.Images.Add("MSU", My.Resources.update_wusa)
     imlUpdates.Images.Add("DIR", My.Resources.update_folder)
@@ -188,7 +238,7 @@ Public Class frmMain
     ToggleInputs(True)
     SetDisp(MNGList.Move)
     FreshDraw()
-    Me.Tag = Nothing
+    isStarting = False
   End Sub
   Private Sub frmMain_LocationChanged(sender As Object, e As System.EventArgs) Handles Me.LocationChanged
     If outputWindow Then frmOutput.RePosition()
@@ -200,7 +250,7 @@ Public Class frmMain
   Private Sub frmMain_Resize(sender As Object, e As System.EventArgs) Handles Me.Resize
     windowChangedSize = True
     RedoColumns()
-    If Me.Tag Is Nothing And Me.Visible Then
+    If Not isStarting And Me.Visible Then
       mySettings.Position = Me.Location
       If pbTotal.Visible Then
         If txtOutput.Visible Then
@@ -454,13 +504,13 @@ Public Class frmMain
     lblMSU.Enabled = bEnabled
     If Not bEnabled And msuBGList.Count = 0 Then
       For Each lvItem As ListViewItem In lvMSU.Items
-        msuBGList.Add(CType(lvItem.Tag(0), Update_File).Identity, lvItem.BackColor)
+        msuBGList.Add(MSUDataList(lvItem.Tag).Update.Identity, lvItem.BackColor)
       Next
     End If
     lvMSU.ReadOnly = Not bEnabled
     If bEnabled And msuBGList.Count > 0 Then
       For Each lvItem As ListViewItem In lvMSU.Items
-        If msuBGList.ContainsKey(CType(lvItem.Tag(0), Update_File).Identity) Then lvItem.BackColor = msuBGList(CType(lvItem.Tag(0), Update_File).Identity)
+        If msuBGList.ContainsKey(MSUDataList(lvItem.Tag).Update.Identity) Then lvItem.BackColor = msuBGList(MSUDataList(lvItem.Tag).Update.Identity)
       Next
       msuBGList.Clear()
     End If
@@ -484,7 +534,7 @@ Public Class frmMain
     txtISO.Enabled = IIf(bEnabled, chkISO.Checked, bEnabled)
     cmdISO.Enabled = IIf(bEnabled, chkISO.Checked, bEnabled)
     lblISOFeatures.Enabled = IIf(bEnabled, chkISO.Checked, bEnabled)
-    chkUnlock.Enabled = IIf(bEnabled, chkISO.Checked And (chkUnlock.Tag Is Nothing), bEnabled)
+    chkUnlock.Enabled = IIf(bEnabled, chkISO.Checked And UnlockCheckbox = TriState.UseDefault, bEnabled)
     chkUEFI.Enabled = IIf(bEnabled, chkISO.Checked, bEnabled)
     lblISOLabel.Enabled = IIf(bEnabled, chkISO.Checked, bEnabled)
     chkAutoLabel.Enabled = IIf(bEnabled, chkISO.Checked, bEnabled)
@@ -578,12 +628,106 @@ Public Class frmMain
     mnuSelectAll.Enabled = Not txtSel.TextLength = 0
     mnuClear.Enabled = Not txtSel.TextLength = 0
     mnuCopy.Enabled = Not txtSel.SelectedText.Length = 0
+    If Not txtSel.SelectedText.Length = 0 Then
+      Dim sSelFrom As Integer = txtSel.SelectionStart
+      Dim StartLastNewLine As Integer = -1
+      If txtSel.Text.Substring(txtSel.SelectionStart).Contains(vbNewLine) Then
+        StartLastNewLine = txtSel.Text.IndexOf(vbNewLine, txtSel.SelectionStart)
+      Else
+        StartLastNewLine = txtSel.Text.Length
+      End If
+      Dim StartNewLine As Integer = -1
+      If txtSel.Text.Substring(0, StartLastNewLine).Contains(vbNewLine) Then
+        StartNewLine = txtSel.Text.Substring(0, StartLastNewLine).LastIndexOf(vbNewLine)
+      Else
+        StartNewLine = 0
+      End If
+      sSelFrom = StartNewLine
+      Dim sSelTo As Integer = txtSel.SelectionStart + txtSel.SelectionLength
+      If txtSel.Text.Substring(txtSel.SelectionStart + txtSel.SelectionLength).Contains(vbNewLine) Then
+        sSelTo = txtSel.Text.IndexOf(vbNewLine, txtSel.SelectionStart + txtSel.SelectionLength)
+      ElseIf txtSel.Text.Substring(0, txtSel.SelectionStart + txtSel.SelectionLength).Contains(vbNewLine) Then
+        If txtSel.Text.Length >= txtSel.SelectionStart + txtSel.SelectionLength Then
+          sSelTo = txtSel.Text.Length
+        Else
+          sSelTo = txtSel.Text.Substring(0, txtSel.SelectionStart + txtSel.SelectionLength).LastIndexOf(vbNewLine)
+        End If
+      Else
+        sSelTo = txtSel.Text.Length
+      End If
+      Dim sText As String = txtSel.Text.Substring(sSelFrom, sSelTo - sSelFrom)
+      Do While sText.Contains(vbNewLine & vbNewLine)
+        sText = sText.Replace(vbNewLine & vbNewLine, vbNewLine)
+      Loop
+      sText = sText.Trim(vbCr, vbLf)
+      Dim sLines() As String = Split(sText, vbNewLine)
+      sText = Nothing
+      For I As Integer = 0 To sLines.Length - 1
+        If String.IsNullOrEmpty(sLines(I)) Then Continue For
+        If sLines(I).StartsWith("   ") Then Continue For
+        sText &= sLines(I) & vbNewLine
+      Next
+      If String.IsNullOrEmpty(sText) Then
+        mnuCopyCommands.Enabled = False
+      Else
+        mnuCopyCommands.Enabled = True
+      End If
+    Else
+      mnuCopyCommands.Enabled = False
+    End If
   End Sub
   Private Sub mnuCopy_Click(sender As System.Object, e As System.EventArgs) Handles mnuCopy.Click
     Dim mSender As MenuItem = sender
     Dim mParent As ContextMenu = mSender.Parent
     Dim txtSel As TextBox = mParent.SourceControl
     If Not txtSel.SelectedText.Length = 0 Then Clipboard.SetText(txtSel.SelectedText)
+  End Sub
+  Private Sub mnuCopyCommands_Click(sender As System.Object, e As System.EventArgs) Handles mnuCopyCommands.Click
+    Dim mSender As MenuItem = sender
+    Dim mParent As ContextMenu = mSender.Parent
+    Dim txtSel As TextBox = mParent.SourceControl
+    If Not txtSel.SelectedText.Length = 0 Then
+      Dim sSelFrom As Integer = txtSel.SelectionStart
+      Dim StartLastNewLine As Integer = -1
+      If txtSel.Text.Substring(txtSel.SelectionStart).Contains(vbNewLine) Then
+        StartLastNewLine = txtSel.Text.IndexOf(vbNewLine, txtSel.SelectionStart)
+      Else
+        StartLastNewLine = txtSel.Text.Length
+      End If
+      Dim StartNewLine As Integer = -1
+      If txtSel.Text.Substring(0, StartLastNewLine).Contains(vbNewLine) Then
+        StartNewLine = txtSel.Text.Substring(0, StartLastNewLine).LastIndexOf(vbNewLine)
+      Else
+        StartNewLine = 0
+      End If
+      sSelFrom = StartNewLine
+      Dim sSelTo As Integer = txtSel.SelectionStart + txtSel.SelectionLength
+      If txtSel.Text.Substring(txtSel.SelectionStart + txtSel.SelectionLength).Contains(vbNewLine) Then
+        sSelTo = txtSel.Text.IndexOf(vbNewLine, txtSel.SelectionStart + txtSel.SelectionLength)
+      ElseIf txtSel.Text.Substring(0, txtSel.SelectionStart + txtSel.SelectionLength).Contains(vbNewLine) Then
+        If txtSel.Text.Length >= txtSel.SelectionStart + txtSel.SelectionLength Then
+          sSelTo = txtSel.Text.Length
+        Else
+          sSelTo = txtSel.Text.Substring(0, txtSel.SelectionStart + txtSel.SelectionLength).LastIndexOf(vbNewLine)
+        End If
+      Else
+        sSelTo = txtSel.Text.Length
+      End If
+      Dim sText As String = txtSel.Text.Substring(sSelFrom, sSelTo - sSelFrom)
+      Do While sText.Contains(vbNewLine & vbNewLine)
+        sText = sText.Replace(vbNewLine & vbNewLine, vbNewLine)
+      Loop
+      sText = sText.Trim(vbCr, vbLf)
+      Dim sLines() As String = Split(sText, vbNewLine)
+      sText = Nothing
+      For I As Integer = 0 To sLines.Length - 1
+        If String.IsNullOrEmpty(sLines(I)) Then Continue For
+        If sLines(I).StartsWith("   ") Then Continue For
+        sText &= sLines(I) & vbNewLine
+      Next
+      If String.IsNullOrEmpty(sText) Then Return
+      Clipboard.SetText(sText.TrimEnd(vbCr, vbLf))
+    End If
   End Sub
   Private Sub mnuClear_Click(sender As System.Object, e As System.EventArgs) Handles mnuClear.Click
     Dim mSender As MenuItem = sender
@@ -673,7 +817,7 @@ Public Class frmMain
     cmdOpenFolder.Visible = False
     If tLister Is Nothing Then
       tLister = New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf ParseImageList))
-      tLister.Start("WIM")
+      tLister.Start(WIMGroup.WIM)
     End If
   End Sub
   Private Sub cmdWIM_Click(sender As System.Object, e As System.EventArgs) Handles cmdWIM.Click
@@ -710,9 +854,9 @@ Public Class frmMain
       Dim has86 As Boolean = False
       Dim has64 As Boolean = False
       For Each lvItem As ListViewItem In lvImages.Items
-        Dim propData As ImagePackage = lvItem.Tag(1)
-        If propData.Architecture.Contains("64") Then has64 = True
-        If propData.Architecture.Contains("86") Then has86 = True
+        Dim propData As ImagePackage = ImageDataList(lvItem.Tag).Package
+        If CompareArchitectures(propData.Architecture, ArchitectureList.amd64, False) Then has64 = True
+        If CompareArchitectures(propData.Architecture, ArchitectureList.x86, False) Then has86 = True
         If has86 And has64 Then Exit For
       Next
       If has86 And has64 Then
@@ -841,58 +985,59 @@ Public Class frmMain
 #End Region
 #Region "Updates"
   Private Sub lvMSU_DoubleClick(sender As Object, e As System.EventArgs) Handles lvMSU.DoubleClick
-    If lvMSU.SelectedItems IsNot Nothing AndAlso lvMSU.SelectedItems.Count > 0 Then
-      For Each lvItem As ListViewItem In lvMSU.SelectedItems
-        Dim msuData As Update_File = lvItem.Tag(0)
-        If Not String.IsNullOrEmpty(msuData.Failure) Then If ExtractFailureAlert(msuData.Failure) Then Continue For
-        If Not String.IsNullOrEmpty(msuData.Name) Then
-          If msuData.Name = "DRIVER" Then
-            Dim props As New frmDriverProps(msuData.DriverData)
-            props.Show(Me)
-          Else
-            For Each Form In OwnedForms
-              If Form.Tag = msuData.Name Then
-                Form.Focus()
-                Return
-              End If
-            Next
-            Dim props As New frmUpdateProps
-            props.Tag = msuData.Name
-            props.Text = GetUpdateName(msuData.Ident) & " Properties"
-            props.txtName.Text = msuData.Name
-            props.txtDisplayName.Text = msuData.DisplayName
-            props.txtIdentity.Text = msuData.Identity
-            props.txtAppliesTo.Text = msuData.AppliesTo
-            props.txtArchitecture.Text = msuData.Architecture
-            props.txtVersion.Text = msuData.KBVersion
-            props.txtBuildDate.Text = msuData.BuildDate
-            If String.IsNullOrEmpty(msuData.SupportLink) Then
-              props.lblKBLink.Link = False
-              props.lblKBLink.Tag = Nothing
-              If String.IsNullOrEmpty(msuData.KBArticle) Then
-                props.lblKBLink.Text = "Details"
-                props.lblKBLink.Visible = False
-              Else
-                props.lblKBLink.Text = "Article KB" & msuData.KBArticle
-                props.lblKBLink.Visible = True
-              End If
-            Else
-              props.lblKBLink.Link = True
-              props.lblKBLink.Tag = msuData.SupportLink
-              If String.IsNullOrEmpty(msuData.KBArticle) Then
-                props.lblKBLink.Text = "Details"
-                props.lblKBLink.Visible = True
-              Else
-                props.lblKBLink.Text = "Article KB" & msuData.KBArticle
-                props.lblKBLink.Visible = True
-              End If
+    If lvMSU.SelectedItems IsNot Nothing AndAlso lvMSU.SelectedItems.Count > 0 Then ShowUpdatePropserties(lvMSU.SelectedItems)
+  End Sub
+  Private Sub ShowUpdatePropserties(items As ListView.SelectedListViewItemCollection)
+    For Each lvItem As ListViewItem In items
+      Dim msuData As Update_File = MSUDataList(lvItem.Tag).Update
+      If Not String.IsNullOrEmpty(msuData.Failure) Then If ExtractFailureAlert(msuData.Failure) Then Continue For
+      If Not String.IsNullOrEmpty(msuData.Name) Then
+        If msuData.Name = "DRIVER" Then
+          Dim props As New frmDriverProps(msuData.DriverData)
+          props.Show(Me)
+        Else
+          For Each Form In OwnedForms
+            If Form.Name = "frmUpdate" & msuData.Name & "Props" Then
+              Form.Focus()
+              Return
             End If
-            props.ttLink.SetToolTip(props.lblKBLink, msuData.SupportLink)
-            props.Show(Me)
+          Next
+          Dim props As New frmUpdateProps
+          props.Name = "frmUpdate" & msuData.Name & "Props"
+          props.Text = GetUpdateName(msuData.Ident) & " Properties"
+          props.txtName.Text = msuData.Name
+          props.txtDisplayName.Text = msuData.DisplayName
+          props.txtIdentity.Text = msuData.Identity
+          props.txtAppliesTo.Text = msuData.AppliesTo
+          props.txtArchitecture.Text = msuData.Architecture
+          props.txtVersion.Text = msuData.KBVersion
+          props.txtBuildDate.Text = msuData.BuildDate
+          If String.IsNullOrEmpty(msuData.SupportLink) Then
+            props.lblKBLink.Link = False
+            props.KBLink = Nothing
+            If String.IsNullOrEmpty(msuData.KBArticle) Then
+              props.lblKBLink.Text = "Details"
+              props.lblKBLink.Visible = False
+            Else
+              props.lblKBLink.Text = "Article KB" & msuData.KBArticle
+              props.lblKBLink.Visible = True
+            End If
+          Else
+            props.lblKBLink.Link = True
+            props.KBLink = msuData.SupportLink
+            If String.IsNullOrEmpty(msuData.KBArticle) Then
+              props.lblKBLink.Text = "Details"
+              props.lblKBLink.Visible = True
+            Else
+              props.lblKBLink.Text = "Article KB" & msuData.KBArticle
+              props.lblKBLink.Visible = True
+            End If
           End If
+          props.ttLink.SetToolTip(props.lblKBLink, msuData.SupportLink)
+          props.Show(Me)
         End If
-      Next
-    End If
+      End If
+    Next
   End Sub
 #Region "Drag/Drop"
   Private Function GetFileCountFromDir(Path As String) As Integer
@@ -909,7 +1054,7 @@ Public Class frmMain
     Return iCount
   End Function
   Private Function GetFilesFromDir(Path As String) As String()
-    Dim sFiles As New Collections.Generic.List(Of String)
+    Dim sFiles As New List(Of String)
     For Each sFile As String In IO.Directory.EnumerateFiles(Path)
       sFiles.Add(sFile)
     Next
@@ -935,7 +1080,7 @@ Public Class frmMain
         End If
       Next
       If ReplaceData Then
-        Dim newData As New Collections.Generic.List(Of String)
+        Dim newData As New List(Of String)
         For Each Path In Data
           If IO.File.Exists(Path) Then
             newData.Add(Path)
@@ -956,7 +1101,7 @@ Public Class frmMain
         SetProgress(0, 0)
         SetStatus("Reading Update Information...")
       End If
-      Dim FailCollection As New Collections.Generic.List(Of String)
+      Dim FailCollection As New List(Of String)
       Dim iProg As Integer = 0
       lvMSU.BeginUpdate()
       For Each Item In Data
@@ -972,10 +1117,11 @@ Public Class frmMain
           End If
         End If
         Dim Cancelled As Boolean = False
-        Dim msuList As Update_File() = GetUpdateInfo(Item)
-        If msuList IsNot Nothing AndAlso msuList.Count > 0 Then
-          For Each msuData As Update_File In msuList
+        Dim newUpdateList As Update_File() = GetUpdateInfo(Item)
+        If newUpdateList IsNot Nothing AndAlso newUpdateList.Count > 0 Then
+          For Each msuData As Update_File In newUpdateList
             Dim addRet As AddResult = AddToUpdates(msuData)
+            SetRequirements()
             If addRet.Cancel Then
               Cancelled = True
               Exit For
@@ -1037,7 +1183,7 @@ Public Class frmMain
       e.Effect = DragDropEffects.None
     End If
   End Sub
-  Private sourceRows As New Collections.Generic.List(Of Integer)
+  Private sourceRows As New List(Of Integer)
   Private Sub lvMSU_DragDrop(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles lvMSU.DragDrop
     If sourceRows.Count > 0 Then
       sourceRows.Clear()
@@ -1110,7 +1256,7 @@ Public Class frmMain
       LastClick = TickCount()
     ElseIf e.Button = Windows.Forms.MouseButtons.Right Then
       If lvMSU.SelectedItems.Count > 0 Then
-        mnuMSU.Tag = lvMSU.SelectedItems
+        SelectedlvMSUList = lvMSU.SelectedItems
         If lvMSU.SelectedItems.Count > 1 Then
           mnuUpdateTop.Text = "Move Updates to Top"
           mnuUpdateUp.Text = "Move Updates Up"
@@ -1215,10 +1361,11 @@ Public Class frmMain
             End If
           End If
           Dim Cancelled As Boolean = False
-          Dim msuList As Update_File() = GetUpdateInfo(sUpdate)
-          If msuList IsNot Nothing AndAlso msuList.Count > 0 Then
-            For Each msuData As Update_File In msuList
+          Dim newUpdateList As Update_File() = GetUpdateInfo(sUpdate)
+          If newUpdateList IsNot Nothing AndAlso newUpdateList.Count > 0 Then
+            For Each msuData As Update_File In newUpdateList
               Dim addRet As AddResult = AddToUpdates(msuData)
+              SetRequirements()
               If addRet.Cancel Then
                 Cancelled = True
                 Exit For
@@ -1281,12 +1428,11 @@ Public Class frmMain
     If msuData.Name = "DRIVER" Then
       Dim drvData As Driver = msuData.DriverData
       If String.IsNullOrEmpty(drvData.DriverStorePath) Then Return New AddResult(False)
-      Dim InImage(lvImages.Items.Count - 1) As Driver
       If lvImages.Items.Count > 0 Then
         For I As Integer = 0 To lvImages.Items.Count - 1
           If lvImages.Items(I).Checked Then
-            PList(I) = lvImages.Items(I).Tag(1)
-            Dim dInfo As List(Of Driver) = lvImages.Items(I).Tag(3)
+            PList(I) = ImageDataList(lvImages.Items(I).Tag).Package
+            Dim dInfo As List(Of Driver) = ImageDataList(lvImages.Items(I).Tag).DriverList
             If dInfo IsNot Nothing Then
               For Each driver As Driver In dInfo
                 If drvData = driver Then Return New AddResult(False, "Driver already integrated.")
@@ -1296,8 +1442,7 @@ Public Class frmMain
         Next
       End If
       For Each item As ListViewItem In lvMSU.Items
-        Dim itemData As Update_File = item.Tag(0)
-        If itemData.Name = "DRIVER" AndAlso itemData.DriverData = drvData Then
+        If MSUDataList(item.Tag).Update.Name = "DRIVER" AndAlso MSUDataList(item.Tag).Update.DriverData = drvData Then
           Return New AddResult(False, "Driver already added.")
         End If
       Next
@@ -1339,8 +1484,6 @@ Public Class frmMain
       If msuData.DriverData.Architectures IsNot Nothing AndAlso msuData.DriverData.Architectures.Count > 0 Then ttArch = en & "Supported Architectures: " & Join(msuData.DriverData.Architectures.ToArray, ", ")
       Dim ttBootCritical As String = Nothing
       If Not String.IsNullOrEmpty(msuData.DriverData.BootCritical) Then ttBootCritical = en & "Boot Critical: " & msuData.DriverData.BootCritical
-      Dim myTag(1) As Object
-      myTag(0) = msuData
       Dim ttNotice As String = Nothing
       lvItem.ToolTipText = IIf(String.IsNullOrEmpty(ttPublishedName), "", ttPublishedName & vbNewLine) &
                            IIf(String.IsNullOrEmpty(ttOriginalFileName), "", ttOriginalFileName & vbNewLine) &
@@ -1353,21 +1496,36 @@ Public Class frmMain
                            IIf(String.IsNullOrEmpty(ttArch), "", ttArch & vbNewLine) &
                            IIf(String.IsNullOrEmpty(ttBootCritical), "", ttBootCritical & vbNewLine) &
                            IIf(String.IsNullOrEmpty(ttNotice), "", ttNotice & vbNewLine)
-      lvItem.Tag = myTag
+      Dim lTag As Integer = 0
+      Do
+        lTag += 1
+        If lTag >= Integer.MaxValue Then Exit Do
+      Loop While MSUDataList.ContainsKey(lTag)
+      MSUDataList.Add(lTag, New MSUData(msuData, frmMain.MSUData.Update_Replace.OnlyMissing))
+      lvItem.Tag = lTag
       lvItem.ForeColor = lvMSU.ForeColor
       lvItem.ImageKey = "INF"
       If msuData.DriverData.Architectures Is Nothing Then
         lvItem.SubItems.Add("Driver")
       Else
-        If msuData.DriverData.Architectures.Contains("x86") Then
-          If msuData.DriverData.Architectures.Contains("amd64") Then
+        Dim isx86 As Boolean = msuData.DriverData.Architectures.Exists(New Predicate(Of String)(Function(arch As String) As Boolean
+                                                                                                  Return CompareArchitectures(arch, ArchitectureList.x86, True)
+                                                                                                End Function))
+        Dim isx64 As Boolean = msuData.DriverData.Architectures.Exists(New Predicate(Of String)(Function(arch As String) As Boolean
+                                                                                                  Return CompareArchitectures(arch, ArchitectureList.amd64, True)
+                                                                                                End Function))
+        Dim isIA As Boolean = msuData.DriverData.Architectures.Exists(New Predicate(Of String)(Function(arch As String) As Boolean
+                                                                                                 Return CompareArchitectures(arch, ArchitectureList.ia64, True)
+                                                                                               End Function))
+        If isx86 Then
+          If isx64 Then
             lvItem.SubItems.Add("Universal Driver")
           Else
             lvItem.SubItems.Add("x86 Driver")
           End If
-        ElseIf msuData.DriverData.Architectures.Contains("amd64") Then
+        ElseIf isx64 Then
           lvItem.SubItems.Add("amd64 Driver")
-        ElseIf msuData.DriverData.Architectures.Contains("ia64") Then
+        ElseIf isIA Then
           Return New AddResult(False, "Driver is for Itanium processors.")
         Else
           Return New AddResult(False, "Driver is for " & Join(msuData.DriverData.Architectures.ToArray, ", ") & " processors.")
@@ -1377,17 +1535,16 @@ Public Class frmMain
       Return New AddResult(True)
     Else
       Dim InOne As Boolean = False
-      Dim OnlyUp As Boolean = False
-      Dim OnlyDown As Boolean = False
+      Dim UpdateAction As MSUData.Update_Replace
       Dim InImage(lvImages.Items.Count - 1) As Update_Integrated
       If lvImages.Items.Count > 0 Then
         For I As Integer = 0 To lvImages.Items.Count - 1
           If lvImages.Items(I).Checked Then
-            PList(I) = lvImages.Items(I).Tag(1)
+            PList(I) = ImageDataList(lvImages.Items(I).Tag).Package
             If PList(I).IntegratedUpdateList IsNot Nothing Then
               For Each package As Update_Integrated In PList(I).IntegratedUpdateList
                 If msuData.Ident.Name = package.Ident.Name Then
-                  If msuData.Ident.Architecture = package.Ident.Architecture Then
+                  If CompareArchitectures(msuData.Ident.Architecture, package.Ident.Architecture, False) Then
                     If msuData.Ident.Language = package.Ident.Language Then
                       InImage(I) = package
                       InImage(I).Parent = PList(I)
@@ -1405,6 +1562,10 @@ Public Class frmMain
           Dim allGreater As Boolean = True
           Dim allLess As Boolean = True
           For I As Integer = 0 To InImage.Length - 1
+            If String.IsNullOrEmpty(InImage(I).Identity) Then
+              allEqual = False
+              Continue For
+            End If
             Dim CompareRet As Integer = CompareMSVersions(InImage(I).Ident.Version, msuData.Ident.Version)
             If CompareRet = 0 Then
               allGreater = False
@@ -1423,14 +1584,14 @@ Public Class frmMain
           ElseIf allLess Then
             Dim always As Boolean = False
             If ReplaceAllOldUpdates = TriState.True Then
-              OnlyUp = True
+              UpdateAction = frmMain.MSUData.Update_Replace.OnlyOlder
             ElseIf ReplaceAllOldUpdates = TriState.False Then
               Return New AddResult(True)
             Else
-              Dim sbRet As TaskDialogResult = IntegratedUpdateSelectionBox(Me, msuData, InImage, PList.ToArray, always, Comparison.Newer)
+              Dim sbRet As TaskDialogResult = IntegratedUpdateSelectionBox(Me, msuData, InImage, PList, always, Comparison.Newer)
               If sbRet = TaskDialogResult.Yes Then
                 If always Then ReplaceAllOldUpdates = TriState.True
-                OnlyUp = True
+                UpdateAction = frmMain.MSUData.Update_Replace.OnlyOlder
               ElseIf sbRet = TaskDialogResult.No Then
                 If always Then ReplaceAllOldUpdates = TriState.False
                 Return New AddResult(True)
@@ -1441,14 +1602,14 @@ Public Class frmMain
           ElseIf allGreater Then
             Dim always As Boolean = False
             If ReplaceAllNewUpdates = TriState.True Then
-              OnlyDown = True
+              UpdateAction = frmMain.MSUData.Update_Replace.OnlyNewer
             ElseIf ReplaceAllNewUpdates = TriState.False Then
               Return New AddResult(True)
             Else
-              Dim sbRet As TaskDialogResult = IntegratedUpdateSelectionBox(Me, msuData, InImage, PList.ToArray, always, Comparison.Older)
+              Dim sbRet As TaskDialogResult = IntegratedUpdateSelectionBox(Me, msuData, InImage, PList, always, Comparison.Older)
               If sbRet = TaskDialogResult.Yes Then
                 If always Then ReplaceAllNewUpdates = TriState.True
-                OnlyDown = True
+                UpdateAction = frmMain.MSUData.Update_Replace.OnlyMissing
               ElseIf sbRet = TaskDialogResult.No Then
                 If always Then ReplaceAllNewUpdates = TriState.False
                 Return New AddResult(True)
@@ -1457,14 +1618,15 @@ Public Class frmMain
               End If
             End If
           Else
-            Dim sRet As TaskDialogResult = IntegratedUpdateSelectionBox(Me, msuData, InImage, PList.ToArray, False, Comparison.Mixed)
+            Dim sRet As TaskDialogResult = IntegratedUpdateSelectionBox(Me, msuData, InImage, PList, False, Comparison.Mixed)
             If sRet = TaskDialogResult.Ok Then
+              UpdateAction = frmMain.MSUData.Update_Replace.All
             ElseIf sRet = TaskDialogResult.Yes Then
-              OnlyUp = True
+              UpdateAction = frmMain.MSUData.Update_Replace.OnlyOlder
             ElseIf sRet = TaskDialogResult.No Then
-              OnlyDown = True
+              UpdateAction = frmMain.MSUData.Update_Replace.OnlyNewer
             ElseIf sRet = TaskDialogResult.Close Then
-              Return New AddResult(True)
+              UpdateAction = frmMain.MSUData.Update_Replace.OnlyMissing
             ElseIf sRet = TaskDialogResult.Cancel Then
               Return New AddResult(False)
             End If
@@ -1472,10 +1634,10 @@ Public Class frmMain
         End If
       End If
       For Each item As ListViewItem In lvMSU.Items
-        Dim itemData As Update_File = item.Tag(0)
+        Dim itemData As Update_File = MSUDataList(item.Tag).Update
         If itemData.Identity = msuData.Identity Then
           Return New AddResult(False, "Update already added.")
-        ElseIf Replace(itemData.Ident.Name.ToLower, "-refresh-", "-") = Replace(msuData.Ident.Name.ToLower, "-refresh-", "-") And itemData.Ident.Language.ToLower = msuData.Ident.Language.ToLower And itemData.Architecture.ToLower = msuData.Architecture.ToLower Then
+        ElseIf Replace(itemData.Ident.Name.ToLower, "-refresh-", "-") = Replace(msuData.Ident.Name.ToLower, "-refresh-", "-") And itemData.Ident.Language.ToLower = msuData.Ident.Language.ToLower And CompareArchitectures(itemData.Architecture, msuData.Architecture, True) Then
           Dim always As Boolean = False
           Dim CompareRet As Integer = CompareMSVersions(itemData.Ident.Version, msuData.Ident.Version)
           If CompareRet = 0 Then
@@ -1521,10 +1683,14 @@ Public Class frmMain
       If msuData.KBArticle = "947821" Then Return New AddResult(False, "Update can't be integrated.")
       If msuData.KBArticle = "3035583" Then Return New AddResult(False, "Update can't be integrated.")
       Dim lvItem As New ListViewItem(msuData.Name)
-      Dim myTag(1) As Object
-      myTag(0) = msuData
-      lvItem.Tag = myTag
-      Dim bWhitelist As Boolean = msuData.Architecture = "x86" AndAlso CheckWhitelist(msuData.DisplayName)
+      Dim lTag As Integer = 0
+      Do
+        lTag += 1
+        If lTag >= Integer.MaxValue Then Exit Do
+      Loop While MSUDataList.ContainsKey(lTag)
+      MSUDataList.Add(lTag, New MSUData(msuData, UpdateAction))
+      lvItem.Tag = lTag
+      Dim bWhitelist As Boolean = CompareArchitectures(msuData.Architecture, ArchitectureList.x86, True) AndAlso CheckWhitelist(msuData.DisplayName)
       Dim en As String = ChrW(&H2003)
       Dim ttItem As String = IIf(String.IsNullOrEmpty(msuData.KBArticle), msuData.Name, "KB" & msuData.KBArticle)
       ttItem &= vbNewLine & en & msuData.AppliesTo & " " & msuData.Architecture & IIf(bWhitelist, " [Whitelisted for 64-bit]", "")
@@ -1535,95 +1701,12 @@ Public Class frmMain
         lvItem.ForeColor = Color.Red
         ttItem &= vbNewLine & en & "Version 2 may not integrate correctly. SLIPS7REAM suggests using Version 4 from the Microsoft Update Catalog."
       End If
-      If PrerequisiteList.Length > 0 Then
-        For Each prereq As Prerequisite In PrerequisiteList
-          If msuData.KBArticle = prereq.KBWithRequirement And prereq.Requirement.Length > 0 Then
-            Dim Req(prereq.Requirement.Length - 1) As Boolean
-            For I As Integer = 0 To Req.Length - 1
-              Req(I) = False
-            Next
-            If lvImages.Items.Count > 0 Then
-              For Each searchImage As ListViewItem In lvImages.Items
-                Dim searchItem As ImagePackage = searchImage.Tag(1)
-                If searchItem.IntegratedUpdateList IsNot Nothing AndAlso searchItem.IntegratedUpdateList.Count > 0 Then
-                  For Each searchPackage As Update_Integrated In searchItem.IntegratedUpdateList
-                    For I As Integer = 0 To prereq.Requirement.Length - 1
-                      If searchPackage.Ident.Name.Contains(prereq.Requirement(I)) Then Req(I) = True
-                    Next
-                  Next
-                End If
-              Next
-            End If
-            If lvMSU.Items.Count > 0 Then
-              For Each searchItem As ListViewItem In lvMSU.Items
-                Dim searchData As Update_File = searchItem.Tag(0)
-                For I As Integer = 0 To prereq.Requirement.Length - 1
-                  If searchData.KBArticle = prereq.Requirement(I) Then Req(I) = True
-                Next
-                If Not Req.Contains(False) Then Exit For
-              Next
-            End If
-            If Req.Contains(False) Then
-              lvItem.ForeColor = Color.Orange
-              If prereq.Requirement.Length = 1 Then
-                ttItem &= vbNewLine & en & "Please make sure KB" & prereq.Requirement(0) & " is also integrated."
-              ElseIf prereq.Requirement.Length = 2 Then
-                ttItem &= vbNewLine & en & "Please make sure KB" & prereq.Requirement(0) & " and KB" & prereq.Requirement(1) & " are also integrated."
-              Else
-                Dim sKBList As String = Nothing
-                For I As Integer = 0 To prereq.Requirement.Length - 2
-                  sKBList &= "KB" & prereq.Requirement(I) & ", "
-                Next
-                sKBList &= "and KB" & prereq.Requirement(prereq.Requirement.Length - 1)
-                ttItem &= vbNewLine & en & "Please make sure " & sKBList & " are also integrated."
-              End If
-            End If
-          End If
-          For Each sReq As String In prereq.Requirement
-            If msuData.KBArticle = sReq Then
-              Dim Req As Boolean = False
-              If prereq.Requirement.Length < 2 Then
-                Req = True
-              Else
-                Dim Reqs(prereq.Requirement.Length - 1) As Boolean
-                For I As Integer = 0 To Reqs.Length - 1
-                  Reqs(I) = False
-                Next
-                For I As Integer = 0 To prereq.Requirement.Length - 1
-                  If prereq.Requirement(I) = sReq Then
-                    Reqs(I) = True
-                    Continue For
-                  End If
-                  For Each searchItem As ListViewItem In lvMSU.Items
-                    Dim searchData As Update_File = searchItem.Tag(0)
-                    If searchData.KBArticle = prereq.Requirement(I) Then
-                      Reqs(I) = True
-                      Exit For
-                    End If
-                  Next
-                Next
-                Req = Not Reqs.Contains(False)
-              End If
-              If Req Then
-                For Each searchItem As ListViewItem In lvMSU.Items
-                  Dim searchData As Update_File = searchItem.Tag(0)
-                  If searchData.KBArticle = prereq.KBWithRequirement Then
-                    searchItem.ForeColor = lvMSU.ForeColor
-                    If searchItem.ToolTipText.Contains("Please make sure") Then searchItem.ToolTipText = searchItem.ToolTipText.Substring(0, searchItem.ToolTipText.LastIndexOf(vbNewLine))
-                    Exit For
-                  End If
-                Next
-              End If
-            End If
-          Next
-        Next
-      End If
       If msuData.Ident.Name = "Microsoft-Windows-LIP-LanguagePack-Package" Then
         Dim langList As New List(Of String)
         Dim hasSP As Boolean = False
         If lvImages.Items.Count > 0 Then
           For Each lvImage As ListViewItem In lvImages.Items
-            Dim imageInfo As ImagePackage = lvImage.Tag(1)
+            Dim imageInfo As ImagePackage = ImageDataList(lvImage.Tag).Package
             If imageInfo.SPLevel > 0 Then hasSP = True
             For Each langReg In imageInfo.LangList
               If langReg.Contains("-") Then
@@ -1637,7 +1720,7 @@ Public Class frmMain
         End If
         If lvMSU.Items.Count > 0 Then
           For Each lvUpdate As ListViewItem In lvMSU.Items
-            Dim updateInfo As Update_File = lvUpdate.Tag(0)
+            Dim updateInfo As Update_File = MSUDataList(lvUpdate.Tag).Update
             If updateInfo.Ident.Name = "Microsoft-Windows-Client-Refresh-LanguagePack-Package" Or updateInfo.Ident.Name = "Microsoft-Windows-Client-LanguagePack-Package" Then
               If updateInfo.Ident.Language.Contains("-") Then
                 Dim lang As String = updateInfo.Ident.Language.Substring(0, updateInfo.Ident.Language.LastIndexOf("-"))
@@ -1714,16 +1797,14 @@ Public Class frmMain
       End If
       If InOne Then
         If lvItem.ForeColor = lvMSU.ForeColor Then lvItem.ForeColor = Color.Orange
-        If OnlyUp Then
+        If UpdateAction = frmMain.MSUData.Update_Replace.OnlyOlder Then
           ttItem &= vbNewLine & en & "This update will upgrade only integrated older versions."
-        ElseIf OnlyDown Then
+        ElseIf UpdateAction = frmMain.MSUData.Update_Replace.OnlyNewer Then
           ttItem &= vbNewLine & en & "This update will downgrade only integrated newer versions."
-          myTag(1) = InImage
-          lvItem.Tag = myTag
+        ElseIf UpdateAction = frmMain.MSUData.Update_Replace.OnlyMissing Then
+          ttItem &= vbNewLine & en & "This update will only integrate when no other version exists."
         Else
           ttItem &= vbNewLine & en & "This update will replace both newer and older integrated versions."
-          myTag(1) = InImage
-          lvItem.Tag = myTag
         End If
       End If
       lvItem.ToolTipText = ttItem
@@ -1817,104 +1898,311 @@ Public Class frmMain
     If PrerequisiteList.Length > 0 Then
       For U As Integer = 0 To lvMSU.Items.Count - 1
         Dim lvItem As ListViewItem = lvMSU.Items(U)
-        Dim msuData As Update_File = lvItem.Tag(0)
+        Dim msuData As Update_File = MSUDataList(lvItem.Tag).Update
         If msuData.Name = "DRIVER" Then Continue For
         For Each prereq As Prerequisite In PrerequisiteList
           If msuData.KBArticle = prereq.KBWithRequirement And prereq.Requirement.Length > 0 Then
-            Dim Req(prereq.Requirement.Length - 1) As Boolean
-            For I As Integer = 0 To Req.Length - 1
-              Req(I) = False
-            Next
-            If lvImages.Items.Count > 0 Then
-              For Each searchImage As ListViewItem In lvImages.Items
-                Dim searchItem As ImagePackage = searchImage.Tag(1)
-                If searchItem.IntegratedUpdateList IsNot Nothing AndAlso searchItem.IntegratedUpdateList.Count > 0 Then
-                  For Each searchPackage As Update_Integrated In searchItem.IntegratedUpdateList
-                    For I As Integer = 0 To prereq.Requirement.Length - 1
-                      If searchPackage.Ident.Name.Contains(prereq.Requirement(I)) Then Req(I) = True
-                      If Not String.IsNullOrEmpty(searchPackage.UpdateInfo.Name) AndAlso searchPackage.UpdateInfo.Name.Contains(prereq.Requirement(I)) Then Req(I) = True
+            If prereq.Requirement.Length = 1 Then
+              If prereq.Requirement(0).Length > 0 Then
+                Dim Req(prereq.Requirement(0).Length - 1) As Boolean
+                For I As Integer = 0 To Req.Length - 1
+                  Req(I) = False
+                Next
+                If lvMSU.Items.Count > 0 Then
+                  For Each searchItem As ListViewItem In lvMSU.Items
+                    Dim searchData As Update_File = MSUDataList(searchItem.Tag).Update
+                    For I As Integer = 0 To prereq.Requirement(0).Length - 1
+                      If searchData.KBArticle = prereq.Requirement(0)(I) Then Req(I) = True
                     Next
+                    If Not Req.Contains(False) Then Exit For
                   Next
                 End If
-              Next
-            End If
-            If lvMSU.Items.Count > 0 Then
-              For Each searchItem As ListViewItem In lvMSU.Items
-                Dim searchData As Update_File = searchItem.Tag(0)
-                For I As Integer = 0 To prereq.Requirement.Length - 1
-                  If searchData.KBArticle = prereq.Requirement(I) Then Req(I) = True
-                Next
-                If Not Req.Contains(False) Then Exit For
-              Next
-            End If
-            If Req.Contains(False) Then
-              lvItem.ForeColor = Color.Orange
-              If prereq.Requirement.Length = 1 Then
-                If Not lvItem.ToolTipText.Contains(vbNewLine & en & "Please make sure KB" & prereq.Requirement(0) & " is also integrated.") Then lvItem.ToolTipText &= vbNewLine & en & "Please make sure KB" & prereq.Requirement(0) & " is also integrated."
-              ElseIf prereq.Requirement.Length = 2 Then
-                If Not lvItem.ToolTipText.Contains(vbNewLine & en & "Please make sure KB" & prereq.Requirement(0) & " and KB" & prereq.Requirement(1) & " are also integrated.") Then lvItem.ToolTipText &= vbNewLine & en & "Please make sure KB" & prereq.Requirement(0) & " and KB" & prereq.Requirement(1) & " are also integrated."
-              Else
-                Dim sKBList As String = Nothing
-                For I As Integer = 0 To prereq.Requirement.Length - 2
-                  sKBList &= "KB" & prereq.Requirement(I) & ", "
-                Next
-                sKBList &= "and KB" & prereq.Requirement(prereq.Requirement.Length - 1)
-                If Not lvItem.ToolTipText.Contains(vbNewLine & en & "Please make sure " & sKBList & " are also integrated.") Then lvItem.ToolTipText &= vbNewLine & en & "Please make sure " & sKBList & " are also integrated."
+                If Req.Contains(False) Then
+                  If lvImages.Items.Count > 0 Then
+                    For Each searchImage As ListViewItem In lvImages.Items
+                      Dim searchItem As ImagePackage = ImageDataList(searchImage.Tag).Package
+                      If Not CompareArchitectures(searchItem.Architecture, msuData.Architecture, True) Then Continue For
+                      If searchItem.IntegratedUpdateList IsNot Nothing AndAlso searchItem.IntegratedUpdateList.Count > 0 Then
+                        For Each searchPackage As Update_Integrated In searchItem.IntegratedUpdateList
+                          For I As Integer = 0 To prereq.Requirement(0).Length - 1
+                            If searchPackage.Ident.Name.Contains(prereq.Requirement(0)(I)) Then Req(I) = True
+                          Next
+                        Next
+                      End If
+                      If Not Req.Contains(False) Then Exit For
+                    Next
+                  End If
+                End If
+                If Req.Contains(False) Then
+                  lvItem.ForeColor = Color.Orange
+                  Dim myReqs As New List(Of String)
+                  For I As Integer = 0 To prereq.Requirement(0).Length - 1
+                    If Not Req(I) Then myReqs.Add(prereq.Requirement(0)(I))
+                  Next
+                  If myReqs.Count = 1 Then
+                    If Not lvItem.ToolTipText.Contains(vbNewLine & en & "Please make sure KB" & myReqs(0) & " is also integrated.") Then
+                      If lvItem.ToolTipText.Contains("Please make sure") Then lvItem.ToolTipText = lvItem.ToolTipText.Substring(0, lvItem.ToolTipText.LastIndexOf(vbNewLine))
+                      lvItem.ToolTipText &= vbNewLine & en & "Please make sure KB" & myReqs(0) & " is also integrated."
+                    End If
+                  ElseIf myReqs.Count = 2 Then
+                    If Not lvItem.ToolTipText.Contains(vbNewLine & en & "Please make sure KB" & myReqs(0) & " and KB" & myReqs(1) & " are also integrated.") Then
+                      If lvItem.ToolTipText.Contains("Please make sure") Then lvItem.ToolTipText = lvItem.ToolTipText.Substring(0, lvItem.ToolTipText.LastIndexOf(vbNewLine))
+                      lvItem.ToolTipText &= vbNewLine & en & "Please make sure KB" & myReqs(0) & " and KB" & myReqs(1) & " are also integrated."
+                    End If
+                  Else
+                    Dim sKBList As String = Nothing
+                    For I As Integer = 0 To myReqs.Count - 2
+                      sKBList &= "KB" & myReqs(I) & ", "
+                    Next
+                    sKBList &= "and KB" & myReqs(myReqs.Count - 1)
+                    If Not lvItem.ToolTipText.Contains(vbNewLine & en & "Please make sure " & sKBList & " are also integrated.") Then
+                      If lvItem.ToolTipText.Contains("Please make sure") Then lvItem.ToolTipText = lvItem.ToolTipText.Substring(0, lvItem.ToolTipText.LastIndexOf(vbNewLine))
+                      lvItem.ToolTipText &= vbNewLine & en & "Please make sure " & sKBList & " are also integrated."
+                    End If
+                  End If
+                End If
               End If
-            ElseIf lvItem.ForeColor = Color.Orange And Not msuData.Ident.Name = "Microsoft-Windows-LIP-LanguagePack-Package" Then
-              lvItem.ForeColor = lvMSU.ForeColor
-              If lvItem.ToolTipText.Contains(vbNewLine & en & "Please make sure ") Then
-                Dim FirstHalf As String = lvItem.ToolTipText.Substring(0, lvItem.ToolTipText.IndexOf(vbNewLine & en & "Please make sure "))
-                Dim SecondHalf As String = Nothing
-                If lvItem.ToolTipText.Substring(lvItem.ToolTipText.IndexOf(vbNewLine & en & "Please make sure ") + 2).Contains(vbNewLine) Then SecondHalf = lvItem.ToolTipText.Substring(lvItem.ToolTipText.IndexOf(vbNewLine, lvItem.ToolTipText.IndexOf(vbNewLine & en & "Please make sure ") + 2))
-                lvItem.ToolTipText = FirstHalf & SecondHalf
+            Else
+              Dim ReqA(prereq.Requirement.Length - 1) As Boolean
+              For A As Integer = 0 To ReqA.Length - 1
+                ReqA(A) = False
+              Next
+              Dim Req(prereq.Requirement.Length - 1)() As Boolean
+              For I As Integer = 0 To Req.Length - 1
+                ReDim Req(I)(prereq.Requirement(I).Length - 1)
+              Next
+              If lvImages.Items.Count > 0 Then
+                For Each searchImage As ListViewItem In lvImages.Items
+                  Dim searchItem As ImagePackage = ImageDataList(searchImage.Tag).Package
+                  If Not CompareArchitectures(searchItem.Architecture, msuData.Architecture, True) Then Continue For
+                  If searchItem.IntegratedUpdateList IsNot Nothing AndAlso searchItem.IntegratedUpdateList.Count > 0 Then
+                    For Each searchPackage As Update_Integrated In searchItem.IntegratedUpdateList
+                      For A As Integer = 0 To prereq.Requirement.Length - 1
+                        For I As Integer = 0 To prereq.Requirement(A).Length - 1
+                          If searchPackage.Ident.Name.Contains(prereq.Requirement(A)(I)) Then
+                            ReqA(A) = True
+                            Req(A)(I) = True
+                          End If
+                        Next
+                      Next
+                    Next
+                  End If
+                Next
+              End If
+              If lvMSU.Items.Count > 0 Then
+                For Each searchItem As ListViewItem In lvMSU.Items
+                  Dim searchData As Update_File = MSUDataList(searchItem.Tag).Update
+                  For A As Integer = 0 To prereq.Requirement.Length - 1
+                    For I As Integer = 0 To prereq.Requirement(A).Length - 1
+                      If searchData.KBArticle = prereq.Requirement(A)(I) Then
+                        ReqA(A) = True
+                        Req(A)(I) = True
+                      End If
+                    Next
+                  Next
+                Next
+              End If
+              Dim ReqB(ReqA.Length - 1) As Boolean
+              For B As Integer = 0 To ReqB.Length - 1
+                If ReqA(B) Then
+                  ReqB(B) = Not Req(B).Contains(False)
+                Else
+                  ReqB(B) = False
+                End If
+              Next
+              If Not ReqB.Contains(True) Then
+                lvItem.ForeColor = Color.Orange
+                Dim partialCount As Integer = ReqA.Count(Function(a As Boolean) As Boolean
+                                                           Return a
+                                                         End Function)
+                If partialCount = 0 Then
+                  Dim sKBList As String = Nothing
+                  For A As Integer = 0 To Req.Length - 1
+                    Dim myReqs As New List(Of String)
+                    For I As Integer = 0 To prereq.Requirement(A).Length - 1
+                      If Not Req(A)(I) Then myReqs.Add(prereq.Requirement(A)(I))
+                    Next
+                    If myReqs.Count = 1 Then
+                      If Not String.IsNullOrEmpty(sKBList) Then sKBList &= "  or  "
+                      sKBList &= "KB" & myReqs(0)
+                    ElseIf myReqs.Count = 2 Then
+                      If Not String.IsNullOrEmpty(sKBList) Then sKBList &= "  or  "
+                      sKBList &= "KB" & myReqs(0) & " and KB" & myReqs(1)
+                    Else
+                      If Not String.IsNullOrEmpty(sKBList) Then sKBList &= "  or  "
+                      For I As Integer = 0 To myReqs.Count - 2
+                        sKBList &= "KB" & myReqs(I) & ", "
+                      Next
+                      sKBList &= "and KB" & myReqs(myReqs.Count - 1)
+                    End If
+                  Next
+                  If sKBList.Contains(" and ") Then
+                    If Not lvItem.ToolTipText.Contains(vbNewLine & en & "Please make sure either  " & sKBList & "  are also integrated.") Then
+                      If lvItem.ToolTipText.Contains("Please make sure") Then lvItem.ToolTipText = lvItem.ToolTipText.Substring(0, lvItem.ToolTipText.LastIndexOf(vbNewLine))
+                      lvItem.ToolTipText &= vbNewLine & en & "Please make sure either  " & sKBList & "  are also integrated."
+                    End If
+                  Else
+                    If Not lvItem.ToolTipText.Contains(vbNewLine & en & "Please make sure either  " & sKBList & "  is also integrated.") Then
+                      If lvItem.ToolTipText.Contains("Please make sure") Then lvItem.ToolTipText = lvItem.ToolTipText.Substring(0, lvItem.ToolTipText.LastIndexOf(vbNewLine))
+                      lvItem.ToolTipText &= vbNewLine & en & "Please make sure either  " & sKBList & "  is also integrated."
+                    End If
+                  End If
+
+                ElseIf partialCount = 1 Then
+                  Dim validReq As Integer = Array.IndexOf(Of Boolean)(ReqA, True)
+                  Dim myReqs As New List(Of String)
+                  For I As Integer = 0 To prereq.Requirement(validReq).Length - 1
+                    If Not Req(validReq)(I) Then myReqs.Add(prereq.Requirement(validReq)(I))
+                  Next
+                  If myReqs.Count = 1 Then
+                    If Not lvItem.ToolTipText.Contains(vbNewLine & en & "Please make sure KB" & myReqs(0) & " is also integrated.") Then
+                      If lvItem.ToolTipText.Contains("Please make sure") Then lvItem.ToolTipText = lvItem.ToolTipText.Substring(0, lvItem.ToolTipText.LastIndexOf(vbNewLine))
+                      lvItem.ToolTipText &= vbNewLine & en & "Please make sure KB" & myReqs(0) & " is also integrated."
+                    End If
+                  ElseIf myReqs.Count = 2 Then
+                    If Not lvItem.ToolTipText.Contains(vbNewLine & en & "Please make sure KB" & myReqs(0) & " and KB" & myReqs(1) & " are also integrated.") Then
+                      If lvItem.ToolTipText.Contains("Please make sure") Then lvItem.ToolTipText = lvItem.ToolTipText.Substring(0, lvItem.ToolTipText.LastIndexOf(vbNewLine))
+                      lvItem.ToolTipText &= vbNewLine & en & "Please make sure KB" & myReqs(0) & " and KB" & myReqs(1) & " are also integrated."
+                    End If
+                  Else
+                    Dim sKBList As String = Nothing
+                    For I As Integer = 0 To myReqs.Count - 2
+                      sKBList &= "KB" & myReqs(I) & ", "
+                    Next
+                    sKBList &= "and KB" & myReqs(myReqs.Count - 1)
+                    If Not lvItem.ToolTipText.Contains(vbNewLine & en & "Please make sure " & sKBList & " are also integrated.") Then
+                      If lvItem.ToolTipText.Contains("Please make sure") Then lvItem.ToolTipText = lvItem.ToolTipText.Substring(0, lvItem.ToolTipText.LastIndexOf(vbNewLine))
+                      lvItem.ToolTipText &= vbNewLine & en & "Please make sure " & sKBList & " are also integrated."
+                    End If
+                  End If
+                Else
+                  Dim validReqs As New List(Of Integer)
+                  Dim highVal As Double = 0
+                  For A As Integer = 0 To ReqA.Length - 1
+                    If Not ReqA(A) Then Continue For
+                    Dim aCount As Integer = Req(A).Count(Function(c As Boolean) As Boolean
+                                                           Return c
+                                                         End Function)
+                    If (aCount / Req(A).Length) > highVal Then highVal = (aCount / Req(A).Length)
+                  Next
+                  For A As Integer = 0 To ReqA.Length - 1
+                    If Not ReqA(A) Then Continue For
+                    Dim aCount As Integer = Req(A).Count(Function(c As Boolean) As Boolean
+                                                           Return c
+                                                         End Function)
+                    If (aCount / Req(A).Length) >= highVal - 0.1 Then validReqs.Add(A)
+                  Next
+                  Dim sKBList As String = Nothing
+                  For Each A As Integer In validReqs
+                    If Not ReqA(A) Then Continue For
+                    Dim myReqs As New List(Of String)
+                    For I As Integer = 0 To prereq.Requirement(A).Length - 1
+                      If Not Req(A)(I) Then myReqs.Add(prereq.Requirement(A)(I))
+                    Next
+                    If myReqs.Count = 1 Then
+                      If Not String.IsNullOrEmpty(sKBList) Then sKBList &= "  or  "
+                      sKBList &= "KB" & myReqs(0)
+                    ElseIf myReqs.Count = 2 Then
+                      If Not String.IsNullOrEmpty(sKBList) Then sKBList &= "  or  "
+                      sKBList &= "KB" & myReqs(0) & " and KB" & myReqs(1)
+                    Else
+                      If Not String.IsNullOrEmpty(sKBList) Then sKBList &= "  or  "
+                      For I As Integer = 0 To myReqs.Count - 2
+                        sKBList &= "KB" & myReqs(I) & ", "
+                      Next
+                      sKBList &= "and KB" & myReqs(myReqs.Count - 1)
+                    End If
+                  Next
+                  If validReqs.Count > 1 Then
+                    If sKBList.Contains(" and ") Then
+                      If Not lvItem.ToolTipText.Contains(vbNewLine & en & "Please make sure either  " & sKBList & "  are also integrated.") Then
+                        If lvItem.ToolTipText.Contains("Please make sure") Then lvItem.ToolTipText = lvItem.ToolTipText.Substring(0, lvItem.ToolTipText.LastIndexOf(vbNewLine))
+                        lvItem.ToolTipText &= vbNewLine & en & "Please make sure either  " & sKBList & "  are also integrated."
+                      End If
+                    Else
+                      If Not lvItem.ToolTipText.Contains(vbNewLine & en & "Please make sure either  " & sKBList & "  is also integrated.") Then
+                        If lvItem.ToolTipText.Contains("Please make sure") Then lvItem.ToolTipText = lvItem.ToolTipText.Substring(0, lvItem.ToolTipText.LastIndexOf(vbNewLine))
+                        lvItem.ToolTipText &= vbNewLine & en & "Please make sure either  " & sKBList & "  is also integrated."
+                      End If
+                    End If
+
+                  Else
+                    If sKBList.Contains(" and ") Then
+                      If Not lvItem.ToolTipText.Contains(vbNewLine & en & "Please make sure " & sKBList & " are also integrated.") Then
+                        If lvItem.ToolTipText.Contains("Please make sure") Then lvItem.ToolTipText = lvItem.ToolTipText.Substring(0, lvItem.ToolTipText.LastIndexOf(vbNewLine))
+                        lvItem.ToolTipText &= vbNewLine & en & "Please make sure " & sKBList & " are also integrated."
+                      End If
+                    Else
+                      If Not lvItem.ToolTipText.Contains(vbNewLine & en & "Please make sure " & sKBList & " is also integrated.") Then
+                        If lvItem.ToolTipText.Contains("Please make sure") Then lvItem.ToolTipText = lvItem.ToolTipText.Substring(0, lvItem.ToolTipText.LastIndexOf(vbNewLine))
+                        lvItem.ToolTipText &= vbNewLine & en & "Please make sure " & sKBList & " is also integrated."
+                      End If
+                    End If
+                  End If
+                End If
               End If
             End If
           End If
-          For Each sReq As String In prereq.Requirement
-            If msuData.KBArticle = sReq Then
-              Dim Req As Boolean = False
-              If prereq.Requirement.Length < 2 Then
-                Req = True
-              Else
-                Dim Reqs(prereq.Requirement.Length - 1) As Boolean
-                For I As Integer = 0 To Reqs.Length - 1
-                  Reqs(I) = False
-                Next
-                For I As Integer = 0 To prereq.Requirement.Length - 1
-                  If prereq.Requirement(I) = sReq Then
-                    Reqs(I) = True
-                    Continue For
-                  End If
-                  For Each searchItem As ListViewItem In lvMSU.Items
-                    Dim searchData As Update_File = searchItem.Tag(0)
-                    If searchData.KBArticle = prereq.Requirement(I) Then
+          For A As Integer = 0 To prereq.Requirement.Length - 1
+            For Each sReq As String In prereq.Requirement(A)
+              If msuData.KBArticle = sReq Then
+                Dim Req As Boolean = False
+                If prereq.Requirement(A).Length < 2 Then
+                  Req = True
+                Else
+                  Dim Reqs(prereq.Requirement(A).Length - 1) As Boolean
+                  For I As Integer = 0 To Reqs.Length - 1
+                    Reqs(I) = False
+                  Next
+                  For I As Integer = 0 To prereq.Requirement(A).Length - 1
+                    If prereq.Requirement(A)(I) = sReq Then
                       Reqs(I) = True
+                      Continue For
+                    End If
+                    For Each searchItem As ListViewItem In lvMSU.Items
+                      Dim searchData As Update_File = MSUDataList(searchItem.Tag).Update
+                      If searchData.KBArticle = prereq.Requirement(A)(I) Then
+                        Reqs(I) = True
+                        Exit For
+                      End If
+                    Next
+                    If lvImages.Items.Count > 0 Then
+                      For Each searchImage As ListViewItem In lvImages.Items
+                        Dim searchItem As ImagePackage = ImageDataList(searchImage.Tag).Package
+                        If Not CompareArchitectures(searchItem.Architecture, msuData.Architecture, True) Then Continue For
+                        If searchItem.IntegratedUpdateList IsNot Nothing AndAlso searchItem.IntegratedUpdateList.Count > 0 Then
+                          For Each searchPackage As Update_Integrated In searchItem.IntegratedUpdateList
+                            If searchPackage.Ident.Name.Contains(prereq.Requirement(A)(I)) Then
+                              Reqs(I) = True
+                              Exit For
+                            End If
+                          Next
+                        End If
+                      Next
+                    End If
+                  Next
+                  Req = Not Reqs.Contains(False)
+                End If
+                If Req Then
+                  For Each searchItem As ListViewItem In lvMSU.Items
+                    Dim searchData As Update_File = MSUDataList(searchItem.Tag).Update
+                    If searchData.KBArticle = prereq.KBWithRequirement Then
+                      searchItem.ForeColor = lvMSU.ForeColor
+                      If searchItem.ToolTipText.Contains("Please make sure") Then searchItem.ToolTipText = searchItem.ToolTipText.Substring(0, searchItem.ToolTipText.LastIndexOf(vbNewLine))
                       Exit For
                     End If
                   Next
-                Next
-                Req = Not Reqs.Contains(False)
-              End If
-              If Req Then
-                For Each searchItem As ListViewItem In lvMSU.Items
-                  Dim searchData As Update_File = searchItem.Tag(0)
-                  If searchData.KBArticle = prereq.KBWithRequirement Then
-                    searchItem.ForeColor = lvMSU.ForeColor
-                    If searchItem.ToolTipText.Contains("Please make sure") Then searchItem.ToolTipText = searchItem.ToolTipText.Substring(0, searchItem.ToolTipText.LastIndexOf(vbNewLine))
-                    Exit For
+                ElseIf lvItem.ForeColor = Color.Orange And Not msuData.Ident.Name = "Microsoft-Windows-LIP-LanguagePack-Package" Then
+                  lvItem.ForeColor = lvMSU.ForeColor
+                  If lvItem.ToolTipText.Contains(vbNewLine & en & "Please make sure ") Then
+                    Dim FirstHalf As String = lvItem.ToolTipText.Substring(0, lvItem.ToolTipText.IndexOf(vbNewLine & en & "Please make sure "))
+                    Dim SecondHalf As String = Nothing
+                    If lvItem.ToolTipText.Substring(lvItem.ToolTipText.IndexOf(vbNewLine & en & "Please make sure ") + 2).Contains(vbNewLine) Then SecondHalf = lvItem.ToolTipText.Substring(lvItem.ToolTipText.IndexOf(vbNewLine, lvItem.ToolTipText.IndexOf(vbNewLine & en & "Please make sure ") + 2))
+                    lvItem.ToolTipText = FirstHalf & SecondHalf
                   End If
-                Next
-              ElseIf lvItem.ForeColor = Color.Orange And Not msuData.Ident.Name = "Microsoft-Windows-LIP-LanguagePack-Package" Then
-                lvItem.ForeColor = lvMSU.ForeColor
-                If lvItem.ToolTipText.Contains(vbNewLine & en & "Please make sure ") Then
-                  Dim FirstHalf As String = lvItem.ToolTipText.Substring(0, lvItem.ToolTipText.IndexOf(vbNewLine & en & "Please make sure "))
-                  Dim SecondHalf As String = Nothing
-                  If lvItem.ToolTipText.Substring(lvItem.ToolTipText.IndexOf(vbNewLine & en & "Please make sure ") + 2).Contains(vbNewLine) Then SecondHalf = lvItem.ToolTipText.Substring(lvItem.ToolTipText.IndexOf(vbNewLine, lvItem.ToolTipText.IndexOf(vbNewLine & en & "Please make sure ") + 2))
-                  lvItem.ToolTipText = FirstHalf & SecondHalf
                 End If
               End If
-            End If
+            Next
           Next
         Next
       Next
@@ -1925,6 +2213,7 @@ Public Class frmMain
       Dim lIndex As Integer = -1
       For Each lvItem As ListViewItem In lvMSU.SelectedItems
         lIndex = lvItem.Index
+        If MSUDataList.ContainsKey(lvItem.Tag) Then MSUDataList.Remove(lvItem.Tag)
         lvItem.Remove()
       Next
       If lIndex >= 0 And lvMSU.Items.Count > 0 Then
@@ -1942,6 +2231,7 @@ Public Class frmMain
   Private Sub cmdClearMSU_Click(sender As System.Object, e As System.EventArgs) Handles cmdClearMSU.Click
     If lvMSU.Items.Count > 0 Then
       If MsgDlg(Me, IIf(lvMSU.Items.Count > 2, "All " & lvMSU.Items.Count & " updates", "All updates") & " will be removed from the list.", "Do you want to clear the Update List?", "Remove All Updates", MessageBoxButtons.YesNo, TaskDialogIcon.Delete, MessageBoxDefaultButton.Button2, , "Remove All Updates") = Windows.Forms.DialogResult.Yes Then
+        MSUDataList.Clear()
         lvMSU.Items.Clear()
         SetStatus("Idle")
         RedoColumns()
@@ -1953,9 +2243,9 @@ Public Class frmMain
 #End Region
 #Region "Context Menu"
   Private Sub mnuUpdateTop_Click(sender As System.Object, e As System.EventArgs) Handles mnuUpdateTop.Click
-    Dim msuItems As ListView.SelectedListViewItemCollection = CType(mnuMSU.Tag, ListView.SelectedListViewItemCollection)
+    If SelectedlvMSUList Is Nothing OrElse SelectedlvMSUList.Count = 0 Then Return
     Dim targetI As Integer = 0
-    For Each item As ListViewItem In msuItems
+    For Each item As ListViewItem In SelectedlvMSUList
       Dim tmpItem = item.Clone
       item.Remove()
       lvMSU.Items.Insert(targetI, tmpItem)
@@ -1964,14 +2254,14 @@ Public Class frmMain
     Next
   End Sub
   Private Sub mnuUpdateUp_Click(sender As System.Object, e As System.EventArgs) Handles mnuUpdateUp.Click
-    Dim msuItems As ListView.SelectedListViewItemCollection = CType(mnuMSU.Tag, ListView.SelectedListViewItemCollection)
+    If SelectedlvMSUList Is Nothing OrElse SelectedlvMSUList.Count = 0 Then Return
     Dim targetI As Integer = Integer.MaxValue
-    For Each item As ListViewItem In msuItems
+    For Each item As ListViewItem In SelectedlvMSUList
       If item.Index < targetI Then targetI = item.Index
     Next
-    If targetI = Integer.MaxValue Or targetI = 0 Then Return
-    targetI -= 1
-    For Each item As ListViewItem In msuItems
+    If targetI = Integer.MaxValue Or targetI < 0 Then Return
+    If targetI > 0 Then targetI -= 1
+    For Each item As ListViewItem In SelectedlvMSUList
       Dim tmpItem = item.Clone
       item.Remove()
       lvMSU.Items.Insert(targetI, tmpItem)
@@ -1980,14 +2270,14 @@ Public Class frmMain
     Next
   End Sub
   Private Sub mnuUpdateDown_Click(sender As System.Object, e As System.EventArgs) Handles mnuUpdateDown.Click
-    Dim msuItems As ListView.SelectedListViewItemCollection = CType(mnuMSU.Tag, ListView.SelectedListViewItemCollection)
-    Dim targetI As Integer = Integer.MaxValue
-    For Each item As ListViewItem In msuItems
-      If item.Index < targetI Then targetI = item.Index
+    If SelectedlvMSUList Is Nothing OrElse SelectedlvMSUList.Count = 0 Then Return
+    Dim targetI As Integer = Integer.MinValue
+    For Each item As ListViewItem In SelectedlvMSUList
+      If item.Index > targetI Then targetI = item.Index
     Next
-    If targetI = Integer.MaxValue Or targetI >= lvMSU.Items.Count - msuItems.Count Then Return
+    If targetI = Integer.MinValue Or targetI > lvMSU.Items.Count - 1 Then Return
     targetI += 1
-    For Each item As ListViewItem In msuItems
+    For Each item As ListViewItem In SelectedlvMSUList
       Dim tmpItem = item.Clone
       item.Remove()
       If lvMSU.Items.Count <= targetI Then
@@ -1996,12 +2286,11 @@ Public Class frmMain
         lvMSU.Items.Insert(targetI, tmpItem)
       End If
       lvMSU.Items(targetI).Selected = True
-      targetI += 1
     Next
   End Sub
   Private Sub mnuUpdateBottom_Click(sender As System.Object, e As System.EventArgs) Handles mnuUpdateBottom.Click
-    Dim msuItems As ListView.SelectedListViewItemCollection = CType(mnuMSU.Tag, ListView.SelectedListViewItemCollection)
-    For Each item As ListViewItem In msuItems
+    If SelectedlvMSUList Is Nothing OrElse SelectedlvMSUList.Count = 0 Then Return
+    For Each item As ListViewItem In SelectedlvMSUList
       Dim tmpItem As ListViewItem = item.Clone
       item.Remove()
       lvMSU.Items.Add(tmpItem)
@@ -2009,9 +2298,9 @@ Public Class frmMain
     Next
   End Sub
   Private Sub mnuUpdateRemove_Click(sender As System.Object, e As System.EventArgs) Handles mnuUpdateRemove.Click
-    Dim msuItems As ListView.SelectedListViewItemCollection = CType(mnuMSU.Tag, ListView.SelectedListViewItemCollection)
+    If SelectedlvMSUList Is Nothing OrElse SelectedlvMSUList.Count = 0 Then Return
     Dim lIndex As Integer = -1
-    For Each lvItem As ListViewItem In msuItems
+    For Each lvItem As ListViewItem In SelectedlvMSUList
       lIndex = lvItem.Index
       lvItem.Remove()
     Next
@@ -2023,10 +2312,10 @@ Public Class frmMain
     RedoColumns()
   End Sub
   Private Sub mnuUpdateLocation_Click(sender As System.Object, e As System.EventArgs) Handles mnuUpdateLocation.Click
-    Dim msuItems As ListView.SelectedListViewItemCollection = CType(mnuMSU.Tag, ListView.SelectedListViewItemCollection)
+    If SelectedlvMSUList Is Nothing OrElse SelectedlvMSUList.Count = 0 Then Return
     Dim itemDirs As New SortedList(Of String, List(Of String))()
-    For Each lvItem As ListViewItem In msuItems
-      Dim itemDir As String = IO.Path.GetDirectoryName(CType(lvItem.Tag(0), Update_File).Path)
+    For Each lvItem As ListViewItem In SelectedlvMSUList
+      Dim itemDir As String = IO.Path.GetDirectoryName(MSUDataList(lvItem.Tag).Update.Path)
       If itemDirs.Count > 0 Then
         If Not itemDirs.ContainsKey(itemDir) Then
           itemDirs.Add(itemDir, New List(Of String))
@@ -2034,7 +2323,7 @@ Public Class frmMain
       Else
         itemDirs.Add(itemDir, New List(Of String))
       End If
-      itemDirs(itemDir).Add(CType(lvItem.Tag(0), Update_File).Path)
+      itemDirs(itemDir).Add(MSUDataList(lvItem.Tag).Update.Path)
     Next
     If itemDirs.Count > 0 Then
       If itemDirs.Count > 1 Then
@@ -2047,57 +2336,8 @@ Public Class frmMain
     End If
   End Sub
   Private Sub mnuUpdateProperties_Click(sender As System.Object, e As System.EventArgs) Handles mnuUpdateProperties.Click
-    Dim msuItems As ListView.SelectedListViewItemCollection = CType(mnuMSU.Tag, ListView.SelectedListViewItemCollection)
-    For Each lvItem As ListViewItem In msuItems
-      Dim msuData As Update_File = lvItem.Tag(0)
-      If Not String.IsNullOrEmpty(msuData.Failure) Then If ExtractFailureAlert(msuData.Failure) Then Continue For
-      If Not String.IsNullOrEmpty(msuData.Name) Then
-        If msuData.Name = "DRIVER" Then
-          Dim props As New frmDriverProps(msuData.DriverData)
-          props.Show(Me)
-        Else
-          For Each Form In OwnedForms
-            If Form.Tag = msuData.Name Then
-              Form.Focus()
-              Return
-            End If
-          Next
-          Dim props As New frmUpdateProps
-          props.Tag = msuData.Name
-          props.Text = GetUpdateName(msuData.Ident) & " Properties"
-          props.txtName.Text = msuData.Name
-          props.txtDisplayName.Text = msuData.DisplayName
-          props.txtIdentity.Text = msuData.Identity
-          props.txtAppliesTo.Text = msuData.AppliesTo
-          props.txtArchitecture.Text = msuData.Architecture
-          props.txtVersion.Text = msuData.KBVersion
-          props.txtBuildDate.Text = msuData.BuildDate
-          If String.IsNullOrEmpty(msuData.SupportLink) Then
-            props.lblKBLink.Link = False
-            props.lblKBLink.Tag = Nothing
-            If String.IsNullOrEmpty(msuData.KBArticle) Then
-              props.lblKBLink.Text = "Details"
-              props.lblKBLink.Visible = False
-            Else
-              props.lblKBLink.Text = "Article KB" & msuData.KBArticle
-              props.lblKBLink.Visible = True
-            End If
-          Else
-            props.lblKBLink.Link = True
-            props.lblKBLink.Tag = msuData.SupportLink
-            If String.IsNullOrEmpty(msuData.KBArticle) Then
-              props.lblKBLink.Text = "Details"
-              props.lblKBLink.Visible = True
-            Else
-              props.lblKBLink.Text = "Article KB" & msuData.KBArticle
-              props.lblKBLink.Visible = True
-            End If
-          End If
-          props.ttLink.SetToolTip(props.lblKBLink, msuData.SupportLink)
-          props.Show(Me)
-        End If
-      End If
-    Next
+    If SelectedlvMSUList Is Nothing OrElse SelectedlvMSUList.Count = 0 Then Return
+    ShowUpdatePropserties(SelectedlvMSUList)
   End Sub
 #End Region
 #End Region
@@ -2110,7 +2350,7 @@ Public Class frmMain
     cmdISO.Enabled = chkISO.Checked
     chkUEFI.Enabled = chkISO.Checked
     lblISOFeatures.Enabled = chkISO.Checked
-    chkUnlock.Enabled = chkISO.Checked And (chkUnlock.Tag Is Nothing)
+    chkUnlock.Enabled = chkISO.Checked And UnlockCheckbox = TriState.UseDefault
     lblISOLabel.Enabled = chkISO.Checked
     chkAutoLabel.Enabled = chkISO.Checked
     txtISOLabel.Enabled = chkISO.Checked
@@ -2153,21 +2393,21 @@ Public Class frmMain
         Next
       End If
       If foundEI Or foundCLG Then
-        If chkUnlock.Tag IsNot Nothing Then
-          If chkUnlock.Tag = "Y" Then
+        If Not UnlockCheckbox = TriState.UseDefault Then
+          If UnlockCheckbox = TriState.True Then
             chkUnlock.Checked = True
-          ElseIf chkUnlock.Tag = "N" Then
+          ElseIf UnlockCheckbox = TriState.False Then
             chkUnlock.Checked = False
           End If
-          chkUnlock.Tag = Nothing
+          UnlockCheckbox = TriState.UseDefault
         End If
         chkUnlock.Enabled = True
       Else
-        If chkUnlock.Tag Is Nothing Then
+        If UnlockCheckbox = TriState.UseDefault Then
           If chkUnlock.Checked Then
-            chkUnlock.Tag = "Y"
+            UnlockCheckbox = TriState.True
           Else
-            chkUnlock.Tag = "N"
+            UnlockCheckbox = TriState.False
           End If
         End If
         chkUnlock.Checked = True
@@ -2231,7 +2471,7 @@ Public Class frmMain
     TextBoxDragOverEvent(sender, e, {".iso"})
   End Sub
   Private Sub txtISOLabel_TextChanged(sender As System.Object, e As System.EventArgs) Handles txtISOLabel.TextChanged
-    If Me.Tag Is Nothing Then
+    If Not isStarting Then
       If Not String.IsNullOrEmpty(txtISOLabel.Text) Then
         mySettings.DefaultISOLabel = txtISOLabel.Text
       End If
@@ -2480,7 +2720,7 @@ Public Class frmMain
     If lvImages.Items.Count > 0 Then
       For Each Image As ListViewItem In lvImages.Items
         If Image.Checked Then
-          Dim imInfo As ImagePackage = Image.Tag(1)
+          Dim imInfo As ImagePackage = ImageDataList(Image.Tag).Package
           Select Case imInfo.Edition
             Case "Starter" : stCount += 1
             Case "HomeBasic" : hbCount += 1
@@ -2489,11 +2729,8 @@ Public Class frmMain
             Case "Ultimate" : ulCount += 1
             Case "Enterprise" : enCount += 1
           End Select
-          If imInfo.Architecture = "x86" Then
-            has86 = True
-          ElseIf imInfo.Architecture = "x64" Then
-            has64 = True
-          End If
+          If CompareArchitectures(imInfo.Architecture, ArchitectureList.x86, False) Then has86 = True
+          If CompareArchitectures(imInfo.Architecture, ArchitectureList.amd64, False) Then has64 = True
         End If
       Next
     End If
@@ -2588,7 +2825,7 @@ Public Class frmMain
     End Using
   End Sub
   Private Sub cmbISOFormat_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cmbISOFormat.SelectedIndexChanged
-    If Me.Tag Is Nothing Then
+    If Not isStarting Then
       mySettings.DefaultFS = cmbISOFormat.Text
     End If
   End Sub
@@ -2596,7 +2833,7 @@ Public Class frmMain
     Dim langList As New List(Of String)
     If lvImages.Items.Count > 0 Then
       For Each item As ListViewItem In lvImages.Items
-        Dim imageInfo As ImagePackage = item.Tag(1)
+        Dim imageInfo As ImagePackage = ImageDataList(item.Tag).Package
         For Each language As String In imageInfo.LangList
           Dim sLang As String = language.Substring(0, language.IndexOf("-")).ToUpper
           If Not langList.Contains(sLang) Then langList.Add(sLang)
@@ -2605,7 +2842,7 @@ Public Class frmMain
     End If
     If lvMSU.Items.Count > 0 Then
       For Each item As ListViewItem In lvMSU.Items
-        Dim updateInfo As Update_File = item.Tag(0)
+        Dim updateInfo As Update_File = MSUDataList(item.Tag).Update
         If updateInfo.Name.Contains("Interface Pack") Then
           If updateInfo.Name.Contains("-") Then
             Dim sLang As String = updateInfo.Name.Substring(0, updateInfo.Name.IndexOf("-")).ToUpper
@@ -2703,7 +2940,7 @@ Public Class frmMain
     If chkMerge.Checked Then
       txtMerge_TextChanged(txtMerge, New EventArgs)
     Else
-      ClearImageList("MERGE")
+      ClearImageList(WIMGroup.Merge)
     End If
     SortImageList()
     RedoColumns()
@@ -2723,7 +2960,7 @@ Public Class frmMain
     RunActivity = 2
     If tLister2 Is Nothing Then
       tLister2 = New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf ParseImageList))
-      tLister2.Start("MERGE")
+      tLister2.Start(WIMGroup.Merge)
     End If
   End Sub
   Private Sub cmdMerge_Click(sender As System.Object, e As System.EventArgs) Handles cmdMerge.Click
@@ -2791,11 +3028,16 @@ Public Class frmMain
     End If
   End Sub
   Private Sub ShowPackageProperties()
-    Dim wimID As String = lvImages.SelectedItems(0).Tag(0)
-    Dim propData As ImagePackage = lvImages.SelectedItems(0).Tag(1)
-    Dim featureData As List(Of Feature) = lvImages.SelectedItems(0).Tag(2)
-    Dim driverData As List(Of Driver) = lvImages.SelectedItems(0).Tag(3)
-    Dim props As New frmPackageProps(wimID, propData, featureData, driverData)
+    Dim propData As ImagePackageData = ImageDataList(lvImages.SelectedItems(0).Tag)
+    Dim packageName As String = propData.Package.Edition & propData.Package.Architecture & propData.Package.Modified
+    For Each Form In OwnedForms
+      If Form.Name = "frmPackage" & packageName & "Props" Then
+        Form.Focus()
+        Return
+      End If
+    Next
+    Dim props As New frmPackageProps(propData.Group, propData.Package, propData.FeatureList, propData.DriverList)
+    props.Name = "frmPackage" & packageName & "Props"
     props.txtName.Text = lvImages.SelectedItems(0).SubItems(1).Text
     AddHandler props.Response, AddressOf PackageProperties_Response
     props.Show(Me)
@@ -2804,37 +3046,13 @@ Public Class frmMain
     For Each lvItem As ListViewItem In lvImages.Items
       If lvItem.Text = e.ImageIndex And lvItem.SubItems(1).Text = e.OldImageName Then
         If Not String.IsNullOrEmpty(e.NewImageName) Then lvItem.SubItems(1).Text = e.NewImageName
-        Dim tag0 As String = Nothing
-        If lvItem.Tag IsNot Nothing Then
-          If IsArray(lvItem.Tag) Then
-            If LBound(lvItem.Tag) = 0 Then tag0 = lvItem.Tag(0)
-          End If
-        End If
-        Dim tag1 As ImagePackage = Nothing
-        If lvItem.Tag IsNot Nothing Then
-          If IsArray(lvItem.Tag) Then
-            If UBound(lvItem.Tag) > 0 Then tag1 = lvItem.Tag(1)
-          End If
-        End If
-        Dim tag2 As List(Of Feature) = Nothing
-        If lvItem.Tag IsNot Nothing Then
-          If IsArray(lvItem.Tag) Then
-            If UBound(lvItem.Tag) > 1 Then tag2 = lvItem.Tag(2)
-          End If
-        End If
-        Dim tag3 As List(Of Driver) = Nothing
-        If lvItem.Tag IsNot Nothing Then
-          If IsArray(lvItem.Tag) Then
-            If UBound(lvItem.Tag) > 2 Then tag3 = lvItem.Tag(3)
-          End If
-        End If
         If e.UpdateList IsNot Nothing AndAlso e.UpdateList.Length > 0 Then
           For Each item In e.UpdateList
-            For I As Integer = 0 To tag1.IntegratedUpdateList.Count - 1
-              If tag1.IntegratedUpdateList(I).Identity = item.Identity Then
-                Dim newTag1Update As Update_Integrated = tag1.IntegratedUpdateList(I)
-                newTag1Update.Remove = item.Remove
-                tag1.IntegratedUpdateList(I) = newTag1Update
+            For I As Integer = 0 To ImageDataList(lvItem.Tag).Package.IntegratedUpdateList.Count - 1
+              If ImageDataList(lvItem.Tag).Package.IntegratedUpdateList(I).Identity = item.Identity Then
+                Dim newUpdate As Update_Integrated = ImageDataList(lvItem.Tag).Package.IntegratedUpdateList(I)
+                newUpdate.Remove = item.Remove
+                ImageDataList(lvItem.Tag).Package.IntegratedUpdateList(I) = newUpdate
                 Exit For
               End If
             Next
@@ -2842,11 +3060,11 @@ Public Class frmMain
         End If
         If e.FeatureList IsNot Nothing AndAlso e.FeatureList.Length > 0 Then
           For Each item In e.FeatureList
-            For I As Integer = 0 To tag2.Count - 1
-              If tag2(I).FeatureName = item.FeatureName Then
-                Dim newTag2Feature As Feature = tag2(I)
-                newTag2Feature.Enable = item.Enable
-                tag2(I) = newTag2Feature
+            For I As Integer = 0 To ImageDataList(lvItem.Tag).FeatureList.Count - 1
+              If ImageDataList(lvItem.Tag).FeatureList(I).FeatureName = item.FeatureName Then
+                Dim newFeature As Feature = ImageDataList(lvItem.Tag).FeatureList(I)
+                newFeature.Enable = item.Enable
+                ImageDataList(lvItem.Tag).FeatureList(I) = newFeature
                 Exit For
               End If
             Next
@@ -2854,17 +3072,16 @@ Public Class frmMain
         End If
         If e.DriverList IsNot Nothing AndAlso e.DriverList.Length > 0 Then
           For Each item In e.DriverList
-            For I As Integer = 0 To tag3.Count - 1
-              If tag3(I).PublishedName = item.PublishedName Then
-                Dim newTag3Driver As Driver = tag3(I)
-                newTag3Driver.Remove = item.Remove
-                tag3(I) = newTag3Driver
+            For I As Integer = 0 To ImageDataList(lvItem.Tag).DriverList.Count - 1
+              If ImageDataList(lvItem.Tag).DriverList(I).PublishedName = item.PublishedName Then
+                Dim newDriver As Driver = ImageDataList(lvItem.Tag).DriverList(I)
+                newDriver.Remove = item.Remove
+                ImageDataList(lvItem.Tag).DriverList(I) = newDriver
                 Exit For
               End If
             Next
           Next
         End If
-        lvItem.Tag = {tag0, tag1, tag2, tag3}
         Exit For
       End If
     Next
@@ -2874,23 +3091,27 @@ Public Class frmMain
     If e.Button = Windows.Forms.MouseButtons.Right Then
       Dim selItem As ListViewItem = lvImages.GetItemAt(e.X, e.Y)
       If selItem IsNot Nothing Then
-        mnuImages.Tag = selItem
+        SelectedlvImagesItem = selItem
         mnuPackageInclude.Checked = selItem.Checked
         mnuImages.Show(lvImages, e.Location)
       End If
     End If
   End Sub
-  Private Delegate Sub ClearImageListInvoker(ToClear As String)
-  Private Sub ClearImageList(ToClear As String)
+  Private Delegate Sub ClearImageListInvoker(ToClear As WIMGroup)
+  Private Sub ClearImageList(ToClear As WIMGroup)
     If Me.InvokeRequired Then
       Me.Invoke(New ClearImageListInvoker(AddressOf ClearImageList), ToClear)
       Return
     End If
-    If String.IsNullOrEmpty(ToClear) Then
+    If ToClear = WIMGroup.All Then
+      ImageDataList.Clear()
       lvImages.Items.Clear()
     Else
       For Each lvItem As ListViewItem In lvImages.Items
-        If lvItem.Tag(0) = ToClear Then lvItem.Remove()
+        If ImageDataList(lvItem.Tag).Group = ToClear Then
+          ImageDataList.Remove(lvItem.Tag)
+          lvItem.Remove()
+        End If
       Next
     End If
     RedoColumns()
@@ -2918,14 +3139,14 @@ Public Class frmMain
       lvImages.ShowGroups = True
       lvImages.Groups.Clear()
       If imageOrderSorting = Windows.Forms.SortOrder.Ascending Then
-        lvImages.Groups.Add("MERGE", "Merge Image")
-        lvImages.Groups.Add("WIM", "Source Image")
+        lvImages.Groups.Add(WIMGroup.Merge.ToString.ToUpper, "Merge Image")
+        lvImages.Groups.Add(WIMGroup.WIM.ToString.ToUpper, "Source Image")
       Else
-        lvImages.Groups.Add("WIM", "Source Image")
-        lvImages.Groups.Add("MERGE", "Merge Image")
+        lvImages.Groups.Add(WIMGroup.WIM.ToString.ToUpper, "Source Image")
+        lvImages.Groups.Add(WIMGroup.Merge.ToString.ToUpper, "Merge Image")
       End If
       For Each lvItem As ListViewItem In lvImages.Items
-        lvItem.Group = lvImages.Groups(lvItem.Tag(0))
+        lvItem.Group = lvImages.Groups(ImageDataList(lvItem.Tag).Group.ToString.ToUpper)
         lvItem.BackColor = lvImages.BackColor
       Next
     Else
@@ -2971,16 +3192,16 @@ Public Class frmMain
     Private Function MakeComparison(x As ListViewItem, y As ListViewItem, s As OrderBy)
       Select Case s
         Case OrderBy.Display
-          If x.Tag(0) = "WIM" And Not y.Tag(0) = "WIM" Then Return -1
-          If Not x.Tag(0) = "WIM" And y.Tag(0) = "WIM" Then Return 1
+          If ImageDataList(x.Tag).Group = WIMGroup.WIM And Not ImageDataList(y.Tag).Group = WIMGroup.WIM Then Return -1
+          If Not ImageDataList(x.Tag).Group = WIMGroup.WIM And ImageDataList(y.Tag).Group = WIMGroup.WIM Then Return 1
           If Val(x.SubItems(0).Text) > Val(y.SubItems(0).Text) Then Return 1
           If Val(x.SubItems(0).Text) < Val(y.SubItems(0).Text) Then Return -1
           Return 0
         Case OrderBy.OS
-          Dim packageX As ImagePackage = x.Tag(1)
-          Dim packageY As ImagePackage = y.Tag(1)
-          If packageX.Architecture = "x64" And Not packageY.Architecture = "x64" Then Return 1
-          If Not packageX.Architecture = "x64" And packageY.Architecture = "x64" Then Return -1
+          Dim packageX As ImagePackage = ImageDataList(x.Tag).Package
+          Dim packageY As ImagePackage = ImageDataList(y.Tag).Package
+          If CompareArchitectures(packageX.Architecture, ArchitectureList.amd64, False) And Not CompareArchitectures(packageY.Architecture, ArchitectureList.amd64, False) Then Return 1
+          If Not CompareArchitectures(packageX.Architecture, ArchitectureList.amd64, False) And CompareArchitectures(packageY.Architecture, ArchitectureList.amd64, False) Then Return -1
           If packageX.SPLevel > packageY.SPLevel Then Return 1
           If packageX.SPLevel < packageY.SPLevel Then Return -1
           Dim iX As Integer = 0
@@ -3022,8 +3243,8 @@ Public Class frmMain
           End If
           Return Date.Compare(Date.Parse(packageX.Modified.Replace(" - ", " ")), Date.Parse(packageY.Modified.Replace(" - ", " ")))
         Case OrderBy.Size
-          Dim packageX As ImagePackage = x.Tag(1)
-          Dim packageY As ImagePackage = y.Tag(1)
+          Dim packageX As ImagePackage = ImageDataList(x.Tag).Package
+          Dim packageY As ImagePackage = ImageDataList(y.Tag).Package
           If packageX.Size > packageY.Size Then
             Return 1
           ElseIf packageX.Size < packageY.Size Then
@@ -3035,22 +3256,22 @@ Public Class frmMain
       End Select
     End Function
   End Class
-  Private Sub ClearLister(ToClear As String)
+  Private Sub ClearLister(ToClear As WIMGroup)
     If Me.InvokeRequired Then
       Me.Invoke(New ClearImageListInvoker(AddressOf ClearLister), ToClear)
       Return
     End If
-    If ToClear = "WIM" Then
+    If ToClear = WIMGroup.WIM Then
       tLister = Nothing
-    ElseIf ToClear = "MERGE" Then
+    ElseIf ToClear = WIMGroup.Merge Then
       tLister2 = Nothing
     Else
       tLister = Nothing
       tLister2 = Nothing
     End If
   End Sub
-  Private Delegate Sub ParseImageListInvoker(ToRun As String)
-  Private Sub ParseImageList(ToRun As String)
+  Private Delegate Sub ParseImageListInvoker(ToRun As WIMGroup)
+  Private Sub ParseImageList(ToRun As WIMGroup)
     If Me.InvokeRequired Then
       Me.Invoke(New ParseImageListInvoker(AddressOf ParseImageList), ToRun)
       Return
@@ -3058,13 +3279,13 @@ Public Class frmMain
     SetDisp(MNGList.Delete)
     SetTitle("Parsing WIM Packages", "Reading data from Windows Image package descriptor...")
     ToggleInputs(False)
-    If ToRun = "WIM" Then
+    If ToRun = WIMGroup.WIM Then
       ParseMainWIM()
       If tWIMDrag Is Nothing Then
         tWIMDrag = New Threading.Thread(New Threading.ThreadStart(AddressOf SetISOtoWIM))
         tWIMDrag.Start()
       End If
-    ElseIf ToRun = "MERGE" Then
+    ElseIf ToRun = WIMGroup.Merge Then
       ParseMergeWIM()
     Else
       ParseMainWIM()
@@ -3127,7 +3348,7 @@ Public Class frmMain
     End If
     ttInfo.SetToolTip(cmdLoadPackages, "Begin Image Package Parsing procedure to gather information about " & sListText & "." & vbNewLine & vbNewLine &
                                        "(This is optional - if you know which files are already integrated, you can save time by skipping this.)")
-    If Me.Tag Is Nothing Then
+    If Not isStarting Then
       If Not chkLoadFeatures.Checked = mySettings.LoadFeatures Then mySettings.LoadFeatures = chkLoadFeatures.Checked
       If Not chkLoadUpdates.Checked = mySettings.LoadUpdates Then mySettings.LoadUpdates = chkLoadUpdates.Checked
       If Not chkLoadDrivers.Checked = mySettings.LoadDrivers Then mySettings.LoadDrivers = chkLoadDrivers.Checked
@@ -3143,18 +3364,18 @@ Public Class frmMain
     Dim doUpdates As Boolean = chkLoadUpdates.Checked
     Dim doDrivers As Boolean = chkLoadDrivers.Checked
     If doFeatures Then
-      LoadPackageFeatures("WIM")
-      LoadPackageFeatures("Merge")
+      LoadPackageFeatures(WIMGroup.WIM)
+      LoadPackageFeatures(WIMGroup.Merge)
       chkLoadFeatures.Checked = False
     End If
     If doUpdates Then
-      LoadPackageUpdates("WIM")
-      LoadPackageUpdates("Merge")
+      LoadPackageUpdates(WIMGroup.WIM)
+      LoadPackageUpdates(WIMGroup.Merge)
       chkLoadUpdates.Checked = False
     End If
     If doDrivers Then
-      LoadPackageDrivers("WIM")
-      LoadPackageDrivers("Merge")
+      LoadPackageDrivers(WIMGroup.WIM)
+      LoadPackageDrivers(WIMGroup.Merge)
       chkLoadDrivers.Checked = False
     End If
     chkLoadFeatures.Checked = doFeatures
@@ -3164,7 +3385,7 @@ Public Class frmMain
   End Sub
 #Region "Package Feature List"
   Private LoadFeatureComplete As Boolean
-  Public Sub LoadPackageFeatures(WIMID As String, Optional SelectedIndex As Integer = -1)
+  Public Sub LoadPackageFeatures(ImageGroup As WIMGroup, Optional SelectedIndex As Integer = -1)
     ToggleInputs(False)
     CleanMounts()
     LoadFeatureComplete = False
@@ -3176,7 +3397,7 @@ Public Class frmMain
     End If
     RunActivity = 3
     tListUp = New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf LoadFeatureList))
-    tListUp.Start({WIMID, SelectedIndex})
+    tListUp.Start({ImageGroup, SelectedIndex})
     Do Until LoadFeatureComplete
       Application.DoEvents()
       Threading.Thread.Sleep(1)
@@ -3198,12 +3419,12 @@ Public Class frmMain
       Me.Invoke(New LoadFeatureListInvoker(AddressOf LoadFeatureList), Param)
       Return
     End If
-    Dim ListType As String = Param(0)
+    Dim ImageGroup As WIMGroup = Param(0)
     Dim SelIndex As Integer = Param(1)
     Dim sWIM As String = Nothing
-    If ListType = "WIM" Then
+    If ImageGroup = WIMGroup.WIM Then
       sWIM = txtWIM.Text
-    ElseIf ListType = "Merge" Then
+    ElseIf ImageGroup = WIMGroup.Merge Then
       sWIM = txtMerge.Text
     End If
     If String.IsNullOrEmpty(sWIM) Then
@@ -3211,7 +3432,7 @@ Public Class frmMain
       Return
     End If
     Dim ParseWork As String = Work & "PARSE" & IO.Path.DirectorySeparatorChar
-    Dim ParseWorkWIM As String = ParseWork & ListType & IO.Path.DirectorySeparatorChar
+    Dim ParseWorkWIM As String = ParseWork & ImageGroup.ToString & IO.Path.DirectorySeparatorChar
     If IO.File.Exists(ParseWork) Then
       WriteToOutput("Deleting """ & ParseWork & """...")
       SlowDeleteDirectory(ParseWork, FileIO.DeleteDirectoryOption.DeleteAllContents)
@@ -3260,25 +3481,18 @@ Public Class frmMain
           LoadFeatureComplete = True
           Return
         End If
-        If Package.Architecture.ToLower = "x64" Then
+        If CompareArchitectures(Package.Architecture, ArchitectureList.amd64, False) Then
           If Not Package.Name.Contains("64") Then Package.Name &= " x64"
         End If
         Dim lvItem As ListViewItem = Nothing
         For Each item As ListViewItem In lvImages.Items
-          Dim iPackage As ImagePackage = item.Tag(1)
-          If item.Tag(0) = ListType.ToUpper And Package = iPackage Then
+          Dim iPackage As ImagePackage = ImageDataList(item.Tag).Package
+          If ImageDataList(item.Tag).Group = ImageGroup And Package = iPackage Then
             lvItem = item
             Exit For
           End If
         Next
-        If lvItem.Tag IsNot Nothing Then
-          If IsArray(lvItem.Tag) Then
-            If UBound(lvItem.Tag) > 1 Then
-              Dim tFL As List(Of Feature) = lvItem.Tag(2)
-              If tFL IsNot Nothing AndAlso tFL.Count > 0 Then Continue For
-            End If
-          End If
-        End If
+        If lvItem.Tag IsNot Nothing AndAlso ImageDataList(lvItem.Tag).FeatureList IsNot Nothing AndAlso ImageDataList(lvItem.Tag).FeatureList.Count > 0 Then Continue For
         progVal += 1
         SetProgress(progVal, progMax)
         SetStatus("Mounting " & Package.Name & " Package...")
@@ -3300,28 +3514,9 @@ Public Class frmMain
           If StopRun Then Return
           progVal += 1
           SetProgress(progVal, progMax)
-          Dim tag0 As String = Nothing
-          If lvItem.Tag IsNot Nothing Then
-            If IsArray(lvItem.Tag) Then
-              If LBound(lvItem.Tag) = 0 Then tag0 = lvItem.Tag(0)
-            End If
-          End If
-          If String.IsNullOrEmpty(tag0) Then tag0 = ListType.ToUpper
-          Dim tag1 As ImagePackage = Nothing
-          If lvItem.Tag IsNot Nothing Then
-            If IsArray(lvItem.Tag) Then
-              If UBound(lvItem.Tag) > 0 Then tag1 = lvItem.Tag(1)
-            End If
-          End If
-          If tag1.Index = 0 Then tag1 = Package
-          Dim tag2 As List(Of Feature) = Features
-          Dim tag3 As List(Of Driver) = Nothing
-          If lvItem.Tag IsNot Nothing Then
-            If IsArray(lvItem.Tag) Then
-              If LBound(lvItem.Tag) > 2 Then tag3 = lvItem.Tag(3)
-            End If
-          End If
-          lvItem.Tag = {tag0, tag1, tag2, tag3}
+          Dim pData As ImagePackageData = ImageDataList(lvItem.Tag)
+          pData.FeatureList = Features
+          ImageDataList(lvItem.Tag) = pData
         Else
           SetStatus("Failed to Mount Package """ & Package.Name & """!")
           LoadFeatureComplete = True
@@ -3341,7 +3536,7 @@ Public Class frmMain
 #End Region
 #Region "Package Updates List"
   Private LoadUpdateComplete As Boolean
-  Public Sub LoadPackageUpdates(WIMID As String, Optional SelectedIndex As Integer = -1)
+  Public Sub LoadPackageUpdates(ImageGroup As WIMGroup, Optional SelectedIndex As Integer = -1)
     ToggleInputs(False)
     CleanMounts()
     LoadUpdateComplete = False
@@ -3353,7 +3548,7 @@ Public Class frmMain
     End If
     RunActivity = 3
     tListUp = New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf LoadUpdateList))
-    tListUp.Start({WIMID, SelectedIndex})
+    tListUp.Start({ImageGroup, SelectedIndex})
     Do Until LoadUpdateComplete
       Application.DoEvents()
       Threading.Thread.Sleep(1)
@@ -3376,12 +3571,12 @@ Public Class frmMain
       Me.Invoke(New LoadUpdateListInvoker(AddressOf LoadUpdateList), Param)
       Return
     End If
-    Dim ListType As String = Param(0)
+    Dim ImageGroup As WIMGroup = Param(0)
     Dim selIndex As Integer = Param(1)
     Dim sWIM As String = Nothing
-    If ListType = "WIM" Then
+    If ImageGroup = WIMGroup.WIM Then
       sWIM = txtWIM.Text
-    ElseIf ListType = "Merge" Then
+    ElseIf ImageGroup = WIMGroup.Merge Then
       sWIM = txtMerge.Text
     End If
     If String.IsNullOrEmpty(sWIM) Then
@@ -3389,7 +3584,7 @@ Public Class frmMain
       Return
     End If
     Dim ParseWork As String = Work & "PARSE" & IO.Path.DirectorySeparatorChar
-    Dim ParseWorkWIM As String = ParseWork & ListType & IO.Path.DirectorySeparatorChar
+    Dim ParseWorkWIM As String = ParseWork & ImageGroup.ToString & IO.Path.DirectorySeparatorChar
     If IO.File.Exists(ParseWork) Then
       WriteToOutput("Deleting """ & ParseWork & """...")
       SlowDeleteDirectory(ParseWork, FileIO.DeleteDirectoryOption.DeleteAllContents)
@@ -3438,13 +3633,12 @@ Public Class frmMain
           LoadUpdateComplete = True
           Return
         End If
-        If Package.Architecture.ToLower = "x64" Then
+        If CompareArchitectures(Package.Architecture, ArchitectureList.amd64, False) Then
           If Not Package.Name.Contains("64") Then Package.Name &= " x64"
         End If
         Dim lvItem As ListViewItem = Nothing
         For Each item As ListViewItem In lvImages.Items
-          Dim iPackage As ImagePackage = item.Tag(1)
-          If item.Tag(0) = ListType.ToUpper And Package = iPackage Then
+          If ImageDataList(item.Tag).Group = ImageGroup And ImageDataList(item.Tag).Package = Package Then
             lvItem = item
             Exit For
           End If
@@ -3455,12 +3649,8 @@ Public Class frmMain
           Return
         End If
         If lvItem.Tag IsNot Nothing Then
-          If IsArray(lvItem.Tag) Then
-            If UBound(lvItem.Tag) > 0 Then
-              Dim tPI As ImagePackage = lvItem.Tag(1)
-              If tPI.IntegratedUpdateList IsNot Nothing AndAlso tPI.IntegratedUpdateList.Count > 0 Then Continue For
-            End If
-          End If
+          Dim tPI As ImagePackage = ImageDataList(lvItem.Tag).Package
+          If tPI.IntegratedUpdateList IsNot Nothing AndAlso tPI.IntegratedUpdateList.Count > 0 Then Continue For
         End If
         SetStatus("Mounting " & Package.Name & " Package...")
         If InitDISM(WIMFile, I, Mount) Then
@@ -3480,27 +3670,9 @@ Public Class frmMain
           SetProgress(progVal, progMax)
           Package.PopulateUpdateList(upList)
           If StopRun Then Return
-          Dim tag0 As String = Nothing
-          If lvItem.Tag IsNot Nothing Then
-            If IsArray(lvItem.Tag) Then
-              If LBound(lvItem.Tag) = 0 Then tag0 = lvItem.Tag(0)
-            End If
-          End If
-          If String.IsNullOrEmpty(tag0) Then tag0 = ListType.ToUpper
-          Dim tag1 As ImagePackage = Package
-          Dim tag2 As List(Of Feature) = Nothing
-          If lvItem.Tag IsNot Nothing Then
-            If IsArray(lvItem.Tag) Then
-              If UBound(lvItem.Tag) > 1 Then tag2 = lvItem.Tag(2)
-            End If
-          End If
-          Dim tag3 As List(Of Driver) = Nothing
-          If lvItem.Tag IsNot Nothing Then
-            If IsArray(lvItem.Tag) Then
-              If UBound(lvItem.Tag) > 2 Then tag3 = lvItem.Tag(3)
-            End If
-          End If
-          lvItem.Tag = {tag0, tag1, tag2, tag3}
+          Dim pData As ImagePackageData = ImageDataList(lvItem.Tag)
+          pData.Package = Package
+          ImageDataList(lvItem.Tag) = pData
         Else
           SetStatus("Failed to Mount Package """ & Package.Name & """!")
           LoadUpdateComplete = True
@@ -3520,7 +3692,7 @@ Public Class frmMain
 #End Region
 #Region "Package Drivers List"
   Private LoadDriverComplete As Boolean
-  Public Sub LoadPackageDrivers(WIMID As String, Optional SelectedIndex As Integer = -1)
+  Public Sub LoadPackageDrivers(ImageGroup As WIMGroup, Optional SelectedIndex As Integer = -1)
     ToggleInputs(False)
     CleanMounts()
     LoadDriverComplete = False
@@ -3532,7 +3704,7 @@ Public Class frmMain
     End If
     RunActivity = 3
     tListUp = New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf LoadDriverList))
-    tListUp.Start({WIMID, SelectedIndex})
+    tListUp.Start({ImageGroup, SelectedIndex})
     Do Until LoadDriverComplete
       Application.DoEvents()
       Threading.Thread.Sleep(1)
@@ -3554,12 +3726,12 @@ Public Class frmMain
       Me.Invoke(New LoadDriverListInvoker(AddressOf LoadDriverList), Param)
       Return
     End If
-    Dim ListType As String = Param(0)
+    Dim ImageGroup As WIMGroup = Param(0)
     Dim selIndex As Integer = Param(1)
     Dim sWIM As String = Nothing
-    If ListType = "WIM" Then
+    If ImageGroup = WIMGroup.WIM Then
       sWIM = txtWIM.Text
-    ElseIf ListType = "Merge" Then
+    ElseIf ImageGroup = WIMGroup.Merge Then
       sWIM = txtMerge.Text
     End If
     If String.IsNullOrEmpty(sWIM) Then
@@ -3567,7 +3739,7 @@ Public Class frmMain
       Return
     End If
     Dim ParseWork As String = Work & "PARSE" & IO.Path.DirectorySeparatorChar
-    Dim ParseWorkWIM As String = ParseWork & ListType & IO.Path.DirectorySeparatorChar
+    Dim ParseWorkWIM As String = ParseWork & ImageGroup.ToString & IO.Path.DirectorySeparatorChar
     If IO.File.Exists(ParseWork) Then
       WriteToOutput("Deleting """ & ParseWork & """...")
       SlowDeleteDirectory(ParseWork, FileIO.DeleteDirectoryOption.DeleteAllContents)
@@ -3617,14 +3789,13 @@ Public Class frmMain
           Return
         End If
         Dim arch As ArchitectureList = ArchitectureList.x86
-        If Package.Architecture.ToLower = "x64" Then
+        If CompareArchitectures(Package.Architecture, ArchitectureList.amd64, False) Then
           If Not Package.Name.Contains("64") Then Package.Name &= " x64"
           arch = ArchitectureList.amd64
         End If
         Dim lvItem As ListViewItem = Nothing
         For Each item As ListViewItem In lvImages.Items
-          Dim iPackage As ImagePackage = item.Tag(1)
-          If item.Tag(0) = ListType.ToUpper And Package = iPackage Then
+          If ImageDataList(item.Tag).Group = ImageGroup And ImageDataList(item.Tag).Package = Package Then
             lvItem = item
             Exit For
           End If
@@ -3635,12 +3806,8 @@ Public Class frmMain
           Return
         End If
         If lvItem.Tag IsNot Nothing Then
-          If IsArray(lvItem.Tag) Then
-            If UBound(lvItem.Tag) > 0 Then
-              Dim tDL As List(Of Driver) = lvItem.Tag(3)
-              If tDL IsNot Nothing AndAlso tDL.Count > 0 Then Continue For
-            End If
-          End If
+          Dim tDL As List(Of Driver) = ImageDataList(lvItem.Tag).DriverList
+          If tDL IsNot Nothing AndAlso tDL.Count > 0 Then Continue For
         End If
         SetStatus("Mounting " & Package.Name & " Package...")
         If InitDISM(WIMFile, I, Mount) Then
@@ -3659,28 +3826,9 @@ Public Class frmMain
           progVal += 1
           SetProgress(progVal, progMax)
           If StopRun Then Return
-          Dim tag0 As String = Nothing
-          If lvItem.Tag IsNot Nothing Then
-            If IsArray(lvItem.Tag) Then
-              If LBound(lvItem.Tag) = 0 Then tag0 = lvItem.Tag(0)
-            End If
-          End If
-          If String.IsNullOrEmpty(tag0) Then tag0 = ListType.ToUpper
-          Dim tag1 As ImagePackage = Nothing
-          If lvItem.Tag IsNot Nothing Then
-            If IsArray(lvItem.Tag) Then
-              If UBound(lvItem.Tag) > 0 Then tag1 = lvItem.Tag(1)
-            End If
-          End If
-          If tag1.Index = 0 Then tag1 = Package
-          Dim tag2 As List(Of Feature) = Nothing
-          If lvItem.Tag IsNot Nothing Then
-            If IsArray(lvItem.Tag) Then
-              If UBound(lvItem.Tag) > 1 Then tag2 = lvItem.Tag(2)
-            End If
-          End If
-          Dim tag3 As List(Of Driver) = driverList
-          lvItem.Tag = {tag0, tag1, tag2, tag3}
+          Dim pData As ImagePackageData = ImageDataList(lvItem.Tag)
+          pData.DriverList = driverList
+          ImageDataList(lvItem.Tag) = pData
         Else
           SetStatus("Failed to Mount Package """ & Package.Name & """!")
           LoadDriverComplete = True
@@ -3700,17 +3848,15 @@ Public Class frmMain
 #End Region
 #Region "Context Menu"
   Private Sub mnuPackageInclude_Click(sender As System.Object, e As System.EventArgs) Handles mnuPackageInclude.Click
-    Dim selItem As ListViewItem = CType(mnuImages.Tag, ListViewItem)
     mnuPackageInclude.Checked = Not mnuPackageInclude.Checked
-    selItem.Checked = mnuPackageInclude.Checked
+    SelectedlvImagesItem.Checked = mnuPackageInclude.Checked
   End Sub
   Private Sub mnuPackageRename_Click(sender As System.Object, e As System.EventArgs) Handles mnuPackageRename.Click
-    RenamePackage(CType(mnuImages.Tag, ListViewItem))
+    RenamePackage(SelectedlvImagesItem)
   End Sub
   Private Sub mnuPackageLocation_Click(sender As System.Object, e As System.EventArgs) Handles mnuPackageLocation.Click
-    Dim selItem As ListViewItem = CType(mnuImages.Tag, ListViewItem)
     If chkMerge.Checked Then
-      If selItem.Tag(0) = "MERGE" Then
+      If ImageDataList(SelectedlvImagesItem.Tag).Group = WIMGroup.Merge Then
         Process.Start("explorer", "/select,""" & txtMerge.Text & """")
       Else
         Process.Start("explorer", "/select,""" & txtWIM.Text & """")
@@ -3733,7 +3879,7 @@ Public Class frmMain
 #End Region
 #Region "Limit"
   Private Sub cmbLimitType_SelectedIndexChanged(sender As Object, e As System.EventArgs) Handles cmbLimitType.SelectedIndexChanged
-    If Me.Tag Is Nothing Then
+    If Not isStarting Then
       Dim sDefault As String = cmbLimit.Text
       SetLimitValues(cmbLimitType.SelectedIndex)
       If Not String.IsNullOrEmpty(sDefault) Then cmbLimit.Text = sDefault
@@ -3779,7 +3925,7 @@ Public Class frmMain
     If e.KeyCode = Keys.OemPeriod Or e.KeyCode = Keys.Decimal Or e.KeyCode = Keys.Subtract Or e.KeyCode = Keys.OemMinus Then e.SuppressKeyPress = True
   End Sub
   Private Sub cmbLimit_LostFocus(sender As Object, e As System.EventArgs) Handles cmbLimit.LostFocus
-    If Me.Tag Is Nothing Then
+    If Not isStarting Then
       Dim iLimit As Long = 1
       Try
         If String.IsNullOrEmpty(cmbLimit.Text) Then
@@ -3826,7 +3972,7 @@ Public Class frmMain
       Case 5 : Process.GetCurrentProcess.PriorityClass = ProcessPriorityClass.Idle
       Case Else : Process.GetCurrentProcess.PriorityClass = ProcessPriorityClass.Normal
     End Select
-    If Me.Tag Is Nothing Then mySettings.Priority = cmbPriority.Text
+    If Not isStarting Then mySettings.Priority = cmbPriority.Text
   End Sub
   Private Sub cmbCompletion_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cmbCompletion.SelectedIndexChanged
     If cmbCompletion.SelectedIndex = 0 Then
@@ -3894,12 +4040,13 @@ Public Class frmMain
   End Sub
 #End Region
 #Region "Status"
+  Private m_Status As String
   Private Delegate Function GetStatusInvoker() As String
   Private Function GetStatus() As String
     If Me.InvokeRequired Then
       Return Me.Invoke(New GetStatusInvoker(AddressOf GetStatus))
     Else
-      Return lblActivity.Tag
+      Return m_Status
     End If
   End Function
   Private ActivityMouse As Boolean
@@ -3937,7 +4084,7 @@ Public Class frmMain
     SetActivityText(GetStatus)
   End Sub
   Private Sub SetActivityText(Message As String)
-    lblActivity.Tag = Message
+    m_Status = Message
     If String.IsNullOrEmpty(Message) Then
       lblActivity.Text = Nothing
       Return
@@ -4192,32 +4339,35 @@ Public Class frmMain
       Me.Invoke(New WriteToOutputCallBack(AddressOf WriteToOutput), Message, MsgType)
       Return
     End If
-    Dim tOutput As TextBox = txtOutput
-    If outputWindow Then tOutput = frmOutput.txtOutput
-    If String.IsNullOrEmpty(Message) Then
-      tOutput.AppendText(vbNewLine)
-    Else
-      If MsgType = OutputType.Command Then
-        If tOutput.Text.Contains(vbNewLine) Then
-          Dim outputSplit() As String = Split(tOutput.Text, vbNewLine)
-          If outputSplit.Length > 1 Then
-            If outputSplit(outputSplit.Length - 2).Length < 3 Then
-              tOutput.AppendText(vbNewLine & Message & vbNewLine)
-            ElseIf outputSplit(outputSplit.Length - 2).Substring(0, 3) = "   " Then
-              tOutput.AppendText(vbNewLine & vbNewLine & Message & vbNewLine)
+    Try
+      Dim tOutput As TextBox = txtOutput
+      If outputWindow Then tOutput = frmOutput.txtOutput
+      If String.IsNullOrEmpty(Message) Then
+        tOutput.AppendText(vbNewLine)
+      Else
+        If MsgType = OutputType.Command Then
+          If tOutput.Text.Contains(vbNewLine) Then
+            Dim outputSplit() As String = Split(tOutput.Text, vbNewLine)
+            If outputSplit.Length > 1 Then
+              If outputSplit(outputSplit.Length - 2).Length < 3 Then
+                tOutput.AppendText(vbNewLine & Message & vbNewLine)
+              ElseIf outputSplit(outputSplit.Length - 2).Substring(0, 3) = "   " Then
+                tOutput.AppendText(vbNewLine & vbNewLine & Message & vbNewLine)
+              Else
+                tOutput.AppendText(vbNewLine & Message & vbNewLine)
+              End If
             Else
               tOutput.AppendText(vbNewLine & Message & vbNewLine)
             End If
           Else
-            tOutput.AppendText(vbNewLine & Message & vbNewLine)
+            tOutput.AppendText(Message & vbNewLine)
           End If
         Else
-          tOutput.AppendText(Message & vbNewLine)
+          tOutput.AppendText("   " & Message & vbNewLine)
         End If
-      Else
-        tOutput.AppendText("   " & Message & vbNewLine)
       End If
-    End If
+    Catch ex As Exception
+    End Try
   End Sub
   Private tearFrom As Point = Point.Empty
   Private moving As Boolean = False
@@ -4604,14 +4754,18 @@ Public Class frmMain
 #End Region
 #Region "7-Zip"
   Private WithEvents Extractor As Extraction.ArchiveFile
-  Private c_ExtractRet As New Collections.Generic.List(Of String)
-  Private Delegate Sub ExtractAllFilesInvoker(Source As String, Destination As String)
-  Private Sub ExtractAllFiles(Source As String, Destination As String)
+  Private c_ExtractRet As New List(Of String)
+  Private Delegate Sub ExtractAllFilesInvoker(Source As String, Destination As String, SourceName As String)
+  Private Sub ExtractAllFiles(Source As String, Destination As String, Optional SourceName As String = Nothing)
     If Me.InvokeRequired Then
-      Me.Invoke(New ExtractAllFilesInvoker(AddressOf ExtractAllFiles), Source, Destination)
+      Me.Invoke(New ExtractAllFilesInvoker(AddressOf ExtractAllFiles), Source, Destination, SourceName)
       Return
     End If
-    WriteToOutput("Extracting all files from """ & Source & """...")
+    If String.IsNullOrEmpty(SourceName) Then
+      WriteToOutput("Extracting all files from """ & Source & """...")
+    Else
+      WriteToOutput("Extracting all " & SourceName & " files from """ & Source & """...")
+    End If
     Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractAllFiles))
     Dim cIndex As Integer = c_ExtractRet.Count
     c_ExtractRet.Add(Nothing)
@@ -4674,13 +4828,17 @@ Public Class frmMain
     SetSubProgress(100, 100)
     c_ExtractRet(cIndex) = "OK"
   End Sub
-  Private Delegate Sub ExtractFilesInvoker(Source As String, Destination As String, Except As String)
-  Private Sub ExtractFiles(Source As String, Destination As String, Except As String)
+  Private Delegate Sub ExtractFilesInvoker(Source As String, Destination As String, Except As String, SourceName As String)
+  Private Sub ExtractFiles(Source As String, Destination As String, Except As String, Optional SourceName As String = Nothing)
     If Me.InvokeRequired Then
-      Me.Invoke(New ExtractFilesInvoker(AddressOf ExtractFiles), Source, Destination, Except)
+      Me.Invoke(New ExtractFilesInvoker(AddressOf ExtractFiles), Source, Destination, Except, SourceName)
       Return
     End If
-    WriteToOutput("Extracting files except ""*" & Except & """ from """ & Source & """...")
+    If String.IsNullOrEmpty(SourceName) Then
+      WriteToOutput("Extracting files except ""*" & Except & """ from """ & Source & """...")
+    Else
+      WriteToOutput("Extracting " & SourceName & " files except ""*" & Except & """ from """ & Source & """...")
+    End If
     Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractFiles))
     Dim cIndex As Integer = c_ExtractRet.Count
     c_ExtractRet.Add(Nothing)
@@ -4745,13 +4903,17 @@ Public Class frmMain
     SetSubProgress(100, 100)
     c_ExtractRet(cIndex) = "OK"
   End Sub
-  Private Delegate Sub ExtractAFileInvoker(Source As String, Destination As String, File As String)
-  Private Sub ExtractAFile(Source As String, Destination As String, File As String)
+  Private Delegate Sub ExtractAFileInvoker(Source As String, Destination As String, File As String, SourceName As String)
+  Private Sub ExtractAFile(Source As String, Destination As String, File As String, Optional SourceName As String = Nothing)
     If Me.InvokeRequired Then
-      Me.Invoke(New ExtractAFileInvoker(AddressOf ExtractAFile), Source, Destination, File)
+      Me.Invoke(New ExtractAFileInvoker(AddressOf ExtractAFile), Source, Destination, File, SourceName)
       Return
     End If
-    WriteToOutput("Extracting """ & File & """ from """ & Source & """...")
+    If String.IsNullOrEmpty(SourceName) Then
+      WriteToOutput("Extracting """ & File & """ from """ & Source & """...")
+    Else
+      WriteToOutput("Extracting " & SourceName & " file """ & File & """ from """ & Source & """...")
+    End If
     Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractAFile))
     Dim cIndex As Integer = c_ExtractRet.Count
     c_ExtractRet.Add(Nothing)
@@ -5013,7 +5175,7 @@ Public Class frmMain
 #Region "Caller Functions"
   Private ReturnProgress As Boolean
 #Region "Run With Return"
-  Private c_RunWithReturnRet As New Collections.Generic.List(Of String)
+  Private c_RunWithReturnRet As New List(Of String)
   Private Function RunWithReturn(Filename As String, Arguments As String, Optional IgnoreStopRun As Boolean = False) As String
     Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncRunWithReturn))
     Dim cIndex As Integer = c_RunWithReturnRet.Count
@@ -5080,8 +5242,8 @@ Public Class frmMain
       Err.Clear()
     End Try
   End Sub
-  Private c_RunWithReturnAccumulation As New Collections.Generic.List(Of String)
-  Private c_RunWithReturnErrorAccumulation As New Collections.Generic.List(Of String)
+  Private c_RunWithReturnAccumulation As New List(Of String)
+  Private c_RunWithReturnErrorAccumulation As New List(Of String)
   Private Sub AsyncRunWithReturnRet(Index As Integer, Output As String)
     If Me.InvokeRequired Then
       Me.Invoke(New RunWithReturnRetCallBack(AddressOf AsyncRunWithReturnRet), Index, Output)
@@ -5141,7 +5303,7 @@ Public Class frmMain
   End Sub
 #End Region
 #Region "Run Hidden"
-  Private c_RunHiddenRet As New Collections.Generic.List(Of Boolean)
+  Private c_RunHiddenRet As New List(Of Boolean)
   Private Sub RunHidden(Filename As String, Arguments As String)
     Dim tRunHidden As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncRunHidden))
     Dim cIndex As Integer = c_RunHiddenRet.Count
@@ -5257,28 +5419,56 @@ Public Class frmMain
       iTotalMax += 2
       If cmbLimitType.SelectedIndex > 0 Then iTotalMax += 1
     End If
-    Dim DoIntegratedUpdates As Boolean = False
     Dim DoFeatures As Boolean = False
+    Dim DoIntegratedUpdates As Boolean = False
     Dim DoIntegratedDrivers As Boolean = False
     For Each lvRow As ListViewItem In lvImages.Items
       If lvRow.Checked Then
-        If Not DoIntegratedUpdates Then
-          Dim TestIntegratedUpdates As List(Of Update_Integrated) = CType(lvRow.Tag(1), ImagePackage).IntegratedUpdateList
-          If TestIntegratedUpdates IsNot Nothing AndAlso TestIntegratedUpdates.Count > 0 Then DoIntegratedUpdates = True
-        End If
         If Not DoFeatures Then
-          Dim TestFeatures As List(Of Feature) = lvRow.Tag(2)
-          If TestFeatures IsNot Nothing AndAlso TestFeatures.Count > 0 Then DoFeatures = True
+          Dim TestFeatures As List(Of Feature) = ImageDataList(lvRow.Tag).FeatureList
+          If TestFeatures IsNot Nothing AndAlso TestFeatures.Count > 0 Then
+            For I As Integer = 0 To TestFeatures.Count - 1
+              If TestFeatures(I).Enable Then
+                If Not (TestFeatures(I).State = "Enabled" Or TestFeatures(I).State = "Enable Pending") Then
+                  DoFeatures = True
+                  Exit For
+                End If
+              Else
+                If TestFeatures(I).State = "Enabled" Or TestFeatures(I).State = "Enable Pending" Then
+                  DoFeatures = True
+                  Exit For
+                End If
+              End If
+            Next
+          End If
+        End If
+        If Not DoIntegratedUpdates Then
+          Dim TestIntegratedUpdates As List(Of Update_Integrated) = ImageDataList(lvRow.Tag).Package.IntegratedUpdateList
+          If TestIntegratedUpdates IsNot Nothing AndAlso TestIntegratedUpdates.Count > 0 Then
+            For I As Integer = 0 To TestIntegratedUpdates.Count - 1
+              If TestIntegratedUpdates(I).Remove And Not (TestIntegratedUpdates(I).State = "Uninstall Pending" Or TestIntegratedUpdates(I).State = "Superseded") Then
+                DoIntegratedUpdates = True
+                Exit For
+              End If
+            Next
+          End If
         End If
         If Not DoIntegratedDrivers Then
-          Dim TestIntegratedDrivers As List(Of Driver) = lvRow.Tag(3)
-          If TestIntegratedDrivers IsNot Nothing AndAlso TestIntegratedDrivers.Count > 0 Then DoIntegratedDrivers = True
+          Dim TestIntegratedDrivers As List(Of Driver) = ImageDataList(lvRow.Tag).DriverList
+          If TestIntegratedDrivers IsNot Nothing AndAlso TestIntegratedDrivers.Count > 0 Then
+            For I As Integer = 0 To TestIntegratedDrivers.Count - 1
+              If TestIntegratedDrivers(I).Remove Then
+                DoIntegratedDrivers = True
+                Exit For
+              End If
+            Next
+          End If
         End If
       End If
     Next
     If DoIntegratedUpdates Then iTotalMax += 1
     If DoFeatures Then iTotalMax += 1
-    If DoIntegratedUpdates Then iTotalMax += 1
+    If DoIntegratedDrivers Then iTotalMax += 1
     SetProgress(0, 1)
     SetTotal(iTotalVal, iTotalMax)
     pbTotal.Style = ProgressBarStyle.Continuous
@@ -5303,7 +5493,6 @@ Public Class frmMain
       iTotalVal += 1
       SetTotal(iTotalVal, iTotalMax)
       SetStatus("Extracting Image from ISO...")
-      WriteToOutput("Extracting ""INSTALL.WIM"" from """ & txtWIM.Text & """ to """ & Work & """...")
       ExtractAFile(txtWIM.Text, Work, "INSTALL.WIM")
       WIMFile = Work & "INSTALL.WIM"
     Else
@@ -5320,7 +5509,7 @@ Public Class frmMain
     Dim MergeFile As String = Nothing
     If chkMerge.Checked Then MergeFile = txtMerge.Text
     Dim MergeWIM As String = Nothing
-    Dim MergeWork As String = Work & "Merge" & IO.Path.DirectorySeparatorChar
+    Dim MergeWork As String = Work & WIMGroup.Merge.ToString & IO.Path.DirectorySeparatorChar
     If Not String.IsNullOrEmpty(MergeFile) Then
       If IO.Directory.Exists(MergeWork) Then
         WriteToOutput("Deleting """ & MergeWork & """...")
@@ -5337,7 +5526,6 @@ Public Class frmMain
         iTotalVal += 1
         SetTotal(iTotalVal, iTotalMax)
         SetStatus("Extracting Merge Image from ISO...")
-        WriteToOutput("Extracting ""INSTALL.WIM"" from """ & MergeFile & """ to """ & MergeWorkExtract & """...")
         ExtractAFile(MergeFile, MergeWorkExtract, "INSTALL.WIM")
         Application.DoEvents()
         MergeWIM = MergeWorkExtract & "INSTALL.WIM"
@@ -5370,16 +5558,16 @@ Public Class frmMain
         Dim RowIndex As String = lvRow.Text
         Dim RowName As String = lvRow.SubItems(1).Text
         Dim RowImage As String
-        If lvRow.Tag(0) = "WIM" Then
+        If ImageDataList(lvRow.Tag).Group = WIMGroup.WIM Then
           RowImage = WIMFile
-        ElseIf lvRow.Tag(0) = "MERGE" Then
+        ElseIf ImageDataList(lvRow.Tag).Group = WIMGroup.Merge Then
           RowImage = MergeWIM
         Else
           Continue For
         End If
-        ImageIntegratedUpdates(iProgVal - 1) = CType(lvRow.Tag(1), ImagePackage).IntegratedUpdateList
-        ImageFeatures(iProgVal - 1) = lvRow.Tag(2)
-        ImageDrivers(iProgVal - 1) = lvRow.Tag(3)
+        ImageIntegratedUpdates(iProgVal - 1) = ImageDataList(lvRow.Tag).Package.IntegratedUpdateList
+        ImageFeatures(iProgVal - 1) = ImageDataList(lvRow.Tag).FeatureList
+        ImageDrivers(iProgVal - 1) = ImageDataList(lvRow.Tag).DriverList
         SetStatus("Merging WIM """ & RowName & """...")
         If ExportWIM(RowImage, RowIndex, NewWIM, RowName) Then
           Continue For
@@ -5479,14 +5667,57 @@ Public Class frmMain
       ISOFile = Nothing
     End If
     SetStatus("Collecting Update List...")
-    Dim UpdateFiles As New Collections.Generic.List(Of Update_File)
-    Dim RemoveFiles As New Collections.Generic.List(Of Update_Integrated())
+    Dim UpdateFiles As New Dictionary(Of Update_File, Dictionary(Of String, Boolean))
     If lvMSU.Items.Count > 0 Then
       For Each lvItem As ListViewItem In lvMSU.Items
-        UpdateFiles.Add(CType(lvItem.Tag(0), Update_File))
-        If lvItem.Tag(1) IsNot Nothing Then
-          RemoveFiles.Add(CType(lvItem.Tag(1), Update_Integrated()))
-        End If
+        Dim doReplace As New Dictionary(Of String, Boolean)
+        For I As Integer = 0 To lvImages.Items.Count - 1
+          Dim imageID As String = ImageDataList(lvImages.Items(I).Tag).Package.Edition & ImageDataList(lvImages.Items(I).Tag).Package.Architecture & ImageDataList(lvImages.Items(I).Tag).Package.Modified
+          Dim MSUList As List(Of Update_Integrated) = ImageDataList(lvImages.Items(I).Tag).Package.IntegratedUpdateList
+          If MSUList IsNot Nothing Then
+            Dim bFound As Boolean = False
+            For J As Integer = 0 To MSUList.Count - 1
+              If MSUList(J).Ident = MSUDataList(lvItem.Tag).Update.Ident Then
+                bFound = True
+                Select Case MSUDataList(lvItem.Tag).ReplaceStyle
+                  Case MSUData.Update_Replace.All
+                    If CompareMSVersions(MSUList(J).Ident.Version, MSUDataList(lvItem.Tag).Update.Ident.Version) = 0 Then
+                      doReplace.Add(imageID, True)
+                    Else
+                      doReplace.Add(imageID, False)
+                    End If
+                  Case MSUData.Update_Replace.OnlyNewer
+                    If CompareMSVersions(MSUList(J).Ident.Version, MSUDataList(lvItem.Tag).Update.Ident.Version) > 0 Then
+                      doReplace.Add(imageID, True)
+                    Else
+                      doReplace.Add(imageID, False)
+                    End If
+                  Case MSUData.Update_Replace.OnlyOlder
+                    If CompareMSVersions(MSUList(J).Ident.Version, MSUDataList(lvItem.Tag).Update.Ident.Version) < 0 Then
+                      doReplace.Add(imageID, True)
+                    Else
+                      doReplace.Add(imageID, False)
+                    End If
+                  Case MSUData.Update_Replace.OnlyMissing
+                    doReplace.Add(imageID, False)
+                End Select
+                Exit For
+              End If
+            Next
+            If Not bFound And MSUDataList(lvItem.Tag).ReplaceStyle = MSUData.Update_Replace.OnlyMissing Then
+              doReplace.Add(imageID, True)
+            Else
+              doReplace.Add(imageID, False)
+            End If
+          Else
+            If MSUDataList(lvItem.Tag).ReplaceStyle = MSUData.Update_Replace.OnlyMissing Then
+              doReplace.Add(imageID, True)
+            Else
+              doReplace.Add(imageID, False)
+            End If
+          End If
+        Next
+        UpdateFiles.Add(MSUDataList(lvItem.Tag).Update, doReplace)
       Next
     End If
     If StopRun Then
@@ -5608,7 +5839,7 @@ Public Class frmMain
       iTotalVal += 1
       SetTotal(iTotalVal, iTotalMax)
       SetStatus("Integrating Updates...")
-      If IntegrateFiles(WIMFile, UpdateFiles.ToArray, RemoveFiles.ToArray, iTotalVal, iTotalMax) Then
+      If IntegrateFiles(WIMFile, UpdateFiles.ToArray, iTotalVal, iTotalMax) Then
         SetStatus("Updates Integrated!")
         NoMount = False
       Else
@@ -5638,8 +5869,7 @@ Public Class frmMain
       If Not IO.Directory.Exists(ISODir) Then IO.Directory.CreateDirectory(ISODir)
       SetProgress(0, 1)
       SetStatus("Extracting ISO contents...")
-      WriteToOutput("Extracting Setup Disc files from """ & ISOFile & """ to """ & ISODir & """...")
-      ExtractFiles(ISOFile, ISODir, "install.wim")
+      ExtractFiles(ISOFile, ISODir, "install.wim", "Setup Disc")
       If chkUnlock.Checked Then
         SetStatus("Unlocking All Editions...")
         If IO.File.Exists(ISODir & "sources" & IO.Path.DirectorySeparatorChar & "ei.cfg") Then
@@ -5808,7 +6038,6 @@ Public Class frmMain
                       Return
                     End If
                     If WIMNumber = Math.Floor(ISOSplit / WIMSplit) Or I = FilesInOrder.Count - 1 Then
-                      WriteToOutput("Extracting Files from """ & Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip"" to """ & sIDir & """...")
                       ExtractAllFiles(Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip", sIDir)
                       If (cmbISOFormat.SelectedIndex = 0) Or (cmbISOFormat.SelectedIndex = 1) Or (cmbISOFormat.SelectedIndex = 2) Or (cmbISOFormat.SelectedIndex = 4) Or (cmbISOFormat.SelectedIndex = 6) Then
                         SetStatus("Looking for oversized files...")
@@ -5898,7 +6127,6 @@ Public Class frmMain
                       ToggleInputs(True, "Failed to move Install WIM #" & discNo & "!")
                       Return
                     End If
-                    WriteToOutput("Extracting Files from """ & Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip"" to """ & sIDir & """...")
                     ExtractAllFiles(Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip", sIDir)
                     If (cmbISOFormat.SelectedIndex = 0) Or (cmbISOFormat.SelectedIndex = 1) Or (cmbISOFormat.SelectedIndex = 2) Or (cmbISOFormat.SelectedIndex = 4) Or (cmbISOFormat.SelectedIndex = 6) Then
                       SetStatus("Looking for oversized files...")
@@ -5978,7 +6206,6 @@ Public Class frmMain
                       ToggleInputs(True, "Failed to move Primary Install WIM!")
                       Return
                     End If
-                    WriteToOutput("Extracting Files from """ & Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip"" to """ & sIDir & """...")
                     ExtractAllFiles(Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip", sIDir)
                     If (cmbISOFormat.SelectedIndex = 0) Or (cmbISOFormat.SelectedIndex = 1) Or (cmbISOFormat.SelectedIndex = 2) Or (cmbISOFormat.SelectedIndex = 4) Or (cmbISOFormat.SelectedIndex = 6) Then
                       SetStatus("Looking for oversized files...")
@@ -6038,7 +6265,6 @@ Public Class frmMain
                       ToggleInputs(True, "Failed to move Install WIM #" & discNo & "!")
                       Return
                     End If
-                    WriteToOutput("Extracting Files from """ & Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip"" to """ & sIDir & """...")
                     ExtractAllFiles(Application.StartupPath & IO.Path.DirectorySeparatorChar & "AR.zip", sIDir)
                     If (cmbISOFormat.SelectedIndex = 0) Or (cmbISOFormat.SelectedIndex = 1) Or (cmbISOFormat.SelectedIndex = 2) Or (cmbISOFormat.SelectedIndex = 4) Or (cmbISOFormat.SelectedIndex = 6) Then
                       SetStatus("Looking for oversized files...")
@@ -6322,20 +6548,18 @@ Public Class frmMain
         Me.Close()
     End Select
   End Sub
-  Private Function IntegrateFiles(WIMPath As String, MSUData() As Update_File, Remove()() As Update_Integrated, ByRef iTotalVal As Integer, iTotalMax As Integer) As Boolean
+  Private Function IntegrateFiles(WIMPath As String, UpdateData() As KeyValuePair(Of Update_File, Dictionary(Of String, Boolean)), ByRef iTotalVal As Integer, iTotalMax As Integer) As Boolean
     Dim PackageCount As Integer = GetDISMPackages(WIMPath)
     If PackageCount < 1 Then
       ToggleInputs(True, "No packages in WIM!")
       Return False
     End If
-    If MSUData.Length < 1 Then Return True
+    If UpdateData.Length < 1 Then Return True
     Dim DISM_32 As New List(Of ImagePackage)
     Dim DISM_64 As New List(Of ImagePackage)
-    Dim MSU_32 As New List(Of Update_File)
-    Dim MSU_64 As New List(Of Update_File)
-    Dim RMV_32 As New List(Of Update_Integrated)
-    Dim RMV_64 As New List(Of Update_Integrated)
-    Dim pbMax As Integer = PackageCount + MSUData.Length
+    Dim MSU_32 As New List(Of KeyValuePair(Of Update_File, Dictionary(Of String, Boolean)))
+    Dim MSU_64 As New List(Of KeyValuePair(Of Update_File, Dictionary(Of String, Boolean)))
+    Dim pbMax As Integer = PackageCount + UpdateData.Length
     Dim pbVal As Integer = 0
     SetProgress(pbVal, pbMax)
     For I As Integer = 1 To PackageCount
@@ -6348,51 +6572,44 @@ Public Class frmMain
         Return False
       End If
       Dim tmpDISM As ImagePackage = GetDISMPackageData(WIMPath, I)
-      If tmpDISM.Architecture = "x86" Then
+      If CompareArchitectures(tmpDISM.Architecture, ArchitectureList.x86, True) Then
         DISM_32.Add(tmpDISM)
-      ElseIf tmpDISM.Architecture = "x64" Then
+      ElseIf CompareArchitectures(tmpDISM.Architecture, ArchitectureList.amd64, True) Then
         DISM_64.Add(tmpDISM)
       End If
-      If Remove.Length > 0 Then
-        For R As Integer = 0 To Remove.Length - 1
-          If Not String.IsNullOrEmpty(Remove(R)(I - 1).Identity) Then
-            If tmpDISM.Architecture = "x86" Then
-              RMV_32.Add(Remove(R)(I - 1))
-            ElseIf tmpDISM.Architecture = "x64" Then
-              RMV_64.Add(Remove(R)(I - 1))
-            End If
-          End If
-        Next
-      End If
     Next
-    For I As Integer = 0 To MSUData.Length - 1
+    For I As Integer = 0 To UpdateData.Length - 1
       pbVal += 1
       SetProgress(pbVal, pbMax)
-      SetStatus("Loading Update """ & IO.Path.GetFileNameWithoutExtension(MSUData(I).Path) & """ Data...")
+      SetStatus("Loading Update """ & IO.Path.GetFileNameWithoutExtension(UpdateData(I).Key.Path) & """ Data...")
       If StopRun Then
         DiscardDISM(Mount)
         ToggleInputs(True)
         Return False
       End If
-      If MSUData(I).Name = "DRIVER" Then
-        If MSUData(I).DriverData.Architectures Is Nothing OrElse MSUData(I).DriverData.Architectures.Count = 0 Then Continue For
-        If DISM_32.Count > 0 And MSUData(I).DriverData.Architectures.Contains("x86") Then
-          MSU_32.Add(MSUData(I))
+      If UpdateData(I).Key.Name = "DRIVER" Then
+        If UpdateData(I).Key.DriverData.Architectures Is Nothing OrElse UpdateData(I).Key.DriverData.Architectures.Count = 0 Then Continue For
+        If DISM_32.Count > 0 And UpdateData(I).Key.DriverData.Architectures.Exists(New Predicate(Of String)(Function(arch As String) As Boolean
+                                                                                                              Return CompareArchitectures(arch, ArchitectureList.x86, True)
+                                                                                                            End Function)) Then
+          MSU_32.Add(UpdateData(I))
         End If
-        If DISM_64.Count > 0 And MSUData(I).DriverData.Architectures.Contains("amd64") Then
-          MSU_64.Add(MSUData(I))
+        If DISM_64.Count > 0 And UpdateData(I).Key.DriverData.Architectures.Exists(New Predicate(Of String)(Function(arch As String) As Boolean
+                                                                                                              Return CompareArchitectures(arch, ArchitectureList.amd64, True)
+                                                                                                            End Function)) Then
+          MSU_64.Add(UpdateData(I))
         End If
       Else
-        If Not String.IsNullOrEmpty(MSUData(I).Failure) Then Continue For
-        If String.IsNullOrEmpty(MSUData(I).Architecture) Then Continue For
-        If DISM_32.Count > 0 And MSUData(I).Architecture.ToLower = "x86" Then
-          MSU_32.Add(MSUData(I))
+        If Not String.IsNullOrEmpty(UpdateData(I).Key.Failure) Then Continue For
+        If String.IsNullOrEmpty(UpdateData(I).Key.Architecture) Then Continue For
+        If DISM_32.Count > 0 And CompareArchitectures(UpdateData(I).Key.Architecture, ArchitectureList.x86, True) Then
+          MSU_32.Add(UpdateData(I))
         End If
         If DISM_64.Count > 0 Then
-          If MSUData(I).Architecture.ToLower = "amd64" Then
-            MSU_64.Add(MSUData(I))
+          If CompareArchitectures(UpdateData(I).Key.Architecture, ArchitectureList.amd64, True) Then
+            MSU_64.Add(UpdateData(I))
           Else
-            If CheckWhitelist(MSUData(I).DisplayName) Then MSU_64.Add(MSUData(I))
+            If CheckWhitelist(UpdateData(I).Key.DisplayName) Then MSU_64.Add(UpdateData(I))
           End If
         End If
       End If
@@ -6405,13 +6622,11 @@ Public Class frmMain
     If MSU_32.Count > 0 Then
       For Each tmpDISM In DISM_32
         pbMax += MSU_32.Count + 2
-        pbMax += RMV_32.Count
       Next
     End If
     If MSU_64.Count > 0 Then
       For Each tmpDISM In DISM_64
         pbMax += MSU_64.Count + 2
-        pbMax += RMV_64.Count
       Next
     End If
     SetProgress(0, pbMax)
@@ -6433,22 +6648,8 @@ Public Class frmMain
           ToggleInputs(True)
           Return False
         End If
-        If RMV_32.Count > 0 Then
-          For I As Integer = 0 To RMV_32.Count - 1
-            pbVal += 1
-            SetProgress(pbVal, pbMax)
-            If RMV_32(I).Parent.Index = tmpDISM.Index Then
-              SetStatus((I + 1).ToString.Trim & "/" & RMV_32.Count.ToString & " - Removing " & GetUpdateName(RMV_32(I).Ident) & " from " & tmpDISM.Name & "...")
-              If Not RemovePackageItemFromDISM(Mount, RMV_32(I).Identity) Then
-                DiscardDISM(Mount)
-                ToggleInputs(True, "Failed to remove " & GetUpdateName(RMV_32(I).Ident) & " from " & tmpDISM.Name & "!")
-                Return False
-              End If
-            End If
-          Next
-        End If
         For I As Integer = 0 To MSU_32.Count - 1
-          Dim tmpMSU = MSU_32(I)
+          Dim tmpMSU As Update_File = MSU_32(I).Key
           pbVal += 1
           SetProgress(pbVal, pbMax)
           Dim shownName As String = IO.Path.GetFileNameWithoutExtension(tmpMSU.Path)
@@ -6467,6 +6668,7 @@ Public Class frmMain
           ElseIf Not String.IsNullOrEmpty(tmpMSU.KBArticle) Then
             shownName = "KB" & tmpMSU.KBArticle
           End If
+          If MSU_32(I).Value().ContainsKey(tmpDISM.Edition & tmpDISM.Architecture & tmpDISM.Modified) AndAlso MSU_32(I).Value()(tmpDISM.Edition & tmpDISM.Architecture & tmpDISM.Modified) = False Then Continue For
           SetStatus((I + 1).ToString.Trim & "/" & MSU_32.Count.ToString & " - Integrating " & shownName & " into " & tmpDISM.Name & "...")
           Dim upType = GetUpdateType(tmpMSU.Path)
           Select Case upType
@@ -6791,22 +6993,8 @@ Public Class frmMain
           ToggleInputs(True)
           Return False
         End If
-        If RMV_64.Count > 0 Then
-          For I As Integer = 0 To RMV_64.Count - 1
-            pbVal += 1
-            SetProgress(pbVal, pbMax)
-            If RMV_64(I).Parent.Index = tmpDISM.Index Then
-              SetStatus((I + 1).ToString.Trim & "/" & RMV_64.Count.ToString & " - Removing " & RMV_64(I).Ident.Name & " from " & tmpDISM.Name & "...")
-              If Not RemovePackageItemFromDISM(Mount, RMV_64(I).Identity) Then
-                DiscardDISM(Mount)
-                ToggleInputs(True, "Failed to remove " & RMV_64(I).Ident.Name & " from " & tmpDISM.Name & "!")
-                Return False
-              End If
-            End If
-          Next
-        End If
         For I As Integer = 0 To MSU_64.Count - 1
-          Dim tmpMSU = MSU_64(I)
+          Dim tmpMSU As Update_File = MSU_64(I).Key
           pbVal += 1
           SetProgress(pbVal, pbMax)
           Dim shownName As String = IO.Path.GetFileNameWithoutExtension(tmpMSU.Path)
@@ -6825,6 +7013,7 @@ Public Class frmMain
           ElseIf Not String.IsNullOrEmpty(tmpMSU.KBArticle) Then
             shownName = "KB" & tmpMSU.KBArticle
           End If
+          If MSU_64(I).Value().ContainsKey(tmpDISM.Edition & tmpDISM.Architecture & tmpDISM.Modified) AndAlso MSU_64(I).Value()(tmpDISM.Edition & tmpDISM.Architecture & tmpDISM.Modified) = False Then Continue For
           SetStatus((I + 1).ToString.Trim & "/" & MSU_64.Count.ToString & " - Integrating " & shownName & " into " & tmpDISM.Name & "...")
           Dim upType = GetUpdateType(tmpMSU.Path)
           Select Case upType
@@ -7147,7 +7336,7 @@ Public Class frmMain
         Dim dismData As ImagePackage = GetDISMPackageData(WIMPath, I)
         Try
           If dismData.SPLevel > 0 Then Continue For
-          If Not String.IsNullOrEmpty(Architecture) AndAlso Not dismData.Architecture.Contains(Architecture) Then Continue For
+          If Not String.IsNullOrEmpty(Architecture) AndAlso Not CompareArchitectures(dismData.Architecture, Architecture, True) Then Continue For
         Catch ex As Exception
           Continue For
         End Try
@@ -7171,13 +7360,11 @@ Public Class frmMain
     Dim Extract64 As String = Work & "SP1" & IO.Path.DirectorySeparatorChar & "windows6.1-KB976932-X64.cab"
     If IO.File.Exists(Extract86) Then
       SetStatus("Preparing Service Pack (Extracting KB976932.cab)...")
-      WriteToOutput("Extracting """ & Extract86 & """ to """ & Work & "SP1""...")
       ExtractAllFiles(Extract86, Work & "SP1")
       WriteToOutput("Deleting """ & Extract86 & """...")
       IO.File.Delete(Extract86)
     ElseIf IO.File.Exists(Extract64) Then
       SetStatus("Preparing Service Pack (Extracting KB976932.cab)...")
-      WriteToOutput("Extracting """ & Extract64 & """ to """ & Work & "SP1""...")
       ExtractAllFiles(Extract64, Work & "SP1")
       WriteToOutput("Deleting """ & Extract64 & """...")
       IO.File.Delete(Extract64)
@@ -7194,7 +7381,6 @@ Public Class frmMain
     Dim Extract As String = Work & "SP1" & IO.Path.DirectorySeparatorChar & "NestedMPPcontent.cab"
     If IO.File.Exists(Extract) Then
       SetStatus("Preparing Service Pack (Extracting NestedMPPcontent.cab)...")
-      WriteToOutput("Extracting """ & Extract & """ to """ & Work & "SP1""...")
       ExtractAllFiles(Extract, Work & "SP1")
       WriteToOutput("Deleting """ & Extract & """...")
       IO.File.Delete(Extract)
@@ -7270,7 +7456,6 @@ Public Class frmMain
       Extract = Work & "SP1" & IO.Path.DirectorySeparatorChar & "KB976933-LangsCab" & I.ToString.Trim & ".cab"
       If IO.File.Exists(Extract) Then
         SetStatus("Preparing Service Pack (Extracting Language CAB " & (I + 1).ToString.Trim & " of 7)...")
-        WriteToOutput("Extracting """ & Extract & """ to """ & Work & "SP1""...")
         ExtractAllFiles(Extract, Work & "SP1")
         WriteToOutput("Deleting """ & Extract & """...")
         IO.File.Delete(Extract)
@@ -7291,7 +7476,7 @@ Public Class frmMain
         Dim dismData As ImagePackage = GetDISMPackageData(WIMPath, I)
         Try
           If dismData.SPLevel > 0 Then Continue For
-          If Not String.IsNullOrEmpty(Architecture) AndAlso Not dismData.Architecture.Contains(Architecture) Then
+          If Not String.IsNullOrEmpty(Architecture) AndAlso Not CompareArchitectures(dismData.Architecture, Architecture, True) Then
             Continue For
           End If
         Catch ex As Exception
@@ -7579,7 +7764,7 @@ Public Class frmMain
     Dim sWIM As String = txtWIM.Text
     If String.IsNullOrEmpty(sWIM) Then Return
     Dim ParseWork As String = Work & "PARSE" & IO.Path.DirectorySeparatorChar
-    Dim ParseWorkWIM As String = ParseWork & "WIM" & IO.Path.DirectorySeparatorChar
+    Dim ParseWorkWIM As String = ParseWork & WIMGroup.WIM.ToString & IO.Path.DirectorySeparatorChar
     If IO.File.Exists(ParseWork) Then
       WriteToOutput("Deleting """ & ParseWork & """...")
       SlowDeleteDirectory(ParseWork, FileIO.DeleteDirectoryOption.DeleteAllContents)
@@ -7604,7 +7789,7 @@ Public Class frmMain
       iTotalVal += 1
       SetTotal(iTotalVal, iTotalCount)
       SetStatus("Reading Image Packages...")
-      ClearImageList("WIM")
+      ClearImageList(WIMGroup.WIM)
       Dim PackageCount As Integer = GetDISMPackages(WIMFile)
       SetProgress(0, PackageCount)
       iTotalVal += 1
@@ -7615,13 +7800,19 @@ Public Class frmMain
         Dim Package As ImagePackage = GetDISMPackageData(WIMFile, I)
         Dim lvItem As New ListViewItem(Package.Index)
         If Package = New ImagePackage Then Return
-        If Package.Architecture.ToLower = "x64" Then
+        If CompareArchitectures(Package.Architecture, ArchitectureList.amd64, False) Then
           If Not Package.Name.Contains("64") Then Package.Name &= " x64"
         End If
         lvItem.Checked = True
         lvItem.SubItems.Add(Package.Name)
         lvItem.SubItems.Add(ByteSize(Package.Size))
-        lvItem.Tag = {"WIM", Package, Nothing, Nothing}
+        Dim lTag As Integer = 0
+        Do
+          lTag += 1
+          If lTag >= Integer.MaxValue Then Exit Do
+        Loop While ImageDataList.ContainsKey(lTag)
+        ImageDataList.Add(lTag, New ImagePackageData(WIMGroup.WIM, Package, Nothing, Nothing))
+        lvItem.Tag = lTag
         Dim en As String = ChrW(&H2003)
         Dim ttItem As String = Package.Desc & IIf(Package.SPLevel > 0, " Service Pack " & Package.SPLevel, "") & vbNewLine &
                                en & Package.ProductType & " " & Package.Version & "." & Package.SPBuild & " (" & Package.Edition & ") " & Package.Architecture & vbNewLine &
@@ -7651,7 +7842,7 @@ Public Class frmMain
   Private Sub ParseMergeWIM()
     Dim sMerge As String = txtMerge.Text
     Dim ParseWork As String = Work & "PARSE" & IO.Path.DirectorySeparatorChar
-    Dim ParseWorkMerge As String = ParseWork & "Merge" & IO.Path.DirectorySeparatorChar
+    Dim ParseWorkMerge As String = ParseWork & WIMGroup.Merge.ToString & IO.Path.DirectorySeparatorChar
     IO.Directory.CreateDirectory(ParseWorkMerge)
     If String.IsNullOrEmpty(sMerge) Then Return
     Dim MergeFile As String = String.Empty
@@ -7672,7 +7863,7 @@ Public Class frmMain
       SetStatus("Reading Merge Image Packages...")
       iTotalVal += 1
       SetTotal(iTotalVal, iTotalCount)
-      ClearImageList("MERGE")
+      ClearImageList(WIMGroup.Merge)
       Dim PackageCount As Integer = GetDISMPackages(MergeFile)
       SetProgress(0, PackageCount)
       iTotalVal += 1
@@ -7683,13 +7874,19 @@ Public Class frmMain
         Dim Package As ImagePackage = GetDISMPackageData(MergeFile, I)
         Dim lvItem As New ListViewItem(Package.Index)
         If Package = New ImagePackage Then Return
-        If Package.Architecture.ToLower = "x64" Then
+        If CompareArchitectures(Package.Architecture, ArchitectureList.amd64, False) Then
           If Not Package.Name.Contains("64") Then Package.Name &= " x64"
         End If
         lvItem.Checked = True
         lvItem.SubItems.Add(Package.Name)
         lvItem.SubItems.Add(ByteSize(Package.Size))
-        lvItem.Tag = {"MERGE", Package, Nothing, Nothing}
+        Dim lTag As Integer = 0
+        Do
+          lTag += 1
+          If lTag >= Integer.MaxValue Then Exit Do
+        Loop While ImageDataList.ContainsKey(lTag)
+        ImageDataList.Add(lTag, New ImagePackageData(WIMGroup.Merge, Package, Nothing, Nothing))
+        lvItem.Tag = lTag
         Dim en As String = ChrW(&H2003)
         Dim ttItem As String = Package.Desc & IIf(Package.SPLevel > 0, " Service Pack " & Package.SPLevel, "") & vbNewLine &
                                en & Package.ProductType & " " & Package.Version & "." & Package.SPBuild & " (" & Package.Edition & ") " & Package.Architecture & vbNewLine &
@@ -7730,21 +7927,23 @@ Public Class frmMain
     End If
     Return False
   End Function
-  Private Sub SortForRequirement(ByRef msuList As List(Of Update_File))
-    For I As Integer = 0 To msuList.Count - 1
-      CheckForRequirement(msuList, I)
+  Private Sub SortForRequirement(ByRef updateList As List(Of KeyValuePair(Of Update_File, Dictionary(Of String, Boolean))))
+    For I As Integer = 0 To updateList.Count - 1
+      CheckForRequirement(updateList, I)
     Next
   End Sub
-  Private Sub CheckForRequirement(ByRef msuList As List(Of Update_File), Index As Integer)
+  Private Sub CheckForRequirement(ByRef updateList As List(Of KeyValuePair(Of Update_File, Dictionary(Of String, Boolean))), Index As Integer)
     For I As Integer = 0 To PrerequisiteList.Length - 1
-      If msuList(Index).KBArticle = PrerequisiteList(I).KBWithRequirement Then
-        For J As Integer = Index + 1 To msuList.Count - 1
-          If PrerequisiteList(I).Requirement.Contains(msuList(J).KBArticle) Then
-            Dim moveItem As Update_File = msuList(J)
-            msuList.RemoveAt(J)
-            msuList.Insert(Index, moveItem)
-            CheckForRequirement(msuList, Index)
-          End If
+      If updateList(Index).Key.KBArticle = PrerequisiteList(I).KBWithRequirement Then
+        For J As Integer = Index + 1 To updateList.Count - 1
+          For R As Integer = 0 To PrerequisiteList(I).Requirement.Length - 1
+            If PrerequisiteList(I).Requirement(R).Contains(updateList(J).Key.KBArticle) Then
+              Dim moveItem As KeyValuePair(Of Update_File, Dictionary(Of String, Boolean)) = updateList(J)
+              updateList.RemoveAt(J)
+              updateList.Insert(Index, moveItem)
+              CheckForRequirement(updateList, Index)
+            End If
+          Next
         Next
         Exit For
       End If

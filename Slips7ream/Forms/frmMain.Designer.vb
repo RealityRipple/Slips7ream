@@ -105,6 +105,7 @@ Partial Class frmMain
     Me.tmrAnimation = New System.Windows.Forms.Timer(Me.components)
     Me.mnuOutput = New System.Windows.Forms.ContextMenu()
     Me.mnuCopy = New System.Windows.Forms.MenuItem()
+    Me.mnuCopyCommands = New System.Windows.Forms.MenuItem()
     Me.mnuClear = New System.Windows.Forms.MenuItem()
     Me.mnuSpacer = New System.Windows.Forms.MenuItem()
     Me.mnuSelectAll = New System.Windows.Forms.MenuItem()
@@ -1492,26 +1493,31 @@ Partial Class frmMain
     '
     'mnuOutput
     '
-    Me.mnuOutput.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuCopy, Me.mnuClear, Me.mnuSpacer, Me.mnuSelectAll})
+    Me.mnuOutput.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuCopy, Me.mnuCopyCommands, Me.mnuClear, Me.mnuSpacer, Me.mnuSelectAll})
     '
     'mnuCopy
     '
     Me.mnuCopy.Index = 0
     Me.mnuCopy.Text = "&Copy"
     '
+    'mnuCopyCommands
+    '
+    Me.mnuCopyCommands.Index = 1
+    Me.mnuCopyCommands.Text = "Copy Co&mmands"
+    '
     'mnuClear
     '
-    Me.mnuClear.Index = 1
+    Me.mnuClear.Index = 2
     Me.mnuClear.Text = "C&lear"
     '
     'mnuSpacer
     '
-    Me.mnuSpacer.Index = 2
+    Me.mnuSpacer.Index = 3
     Me.mnuSpacer.Text = "-"
     '
     'mnuSelectAll
     '
-    Me.mnuSelectAll.Index = 3
+    Me.mnuSelectAll.Index = 4
     Me.mnuSelectAll.Text = "Select &All"
     '
     'mnuImages
@@ -2424,5 +2430,6 @@ Partial Class frmMain
   Friend WithEvents pnlISOLabel As System.Windows.Forms.TableLayoutPanel
   Friend WithEvents txtISOLabel As System.Windows.Forms.TextBox
   Friend WithEvents chkAutoLabel As System.Windows.Forms.CheckBox
+  Friend WithEvents mnuCopyCommands As System.Windows.Forms.MenuItem
 
 End Class

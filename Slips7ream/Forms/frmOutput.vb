@@ -169,6 +169,53 @@ Public Class frmOutput
     mnuSelectAll.Enabled = Not txtSel.TextLength = 0
     mnuClear.Enabled = Not txtSel.TextLength = 0
     mnuCopy.Enabled = Not txtSel.SelectedText.Length = 0
+    If Not txtSel.SelectedText.Length = 0 Then
+      Dim sSelFrom As Integer = txtSel.SelectionStart
+      Dim StartLastNewLine As Integer = -1
+      If txtSel.Text.Substring(txtSel.SelectionStart).Contains(vbNewLine) Then
+        StartLastNewLine = txtSel.Text.IndexOf(vbNewLine, txtSel.SelectionStart)
+      Else
+        StartLastNewLine = txtSel.Text.Length
+      End If
+      Dim StartNewLine As Integer = -1
+      If txtSel.Text.Substring(0, StartLastNewLine).Contains(vbNewLine) Then
+        StartNewLine = txtSel.Text.Substring(0, StartLastNewLine).LastIndexOf(vbNewLine)
+      Else
+        StartNewLine = 0
+      End If
+      sSelFrom = StartNewLine
+      Dim sSelTo As Integer = txtSel.SelectionStart + txtSel.SelectionLength
+      If txtSel.Text.Substring(txtSel.SelectionStart + txtSel.SelectionLength).Contains(vbNewLine) Then
+        sSelTo = txtSel.Text.IndexOf(vbNewLine, txtSel.SelectionStart + txtSel.SelectionLength)
+      ElseIf txtSel.Text.Substring(0, txtSel.SelectionStart + txtSel.SelectionLength).Contains(vbNewLine) Then
+        If txtSel.Text.Length >= txtSel.SelectionStart + txtSel.SelectionLength Then
+          sSelTo = txtSel.Text.Length
+        Else
+          sSelTo = txtSel.Text.Substring(0, txtSel.SelectionStart + txtSel.SelectionLength).LastIndexOf(vbNewLine)
+        End If
+      Else
+        sSelTo = txtSel.Text.Length
+      End If
+      Dim sText As String = txtSel.Text.Substring(sSelFrom, sSelTo - sSelFrom)
+      Do While sText.Contains(vbNewLine & vbNewLine)
+        sText = sText.Replace(vbNewLine & vbNewLine, vbNewLine)
+      Loop
+      sText = sText.Trim(vbCr, vbLf)
+      Dim sLines() As String = Split(sText, vbNewLine)
+      sText = Nothing
+      For I As Integer = 0 To sLines.Length - 1
+        If String.IsNullOrEmpty(sLines(I)) Then Continue For
+        If sLines(I).StartsWith("   ") Then Continue For
+        sText &= sLines(I) & vbNewLine
+      Next
+      If String.IsNullOrEmpty(sText) Then
+        mnuCopyCommands.Enabled = False
+      Else
+        mnuCopyCommands.Enabled = True
+      End If
+    Else
+      mnuCopyCommands.Enabled = False
+    End If
   End Sub
   Private Sub frmOutput_ResizeEnd(sender As Object, e As System.EventArgs) Handles Me.ResizeEnd
     Dim mainBounds = frmMain.Bounds
@@ -232,6 +279,53 @@ Public Class frmOutput
     Dim mParent As ContextMenu = mSender.Parent
     Dim txtSel As TextBox = mParent.SourceControl
     If Not txtSel.SelectedText.Length = 0 Then Clipboard.SetText(txtSel.SelectedText)
+  End Sub
+  Private Sub mnuCopyCommands_Click(sender As System.Object, e As System.EventArgs) Handles mnuCopyCommands.Click
+    Dim mSender As MenuItem = sender
+    Dim mParent As ContextMenu = mSender.Parent
+    Dim txtSel As TextBox = mParent.SourceControl
+    If Not txtSel.SelectedText.Length = 0 Then
+      Dim sSelFrom As Integer = txtSel.SelectionStart
+      Dim StartLastNewLine As Integer = -1
+      If txtSel.Text.Substring(txtSel.SelectionStart).Contains(vbNewLine) Then
+        StartLastNewLine = txtSel.Text.IndexOf(vbNewLine, txtSel.SelectionStart)
+      Else
+        StartLastNewLine = txtSel.Text.Length
+      End If
+      Dim StartNewLine As Integer = -1
+      If txtSel.Text.Substring(0, StartLastNewLine).Contains(vbNewLine) Then
+        StartNewLine = txtSel.Text.Substring(0, StartLastNewLine).LastIndexOf(vbNewLine)
+      Else
+        StartNewLine = 0
+      End If
+      sSelFrom = StartNewLine
+      Dim sSelTo As Integer = txtSel.SelectionStart + txtSel.SelectionLength
+      If txtSel.Text.Substring(txtSel.SelectionStart + txtSel.SelectionLength).Contains(vbNewLine) Then
+        sSelTo = txtSel.Text.IndexOf(vbNewLine, txtSel.SelectionStart + txtSel.SelectionLength)
+      ElseIf txtSel.Text.Substring(0, txtSel.SelectionStart + txtSel.SelectionLength).Contains(vbNewLine) Then
+        If txtSel.Text.Length >= txtSel.SelectionStart + txtSel.SelectionLength Then
+          sSelTo = txtSel.Text.Length
+        Else
+          sSelTo = txtSel.Text.Substring(0, txtSel.SelectionStart + txtSel.SelectionLength).LastIndexOf(vbNewLine)
+        End If
+      Else
+        sSelTo = txtSel.Text.Length
+      End If
+      Dim sText As String = txtSel.Text.Substring(sSelFrom, sSelTo - sSelFrom)
+      Do While sText.Contains(vbNewLine & vbNewLine)
+        sText = sText.Replace(vbNewLine & vbNewLine, vbNewLine)
+      Loop
+      sText = sText.Trim(vbCr, vbLf)
+      Dim sLines() As String = Split(sText, vbNewLine)
+      sText = Nothing
+      For I As Integer = 0 To sLines.Length - 1
+        If String.IsNullOrEmpty(sLines(I)) Then Continue For
+        If sLines(I).StartsWith("   ") Then Continue For
+        sText &= sLines(I) & vbNewLine
+      Next
+      If String.IsNullOrEmpty(sText) Then Return
+      Clipboard.SetText(sText.TrimEnd(vbCr, vbLf))
+    End If
   End Sub
   Private Sub mnuClear_Click(sender As System.Object, e As System.EventArgs) Handles mnuClear.Click
     Dim mSender As MenuItem = sender

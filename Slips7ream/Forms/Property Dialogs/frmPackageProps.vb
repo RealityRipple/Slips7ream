@@ -1,5 +1,5 @@
 ﻿Public Class frmPackageProps
-  Private WIMIdenifier As String
+  Private Group As WIMGroup
   Private UpdateData As List(Of Update_Integrated)
   Private FeatureData As List(Of Feature)
   Private DriverData As List(Of Driver)
@@ -25,13 +25,15 @@
   Private originalPackageName As String
   Private selFeature As TreeNode
   Private selUpdate As ListViewItem
+  Private LoadingFeatures As Boolean = False
+  Private LoadingUpdates As Boolean = False
 #Region "GUI"
 #Region "Window"
-  Public Sub New(WIMID As String, Data As ImagePackage, Features As List(Of Feature), Drivers As List(Of Driver))
+  Public Sub New(ImageGroup As WIMGroup, Data As ImagePackage, Features As List(Of Feature), Drivers As List(Of Driver))
     bLoading = True
     InitializeComponent()
     LoadImageLists()
-    WIMIdenifier = WIMID
+    Group = ImageGroup
     UpdateData = Data.IntegratedUpdateList
     If UpdateData IsNot Nothing AndAlso UpdateData.Count = 0 Then UpdateData = Nothing
     FeatureData = Features
@@ -144,12 +146,12 @@
     PositionViews()
   End Sub
   Private Sub tvFeatures_BeforeCheck(sender As Object, e As System.Windows.Forms.TreeViewCancelEventArgs) Handles tvFeatures.BeforeCheck
-    If tvFeatures.Tag IsNot Nothing Then Return
+    If LoadingFeatures Then Return
     If e.Node.ToolTipText.StartsWith("Node Group") Then
       If Not e.Node.Checked Then e.Cancel = True
       Return
     End If
-    Dim RequiredFeatures As New Collections.Generic.Dictionary(Of String, String())
+    Dim RequiredFeatures As New Dictionary(Of String, String())
     Dim featureRows() As String = Split(My.Resources.RequiredFeatureList, vbNewLine)
     For Each row In featureRows
       If row.Contains("|") Then
@@ -203,12 +205,12 @@
     Next
   End Sub
   Private Sub tvFeatures_AfterCheck(sender As Object, e As System.Windows.Forms.TreeViewEventArgs) Handles tvFeatures.AfterCheck
-    If tvFeatures.Tag IsNot Nothing Then Return
+    If LoadingFeatures Then Return
     If e.Node.ToolTipText.StartsWith("Node Group") Then
       If e.Node.Checked Then e.Node.Checked = False
       Return
     End If
-    Dim RequiredFeatures As New Collections.Generic.Dictionary(Of String, String())
+    Dim RequiredFeatures As New Dictionary(Of String, String())
     Dim featureRows() As String = Split(My.Resources.RequiredFeatureList, vbNewLine)
     For Each row In featureRows
       If row.Contains("|") Then
@@ -325,7 +327,7 @@
 #End Region
   Private Sub cmdLoadFeatures_Click(sender As Object, e As EventArgs) Handles cmdLoadFeatures.Click
     ToggleUI(False)
-    frmMain.LoadPackageFeatures(WIMIdenifier, txtIndex.Text)
+    frmMain.LoadPackageFeatures(Group, txtIndex.Text)
     Dim lvItem As ListViewItem = Nothing
     For Each item As ListViewItem In frmMain.lvImages.Items
       If item.SubItems(1).Text = originalPackageName Then
@@ -335,8 +337,8 @@
     Next
     ToggleUI(True)
     If lvItem IsNot Nothing Then
-      If UBound(lvItem.Tag) > 1 AndAlso lvItem.Tag(2) IsNot Nothing Then
-        FeatureData = lvItem.Tag(2)
+      If frmMain.ImageDataList(lvItem.Tag).FeatureList IsNot Nothing Then
+        FeatureData = frmMain.ImageDataList(lvItem.Tag).FeatureList
         DisplayFeatures()
         PositionViews()
       Else
@@ -356,7 +358,7 @@
     PositionViews()
   End Sub
   Private Sub lvUpdates_ItemChecked(sender As Object, e As System.Windows.Forms.ItemCheckedEventArgs) Handles lvUpdates.ItemChecked
-    If lvUpdates.Tag IsNot Nothing Then Return
+    If LoadingUpdates Then Return
     For I As Integer = 0 To UpdateData.Count - 1
       If UpdateData(I).Identity = CType(e.Item.Tag, Update_Integrated).Identity Then
         Dim newData As Update_Integrated = UpdateData(I)
@@ -386,7 +388,7 @@
   End Sub
   Private Sub cmdLoadUpdates_Click(sender As Object, e As EventArgs) Handles cmdLoadUpdates.Click
     ToggleUI(False)
-    frmMain.LoadPackageUpdates(WIMIdenifier, txtIndex.Text)
+    frmMain.LoadPackageUpdates(Group, txtIndex.Text)
     Dim lvItem As ListViewItem = Nothing
     For Each item As ListViewItem In frmMain.lvImages.Items
       If item.SubItems(1).Text = originalPackageName Then
@@ -396,9 +398,8 @@
     Next
     ToggleUI(True)
     If lvItem IsNot Nothing Then
-      If UBound(lvItem.Tag) > 0 AndAlso lvItem.Tag(1) IsNot Nothing Then
-        Dim Package As ImagePackage = lvItem.Tag(1)
-        UpdateData = Package.IntegratedUpdateList
+      If frmMain.ImageDataList(lvItem.Tag).Package.IntegratedUpdateList IsNot Nothing Then
+        UpdateData = frmMain.ImageDataList(lvItem.Tag).Package.IntegratedUpdateList
         DisplayUpdates()
         PositionViews()
       Else
@@ -582,7 +583,7 @@
   End Sub
   Private Sub cmdLoadDrivers_Click(sender As System.Object, e As System.EventArgs) Handles cmdLoadDrivers.Click
     ToggleUI(False)
-    frmMain.LoadPackageDrivers(WIMIdenifier, txtIndex.Text)
+    frmMain.LoadPackageDrivers(Group, txtIndex.Text)
     Dim lvItem As ListViewItem = Nothing
     For Each item As ListViewItem In frmMain.lvImages.Items
       If item.SubItems(1).Text = originalPackageName Then
@@ -592,8 +593,8 @@
     Next
     ToggleUI(True)
     If lvItem IsNot Nothing Then
-      If UBound(lvItem.Tag) > 2 AndAlso lvItem.Tag(3) IsNot Nothing Then
-        DriverData = lvItem.Tag(3)
+      If frmMain.ImageDataList(lvItem.Tag).DriverList IsNot Nothing Then
+        DriverData = frmMain.ImageDataList(lvItem.Tag).DriverList
         DisplayDrivers()
         PositionViews()
       Else
@@ -774,7 +775,7 @@
       tvFeatures.ReadOnly = True
       Return
     End If
-    tvFeatures.Tag = "LOADING"
+    LoadingFeatures = True
     Dim ParentFeatures As New Collections.Specialized.NameValueCollection
     Dim featureRows() As String = Split(My.Resources.ParentFeatureList, vbNewLine)
     For Each row In featureRows
@@ -801,14 +802,17 @@
       tvItem.Checked = pFeature.Enable
       Dim sDescription As String = pFeature.Desc
       If sDescription.Length > 80 Then
-        If sDescription.LastIndexOf(" ", 80) > 0 Then
-          Dim FrontHalf As String = sDescription.Substring(0, sDescription.LastIndexOf(" ", 80))
-          Dim RearHalf As String = sDescription.Substring(sDescription.LastIndexOf(" ", 80) + 1)
+        If sDescription.Substring(0, 80).LastIndexOf(" ") > 0 Then
+          Dim FrontHalf As String = sDescription.Substring(0, 80)
+          FrontHalf = FrontHalf.Substring(0, FrontHalf.LastIndexOf(" "))
+          Dim RearHalf As String = sDescription.Substring(FrontHalf.Length + 1)
           Do
             If RearHalf.Length > 80 Then
-              If RearHalf.LastIndexOf(" ", 80) > 0 Then
-                FrontHalf = FrontHalf & vbNewLine & RearHalf.Substring(0, RearHalf.LastIndexOf(" ", 80))
-                RearHalf = RearHalf.Substring(RearHalf.LastIndexOf(" ", 80) + 1)
+              If RearHalf.Substring(0, 80).LastIndexOf(" ") > 0 Then
+                Dim midHalf As String = RearHalf.Substring(0, 80)
+                midHalf = midHalf.Substring(0, midHalf.LastIndexOf(" "))
+                FrontHalf = FrontHalf & vbNewLine & midHalf
+                RearHalf = RearHalf.Substring(midHalf.Length + 1)
               Else
                 sDescription = FrontHalf & vbNewLine & RearHalf
                 Exit Do
@@ -824,7 +828,7 @@
       If pFeature.CustomProperties IsNot Nothing AndAlso pFeature.CustomProperties.Length > 0 Then
         If pFeature.CustomProperties.Length = 1 AndAlso pFeature.CustomProperties(0).Contains("(No custom properties found)") Then
           tvItem.ToolTipText = FeatureDisplayName & vbNewLine &
-                               en & sDescription & vbNewLine &
+                               en & Replace(sDescription, vbNewLine, vbNewLine & en) & vbNewLine &
                                en & "Internal Name: " & pFeature.FeatureName & vbNewLine &
                                en & "State: " & pFeature.State & vbNewLine &
                                en & "Restart Required: " & pFeature.RestartRequired
@@ -861,7 +865,7 @@
             Loop
           End If
           tvItem.ToolTipText = FeatureDisplayName & vbNewLine &
-                               en & sDescription & vbNewLine &
+                               en & Replace(sDescription, vbNewLine, vbNewLine & en) & vbNewLine &
                                en & "Internal Name: " & pFeature.FeatureName & vbNewLine &
                                en & "State: " & pFeature.State & vbNewLine &
                                en & "Restart Required: " & pFeature.RestartRequired & vbNewLine &
@@ -869,7 +873,7 @@
         End If
       Else
         tvItem.ToolTipText = FeatureDisplayName & vbNewLine &
-                             en & sDescription & vbNewLine &
+                             en & Replace(sDescription, vbNewLine, vbNewLine & en) & vbNewLine &
                              en & "Internal Name: " & pFeature.FeatureName & vbNewLine &
                              en & "State: " & pFeature.State & vbNewLine &
                              en & "Restart Required: " & pFeature.RestartRequired
@@ -940,7 +944,7 @@
       tvItem.SelectedImageKey = tvItem.ImageKey
     Next
     tvFeatures.Sort()
-    tvFeatures.Tag = Nothing
+    LoadingFeatures = False
   End Sub
   Private Function GetFullNodeList(fromNode As TreeNode) As List(Of String)
     Dim lNodes As New List(Of String)
@@ -981,9 +985,9 @@
       lvUpdates.ReadOnly = True
       Return
     End If
-    lvUpdates.Tag = "LOADING"
+    LoadingUpdates = True
     lvUpdates.ReadOnly = False
-    Dim sGroupList As New Collections.Generic.SortedDictionary(Of String, String)
+    Dim sGroupList As New SortedDictionary(Of String, String)
     For Each pUpdate As Update_Integrated In UpdateData
       Dim sReleaseType As String = pUpdate.ReleaseType
       If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.ReleaseType) Then sReleaseType = pUpdate.UpdateInfo.ReleaseType
@@ -1396,7 +1400,7 @@
       End If
     Next
     lvUpdates.Sort()
-    lvUpdates.Tag = Nothing
+    LoadingUpdates = False
   End Sub
   Private Function GetVersions(VerString As String) As Version()
     If Not VerString.Contains(".") Then Return {New Version(0, 0), New Version(0, 0)}
