@@ -12,7 +12,7 @@
   Public Failure As String
   Public Ident As Update_Identity
   Public DriverData As Driver
-  Private Shared c_ExtractRet As New Collections.Generic.List(Of String)
+  Private Shared c_ExtractRet As New List(Of String)
   Public Sub New(Location As String)
     Path = Location
     Failure = Nothing

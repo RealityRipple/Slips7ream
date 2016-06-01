@@ -4,7 +4,7 @@ Public Class ToolTip
   Inherits System.Windows.Forms.ToolTip
   Private b_Persistant As Boolean
   Private b_HideOnHover As Boolean
-  Private ControlList As New Collections.Generic.List(Of Control)
+  Private ControlList As New List(Of Control)
   Public Sub New()
     MyBase.New()
     b_Persistant = False
