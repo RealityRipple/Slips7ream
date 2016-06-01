@@ -15,6 +15,11 @@ Public Module modFunctions
     amd64
     ia64
   End Enum
+  Public Enum WIMGroup
+    WIM
+    Merge
+    All
+  End Enum
   <StructLayout(LayoutKind.Sequential)>
   Private Structure SP_CLASSIMAGELIST_DATA
     Public cbSize As UInteger
@@ -664,7 +669,7 @@ Public Module modFunctions
       End Try
     End If
   End Sub
-  Private c_SlowCopyRet As New Collections.Generic.List(Of String)
+  Private c_SlowCopyRet As New List(Of String)
   Public Function SlowCopyFile(File As String, Destination As String, Optional Move As Boolean = False) As Boolean
     Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncSlowCopyFile))
     Dim cIndex As Integer = c_SlowCopyRet.Count
@@ -941,6 +946,53 @@ Public Module modFunctions
         End If
       End If
     End If
+  End Function
+  Public Function CompareArchitectures(archA As String, typeB As ArchitectureList, neutralEqual As Boolean) As Boolean
+    Dim typeA As ArchitectureList
+    If archA.ToLower = "ia64" Then
+      typeA = ArchitectureList.ia64
+    ElseIf archA.Contains("64") Then
+      typeA = ArchitectureList.amd64
+    ElseIf archA.Contains("86") Or archA.Contains("32") Then
+      typeA = ArchitectureList.x86
+    ElseIf archA.ToLower = "neutral" Then
+      Return neutralEqual
+    Else
+      Debug.Print("Unknown A Architecture: " & archA)
+      typeA = ArchitectureList.x86
+    End If
+    Return typeA = typeB
+  End Function
+  Public Function CompareArchitectures(archA As String, archB As String, neutralEqual As Boolean) As Boolean
+    Dim typeA As ArchitectureList
+    If archA.ToLower = "ia64" Then
+      typeA = ArchitectureList.ia64
+    ElseIf archA.Contains("64") Then
+      typeA = ArchitectureList.amd64
+    ElseIf archA.Contains("86") Or archA.Contains("32") Then
+      typeA = ArchitectureList.x86
+    ElseIf archA.ToLower = "neutral" Then
+      If neutralEqual Then Return True
+      If archB.ToLower = "neutral" Then Return True
+      Return False
+    Else
+      Debug.Print("Unknown A Architecture: " & archA)
+      typeA = ArchitectureList.x86
+    End If
+    Dim typeB As ArchitectureList
+    If archB.ToLower = "ia64" Then
+      typeB = ArchitectureList.ia64
+    ElseIf archB.Contains("64") Then
+      typeB = ArchitectureList.amd64
+    ElseIf archB.Contains("86") Or archB.Contains("32") Then
+      typeB = ArchitectureList.x86
+    ElseIf archB.ToLower = "neutral" Then
+      Return neutralEqual
+    Else
+      Debug.Print("Unknown B Architecture: " & archB)
+      typeB = ArchitectureList.x86
+    End If
+    Return typeA = typeB
   End Function
   Public Function CompareMSVersions(Ver1 As String, Ver2 As String) As Integer
     Dim v1Ver(3) As String
@@ -1260,13 +1312,19 @@ Public Module modFunctions
             dlgUpdate.Controls.Add(cmdYes)
             Dim sNo As String
             sNo = "These updates will not be replaced:"
+            Dim sOther As String = Nothing
             For I As Integer = 0 To oldPData.Length - 1
-              If CompareMSVersions(newData.Ident.Version, oldPData(I).Ident.Version) > 0 Then
-                Dim oldV As String = oldPData(I).Ident.Version
-                If oldV.StartsWith("6.1.") Then oldV = oldV.Substring(4)
-                sNo &= vbNewLine &
-                       en & oldPData(I).Ident.Name & " (" & oldV & ")" & vbNewLine &
-                       em & "Installed in " & PList(I).Name
+              If String.IsNullOrEmpty(oldPData(I).Identity) Then
+                If String.IsNullOrEmpty(sOther) Then sOther = "These updates could not be determined:"
+                sOther &= vbNewLine & en & PList(I).Name
+              Else
+                If CompareMSVersions(newData.Ident.Version, oldPData(I).Ident.Version) > 0 Then
+                  Dim oldV As String = oldPData(I).Ident.Version
+                  If oldV.StartsWith("6.1.") Then oldV = oldV.Substring(4)
+                  sNo &= vbNewLine &
+                         en & oldPData(I).Ident.Name & " (" & oldV & ")" & vbNewLine &
+                         em & "Installed in " & PList(I).Name
+                End If
               End If
             Next
             Dim cmdNo As New CommandLink(
@@ -1275,6 +1333,12 @@ Public Module modFunctions
               sNo)
             AddHandler cmdNo.Click, AddressOf SelectionDialogCommandLink_Click
             dlgUpdate.Controls.Add(cmdNo)
+            If Not String.IsNullOrEmpty(sOther) Then
+              dlgUpdate.ExpansionMode = TaskDialogExpandedDetailsLocation.ExpandFooter
+              dlgUpdate.DetailsCollapsedLabel = "Show Unknown Versions"
+              dlgUpdate.DetailsExpandedLabel = "Hide Unknown Versions"
+              dlgUpdate.DetailsExpandedText = sOther & vbNewLine & "The list of Integrated Windows Updates for these Image Packages may not have been loaded or these Editions of Windows may not be supported by this Update."
+            End If
             dlgUpdate.OwnerWindowHandle = owner.Handle
             AddHandler dlgUpdate.Opened, AddressOf RefreshDlg
             Dim ret As TaskDialogResult
@@ -1321,13 +1385,19 @@ Public Module modFunctions
             AddHandler cmdYes.Click, AddressOf SelectionDialogCommandLink_Click
             Dim sNo As String
             sNo = "These updates will not be replaced:"
+            Dim sOther As String = Nothing
             For I As Integer = 0 To oldPData.Length - 1
-              If CompareMSVersions(newData.Ident.Version, oldPData(I).Ident.Version) > 0 Then
-                Dim oldV As String = oldPData(I).Ident.Version
-                If oldV.StartsWith("6.1.") Then oldV = oldV.Substring(4)
-                sNo &= vbNewLine &
-                       en & oldPData(I).Ident.Name & " (" & oldV & ")" & vbNewLine &
-                       em & "Installed in " & PList(I).Name
+              If String.IsNullOrEmpty(oldPData(I).Identity) Then
+                If String.IsNullOrEmpty(sOther) Then sOther = "These updates could not be determined:"
+                sOther &= vbNewLine & en & PList(I).Name
+              Else
+                If CompareMSVersions(newData.Ident.Version, oldPData(I).Ident.Version) > 0 Then
+                  Dim oldV As String = oldPData(I).Ident.Version
+                  If oldV.StartsWith("6.1.") Then oldV = oldV.Substring(4)
+                  sNo &= vbNewLine &
+                         en & oldPData(I).Ident.Name & " (" & oldV & ")" & vbNewLine &
+                         em & "Installed in " & PList(I).Name
+                End If
               End If
             Next
             Dim cmdNo As New CommandLink(
@@ -1338,6 +1408,12 @@ Public Module modFunctions
             AddHandler cmdNo.Click, AddressOf SelectionDialogCommandLink_Click
             dlgUpdate.Controls.Add(cmdNo)
             dlgUpdate.Controls.Add(cmdYes)
+            If Not String.IsNullOrEmpty(sOther) Then
+              dlgUpdate.ExpansionMode = TaskDialogExpandedDetailsLocation.ExpandFooter
+              dlgUpdate.DetailsCollapsedLabel = "Show Unknown Versions"
+              dlgUpdate.DetailsExpandedLabel = "Hide Unknown Versions"
+              dlgUpdate.DetailsExpandedText = sOther & vbNewLine & "The list of Integrated Windows Updates for these Image Packages may not have been loaded or these Editions of Windows may not be supported by this Update."
+            End If
             dlgUpdate.OwnerWindowHandle = owner.Handle
             AddHandler dlgUpdate.Opened, AddressOf RefreshDlg
             Dim ret As TaskDialogResult
@@ -1382,15 +1458,22 @@ Public Module modFunctions
             AddHandler cmdAll.Click, AddressOf SelectionDialogCommandLink_Click
             Dim sYes As String
             sYes = "These updates will be upgraded:"
+            Dim sOther As String = Nothing
             For I As Integer = 0 To oldPData.Length - 1
-              If CompareMSVersions(newData.Ident.Version, oldPData(I).Ident.Version) > 0 Then
-                Dim oldV As String = oldPData(I).Ident.Version
-                If oldV.StartsWith("6.1.") Then oldV = oldV.Substring(4)
-                sYes &= vbNewLine &
-                        en & oldPData(I).Ident.Name & " (" & oldV & ")" & vbNewLine &
-                        em & "Installed in " & PList(I).Name
+              If String.IsNullOrEmpty(oldPData(I).Identity) Then
+                If String.IsNullOrEmpty(sOther) Then sOther = "These updates could not be determined:"
+                sOther &= vbNewLine & en & PList(I).Name
+              Else
+                If CompareMSVersions(newData.Ident.Version, oldPData(I).Ident.Version) > 0 Then
+                  Dim oldV As String = oldPData(I).Ident.Version
+                  If oldV.StartsWith("6.1.") Then oldV = oldV.Substring(4)
+                  sYes &= vbNewLine &
+                          en & oldPData(I).Ident.Name & " (" & oldV & ")" & vbNewLine &
+                          em & "Installed in " & PList(I).Name
+                End If
               End If
             Next
+            If Not sYes.Contains(vbNewLine) Then sYes &= vbNewLine & en & "Unable to determine! See Unknown Versions below"
             Dim cmdYes As New CommandLink(
               "cmdYes",
               "Use Newer Version " & newData.KBVersion & " on Older Updates",
@@ -1400,6 +1483,7 @@ Public Module modFunctions
             Dim sNo As String
             sNo = "These updates will be downgraded:"
             For I As Integer = 0 To oldPData.Length - 1
+              If String.IsNullOrEmpty(oldPData(I).Identity) Then Continue For
               If CompareMSVersions(newData.Ident.Version, oldPData(I).Ident.Version) < 0 Then
                 Dim oldV As String = oldPData(I).Ident.Version
                 If oldV.StartsWith("6.1.") Then oldV = oldV.Substring(4)
@@ -1408,19 +1492,42 @@ Public Module modFunctions
                        em & "Installed in " & PList(I).Name
               End If
             Next
+            If Not sNo.Contains(vbNewLine) Then sNo &= vbNewLine & en & "Unable to determine! See Unknown Versions below"
             Dim cmdNo As New CommandLink(
               "cmdNo",
               "Use Older Version " & newData.KBVersion & " on Newer Updates",
-              sYes)
-            AddHandler cmdYes.Click, AddressOf SelectionDialogCommandLink_Click
+              sNo)
+            AddHandler cmdNo.Click, AddressOf SelectionDialogCommandLink_Click
             Dim cmdNone As New CommandLink(
               "cmdNone",
-              "Don't Replace Integrated Versions.")
-            AddHandler cmdNo.Click, AddressOf SelectionDialogCommandLink_Click
+              "Don't Replace Integrated Versions", "Only Image Packages that don't have this update will receive it")
+            AddHandler cmdNone.Click, AddressOf SelectionDialogCommandLink_Click
             dlgUpdate.Controls.Add(cmdAll)
             dlgUpdate.Controls.Add(cmdYes)
             dlgUpdate.Controls.Add(cmdNo)
             dlgUpdate.Controls.Add(cmdNone)
+            If Not String.IsNullOrEmpty(sOther) Then sOther &= vbNewLine & "The list of Integrated Windows Updates for these Image Packages may not have been loaded or these Editions of Windows may not be supported by this Update."
+            For I As Integer = 0 To oldPData.Length - 1
+              If String.IsNullOrEmpty(oldPData(I).Identity) Then Continue For
+              If CompareMSVersions(newData.Ident.Version, oldPData(I).Ident.Version) = 0 Then
+                If String.IsNullOrEmpty(sOther) Then
+                  sOther = "These updates are already the same version:"
+                Else
+                  sOther &= vbNewLine & vbNewLine & "These updates are already the same version:"
+                End If
+                Dim oldV As String = oldPData(I).Ident.Version
+                If oldV.StartsWith("6.1.") Then oldV = oldV.Substring(4)
+                sOther &= vbNewLine &
+                       en & oldPData(I).Ident.Name & " (" & oldV & ")" & vbNewLine &
+                       em & "Installed in " & PList(I).Name
+              End If
+            Next
+            If Not String.IsNullOrEmpty(sOther) Then
+              dlgUpdate.ExpansionMode = TaskDialogExpandedDetailsLocation.ExpandFooter
+              dlgUpdate.DetailsCollapsedLabel = "Show Unknown Versions"
+              dlgUpdate.DetailsExpandedLabel = "Hide Unknown Versions"
+              dlgUpdate.DetailsExpandedText = sOther
+            End If
             dlgUpdate.OwnerWindowHandle = owner.Handle
             AddHandler dlgUpdate.Opened, AddressOf RefreshDlg
             Try

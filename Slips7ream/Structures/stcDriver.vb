@@ -66,7 +66,9 @@
         If Architectures Is Nothing Then
           Architectures = New List(Of String)
         End If
-        If Not Architectures.Contains(sArch) Then Architectures.Add(sArch)
+        If Not Architectures.Exists(New Predicate(Of String)(Function(cArch As String) As Boolean
+                                                               Return CompareArchitectures(cArch, sArch, False)
+                                                             End Function)) Then Architectures.Add(sArch)
         Dim sDriverInfos As New List(Of String)
         Dim sDriverInfoChunk As String = Nothing
         Dim J As Integer = I + 1
@@ -135,9 +137,9 @@
     If Not info1.Date = info2.Date Then Return False
     Dim archMatches As New List(Of String)
     For Each arch1 As String In info1.Architectures
-      If StrComp(arch1, "ia64", CompareMethod.Text) = 0 Then Continue For
+      If CompareArchitectures(arch1, ArchitectureList.ia64, False) Then Continue For
       For Each arch2 As String In info2.Architectures
-        If StrComp(arch1, arch2, CompareMethod.Text) = 0 Then archMatches.Add(arch1)
+        If CompareArchitectures(arch1, arch2, False) Then archMatches.Add(arch1)
       Next
     Next
     If archMatches.Count = 0 Then Return False
@@ -270,7 +272,7 @@ Public Structure Driver_HardwareA
   End Function
   Public Shared Operator =(info1 As Driver_HardwareA, info2 As Driver_Hardware) As Boolean
     If Not info1.Manufacturer = info2.Manufacturer Then Return False
-    If Not info1.Architecture = info2.Architecture Then Return False
+    If Not CompareArchitectures(info1.Architecture, info2.Architecture, False) Then Return False
     If Not info1.Description = info2.Description Then Return False
     If Not info1.ServiceName = info2.ServiceName Then Return False
     Return True

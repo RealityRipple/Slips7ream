@@ -21,7 +21,7 @@
       cmbArchitecture.Items.Clear()
       cmbArchitecture.Enabled = True
       For Each arch As String In myDriver.Architectures
-        If arch.ToLower = "ia64" Then
+        If CompareArchitectures(arch, ArchitectureList.ia64, False) Then
           cmbArchitecture.Items.Add(arch & " (Not Used)")
         Else
           cmbArchitecture.Items.Add(arch)

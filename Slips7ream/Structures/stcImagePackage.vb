@@ -89,7 +89,7 @@
     If Not info1.Index = info2.Index Then Return False
     If Not info1.Desc = info2.Desc Then Return False
     If Not info1.Size = info2.Size Then Return False
-    If Not info1.Architecture = info2.Architecture Then Return False
+    If Not CompareArchitectures(info1.Architecture, info2.Architecture, False) Then Return False
     If Not info1.HAL = info2.HAL Then Return False
     If Not info1.Version = info2.Version Then Return False
     If Not info1.SPLevel = info2.SPLevel Then Return False
