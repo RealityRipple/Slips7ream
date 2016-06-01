@@ -6,6 +6,7 @@ Public Class ListViewEx
   Private c_ReadOnly As Boolean
   Private c_FullRowTooltip As Boolean
   Private c_TooltipTitles As Boolean
+  Private c_HeaderStyle As ColumnHeaderStyle = ColumnHeaderStyle.None
   Private components As System.ComponentModel.IContainer
   Private WithEvents ttLV As New Slips7ream.ToolTip
   Public Property [ReadOnly] As Boolean
@@ -13,17 +14,25 @@ Public Class ListViewEx
       Return c_ReadOnly
     End Get
     Set(value As Boolean)
-      c_ReadOnly = value
-      MyBase.HideSelection = value
-      If value Then
-        MyBase.SelectedItems.Clear()
-        MyBase.BackColor = SystemColors.ButtonFace
-      Else
-        MyBase.BackColor = SystemColors.Window
+      If Not c_ReadOnly = value Then
+        c_ReadOnly = value
+        MyBase.HideSelection = value
+        If value Then
+          If Not MyBase.HeaderStyle = ColumnHeaderStyle.None And c_HeaderStyle = ColumnHeaderStyle.None Then c_HeaderStyle = MyBase.HeaderStyle
+          MyBase.HeaderStyle = ColumnHeaderStyle.Nonclickable
+          MyBase.SelectedItems.Clear()
+          MyBase.BackColor = SystemColors.ButtonFace
+        Else
+          If Not MyBase.HeaderStyle = ColumnHeaderStyle.None And Not c_HeaderStyle = ColumnHeaderStyle.None Then
+            MyBase.HeaderStyle = c_HeaderStyle
+            c_HeaderStyle = ColumnHeaderStyle.None
+          End If
+          MyBase.BackColor = SystemColors.Window
+          End If
+          For Each lvItem As ListViewItem In Me.Items
+            lvItem.BackColor = MyBase.BackColor
+          Next
       End If
-      For Each lvItem As ListViewItem In Me.Items
-        lvItem.BackColor = MyBase.BackColor
-      Next
     End Set
   End Property
   <DefaultValue(False), Browsable(True), EditorBrowsable(True), Description("Show Tooltip Text for each ListViewItem across its entire row, not just in the first column."), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)>
