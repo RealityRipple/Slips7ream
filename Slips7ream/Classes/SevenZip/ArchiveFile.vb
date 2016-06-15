@@ -248,7 +248,7 @@ Namespace Extraction
           If formats.Count > 1 Then
             Throw New ArchiveException("Invalid archive!")
           Else
-            Throw New ArchiveException("Failed to open archive as " & Format.ToString & ".")
+            Throw New ArchiveException(String.Format("Failed to open archive as {0}.", Format.ToString))
           End If
         End If
       Finally

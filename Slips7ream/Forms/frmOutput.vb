@@ -197,8 +197,8 @@ Public Class frmOutput
         sSelTo = txtSel.Text.Length
       End If
       Dim sText As String = txtSel.Text.Substring(sSelFrom, sSelTo - sSelFrom)
-      Do While sText.Contains(vbNewLine & vbNewLine)
-        sText = sText.Replace(vbNewLine & vbNewLine, vbNewLine)
+      Do While sText.Contains(String.Concat(vbNewLine, vbNewLine))
+        sText = sText.Replace(String.Concat(vbNewLine, vbNewLine), vbNewLine)
       Loop
       sText = sText.Trim(vbCr, vbLf)
       Dim sLines() As String = Split(sText, vbNewLine)
@@ -206,7 +206,7 @@ Public Class frmOutput
       For I As Integer = 0 To sLines.Length - 1
         If String.IsNullOrEmpty(sLines(I)) Then Continue For
         If sLines(I).StartsWith("   ") Then Continue For
-        sText &= sLines(I) & vbNewLine
+        sText = String.Concat(sText, sLines(I), vbNewLine)
       Next
       If String.IsNullOrEmpty(sText) Then
         mnuCopyCommands.Enabled = False
@@ -312,8 +312,8 @@ Public Class frmOutput
         sSelTo = txtSel.Text.Length
       End If
       Dim sText As String = txtSel.Text.Substring(sSelFrom, sSelTo - sSelFrom)
-      Do While sText.Contains(vbNewLine & vbNewLine)
-        sText = sText.Replace(vbNewLine & vbNewLine, vbNewLine)
+      Do While sText.Contains(String.Concat(vbNewLine, vbNewLine))
+        sText = sText.Replace(String.Concat(vbNewLine, vbNewLine), vbNewLine)
       Loop
       sText = sText.Trim(vbCr, vbLf)
       Dim sLines() As String = Split(sText, vbNewLine)
@@ -321,7 +321,7 @@ Public Class frmOutput
       For I As Integer = 0 To sLines.Length - 1
         If String.IsNullOrEmpty(sLines(I)) Then Continue For
         If sLines(I).StartsWith("   ") Then Continue For
-        sText &= sLines(I) & vbNewLine
+        sText = String.Concat(sText, sLines(I), vbNewLine)
       Next
       If String.IsNullOrEmpty(sText) Then Return
       Clipboard.SetText(sText.TrimEnd(vbCr, vbLf))

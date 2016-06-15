@@ -95,7 +95,7 @@
             Exit Do
           Else
             sLine = sLine.Replace(vbTab, "")
-            sDriverInfoChunk &= sLine & vbNewLine
+            sDriverInfoChunk = String.Concat(sDriverInfoChunk, sLine, vbNewLine)
           End If
         Loop
         Dim DriverList As New List(Of Driver_Hardware)

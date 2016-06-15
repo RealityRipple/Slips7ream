@@ -15,7 +15,7 @@ Namespace Extraction
     Private Sub InternalOpen(callback As IArchiveOpenCallback, format As Guid)
       Dim [Interface] = GetType(IInArchive).GUID
       Dim result As Object = Nothing
-      snM = New SafeNativeMethods(AIKDir & "7z.dll")
+      snM = New SafeNativeMethods(IO.Path.Combine(AIKDir, "7z.dll"))
       result = snM.CreateInArchive(format)
       If result Is Nothing Then
         Throw New COMException("Cannot create Archive")

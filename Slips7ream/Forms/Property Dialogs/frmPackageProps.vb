@@ -1,20 +1,21 @@
 ﻿Public Class frmPackageProps
+  Private imgID As String
   Private Group As WIMGroup
   Private UpdateData As List(Of Update_Integrated)
   Private FeatureData As List(Of Feature)
   Private DriverData As List(Of Driver)
   Public Class PackagePropertiesEventArgs
     Inherits EventArgs
-    Public ImageIndex As Integer
-    Public OldImageName As String
+    Public ImageID As String
     Public NewImageName As String
+    Public NewImageDesc As String
     Public FeatureList() As Feature
     Public UpdateList() As Update_Integrated
     Public DriverList() As Driver
-    Public Sub New(Index As Integer, OldName As String, NewName As String, Features() As Feature, Updates() As Update_Integrated, Drivers() As Driver)
-      ImageIndex = Index
-      OldImageName = OldName
+    Public Sub New(ID As String, NewName As String, NewDescription As String, Features() As Feature, Updates() As Update_Integrated, Drivers() As Driver)
+      ImageID = ID
       NewImageName = NewName
+      NewImageDesc = NewDescription
       FeatureList = Features
       UpdateList = Updates
       DriverList = Drivers
@@ -23,6 +24,7 @@
   Public Event Response(sender As Object, e As PackagePropertiesEventArgs)
   Private bLoading As Boolean = False
   Private originalPackageName As String
+  Private originalPackageDesc As String
   Private selFeature As TreeNode
   Private selUpdate As ListViewItem
   Private LoadingFeatures As Boolean = False
@@ -33,6 +35,7 @@
     bLoading = True
     InitializeComponent()
     LoadImageLists()
+    imgID = Data.ToString
     Group = ImageGroup
     UpdateData = Data.IntegratedUpdateList
     If UpdateData IsNot Nothing AndAlso UpdateData.Count = 0 Then UpdateData = Nothing
@@ -41,11 +44,12 @@
     DriverData = Drivers
     If DriverData IsNot Nothing AndAlso DriverData.Count = 0 Then DriverData = Nothing
     txtIndex.Text = Data.Index
-    Me.Text = Data.Name & " Image Package Properties"
+    Me.Text = String.Format("{0} Image Package Properties", Data.Name)
     txtName.Text = Data.Name
     originalPackageName = Data.Name
     txtDesc.Text = Data.Desc
-    txtSize.Text = ByteSize(Data.Size) & " (" & FormatNumber(Data.Size, 0, TriState.False, TriState.False, TriState.True) & " bytes)"
+    originalPackageDesc = Data.Desc
+    txtSize.Text = String.Format("{1} ({0} bytes)", FormatNumber(Data.Size, 0, TriState.False, TriState.False, TriState.True), ByteSize(Data.Size))
     txtArchitecture.Text = Data.Architecture
     txtHAL.Text = Data.HAL
     txtVersion.Text = Data.Version
@@ -101,9 +105,8 @@
   End Sub
 #Region "Buttons"
   Private Sub cmdOK_Click(sender As System.Object, e As System.EventArgs) Handles cmdOK.Click
-    Dim iIndex As Integer = Int(txtIndex.Text)
     Dim sName As String = txtName.Text
-    If originalPackageName = sName Then sName = Nothing
+    Dim sDesc As String = txtDesc.Text
     Dim Features As New List(Of Feature)
     If FeatureData IsNot Nothing AndAlso FeatureData.Count > 0 Then
       For Each Feature In FeatureData
@@ -126,7 +129,7 @@
         If Item.Remove Then Drivers.Add(Item)
       Next
     End If
-    RaiseEvent Response(Me, New PackagePropertiesEventArgs(iIndex, originalPackageName, sName, Features.ToArray, Updates.ToArray, Drivers.ToArray))
+    RaiseEvent Response(Me, New PackagePropertiesEventArgs(imgID, sName, sDesc, Features.ToArray, Updates.ToArray, Drivers.ToArray))
     Me.Close()
   End Sub
   Private Sub cmdCancel_Click(sender As System.Object, e As System.EventArgs) Handles cmdCancel.Click
@@ -165,7 +168,7 @@
     For Each Feature In RequiredFeatures
       For Each toFind In SearchList
         If Feature.Value.Contains(toFind) Then
-          Dim requiredNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find("tvn" & Feature.Key.Replace(" ", "_"), True))
+          Dim requiredNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find(String.Format("tvn{0}", Feature.Key.Replace(" ", "_")), True))
           Dim isRequired As Boolean = False
           If requiredNode IsNot Nothing Then
             If requiredNode.Checked Then isRequired = True
@@ -179,26 +182,26 @@
       If e.Node.ToolTipText.Contains("Link: ") Then sLearnMoreURL = e.Node.ToolTipText.Substring(e.Node.ToolTipText.IndexOf("Link: ") + 6)
       If String.IsNullOrEmpty(sLearnMoreURL) Then
         If RequiredFor.Count > 0 Then
-          If MsgDlg(Me, Join(RequiredFor.ToArray, vbNewLine), "The following Windows features will also be turned off because they are dependent on " & e.Node.Text & ". Do you want to continue?", "Windows Features", MessageBoxButtons.YesNo, TaskDialogIcon.Warning, MessageBoxDefaultButton.Button1, , "Dependent Features") = Windows.Forms.DialogResult.No Then
+          If MsgDlg(Me, Join(RequiredFor.ToArray, vbNewLine), String.Format("The following Windows features will also be turned off because they are dependent on {0}. Do you want to continue?", e.Node.Text), "Windows Features", MessageBoxButtons.YesNo, TaskDialogIcon.Warning, MessageBoxDefaultButton.Button1, , "Dependent Features") = Windows.Forms.DialogResult.No Then
             e.Cancel = True
             Return
           End If
         End If
       Else
         If RequiredFor.Count > 0 Then
-          If MsgDlg(Me, Join(RequiredFor.ToArray, vbNewLine) & vbNewLine & "Other Windows features and programs on your computer might also be affected, including default settings." & vbNewLine & "<a href=""" & sLearnMoreURL & """>Go online to learn more</a>", "The following Windows features will also be turned off because they are dependent on " & e.Node.Text & ". Do you want to continue?", "Windows Features", MessageBoxButtons.YesNo, TaskDialogIcon.Warning, MessageBoxDefaultButton.Button1, , "Dependent Features") = Windows.Forms.DialogResult.No Then
+          If MsgDlg(Me, String.Concat(Join(RequiredFor.ToArray, vbNewLine), vbNewLine, "Other Windows features and programs on your computer might also be affected, including default settings.", vbNewLine, String.Format("<a href=""{0}"">Go online to learn more</a>", sLearnMoreURL)), String.Format("The following Windows features will also be turned off because they are dependent on {0}. Do you want to continue?", e.Node.Text), "Windows Features", MessageBoxButtons.YesNo, TaskDialogIcon.Warning, MessageBoxDefaultButton.Button1, , "Dependent Features") = Windows.Forms.DialogResult.No Then
             e.Cancel = True
             Return
           End If
         Else
-          If MsgDlg(Me, "<a href=""" & sLearnMoreURL & """>Go online to learn more</a>", "Turning off " & e.Node.Text & " might affect other Windows features and programs installed on your computer, including default settings. Do you want to continue?", "Windows Features", MessageBoxButtons.YesNo, TaskDialogIcon.Information, MessageBoxDefaultButton.Button1, , "Dependent Features") = Windows.Forms.DialogResult.No Then
+          If MsgDlg(Me, String.Format("<a href=""{0}"">Go online to learn more</a>", sLearnMoreURL), String.Format("Turning off {0} might affect other Windows features and programs installed on your computer, including default settings. Do you want to continue?", e.Node.Text), "Windows Features", MessageBoxButtons.YesNo, TaskDialogIcon.Information, MessageBoxDefaultButton.Button1, , "Dependent Features") = Windows.Forms.DialogResult.No Then
             e.Cancel = True
           End If
         End If
       End If
     End If
     For Each Feature In RequiredFor
-      Dim requiredNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find("tvn" & Feature.Replace(" ", "_"), True))
+      Dim requiredNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find(String.Format("tvn{0}", Feature.Replace(" ", "_")), True))
       If requiredNode IsNot Nothing Then
         If requiredNode.Checked Then requiredNode.Checked = False
       End If
@@ -221,9 +224,9 @@
     If e.Node.Checked Then
       If RequiredFeatures.ContainsKey(e.Node.Text) Then
         For Each sRequirement As String In RequiredFeatures(e.Node.Text)
-          Dim requiredNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find("tvn" & sRequirement.Replace(" ", "_"), True))
+          Dim requiredNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find(String.Format("tvn{0}", sRequirement.Replace(" ", "_")), True))
           If requiredNode Is Nothing Then
-            MsgDlg(Me, "The feature " & e.Node.Text & " requires another feature, " & sRequirement & ", which could not be found!", "A required feature is missing from the feature list.", "Windows Features", MessageBoxButtons.OK, TaskDialogIcon.Information, , , "Missing Feature")
+            MsgDlg(Me, String.Format("The feature {0} requires another feature, {1}, which could not be found!", e.Node.Text, sRequirement), "A required feature is missing from the feature list.", "Windows Features", MessageBoxButtons.OK, TaskDialogIcon.Information, , , "Missing Feature")
             e.Node.Checked = False
           Else
             If Not requiredNode.Checked Then requiredNode.Checked = True
@@ -326,11 +329,16 @@
   End Sub
 #End Region
   Private Sub cmdLoadFeatures_Click(sender As Object, e As EventArgs) Handles cmdLoadFeatures.Click
+    If Not frmMain.RunActivity = ActivityType.Nothing Then
+      Dim Activity As ActivityRet = ActivityParser(frmMain.RunActivity)
+      MsgDlg(Me, String.Format("Please wait until SLIPS7REAM finishes the {0} process.", Activity.Process), String.Format("SLIPS7REAM is busy {0}.", Activity.Activity), String.Format("Can't Load Windows Features - Busy {0}", Activity.Title), MessageBoxButtons.OK, TaskDialogIcon.Run, , , "Program Busy")
+      Return
+    End If
     ToggleUI(False)
     frmMain.LoadPackageFeatures(Group, txtIndex.Text)
     Dim lvItem As ListViewItem = Nothing
     For Each item As ListViewItem In frmMain.lvImages.Items
-      If item.SubItems(1).Text = originalPackageName Then
+      If frmMain.ImageDataList(item.Tag).Package.ToString = imgID Then
         lvItem = item
         Exit For
       End If
@@ -387,11 +395,16 @@
     End If
   End Sub
   Private Sub cmdLoadUpdates_Click(sender As Object, e As EventArgs) Handles cmdLoadUpdates.Click
+    If Not frmMain.RunActivity = ActivityType.Nothing Then
+      Dim Activity As ActivityRet = ActivityParser(frmMain.RunActivity)
+      MsgDlg(Me, String.Format("Please wait until SLIPS7REAM finishes the {0} process.", Activity.Process), String.Format("SLIPS7REAM is busy {0}.", Activity.Activity), String.Format("Can't Load Integrated Windows Updates - Busy {0}", Activity.Title), MessageBoxButtons.OK, TaskDialogIcon.Run, , , "Program Busy")
+      Return
+    End If
     ToggleUI(False)
     frmMain.LoadPackageUpdates(Group, txtIndex.Text)
     Dim lvItem As ListViewItem = Nothing
     For Each item As ListViewItem In frmMain.lvImages.Items
-      If item.SubItems(1).Text = originalPackageName Then
+      If frmMain.ImageDataList(item.Tag).Package.ToString = imgID Then
         lvItem = item
         Exit For
       End If
@@ -433,7 +446,7 @@
     For Each pDriver As Driver In DriverData
       If Not GetDriverClassName(pDriver.ClassGUID) = sDriverClassName Then Continue For
       Dim sProviderKey As String = "lviUnknown"
-      If Not String.IsNullOrEmpty(pDriver.ProviderName) Then sProviderKey = "lvi" & pDriver.ProviderName.Replace(" ", "_")
+      If Not String.IsNullOrEmpty(pDriver.ProviderName) Then sProviderKey = String.Format("lvi{0}", pDriver.ProviderName.Replace(" ", "_"))
       If Not CompanyList.ContainsKey(sProviderKey) Then CompanyList.Add(sProviderKey, pDriver.ProviderName)
     Next
     For Each cDriver As KeyValuePair(Of String, String) In CompanyList
@@ -474,7 +487,7 @@
     For Each pDriver As Driver In DriverData
       If Not GetDriverClassName(pDriver.ClassGUID) = sDriverClassName Then Continue For
       Dim sProviderKey As String = "lviUnknown"
-      If Not String.IsNullOrEmpty(pDriver.ProviderName) Then sProviderKey = "lvi" & pDriver.ProviderName.Replace(" ", "_")
+      If Not String.IsNullOrEmpty(pDriver.ProviderName) Then sProviderKey = String.Format("lvi{0}", pDriver.ProviderName.Replace(" ", "_"))
       If Not CompanyList.ContainsKey(sProviderKey) Then CompanyList.Add(sProviderKey, pDriver.ProviderName)
     Next
     Dim sDriverCompanyName As String = lvDriverProvider.SelectedItems(0).Text
@@ -482,52 +495,59 @@
       If Not GetDriverClassName(pDriver.ClassGUID) = sDriverClassName Then Continue For
       If Not GetUpdateCompany(pDriver.ProviderName, CompanyList.Values.ToArray) = sDriverCompanyName Then Continue For
       Dim sDeviceKey As String = "lviUnknown"
-      If Not String.IsNullOrEmpty(pDriver.PublishedName) Then sDeviceKey = "lvi" & pDriver.PublishedName.Replace(" ", "_")
+      If Not String.IsNullOrEmpty(pDriver.PublishedName) Then sDeviceKey = String.Format("lvi{0}", pDriver.PublishedName.Replace(" ", "_"))
       Dim sDeviceTitle As String = "Unknown"
       If Not String.IsNullOrEmpty(pDriver.PublishedName) Then sDeviceTitle = pDriver.PublishedName
       If Not lvDriverINF.Items.ContainsKey(sDeviceKey) Then
         imlDriverINF.Images.Add(sDeviceKey, pDriver.DriverIcon)
         Dim lvDeviceItem As ListViewItem = lvDriverINF.Items.Add(sDeviceKey, sDeviceTitle, sDeviceKey)
         lvDeviceItem.SubItems.Add(pDriver.Version)
-        Dim en As String = ChrW(&H2003)
         Dim ttPublishedName As String = Nothing
         If Not String.IsNullOrEmpty(pDriver.PublishedName) Then
-          ttPublishedName = pDriver.PublishedName
-          If Not String.IsNullOrEmpty(pDriver.Version) Then ttPublishedName &= " v" & pDriver.Version
+          If String.IsNullOrEmpty(pDriver.Version) Then
+            ttPublishedName = pDriver.PublishedName
+          Else
+            ttPublishedName = String.Format("{0} v{1}", pDriver.PublishedName, pDriver.Version)
+          End If
         End If
         Dim ttOriginalFileName As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.OriginalFileName) Then ttOriginalFileName = en & "Original File Name: " & pDriver.OriginalFileName
+        If Not String.IsNullOrEmpty(pDriver.OriginalFileName) Then ttOriginalFileName = String.Concat(en, String.Format("Original File Name: {0}", pDriver.OriginalFileName))
         Dim ttDriverStorePath As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.DriverStorePath) Then ttDriverStorePath = en & "Driver Store Path: " & pDriver.DriverStorePath
+        If Not String.IsNullOrEmpty(pDriver.DriverStorePath) Then ttDriverStorePath = String.Concat(en, String.Format("Driver Store Path: {0}", pDriver.DriverStorePath))
         Dim ttInBox As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.InBox) Then ttInBox = en & "In-Box: " & pDriver.InBox
+        If Not String.IsNullOrEmpty(pDriver.InBox) Then ttInBox = String.Concat(en, String.Format("In-Box: {0}", pDriver.InBox))
         Dim ttClassName As String = Nothing
         If Not String.IsNullOrEmpty(pDriver.ClassName) Then
-          ttClassName = en & "Class Name: " & pDriver.ClassName
-          If Not String.IsNullOrEmpty(pDriver.ClassDescription) Then ttClassName &= " (" & pDriver.ClassDescription & ")"
+          If String.IsNullOrEmpty(pDriver.ClassDescription) Then
+            ttClassName = String.Concat(en, String.Format("Class Name: {0}", pDriver.ClassName))
+          Else
+            ttClassName = String.Concat(en, String.Format("Class Name: {0} ({1})", pDriver.ClassName, pDriver.ClassDescription))
+          End If
         ElseIf Not String.IsNullOrEmpty(pDriver.ClassDescription) Then
-          ttClassName = en & "Class Description: " & pDriver.ClassDescription
+          ttClassName = String.Concat(en, String.Format("Class Description: {0}", pDriver.ClassDescription))
         End If
         Dim ttClassGUID As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.ClassGUID) Then ttClassGUID = en & "Class GUID: " & pDriver.ClassGUID
+        If Not String.IsNullOrEmpty(pDriver.ClassGUID) Then ttClassGUID = String.Concat(en, String.Format("Class GUID: {0}", pDriver.ClassGUID))
         Dim ttProviderName As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.ProviderName) Then ttProviderName = en & "Provider: " & pDriver.ProviderName
+        If Not String.IsNullOrEmpty(pDriver.ProviderName) Then ttProviderName = String.Concat(en, String.Format("Provider: {0}", pDriver.ProviderName))
         Dim ttDate As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.Date) Then ttDate = en & "Date: " & pDriver.Date
+        If Not String.IsNullOrEmpty(pDriver.Date) Then ttDate = String.Concat(en, String.Format("Date: {0}", pDriver.Date))
         Dim ttArch As String = Nothing
-        If pDriver.Architectures IsNot Nothing AndAlso pDriver.Architectures.Count > 0 Then ttArch = en & "Supported Architectures: " & Join(pDriver.Architectures.ToArray, ", ")
+        If pDriver.Architectures IsNot Nothing AndAlso pDriver.Architectures.Count > 0 Then ttArch = String.Concat(en, String.Format("Supported Architectures: {0}", Join(pDriver.Architectures.ToArray, ", ")))
         Dim ttBootCritical As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.BootCritical) Then ttBootCritical = en & "Boot Critical: " & pDriver.BootCritical
-        lvDeviceItem.ToolTipText = IIf(String.IsNullOrEmpty(ttPublishedName), "", ttPublishedName & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttOriginalFileName), "", ttOriginalFileName & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttDriverStorePath), "", ttDriverStorePath & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttInBox), "", ttInBox & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttClassName), "", ttClassName & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttClassGUID), "", ttClassGUID & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttProviderName), "", ttProviderName & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttDate), "", ttDate & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttArch), "", ttArch & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttBootCritical), "", ttBootCritical & vbNewLine)
+        If Not String.IsNullOrEmpty(pDriver.BootCritical) Then ttBootCritical = String.Concat(en, String.Format("Boot Critical: {0}", pDriver.BootCritical))
+        Dim sDeviceTT As String = Nothing
+        If Not String.IsNullOrEmpty(ttPublishedName) Then sDeviceTT = String.Concat(sDeviceTT, ttPublishedName, vbNewLine)
+        If Not String.IsNullOrEmpty(ttOriginalFileName) Then sDeviceTT = String.Concat(sDeviceTT, ttOriginalFileName, vbNewLine)
+        If Not String.IsNullOrEmpty(ttDriverStorePath) Then sDeviceTT = String.Concat(sDeviceTT, ttDriverStorePath, vbNewLine)
+        If Not String.IsNullOrEmpty(ttInBox) Then sDeviceTT = String.Concat(sDeviceTT, ttInBox, vbNewLine)
+        If Not String.IsNullOrEmpty(ttClassName) Then sDeviceTT = String.Concat(sDeviceTT, ttClassName, vbNewLine)
+        If Not String.IsNullOrEmpty(ttClassGUID) Then sDeviceTT = String.Concat(sDeviceTT, ttClassGUID, vbNewLine)
+        If Not String.IsNullOrEmpty(ttProviderName) Then sDeviceTT = String.Concat(sDeviceTT, ttProviderName, vbNewLine)
+        If Not String.IsNullOrEmpty(ttDate) Then sDeviceTT = String.Concat(sDeviceTT, ttDate, vbNewLine)
+        If Not String.IsNullOrEmpty(ttArch) Then sDeviceTT = String.Concat(sDeviceTT, ttArch, vbNewLine)
+        If Not String.IsNullOrEmpty(ttBootCritical) Then sDeviceTT = String.Concat(sDeviceTT, ttBootCritical, vbNewLine)
+        lvDeviceItem.ToolTipText = sDeviceTT.TrimEnd(vbCr, vbLf)
         lvDeviceItem.Checked = Not pDriver.Remove
       End If
     Next
@@ -544,7 +564,7 @@
     For Each pDriver As Driver In DriverData
       If Not GetDriverClassName(pDriver.ClassGUID) = sDriverClassName Then Continue For
       Dim sProviderKey As String = "lviUnknown"
-      If Not String.IsNullOrEmpty(pDriver.ProviderName) Then sProviderKey = "lvi" & pDriver.ProviderName.Replace(" ", "_")
+      If Not String.IsNullOrEmpty(pDriver.ProviderName) Then sProviderKey = String.Format("lvi{0}", pDriver.ProviderName.Replace(" ", "_"))
       If Not CompanyList.ContainsKey(sProviderKey) Then CompanyList.Add(sProviderKey, pDriver.ProviderName)
     Next
     Dim sDriverCompanyName As String = lvDriverProvider.SelectedItems(0).Text
@@ -566,7 +586,7 @@
     For Each pDriver As Driver In DriverData
       If Not GetDriverClassName(pDriver.ClassGUID) = sDriverClassName Then Continue For
       Dim sProviderKey As String = "lviUnknown"
-      If Not String.IsNullOrEmpty(pDriver.ProviderName) Then sProviderKey = "lvi" & pDriver.ProviderName.Replace(" ", "_")
+      If Not String.IsNullOrEmpty(pDriver.ProviderName) Then sProviderKey = String.Format("lvi{0}", pDriver.ProviderName.Replace(" ", "_"))
       If Not CompanyList.ContainsKey(sProviderKey) Then CompanyList.Add(sProviderKey, pDriver.ProviderName)
     Next
     Dim sDriverCompanyName As String = lvDriverProvider.SelectedItems(0).Text
@@ -582,11 +602,16 @@
     Next
   End Sub
   Private Sub cmdLoadDrivers_Click(sender As System.Object, e As System.EventArgs) Handles cmdLoadDrivers.Click
+    If Not frmMain.RunActivity = ActivityType.Nothing Then
+      Dim Activity As ActivityRet = ActivityParser(frmMain.RunActivity)
+      MsgDlg(Me, String.Format("Please wait until SLIPS7REAM finishes the {0} process.", Activity.Process), String.Format("SLIPS7REAM is busy {0}.", Activity.Activity), String.Format("Can't Load Windows Drivers - Busy {0}", Activity.Title), MessageBoxButtons.OK, TaskDialogIcon.Run, , , "Program Busy")
+      Return
+    End If
     ToggleUI(False)
     frmMain.LoadPackageDrivers(Group, txtIndex.Text)
     Dim lvItem As ListViewItem = Nothing
     For Each item As ListViewItem In frmMain.lvImages.Items
-      If item.SubItems(1).Text = originalPackageName Then
+      If frmMain.ImageDataList(item.Tag).Package.ToString = imgID Then
         lvItem = item
         Exit For
       End If
@@ -790,14 +815,14 @@
       If String.IsNullOrEmpty(FeatureDisplayName) Then FeatureDisplayName = pFeature.FeatureName
       Dim tvItem As TreeNode = Nothing
       Dim shouldAdd As Boolean = False
-      Dim searchNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find("tvn" & FeatureDisplayName.Replace(" ", "_"), True))
+      Dim searchNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find(String.Format("tvn{0}", FeatureDisplayName.Replace(" ", "_")), True))
       If searchNode Is Nothing Then
         tvItem = New TreeNode(FeatureDisplayName)
         shouldAdd = True
       Else
         tvItem = searchNode
       End If
-      tvItem.Name = "tvn" & FeatureDisplayName.Replace(" ", "_")
+      tvItem.Name = String.Format("tvn{0}", FeatureDisplayName.Replace(" ", "_"))
       tvItem.Tag = pFeature
       tvItem.Checked = pFeature.Enable
       Dim sDescription As String = pFeature.Desc
@@ -811,27 +836,26 @@
               If RearHalf.Substring(0, 80).LastIndexOf(" ") > 0 Then
                 Dim midHalf As String = RearHalf.Substring(0, 80)
                 midHalf = midHalf.Substring(0, midHalf.LastIndexOf(" "))
-                FrontHalf = FrontHalf & vbNewLine & midHalf
+                FrontHalf = String.Concat(FrontHalf, vbNewLine, midHalf)
                 RearHalf = RearHalf.Substring(midHalf.Length + 1)
               Else
-                sDescription = FrontHalf & vbNewLine & RearHalf
+                sDescription = String.Concat(FrontHalf, vbNewLine, RearHalf)
                 Exit Do
               End If
             Else
-              sDescription = FrontHalf & vbNewLine & RearHalf
+              sDescription = String.Format(FrontHalf, vbNewLine, RearHalf)
               Exit Do
             End If
           Loop
         End If
       End If
-      Dim en As String = ChrW(&H2003)
       If pFeature.CustomProperties IsNot Nothing AndAlso pFeature.CustomProperties.Length > 0 Then
         If pFeature.CustomProperties.Length = 1 AndAlso pFeature.CustomProperties(0).Contains("(No custom properties found)") Then
-          tvItem.ToolTipText = FeatureDisplayName & vbNewLine &
-                               en & Replace(sDescription, vbNewLine, vbNewLine & en) & vbNewLine &
-                               en & "Internal Name: " & pFeature.FeatureName & vbNewLine &
-                               en & "State: " & pFeature.State & vbNewLine &
-                               en & "Restart Required: " & pFeature.RestartRequired
+          tvItem.ToolTipText = String.Concat(FeatureDisplayName, vbNewLine,
+                               en, Replace(sDescription, vbNewLine, String.Concat(vbNewLine, en)), vbNewLine,
+                               en, String.Format("Internal Name: {0}", pFeature.FeatureName), vbNewLine,
+                               en, String.Format("State: {0}", pFeature.State), vbNewLine,
+                               en, String.Format("Restart Required: {0}", pFeature.RestartRequired))
         Else
           Dim sCustomProps As String = Nothing
           If pFeature.CustomProperties.Length = 1 Then
@@ -842,10 +866,10 @@
               sPropKey = sPropKey.Substring(0, sPropKey.IndexOf(" : "))
             End If
             If sPropKey = "SoftBlockLink" Then
-              If String.IsNullOrEmpty(sCustomProps) OrElse Not sCustomProps.Contains("Changes default settings.") Then sCustomProps = en & "Changes default settings." & vbNewLine & sCustomProps
+              If String.IsNullOrEmpty(sCustomProps) OrElse Not sCustomProps.Contains("Changes default settings.") Then sCustomProps = String.Concat(en, "Changes default settings.", vbNewLine, sCustomProps)
               sPropKey = "Link"
             End If
-            sCustomProps &= en & sPropKey & ": " & sPropVal
+            sCustomProps = String.Concat(sCustomProps, en, String.Format("{0}: {1}", sPropKey, sPropVal))
           Else
             For Each sProperty In pFeature.CustomProperties
               Dim sPropKey As String = sProperty
@@ -855,28 +879,26 @@
                 sPropKey = sPropKey.Substring(0, sPropKey.IndexOf(" : "))
               End If
               If sPropKey = "SoftBlockLink" Then
-                If String.IsNullOrEmpty(sCustomProps) OrElse Not sCustomProps.Contains("Changes default settings.") Then sCustomProps = en & "Changes default settings." & vbNewLine & sCustomProps
+                If String.IsNullOrEmpty(sCustomProps) OrElse Not sCustomProps.Contains("Changes default settings.") Then sCustomProps = String.Concat(en, "Changes default settings.", vbNewLine, sCustomProps)
                 sPropKey = "Link"
               End If
-              sCustomProps &= en & sPropKey & ": " & sPropVal & vbNewLine
+              sCustomProps = String.Concat(sCustomProps, en, String.Format("{0}: {1}", sPropKey, sPropVal), vbNewLine)
             Next
-            Do While sCustomProps.EndsWith(vbNewLine)
-              sCustomProps = sCustomProps.Substring(0, sCustomProps.Length - 2)
-            Loop
+            sCustomProps = sCustomProps.TrimEnd(vbCr, vbLf)
           End If
-          tvItem.ToolTipText = FeatureDisplayName & vbNewLine &
-                               en & Replace(sDescription, vbNewLine, vbNewLine & en) & vbNewLine &
-                               en & "Internal Name: " & pFeature.FeatureName & vbNewLine &
-                               en & "State: " & pFeature.State & vbNewLine &
-                               en & "Restart Required: " & pFeature.RestartRequired & vbNewLine &
-                               sCustomProps
+          tvItem.ToolTipText = String.Concat(FeatureDisplayName, vbNewLine,
+                               en, Replace(sDescription, vbNewLine, String.Concat(vbNewLine, en)), vbNewLine,
+                               en, String.Format("Internal Name: {0}", pFeature.FeatureName), vbNewLine,
+                               en, String.Format("State: {0}", pFeature.State), vbNewLine,
+                               en, String.Format("Restart Required: {0}", pFeature.RestartRequired), vbNewLine,
+                               sCustomProps)
         End If
       Else
-        tvItem.ToolTipText = FeatureDisplayName & vbNewLine &
-                             en & Replace(sDescription, vbNewLine, vbNewLine & en) & vbNewLine &
-                             en & "Internal Name: " & pFeature.FeatureName & vbNewLine &
-                             en & "State: " & pFeature.State & vbNewLine &
-                             en & "Restart Required: " & pFeature.RestartRequired
+        tvItem.ToolTipText = String.Concat(FeatureDisplayName, vbNewLine,
+                             en, Replace(sDescription, vbNewLine, String.Concat(vbNewLine, en)), vbNewLine,
+                             en, String.Format("Internal Name: {0}", pFeature.FeatureName), vbNewLine,
+                             en, String.Format("State: {0}", pFeature.State), vbNewLine,
+                             en, String.Format("Restart Required: {0}", pFeature.RestartRequired))
       End If
       Dim KeyID As String = Nothing
       For Each key In imlFeatures.Images.Keys
@@ -895,14 +917,14 @@
       End If
       If shouldAdd Then
         If ParentFeatures.AllKeys.Contains(FeatureDisplayName) Then
-          Dim parentNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find("tvn" & ParentFeatures(FeatureDisplayName).Replace(" ", "_"), True))
+          Dim parentNode As TreeNode = FilterFind(Of TreeNode)(tvFeatures.Nodes.Find(String.Format("tvn{0}", ParentFeatures(FeatureDisplayName).Replace(" ", "_")), True))
           If parentNode Is Nothing Then
             Dim newNode As TreeNode = tvFeatures.Nodes.Add(ParentFeatures(FeatureDisplayName))
-            newNode.Name = "tvn" & ParentFeatures(FeatureDisplayName).Replace(" ", "_")
+            newNode.Name = String.Format("tvn{0}", ParentFeatures(FeatureDisplayName).Replace(" ", "_"))
             newNode.Nodes.Add(tvItem)
-            newNode.ToolTipText = "Node Group" & vbNewLine &
-                                  en & "This is a group containing related features." & vbNewLine &
-                                  en & "Node groups are not features and can not be enabled."
+            newNode.ToolTipText = String.Concat("Node Group", vbNewLine,
+                                  en, "This is a group containing related features.", vbNewLine,
+                                  en, "Node groups are not features and can not be enabled.")
             Dim ParentKeyID As String = Nothing
             For Each key In imlFeatures.Images.Keys
               If ParentFeatures(FeatureDisplayName).ToLower.Replace(" ", "_") = key Then
@@ -996,14 +1018,14 @@
       If sGroupName = "Security Update" Then
         If Not String.IsNullOrEmpty(pUpdate.Ident.Version) Then
           If Split(pUpdate.Ident.Version, ".", 4)(0) > 7 Then
-            sGroupName &= " for Internet Explorer"
+            sGroupName = String.Concat(sGroupName, " for Internet Explorer")
           Else
-            sGroupName &= " for Windows"
+            sGroupName = String.Concat(sGroupName, " for Windows")
           End If
         End If
       End If
       Dim sGroupKey As String = "lvgUnknown"
-      If Not String.IsNullOrEmpty(sGroupName) Then sGroupKey = "lvg" & sGroupName.Replace(" ", "_")
+      If Not String.IsNullOrEmpty(sGroupName) Then sGroupKey = String.Format("lvg{0}", sGroupName.Replace(" ", "_"))
       If Not sGroupList.ContainsKey(sGroupKey) Then sGroupList.Add(sGroupKey, sGroupName)
     Next
     If sGroupList.Count > 0 Then
@@ -1027,9 +1049,9 @@
         Dim sParentProd As String = ConvertOSVerToID(vParentProd)
         Dim sReleaseName As String = Nothing
         If pUpdate.ReleaseType = "Language Pack" AndAlso Not String.IsNullOrEmpty(pUpdate.Ident.Language) Then
-          sReleaseName = pUpdate.Ident.Language & " Multilingual User Interface Pack"
+          sReleaseName = String.Format("{0} Multilingual User Interface Pack", pUpdate.Ident.Language)
         ElseIf pUpdate.ReleaseType = "Service Pack" Then
-          sReleaseName = pUpdate.ReleaseType & " " & vThisProd.Major & " (Build " & vThisProd.Minor & ")"
+          sReleaseName = String.Format("{0} {1} (Build {2})", pUpdate.ReleaseType, vThisProd.Major, vThisProd.Minor)
         Else
           sReleaseName = pUpdate.ReleaseType
         End If
@@ -1037,17 +1059,17 @@
         Dim pName As String = Nothing
         If pUpdate.Ident.Name.StartsWith("Package_for_KB") Then
           Dim sArticle As String = pUpdate.Ident.Name.Substring(pUpdate.Ident.Name.IndexOf("KB"))
-          pName = sReleaseName & " for " & sParentProd & " (" & sArticle & ")"
+          pName = String.Format("{0} for {1} ({2})", sReleaseName, sParentProd, sArticle)
         ElseIf pUpdate.Ident.Name = "Microsoft-Windows-Client-LanguagePack-Package" Then
-          pName = sReleaseName & " for " & sParentProd
+          pName = String.Format("{0} for {1}", sReleaseName, sParentProd)
         ElseIf pUpdate.Ident.Name = "Microsoft-Windows-CodecPack-Basic-Package" Then
-          pName = "Basic Codec " & sReleaseName & " for " & sParentProd
+          pName = String.Format("Basic Codec {0} for {1}", sReleaseName, sParentProd)
         ElseIf pUpdate.Ident.Name = "Microsoft-Windows-Foundation-Package" Then
-          pName = sReleaseName & " for " & sParentProd
+          pName = String.Format("{0} for {1}", sReleaseName, sParentProd)
         ElseIf pUpdate.Ident.Name = "Microsoft-Windows-IE-Troubleshooters-Package" Then
-          pName = "Internet Explorer Troubleshooters " & sReleaseName & " for " & sParentProd
+          pName = String.Format("Internet Explorer Troubleshooters {0} for {1}", sReleaseName, sParentProd)
         ElseIf pUpdate.Ident.Name = "Microsoft-Windows-InternetExplorer-Optional-Package" Then
-          pName = "Optional " & sReleaseName & " for " & sParentProd
+          pName = String.Format("Optional {0} for {1}", sReleaseName, sParentProd)
         ElseIf pUpdate.Ident.Name = "Microsoft-Windows-InternetExplorer-Package-TopLevel" Then
           If Not String.IsNullOrEmpty(sName) Then
             pName = sName
@@ -1057,12 +1079,12 @@
         ElseIf pUpdate.Ident.Name.StartsWith("Microsoft-Windows-LocalPack-") And pUpdate.Ident.Name.EndsWith("-Package") Then
           Dim sLocale As String = pUpdate.Ident.Name.Substring(pUpdate.Ident.Name.IndexOf("LocalPack-") + 10)
           sLocale = sLocale.Substring(0, sLocale.IndexOf("-Package"))
-          pName = sLocale & " " & sReleaseName & " for " & sParentProd
+          pName = String.Format("{0} {1} for {2}", sLocale, sReleaseName, sParentProd)
         ElseIf pUpdate.Ident.Name = "Microsoft-Windows-PlatformUpdate-Win7-SRV08R2-Package-TopLevel" Then
           If sName.StartsWith("Update for Microsoft Windows (KB") Then
             Dim sArticle As String = sName.Substring(sName.IndexOf("KB"))
             sArticle = sArticle.Substring(0, sArticle.LastIndexOf(")"))
-            pName = "Platform Update for Windows 7 (" & sArticle & ")"
+            pName = String.Format("Platform Update for Windows 7 ({0})", sArticle)
           Else
             pName = "Platform Update for Windows 7"
           End If
@@ -1070,7 +1092,7 @@
           If sName.StartsWith("Update for Microsoft Windows (KB") Then
             Dim sArticle As String = sName.Substring(sName.IndexOf("KB"))
             sArticle = sArticle.Substring(0, sArticle.LastIndexOf(")"))
-            pName = "Remote App and Desktop Connections Update (" & sArticle & ")"
+            pName = String.Format("Remote App and Desktop Connections Update ({0})", sArticle)
           Else
             pName = "Remote App and Desktop Connections Update"
           End If
@@ -1078,22 +1100,22 @@
           If sName.StartsWith("Update for Microsoft Windows (KB") Then
             Dim sArticle As String = sName.Substring(sName.IndexOf("KB"))
             sArticle = sArticle.Substring(0, sArticle.LastIndexOf(")"))
-            pName = "Remote Desktop Protocol Update (" & sArticle & ")"
+            pName = String.Format("Remote Desktop Protocol Update ({0})", sArticle)
           Else
             pName = "Remote Desktop Protocol Update"
           End If
         ElseIf sName.StartsWith("Update for Microsoft Windows (KB") Then
           Dim sArticle As String = sName.Substring(sName.IndexOf("KB"))
           sArticle = sArticle.Substring(0, sArticle.LastIndexOf(")"))
-          pName = sReleaseName & " for " & sParentProd & " (" & sArticle & ")"
+          pName = String.Format("{0} for {1} ({2})", sReleaseName, sParentProd, sArticle)
         Else
           If Not String.IsNullOrEmpty(sName) Then
             pName = sName
           Else
-            pName = sReleaseName & " for " & sParentProd
+            pName = String.Format("{0} for {1}", sReleaseName, sParentProd)
           End If
         End If
-        If vParentProd.Major = 6 And vParentProd.Minor = 1 And vThisProd.Major = 7601 Then pName &= " (Service Pack 1)"
+        If vParentProd.Major = 6 And vParentProd.Minor = 1 And vThisProd.Major = 7601 Then pName = String.Concat(pName, " (Service Pack 1)")
         Dim lvItem As New ListViewItem(pName)
         If pUpdate.Remove Then
           lvItem.Checked = False
@@ -1103,29 +1125,30 @@
         If vThisProd.Major = 0 And vThisProd.Minor = 0 Then
           lvItem.SubItems.Add(pVer)
         ElseIf vThisProd.Major < 7600 And vThisProd.Minor < 16385 Then
-          lvItem.SubItems.Add(vThisProd.Major & "." & vThisProd.Minor)
+          lvItem.SubItems.Add(String.Format("{0}.{1}", vThisProd.Major, vThisProd.Minor))
         Else
           lvItem.SubItems.Add(pVer)
         End If
-        Dim en As String = ChrW(&H2003)
         Dim ttName As String = Nothing
         If Not String.IsNullOrEmpty(pUpdate.Ident.Name) Then
           ttName = pUpdate.Ident.Name
-          If Not String.IsNullOrEmpty(pUpdate.Ident.Version) Then ttName &= " v" & pUpdate.Ident.Version
+          If Not String.IsNullOrEmpty(pUpdate.Ident.Version) Then ttName = String.Format("{0} v{1}", ttName, pUpdate.Ident.Version)
         End If
         Dim ttState As String = Nothing
-        If Not String.IsNullOrEmpty(pUpdate.State) Then ttState = en & "State: " & pUpdate.State
+        If Not String.IsNullOrEmpty(pUpdate.State) Then ttState = String.Concat(en, String.Format("State: {0}", pUpdate.State))
         Dim ttInstalled As String = Nothing
-        If Not String.IsNullOrEmpty(pUpdate.InstallTime) Then ttInstalled = en & "Installed: " & pUpdate.InstallTime
-        Dim ttArch As String = en & pUpdate.Ident.Architecture
-        If Not String.IsNullOrEmpty(pUpdate.ReleaseType) Then ttArch &= " " & pUpdate.ReleaseType
+        If Not String.IsNullOrEmpty(pUpdate.InstallTime) Then ttInstalled = String.Concat(en, String.Format("Installed: {0}", pUpdate.InstallTime))
+        Dim ttArch As String = String.Concat(en, pUpdate.Ident.Architecture)
+        If Not String.IsNullOrEmpty(pUpdate.ReleaseType) Then ttArch = String.Concat(ttArch, " ", pUpdate.ReleaseType)
         Dim ttLang As String = Nothing
-        If Not String.IsNullOrEmpty(pUpdate.Ident.Language) AndAlso Not pUpdate.Ident.Language = "Neutral" Then ttLang = en & "Language: " & pUpdate.Ident.Language
-        lvItem.ToolTipText = IIf(String.IsNullOrEmpty(ttName), "", ttName & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttState), "", ttState & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttInstalled), "", ttInstalled & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttArch), "", ttArch & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttLang), "", ttLang & vbNewLine)
+        If Not String.IsNullOrEmpty(pUpdate.Ident.Language) AndAlso Not pUpdate.Ident.Language = "Neutral" Then ttLang = String.Concat(en, String.Format("Language: {0}", pUpdate.Ident.Language))
+        Dim sUpdateTT As String = Nothing
+        If Not String.IsNullOrEmpty(ttName) Then sUpdateTT = String.Concat(sUpdateTT, ttName, vbNewLine)
+        If Not String.IsNullOrEmpty(ttState) Then sUpdateTT = String.Concat(sUpdateTT, ttState, vbNewLine)
+        If Not String.IsNullOrEmpty(ttInstalled) Then sUpdateTT = String.Concat(sUpdateTT, ttInstalled, vbNewLine)
+        If Not String.IsNullOrEmpty(ttArch) Then sUpdateTT = String.Concat(sUpdateTT, ttArch, vbNewLine)
+        If Not String.IsNullOrEmpty(ttLang) Then sUpdateTT = String.Concat(sUpdateTT, ttLang, vbNewLine)
+        lvItem.ToolTipText = sUpdateTT.TrimEnd(vbCr, vbLf)
         Select Case pUpdate.State
           Case "Installed", "Staged", "Enabled" : lvItem.ImageKey = "DID"
           Case "Install Pending", "Enable Pending" : lvItem.ImageKey = "DO"
@@ -1139,14 +1162,14 @@
         If sGroupName = "Security Update" Then
           If Not String.IsNullOrEmpty(pUpdate.Ident.Version) Then
             If Split(pUpdate.Ident.Version, ".", 4)(0) > 7 Then
-              sGroupName &= " for Internet Explorer"
+              sGroupName = String.Concat(sGroupName, " for Internet Explorer")
             Else
-              sGroupName &= " for Windows"
+              sGroupName = String.Concat(sGroupName, " for Windows")
             End If
           End If
         End If
         Dim sGroupKey As String = "lvgUnknown"
-        If Not String.IsNullOrEmpty(sGroupName) Then sGroupKey = "lvg" & sGroupName.Replace(" ", "_")
+        If Not String.IsNullOrEmpty(sGroupName) Then sGroupKey = String.Format("lvg{0}", sGroupName.Replace(" ", "_"))
         lvUpdates.Items.Add(lvItem)
         lvItem.Group = lvUpdates.Groups(sGroupKey)
       Else
@@ -1165,9 +1188,9 @@
         Dim sParentProd As String = ConvertOSVerToID(vParentProd)
         Dim sReleaseName As String = Nothing
         If pUpdate.UpdateInfo.ReleaseType = "Language Pack" AndAlso Not String.IsNullOrEmpty(pUpdate.Ident.Language) Then
-          sReleaseName = pUpdate.Ident.Language & " Multilingual User Interface Pack"
+          sReleaseName = String.Format("{0} Multilingual User Interface Pack", pUpdate.Ident.Language)
         ElseIf pUpdate.UpdateInfo.ReleaseType = "Service Pack" Then
-          sReleaseName = pUpdate.UpdateInfo.ReleaseType & " " & vThisProd.Major & " (Build " & vThisProd.Minor & ")"
+          sReleaseName = String.Format("{0} {1} (Build {2})", pUpdate.UpdateInfo.ReleaseType, vThisProd.Major, vThisProd.Minor)
         Else
           sReleaseName = pUpdate.UpdateInfo.ReleaseType
         End If
@@ -1183,15 +1206,15 @@
           ElseIf Not String.IsNullOrEmpty(sDescription) Then
             pName = sDescription
           Else
-            pName = sReleaseName & " for " & sParentProd & " (" & sArticle & ")"
+            pName = String.Format("{0} for {1} ({2})", sReleaseName, sParentProd, sArticle)
           End If
         ElseIf pUpdate.UpdateInfo.ProductName = "Microsoft-Windows-Client-LanguagePack-Package" Then
-          pName = sReleaseName & " for " & sParentProd
+          pName = String.Format("{0} for {1}", sReleaseName, sParentProd)
         ElseIf pUpdate.UpdateInfo.ProductName = "Microsoft-Windows-CodecPack-Basic-Package" Then
-          pName = "Basic Codec " & sReleaseName & " for " & sParentProd
+          pName = String.Format("Basic Codec {0} for {1}", sReleaseName, sParentProd)
         ElseIf pUpdate.UpdateInfo.ProductName = "Microsoft-Windows-Foundation-Package" Then
           If pUpdate.UpdateInfo.FeatureList Is Nothing Then
-            pName = sReleaseName & " for " & sParentProd
+            pName = String.Format("{0} for {1}", sReleaseName, sParentProd)
           Else
             Dim sFeatureName As String = Nothing
             For Each sFeature In pUpdate.UpdateInfo.FeatureList
@@ -1201,15 +1224,15 @@
               End If
             Next
             If String.IsNullOrEmpty(sFeatureName) Then
-              pName = "Feature " & sReleaseName & " for " & sParentProd
+              pName = String.Format("Feature {0} for {1}", sReleaseName, sParentProd)
             Else
-              pName = sFeatureName & " Feature " & sReleaseName & " for " & sParentProd
+              pName = String.Format("{0} Feature {1} for {2}", sFeatureName, sReleaseName, sParentProd)
             End If
           End If
         ElseIf pUpdate.UpdateInfo.ProductName = "Microsoft-Windows-IE-Troubleshooters-Package" Then
-          pName = "Internet Explorer Troubleshooters " & sReleaseName & " for " & sParentProd
+          pName = String.Format("Internet Explorer Troubleshooters {0} for {1}", sReleaseName, sParentProd)
         ElseIf pUpdate.UpdateInfo.ProductName = "Microsoft-Windows-InternetExplorer-Optional-Package" Then
-          pName = "Optional " & sReleaseName & " for " & sParentProd
+          pName = String.Format("Optional {0} for {1}", sReleaseName, sParentProd)
         ElseIf pUpdate.UpdateInfo.ProductName = "Microsoft-Windows-InternetExplorer-Package-TopLevel" Then
           If Not String.IsNullOrEmpty(sName) Then
             pName = sName
@@ -1227,15 +1250,15 @@
             End If
           Next
           If String.IsNullOrEmpty(sFeatureName) Then
-            pName = sLocale & " " & sReleaseName & " for " & sParentProd
+            pName = String.Format("{0} {1} for {2}", sLocale, sReleaseName, sParentProd)
           Else
-            pName = sFeatureName & " " & sParentProd & " Feature " & sReleaseName
+            pName = String.Format("{0} {1} Feature {2}", sFeatureName, sParentProd, sReleaseName)
           End If
         ElseIf pUpdate.UpdateInfo.ProductName = "Microsoft-Windows-PlatformUpdate-Win7-SRV08R2-Package-TopLevel" Then
           If sName.StartsWith("Update for Microsoft Windows (KB") Then
             Dim sArticle As String = sName.Substring(sName.IndexOf("KB"))
             sArticle = sArticle.Substring(0, sArticle.LastIndexOf(")"))
-            pName = "Platform Update for Windows 7 (" & sArticle & ")"
+            pName = String.Format("Platform Update for Windows 7 ({0})", sArticle)
           Else
             pName = "Platform Update for Windows 7"
           End If
@@ -1243,7 +1266,7 @@
           If sName.StartsWith("Update for Microsoft Windows (KB") Then
             Dim sArticle As String = sName.Substring(sName.IndexOf("KB"))
             sArticle = sArticle.Substring(0, sArticle.LastIndexOf(")"))
-            pName = "Remote App and Desktop Connections Update (" & sArticle & ")"
+            pName = String.Format("Remote App and Desktop Connections Update ({0})", sArticle)
           Else
             pName = "Remote App and Desktop Connections Update"
           End If
@@ -1251,21 +1274,21 @@
           If sName.StartsWith("Update for Microsoft Windows (KB") Then
             Dim sArticle As String = sName.Substring(sName.IndexOf("KB"))
             sArticle = sArticle.Substring(0, sArticle.LastIndexOf(")"))
-            pName = "Remote Desktop Protocol Update (" & sArticle & ")"
+            pName = String.Format("Remote Desktop Protocol Update ({0})", sArticle)
           Else
             pName = "Remote Desktop Protocol Update"
           End If
         ElseIf sName.StartsWith("Update for Microsoft Windows (KB") Then
           Dim sArticle As String = sName.Substring(sName.IndexOf("KB"))
           sArticle = sArticle.Substring(0, sArticle.LastIndexOf(")"))
-          pName = sDescription & " " & sReleaseName & " for " & sParentProd & " (" & sArticle & ")"
+          pName = String.Format("{0} {1} for {2} ({3})", sDescription, sReleaseName, sParentProd, sArticle)
         Else
           If Not String.IsNullOrEmpty(sName) Then
             pName = sName
           ElseIf Not String.IsNullOrEmpty(sDescription) Then
             pName = sDescription
           Else
-            pName = sReleaseName & " for " & sParentProd
+            pName = String.Format("{0} for {1}", sReleaseName, sParentProd)
           End If
         End If
         If Not pUpdate.UpdateInfo.CustomProperties Is Nothing Then
@@ -1278,9 +1301,9 @@
           Next
           If Not String.IsNullOrEmpty(sSPLevel) Then
             If sSPLevel = "0" Then
-              pName &= " (No Service Pack)"
+              pName = String.Concat(pName, " (No Service Pack)")
             Else
-              pName &= " (Service Pack " & sSPLevel & ")"
+              pName = String.Concat(pName, String.Format(" (Service Pack {0})", sSPLevel))
             End If
           End If
         End If
@@ -1293,37 +1316,49 @@
         If vThisProd.Major = 0 And vThisProd.Minor = 0 Then
           lvItem.SubItems.Add(pVer)
         ElseIf vThisProd.Major < 7600 And vThisProd.Minor < 16385 Then
-          lvItem.SubItems.Add(vThisProd.Major & "." & vThisProd.Minor)
+          lvItem.SubItems.Add(String.Format("{0}.{1}", vThisProd.Major, vThisProd.Minor))
         Else
           lvItem.SubItems.Add(pVer)
         End If
-        Dim en As String = ChrW(&H2003)
         Dim ttName As String = Nothing
         If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.ProductName) Then
           ttName = pUpdate.UpdateInfo.ProductName
-          If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.ProductVersion) Then ttName &= " v" & pUpdate.UpdateInfo.ProductVersion
+          If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.ProductVersion) Then ttName = String.Format("{0} v{1}", ttName, pUpdate.UpdateInfo.ProductVersion)
         End If
-        Dim ttDescr As String = en & pUpdate.UpdateInfo.Description
+        Dim ttDescr As String = Nothing
+        If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.Description) Then ttDescr = String.Concat(en, pUpdate.UpdateInfo.Description)
         Dim ttState As String = Nothing
-        If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.State) Then ttState = en & "State: " & pUpdate.UpdateInfo.State
+        If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.State) Then ttState = String.Concat(en, String.Format("State: {0}", pUpdate.UpdateInfo.State))
         Dim ttCreation As String = Nothing
-        If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.CreationTime) Then ttCreation = en & "Created: " & pUpdate.UpdateInfo.CreationTime
+        If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.CreationTime) Then ttCreation = String.Concat(en, String.Format("Created: {0}", pUpdate.UpdateInfo.CreationTime))
         Dim ttInstalled As String = Nothing
         If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.InstallTime) Then
-          ttInstalled = en & "Installed: " & pUpdate.UpdateInfo.InstallTime
-          If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.InstallClient) AndAlso Not pUpdate.UpdateInfo.InstallClient = "DISM Package Manager Provider" Then ttInstalled &= " by " & pUpdate.UpdateInfo.InstallClient
+          If String.IsNullOrEmpty(pUpdate.UpdateInfo.InstallClient) OrElse pUpdate.UpdateInfo.InstallClient = "DISM Package Manager Provider" Then
+            ttInstalled = String.Concat(en, String.Format("Installed: {0}", pUpdate.UpdateInfo.InstallTime))
+          Else
+            ttInstalled = String.Concat(en, String.Format("Installed: {0} by {1}", pUpdate.UpdateInfo.InstallTime, pUpdate.UpdateInfo.InstallClient))
+          End If
         End If
         Dim ttCompany As String = Nothing
         If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.Company) Then
-          ttCompany = en & pUpdate.UpdateInfo.Company
-          If (Not String.IsNullOrEmpty(pUpdate.UpdateInfo.Copyright)) AndAlso (Not pUpdate.UpdateInfo.Company.ToLower = pUpdate.UpdateInfo.Copyright.ToLower) Then ttCompany &= " (" & pUpdate.UpdateInfo.Copyright & ")"
+          If String.IsNullOrEmpty(pUpdate.UpdateInfo.Copyright) OrElse pUpdate.UpdateInfo.Company.ToLower = pUpdate.UpdateInfo.Copyright.ToLower Then
+            ttCompany = String.Concat(en, pUpdate.UpdateInfo.Company)
+          Else
+            ttCompany = String.Concat(en, String.Format("{0} ({1})", pUpdate.UpdateInfo.Company, pUpdate.UpdateInfo.Copyright))
+          End If
         ElseIf Not String.IsNullOrEmpty(pUpdate.UpdateInfo.Copyright) Then
-          ttCompany = en & pUpdate.UpdateInfo.Copyright
+          ttCompany = String.Concat(en, pUpdate.UpdateInfo.Copyright)
         End If
-        Dim ttArch As String = en & pUpdate.Ident.Architecture
-        If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.ReleaseType) Then ttArch &= " " & pUpdate.UpdateInfo.ReleaseType
+        Dim ttArch As String = Nothing
+        If Not String.IsNullOrEmpty(pUpdate.Ident.Architecture) Then
+          If String.IsNullOrEmpty(pUpdate.UpdateInfo.ReleaseType) Then
+            ttArch = String.Concat(en, pUpdate.Ident.Architecture)
+          Else
+            ttArch = String.Concat(en, String.Format("{0} {1}", pUpdate.Ident.Architecture, pUpdate.UpdateInfo.ReleaseType))
+          End If
+        End If
         Dim ttLang As String = Nothing
-        If Not String.IsNullOrEmpty(pUpdate.Ident.Language) AndAlso Not pUpdate.Ident.Language = "Neutral" Then ttLang = en & "Language: " & pUpdate.Ident.Language
+        If Not String.IsNullOrEmpty(pUpdate.Ident.Language) AndAlso Not pUpdate.Ident.Language = "Neutral" Then ttLang = String.Concat(en, String.Format("Language: {0}", pUpdate.Ident.Language))
         Dim ttCustom As String = Nothing
         If Not pUpdate.UpdateInfo.CustomProperties Is Nothing Then
           For Each sProp In pUpdate.UpdateInfo.CustomProperties
@@ -1336,14 +1371,10 @@
               ElseIf sPropKey = "LPType" Then
                 sPropKey = "Language Pack Type"
               End If
-              ttCustom &= en & sPropKey & ": " & sPropVal & vbNewLine
+              ttCustom = String.Concat(ttCustom, en, String.Format("{0}: {1}", sPropKey, sPropVal), vbNewLine)
             End If
           Next
-          If Not String.IsNullOrEmpty(ttCustom) Then
-            Do While ttCustom.EndsWith(vbNewLine)
-              ttCustom = ttCustom.Substring(0, ttCustom.Length - 2)
-            Loop
-          End If
+          If Not String.IsNullOrEmpty(ttCustom) Then ttCustom = ttCustom.TrimEnd(vbCr, vbLf)
         End If
         Dim ttFeature As String = Nothing
         If Not pUpdate.UpdateInfo.FeatureList Is Nothing Then
@@ -1355,25 +1386,23 @@
               If sFeatKey = "State" Then
                 sFeatKey = "Feature State"
               End If
-              ttFeature &= en & sFeatKey & ": " & sFeatVal & vbNewLine
+              ttFeature = String.Concat(ttFeature, en, String.Format("{0}: {1}", sFeatKey, sFeatVal), vbNewLine)
             End If
           Next
-          If Not String.IsNullOrEmpty(ttFeature) Then
-            Do While ttFeature.EndsWith(vbNewLine)
-              ttFeature = ttFeature.Substring(0, ttFeature.Length - 2)
-            Loop
-          End If
+          If Not String.IsNullOrEmpty(ttFeature) Then ttFeature = ttFeature.TrimEnd(vbCr, vbLf)
         End If
-        lvItem.ToolTipText = IIf(String.IsNullOrEmpty(ttName), "", ttName & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttDescr), "", ttDescr & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttState), "", ttState & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttFeature), "", ttFeature & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttCreation), "", ttCreation & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttInstalled), "", ttInstalled & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttCompany), "", ttCompany & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttArch), "", ttArch & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttLang), "", ttLang & vbNewLine) &
-                             IIf(String.IsNullOrEmpty(ttCustom), "", ttCustom & vbNewLine)
+        Dim sFeatureTT As String = Nothing
+        If Not String.IsNullOrEmpty(ttName) Then sFeatureTT = String.Concat(sFeatureTT, ttName, vbNewLine)
+        If Not String.IsNullOrEmpty(ttDescr) Then sFeatureTT = String.Concat(sFeatureTT, ttDescr, vbNewLine)
+        If Not String.IsNullOrEmpty(ttState) Then sFeatureTT = String.Concat(sFeatureTT, ttState, vbNewLine)
+        If Not String.IsNullOrEmpty(ttFeature) Then sFeatureTT = String.Concat(sFeatureTT, ttFeature, vbNewLine)
+        If Not String.IsNullOrEmpty(ttCreation) Then sFeatureTT = String.Concat(sFeatureTT, ttCreation, vbNewLine)
+        If Not String.IsNullOrEmpty(ttInstalled) Then sFeatureTT = String.Concat(sFeatureTT, ttInstalled, vbNewLine)
+        If Not String.IsNullOrEmpty(ttCompany) Then sFeatureTT = String.Concat(sFeatureTT, ttCompany, vbNewLine)
+        If Not String.IsNullOrEmpty(ttArch) Then sFeatureTT = String.Concat(sFeatureTT, ttArch, vbNewLine)
+        If Not String.IsNullOrEmpty(ttLang) Then sFeatureTT = String.Concat(sFeatureTT, ttLang, vbNewLine)
+        If Not String.IsNullOrEmpty(ttCustom) Then sFeatureTT = String.Concat(sFeatureTT, ttCustom, vbNewLine)
+        lvItem.ToolTipText = sFeatureTT.TrimEnd(vbCr, vbLf)
         Select Case pUpdate.UpdateInfo.State
           Case "Installed", "Staged", "Enabled" : lvItem.ImageKey = "DID"
           Case "Install Pending", "Enable Pending" : lvItem.ImageKey = "DO"
@@ -1387,17 +1416,17 @@
         If sGroupName = "Security Update" Then
           If Not String.IsNullOrEmpty(pUpdate.Ident.Version) Then
             If Split(pUpdate.Ident.Version, ".", 4)(0) > 7 Then
-              sGroupName &= " for Internet Explorer"
+              sGroupName = String.Concat(sGroupName, " for Internet Explorer")
             Else
-              sGroupName &= " for Windows"
+              sGroupName = String.Concat(sGroupName, " for Windows")
             End If
           End If
         End If
         Dim sGroupKey As String = "lvgUnknown"
-        If Not String.IsNullOrEmpty(sGroupName) Then sGroupKey = "lvg" & sGroupName.Replace(" ", "_")
+        If Not String.IsNullOrEmpty(sGroupName) Then sGroupKey = String.Concat("lvg{0}", sGroupName.Replace(" ", "_"))
         lvUpdates.Items.Add(lvItem)
         lvItem.Group = lvUpdates.Groups(sGroupKey)
-      End If
+        End If
     Next
     lvUpdates.Sort()
     LoadingUpdates = False
@@ -1425,9 +1454,9 @@
         Return "Windows 8.1"
       End If
     ElseIf OSVer.Major > 7 And OSVer.Major < 12 Then
-      Return "Internet Explorer " & OSVer.Major
+      Return String.Format("Internet Explorer {0}", OSVer.Major)
     End If
-    Return "Windows " & OSVer.Major & "." & OSVer.Minor
+    Return String.Format("Windows {0}.{1}", OSVer.Major, OSVer.Minor)
   End Function
 #Region "Resize Updates"
   Private Sub ResizeUpdates()
@@ -1499,12 +1528,18 @@
       If lvDriverClass.Items.ContainsKey(cDriver.Key) Then Continue For
       Dim sGroupTitle As String = GetValidDriverDescription(cDriver.Value)
       Dim lvGroupItem As ListViewItem = lvDriverClass.Items.Add(cDriver.Key, sGroupTitle, cDriver.Key)
-      Dim en As String = ChrW(&H2003)
-      lvGroupItem.ToolTipText = sGroupTitle & vbNewLine &
-                                en & "Class Name: " & cDriver.Value.ClassName & vbNewLine &
-                                en & "Class Description: " & cDriver.Value.ClassDescription & vbNewLine &
-                                en & "Class GUID: " & cDriver.Value.ClassGUID
-      If Not String.IsNullOrEmpty(cDriver.Value.BootCritical) Then lvGroupItem.ToolTipText &= vbNewLine & en & "Boot Critical: " & cDriver.Value.BootCritical
+      If String.IsNullOrEmpty(cDriver.Value.BootCritical) Then
+        lvGroupItem.ToolTipText = String.Concat(sGroupTitle, vbNewLine,
+                                  en, String.Format("Class Name: {0}", cDriver.Value.ClassName), vbNewLine,
+                                  en, String.Format("Class Description: {0}", cDriver.Value.ClassDescription), vbNewLine,
+                                  en, String.Format("Class GUID: {0}", cDriver.Value.ClassGUID))
+      Else
+        lvGroupItem.ToolTipText = String.Concat(sGroupTitle, vbNewLine,
+                                  en, String.Format("Class Name: {0}", cDriver.Value.ClassName), vbNewLine,
+                                  en, String.Format("Class Description: {0}", cDriver.Value.ClassDescription), vbNewLine,
+                                  en, String.Format("Class GUID: {0}", cDriver.Value.ClassGUID), vbNewLine,
+                                  en, String.Format("Boot Critical: {0}", cDriver.Value.BootCritical))
+      End If
     Next
     lvDriverClass.ReadOnly = (lvDriverClass.Items.Count = 0)
     ResizeDrivers()
@@ -1519,7 +1554,7 @@
     End If
   End Function
   Private Function GetDriverClassName(GUID As String) As String
-    Return "lvi" & GUID.Replace("-", "").Replace("{", "").Replace("}", "").ToUpper
+    Return String.Format("lvi{0}", GUID.Replace("-", "").Replace("{", "").Replace("}", "").ToUpper)
   End Function
 #Region "Resize Drivers"
   Private Sub ResizeDrivers()

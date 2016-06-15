@@ -205,7 +205,7 @@ Public Class MNG
       m_chunkData = chunk.m_chunkData
       m_chunkCRC = chunk.m_chunkCRC
       If Not ChunkType = expectedType Then
-        [error] = "Chunk Type (" & ChunkType & ") did not match expected type (" & expectedType & ")"
+        [error] = String.Format("Chunk Type ({0}) did not match expected type ({1})", ChunkType, expectedType)
         Return
       End If
       ParseData(m_chunkData)

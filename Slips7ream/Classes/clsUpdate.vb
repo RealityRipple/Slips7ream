@@ -122,7 +122,7 @@
         LocalVer(0) = sLocal.Split(".")(0)
         If sLocal.Split(".").Count > I Then
           Dim sTmp As String = sLocal.Split(".")(I).Trim
-          If IsNumeric(sTmp) And sTmp.Length < 4 Then sTmp &= StrDup(4 - sTmp.Length, "0"c)
+          If IsNumeric(sTmp) And sTmp.Length < 4 Then sTmp = String.Concat(sTmp, StrDup(4 - sTmp.Length, "0"c))
           LocalVer(I) = sTmp
         Else
           LocalVer(I) = "0000"
@@ -133,7 +133,7 @@
       For I As Integer = 1 To 3
         If sLocal.Split(",").Count > I Then
           Dim sTmp As String = sLocal.Split(",")(I).Trim
-          If IsNumeric(sTmp) And sTmp.Length < 4 Then sTmp &= StrDup(4 - sTmp.Length, "0"c)
+          If IsNumeric(sTmp) And sTmp.Length < 4 Then sTmp = String.Concat(sTmp, StrDup(4 - sTmp.Length, "0"c))
           LocalVer(I) = sTmp
         Else
           LocalVer(I) = "0000"
@@ -146,7 +146,7 @@
       For I As Integer = 1 To 3
         If sRemote.Split(".").Count > I Then
           Dim sTmp As String = sRemote.Split(".")(I).Trim
-          If IsNumeric(sTmp) And sTmp.Length < 4 Then sTmp &= StrDup(4 - sTmp.Length, "0"c)
+          If IsNumeric(sTmp) And sTmp.Length < 4 Then sTmp = String.Concat(sTmp, StrDup(4 - sTmp.Length, "0"c))
           RemoteVer(I) = sTmp
         Else
           RemoteVer(I) = "0000"
@@ -157,7 +157,7 @@
       For I As Integer = 1 To 3
         If sRemote.Split(",").Count > I Then
           Dim sTmp As String = sRemote.Split(",")(I).Trim
-          If IsNumeric(sTmp) And sTmp.Length < 4 Then sTmp &= StrDup(4 - sTmp.Length, "0"c)
+          If IsNumeric(sTmp) And sTmp.Length < 4 Then sTmp = String.Concat(sTmp, StrDup(4 - sTmp.Length, "0"c))
           RemoteVer(I) = sTmp
         Else
           RemoteVer(I) = "0000"

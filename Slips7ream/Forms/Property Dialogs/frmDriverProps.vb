@@ -3,7 +3,7 @@
   Public Sub New(Driver As Driver)
     InitializeComponent()
     myDriver = Driver
-    Me.Text = myDriver.OriginalFileName & " Driver Properties"
+    Me.Text = String.Format("{0} Driver Properties", myDriver.OriginalFileName)
     pctDriverIcon.Image = myDriver.DriverIcon.ToBitmap
     txtPublishedName.Text = myDriver.PublishedName
     txtOriginalFileName.Text = myDriver.OriginalFileName
@@ -22,7 +22,7 @@
       cmbArchitecture.Enabled = True
       For Each arch As String In myDriver.Architectures
         If CompareArchitectures(arch, ArchitectureList.ia64, False) Then
-          cmbArchitecture.Items.Add(arch & " (Not Used)")
+          cmbArchitecture.Items.Add(String.Format("{0} (Not Used)", arch))
         Else
           cmbArchitecture.Items.Add(arch)
         End If

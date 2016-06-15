@@ -19,7 +19,7 @@
     If IO.File.Exists(Location) Then
       Select Case GetUpdateType(Location)
         Case UpdateType.MSU
-          Dim MSUPath As String = WorkDir & "UpdateMSU_Extract" & IO.Path.DirectorySeparatorChar
+          Dim MSUPath As String = IO.Path.Combine(WorkDir, "UpdateMSU_Extract")
           If IO.Directory.Exists(MSUPath) Then SlowDeleteDirectory(MSUPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           IO.Directory.CreateDirectory(MSUPath)
           Try
@@ -28,11 +28,11 @@
               If exRet = "File Not Found" Then
                 Failure = "Update Properties file not found."
               ElseIf exRet.StartsWith("Error Opening: ") Then
-                Failure = "Update MSU " & exRet
+                Failure = String.Format("Update MSU {0}", exRet)
               ElseIf exRet.StartsWith("Error Extracting: ") Then
-                Failure = "Update Properties file " & exRet
+                Failure = String.Format("Update Properties file {0}", exRet)
               Else
-                Failure = "Update Properties file Error: " & exRet
+                Failure = String.Format("Update Properties file Error: {0}", exRet)
               End If
               Return
             End If
@@ -66,19 +66,19 @@
               If exRet = "File Not Found" Then
                 Failure = "Update XML file not found."
               ElseIf exRet.StartsWith("Error Opening: ") Then
-                Failure = "Update MSU " & exRet
+                Failure = String.Format("Update MSU {0}", exRet)
               ElseIf exRet.StartsWith("Error Extracting: ") Then
-                Failure = "Update XML file " & exRet
+                Failure = String.Format("Update XML file {0}", exRet)
               Else
-                Failure = "Update XML file Error: " & exRet
+                Failure = String.Format("Update XML file Error: {0}", exRet)
               End If
               Return
             End If
-            If Not IO.File.Exists(MSUPath & XMLFile) Then
+            If Not IO.File.Exists(IO.Path.Combine(MSUPath, XMLFile)) Then
               Failure = "Update XML file could not be extracted."
               Return
             End If
-            Dim xMSU As XElement = XElement.Load(MSUPath & XMLFile)
+            Dim xMSU As XElement = XElement.Load(IO.Path.Combine(MSUPath, XMLFile))
             Dim xService As XElement = xMSU.Element("{urn:schemas-microsoft-com:unattend}servicing")
             Dim xPackage As XElement = xService.Element("{urn:schemas-microsoft-com:unattend}package")
             Dim xAssemblyIdentity As XElement = xPackage.Element("{urn:schemas-microsoft-com:unattend}assemblyIdentity")
@@ -87,7 +87,7 @@
             Name = GetUpdateName(Ident)
             If Ident.Name = "Microsoft-Windows-InternetExplorer-LanguagePack" Then
               Dim ieVer As String = Ident.Version.Substring(0, Ident.Version.IndexOf("."))
-              AppliesTo = "Internet Explorer " & ieVer
+              AppliesTo = String.Format("Internet Explorer {0}", ieVer)
             End If
             If Not String.IsNullOrEmpty(Ident.Version) Then
               If Ident.Version.StartsWith("6.1.") Or Ident.Version.StartsWith("6.2.") Or Ident.Version.StartsWith("6.3.") Then
@@ -104,7 +104,7 @@
             If IO.Directory.Exists(MSUPath) Then SlowDeleteDirectory(MSUPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           End Try
         Case UpdateType.CAB
-          Dim CABPath As String = WorkDir & "UpdateCAB_Extract" & IO.Path.DirectorySeparatorChar
+          Dim CABPath As String = IO.Path.Combine(WorkDir, "UpdateCAB_Extract")
           If IO.Directory.Exists(CABPath) Then SlowDeleteDirectory(CABPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           IO.Directory.CreateDirectory(CABPath)
           Try
@@ -113,19 +113,19 @@
               If exRet = "File Not Found" Then
                 Failure = "Update Description file not found."
               ElseIf exRet.StartsWith("Error Opening: ") Then
-                Failure = "Update CAB " & exRet
+                Failure = String.Format("Update CAB {0}", exRet)
               ElseIf exRet.StartsWith("Error Extracting: ") Then
-                Failure = "Update Description file " & exRet
+                Failure = String.Format("Update Description file {0}", exRet)
               Else
-                Failure = "Update Description file Error: " & exRet
+                Failure = String.Format("Update Description file Error: {0}", exRet)
               End If
               Return
             End If
-            If Not IO.File.Exists(CABPath & "update.mum") Then
+            If Not IO.File.Exists(IO.Path.Combine(CABPath, "update.mum")) Then
               Failure = "Update Description file could not be extracted."
               Return
             End If
-            Dim xMUM As XElement = XElement.Load(CABPath & "update.mum")
+            Dim xMUM As XElement = XElement.Load(IO.Path.Combine(CABPath, "update.mum"))
             DisplayName = xMUM.Attribute("displayName").Value
             SupportLink = xMUM.Attribute("supportInformation").Value
             Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
@@ -148,7 +148,7 @@
             Dim xParent As XElement = xPackage.Element("{urn:schemas-microsoft-com:asm.v3}parent")
             Dim xParentAssemblyIdentity As XElement = xParent.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
             AppliesTo = xParentAssemblyIdentity.Attribute("name").Value
-            Dim wDate As Date = New IO.FileInfo(CABPath & "update.mum").CreationTime
+            Dim wDate As Date = New IO.FileInfo(IO.Path.Combine(CABPath, "update.mum")).CreationTime
             BuildDate = wDate.ToString("yyyy/MM/dd")
           Catch ex As Exception
             Failure = ex.Message
@@ -156,7 +156,7 @@
             If IO.Directory.Exists(CABPath) Then SlowDeleteDirectory(CABPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           End Try
         Case UpdateType.LP
-          Dim LPPath As String = WorkDir & "UpdateLP_Extract" & IO.Path.DirectorySeparatorChar
+          Dim LPPath As String = IO.Path.Combine(WorkDir, "UpdateLP_Extract")
           If IO.Directory.Exists(LPPath) Then SlowDeleteDirectory(LPPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           IO.Directory.CreateDirectory(LPPath)
           Try
@@ -165,19 +165,19 @@
               If exRet = "File Not Found" Then
                 Failure = "LP Description file not found."
               ElseIf exRet.StartsWith("Error Opening: ") Then
-                Failure = "LP CAB " & exRet
+                Failure = String.Format("LP CAB {0}", exRet)
               ElseIf exRet.StartsWith("Error Extracting: ") Then
-                Failure = "LP Description file " & exRet
+                Failure = String.Format("LP Description file {0}", exRet)
               Else
-                Failure = "LP Description file Error: " & exRet
+                Failure = String.Format("LP Description file Error: {0}", exRet)
               End If
               Return
             End If
-            If Not IO.File.Exists(LPPath & "update.mum") Then
+            If Not IO.File.Exists(IO.Path.Combine(LPPath, "update.mum")) Then
               Failure = "Update Description file could not be extracted."
               Return
             End If
-            Dim xMUM As XElement = XElement.Load(LPPath & "update.mum")
+            Dim xMUM As XElement = XElement.Load(IO.Path.Combine(LPPath, "update.mum"))
             Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
             SupportLink = Nothing '"http://windows.microsoft.com/en-us/windows/language-packs#lptabs=win7"
             Architecture = xAssemblyIdentity.Attribute("processorArchitecture").Value
@@ -196,17 +196,17 @@
             If xInfo.Attribute("LPTargetSPLevel").Value = "1" Then
               AppliesTo = "Windows 7 SP1"
               KBArticle = "248313"
-              SupportLink = "http://support.microsoft.com?kbid=" & KBArticle
+              SupportLink = String.Format("http://support.microsoft.com?kbid={0}", KBArticle)
             ElseIf xInfo.Attribute("LPTargetSPLevel").Value = "0" Then
               AppliesTo = "Windows 7"
               KBArticle = "972813"
-              SupportLink = "http://support.microsoft.com?kbid=" & KBArticle
+              SupportLink = String.Format("http://support.microsoft.com?kbid={0}", KBArticle)
             Else
-              AppliesTo = "Windows 7 SP" & xInfo.Attribute("LPTargetSPLevel").Value
+              AppliesTo = String.Format("Windows 7 SP{0}", xInfo.Attribute("LPTargetSPLevel").Value)
               KBArticle = Nothing
               SupportLink = Nothing
             End If
-            Dim wDate As Date = New IO.FileInfo(LPPath & "update.mum").CreationTime
+            Dim wDate As Date = New IO.FileInfo(IO.Path.Combine(LPPath, "update.mum")).CreationTime
             BuildDate = wDate.ToString("yyyy/MM/dd")
 
           Catch ex As Exception
@@ -215,7 +215,7 @@
             If IO.Directory.Exists(LPPath) Then SlowDeleteDirectory(LPPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           End Try
         Case UpdateType.LIP
-          Dim MLCPath As String = WorkDir & "UpdateMLC_Extract" & IO.Path.DirectorySeparatorChar
+          Dim MLCPath As String = IO.Path.Combine(WorkDir, "UpdateMLC_Extract")
           If IO.Directory.Exists(MLCPath) Then SlowDeleteDirectory(MLCPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           IO.Directory.CreateDirectory(MLCPath)
           Try
@@ -224,19 +224,19 @@
               If exRet = "File Not Found" Then
                 Failure = "LIP Description file not found."
               ElseIf exRet.StartsWith("Error Opening: ") Then
-                Failure = "LIP MLC " & exRet
+                Failure = String.Format("LIP MLC {0}", exRet)
               ElseIf exRet.StartsWith("Error Extracting: ") Then
-                Failure = "LIP Description file " & exRet
+                Failure = String.Format("LIP Description file {0}", exRet)
               Else
-                Failure = "LIP Description file Error: " & exRet
+                Failure = String.Format("LIP Description file Error: {0}", exRet)
               End If
               Return
             End If
-            If Not IO.File.Exists(MLCPath & "update.mum") Then
+            If Not IO.File.Exists(IO.Path.Combine(MLCPath, "update.mum")) Then
               Failure = "LIP Description file could not be extracted."
               Return
             End If
-            Dim xMUM As XElement = XElement.Load(MLCPath & "update.mum")
+            Dim xMUM As XElement = XElement.Load(IO.Path.Combine(MLCPath, "update.mum"))
             Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
             SupportLink = "http://windows.microsoft.com/en-us/windows/language-packs#lptabs=win7"
             Architecture = xAssemblyIdentity.Attribute("processorArchitecture").Value
@@ -258,7 +258,7 @@
             Else
               AppliesTo = "Windows 7"
             End If
-            Dim wDate As Date = New IO.FileInfo(MLCPath & "update.mum").CreationTime
+            Dim wDate As Date = New IO.FileInfo(IO.Path.Combine(MLCPath, "update.mum")).CreationTime
             BuildDate = wDate.ToString("yyyy/MM/dd")
           Catch ex As Exception
             Failure = ex.Message
@@ -266,7 +266,7 @@
             If IO.Directory.Exists(MLCPath) Then SlowDeleteDirectory(MLCPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           End Try
         Case UpdateType.MSI
-          Dim MSIPath As String = WorkDir & "UpdateMSI_Extract" & IO.Path.DirectorySeparatorChar
+          Dim MSIPath As String = IO.Path.Combine(WorkDir, "UpdateMSI_Extract")
           If IO.Directory.Exists(MSIPath) Then SlowDeleteDirectory(MSIPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           IO.Directory.CreateDirectory(MSIPath)
           Try
@@ -275,53 +275,53 @@
               If exRet = "File Not Found" Then
                 Failure = "LIP MSI CAB file not found."
               ElseIf exRet.StartsWith("Error Opening: ") Then
-                Failure = "LIP MSI " & exRet
+                Failure = String.Format("LIP MSI {0}", exRet)
               ElseIf exRet.StartsWith("Error Extracting: ") Then
-                Failure = "LIP MSI CAB file " & exRet
+                Failure = String.Format("LIP MSI CAB file {0}", exRet)
               Else
-                Failure = "LIP MSI CAB file Error: " & exRet
+                Failure = String.Format("LIP MSI CAB file Error: {0}", exRet)
               End If
               Return
             End If
-            If Not IO.File.Exists(MSIPath & "LIP.cab") Then
+            If Not IO.File.Exists(IO.Path.Combine(MSIPath, "LIP.cab")) Then
               Failure = "LIP MSI CAB file could not be extracted."
               Return
             End If
-            exRet = ExtractAFile(MSIPath & "LIP.cab", MSIPath, "LIP.mlc")
+            exRet = ExtractAFile(IO.Path.Combine(MSIPath, "LIP.cab"), MSIPath, "LIP.mlc")
             If Not exRet = "OK" Then
               If exRet = "File Not Found" Then
                 Failure = "LIP MLC file not found."
               ElseIf exRet.StartsWith("Error Opening: ") Then
-                Failure = "LIP CAB " & exRet
+                Failure = String.Format("LIP CAB {0}", exRet)
               ElseIf exRet.StartsWith("Error Extracting: ") Then
-                Failure = "LIP MLC file " & exRet
+                Failure = String.Format("LIP MLC file {0}", exRet)
               Else
-                Failure = "LIP MLC file Error: " & exRet
+                Failure = String.Format("LIP MLC file Error: {0}", exRet)
               End If
               Return
             End If
-            If Not IO.File.Exists(MSIPath & "LIP.mlc") Then
+            If Not IO.File.Exists(IO.Path.Combine(MSIPath, "LIP.mlc")) Then
               Failure = "LIP MLC file could not be extracted."
               Return
             End If
-            exRet = ExtractAFile(MSIPath & "LIP.mlc", MSIPath, "update.mum")
+            exRet = ExtractAFile(IO.Path.Combine(MSIPath, "LIP.mlc"), MSIPath, "update.mum")
             If Not exRet = "OK" Then
               If exRet = "File Not Found" Then
                 Failure = "LIP Description file not found."
               ElseIf exRet.StartsWith("Error Opening: ") Then
-                Failure = "LIP MLC " & exRet
+                Failure = String.Format("LIP MLC {0}", exRet)
               ElseIf exRet.StartsWith("Error Extracting: ") Then
-                Failure = "LIP Description file " & exRet
+                Failure = String.Format("LIP Description file {0}", exRet)
               Else
-                Failure = "LIP Description file Error: " & exRet
+                Failure = String.Format("LIP Description file Error: {0}", exRet)
               End If
               Return
             End If
-            If Not IO.File.Exists(MSIPath & "update.mum") Then
+            If Not IO.File.Exists(IO.Path.Combine(MSIPath, "update.mum")) Then
               Failure = "LIP Description file could not be extracted."
               Return
             End If
-            Dim xMUM As XElement = XElement.Load(MSIPath & "update.mum")
+            Dim xMUM As XElement = XElement.Load(IO.Path.Combine(MSIPath, "update.mum"))
             Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
             SupportLink = "http://windows.microsoft.com/en-us/windows/language-packs#lptabs=win7"
             Architecture = xAssemblyIdentity.Attribute("processorArchitecture").Value
@@ -343,7 +343,7 @@
             Else
               AppliesTo = "Windows 7"
             End If
-            Dim wDate As Date = New IO.FileInfo(MSIPath & "update.mum").CreationTime
+            Dim wDate As Date = New IO.FileInfo(IO.Path.Combine(MSIPath, "update.mum")).CreationTime
             BuildDate = wDate.ToString("yyyy/MM/dd")
           Catch ex As Exception
             Failure = ex.Message
@@ -351,19 +351,19 @@
             If IO.Directory.Exists(MSIPath) Then SlowDeleteDirectory(MSIPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           End Try
         Case UpdateType.EXE
-          Dim EXEPath As String = WorkDir & "UpdateEXE_Extract" & IO.Path.DirectorySeparatorChar
+          Dim EXEPath As String = IO.Path.Combine(WorkDir, "UpdateEXE_Extract")
           If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
           IO.Directory.CreateDirectory(EXEPath)
           Dim fInfo As FileVersionInfo = FileVersionInfo.GetVersionInfo(Location)
           If fInfo.OriginalFilename = "mergedwusetup.exe" Then
             Dim exRet As String = ExtractAFile(Location, EXEPath, "WUA-Win7SP1.exe")
             If exRet = "OK" Then
-              exRet = ExtractAFile(EXEPath & "WUA-Win7SP1.exe", EXEPath, "WUClient-SelfUpdate-Core-TopLevel.cab")
+              exRet = ExtractAFile(IO.Path.Combine(EXEPath, "WUA-Win7SP1.exe"), EXEPath, "WUClient-SelfUpdate-Core-TopLevel.cab")
               If exRet = "OK" Then
-                exRet = ExtractAFile(EXEPath & "WUClient-SelfUpdate-Core-TopLevel.cab", EXEPath, "update.mum")
+                exRet = ExtractAFile(IO.Path.Combine(EXEPath, "WUClient-SelfUpdate-Core-TopLevel.cab"), EXEPath, "update.mum")
                 If exRet = "OK" Then
-                  If IO.File.Exists(EXEPath & "update.mum") Then
-                    Dim xMUM As XElement = XElement.Load(EXEPath & "update.mum")
+                  If IO.File.Exists(IO.Path.Combine(EXEPath, "update.mum")) Then
+                    Dim xMUM As XElement = XElement.Load(IO.Path.Combine(EXEPath, "update.mum"))
                     DisplayName = xMUM.Attribute("displayName").Value
                     SupportLink = "http://support.microsoft.com?kbid=949104"
                     Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
@@ -378,7 +378,7 @@
                     End If
                     KBArticle = "949104"
                     AppliesTo = "Windows 7"
-                    Dim wDate As Date = New IO.FileInfo(EXEPath & "update.mum").CreationTime
+                    Dim wDate As Date = New IO.FileInfo(IO.Path.Combine(EXEPath, "update.mum")).CreationTime
                     BuildDate = wDate.ToString("yyyy/MM/dd")
                   Else
                     Failure = "Description File Not Found"
@@ -395,8 +395,8 @@
           Else
             Dim exRet As String = ExtractAFile(Location, EXEPath, "update.mum")
             If exRet = "OK" Then
-              If IO.File.Exists(EXEPath & "update.mum") Then
-                Dim xMUM As XElement = XElement.Load(EXEPath & "update.mum")
+              If IO.File.Exists(IO.Path.Combine(EXEPath, "update.mum")) Then
+                Dim xMUM As XElement = XElement.Load(IO.Path.Combine(EXEPath, "update.mum"))
                 Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
                 Architecture = xAssemblyIdentity.Attribute("processorArchitecture").Value
                 Identity = MakeIdentity(xAssemblyIdentity.Attribute("name").Value, xAssemblyIdentity.Attribute("publicKeyToken").Value, Architecture, xAssemblyIdentity.Attribute("language").Value, xAssemblyIdentity.Attribute("version").Value)
@@ -414,23 +414,23 @@
                 If xInfo.Attribute("LPTargetSPLevel").Value = "1" Then
                   AppliesTo = "Windows 7 SP1"
                   KBArticle = "248313"
-                  SupportLink = "http://support.microsoft.com?kbid=" & KBArticle
+                  SupportLink = String.Format("http://support.microsoft.com?kbid={0}", KBArticle)
                 ElseIf xInfo.Attribute("LPTargetSPLevel").Value = "0" Then
                   AppliesTo = "Windows 7"
                   KBArticle = "972813"
-                  SupportLink = "http://support.microsoft.com?kbid=" & KBArticle
+                  SupportLink = String.Format("http://support.microsoft.com?kbid={0}", KBArticle)
                 Else
-                  AppliesTo = "Windows 7 SP" & xInfo.Attribute("LPTargetSPLevel").Value
+                  AppliesTo = String.Format("Windows 7 SP{0}", xInfo.Attribute("LPTargetSPLevel").Value)
                   KBArticle = Nothing
                   SupportLink = Nothing
                 End If
-                Dim wDate As Date = New IO.FileInfo(EXEPath & "update.mum").CreationTime
+                Dim wDate As Date = New IO.FileInfo(IO.Path.Combine(EXEPath, "update.mum")).CreationTime
                 BuildDate = wDate.ToString("yyyy/MM/dd")
               Else
                 Failure = "Description file not found"
               End If
             Else
-              Failure = "Error extracting Description file: " & exRet
+              Failure = String.Format("Error extracting Description file: {0}", exRet)
             End If
           End If
           If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
@@ -457,7 +457,7 @@
           Dim sExt As String = IO.Path.GetExtension(Path).Substring(1).ToUpper
           Select Case sExt
             Case "CAT" : Failure = "Security Catalogs are included when needed automatically and do not need to be added."
-            Case Else : Failure = "Unknown file type: " & sExt
+            Case Else : Failure = String.Format("Unknown file type: {0}", sExt)
           End Select
       End Select
     End If
@@ -482,18 +482,17 @@
     Find = Obj(2)
     Dim cIndex As UInteger = Obj(3)
     Dim bFound As Boolean = False
-    If Not Destination.EndsWith(IO.Path.DirectorySeparatorChar) Then Destination &= IO.Path.DirectorySeparatorChar
     Using Extractor As New Extraction.ArchiveFile(New IO.FileInfo(Source), GetUpdateCompression(Source))
       Try
         Extractor.Open()
       Catch ex As Exception
-        c_ExtractRet(cIndex) = "Error Opening: " & ex.Message
+        c_ExtractRet(cIndex) = String.Format("Error Opening: {0}", ex.Message)
         Return
       End Try
       Dim eFiles() As Extraction.COM.IArchiveEntry = Extractor.ToArray
       For Each file As Extraction.COM.IArchiveEntry In eFiles
         If file.Name.ToLower.EndsWith(Find.ToLower) Then
-          file.Destination = New IO.FileInfo(Destination & file.Name)
+          file.Destination = New IO.FileInfo(IO.Path.Combine(Destination, file.Name))
           bFound = True
           Exit For
         End If
@@ -502,7 +501,7 @@
         Try
           Extractor.Extract()
         Catch ex As Exception
-          c_ExtractRet(cIndex) = "Error Extracting: " & ex.Message
+          c_ExtractRet(cIndex) = String.Format("Error Extracting: {0}", ex.Message)
           Return
         End Try
         c_ExtractRet(cIndex) = "OK"
@@ -518,13 +517,13 @@
   Private Function MakeIdentity(Name As String, Optional Token As String = "31bf3856ad364e35", Optional Architecture As String = "neutral", Optional Language As String = "neutral", Optional Version As String = Nothing) As String
     If Architecture = "neutral" Then Architecture = ""
     If Language = "neutral" Then Language = ""
-    Return Name & "~" & Token & "~" & Architecture & "~" & Language & "~" & Version
+    Return String.Format("{0}~{1}~{2}~{3}~{4}", Name, Token, Architecture, Language, Version)
   End Function
   Friend Shared ReadOnly Property WorkDir As String
     Get
       Dim mySettings As New MySettings
       Dim tempDir As String = mySettings.TempDir
-      If String.IsNullOrEmpty(tempDir) Then tempDir = My.Computer.FileSystem.SpecialDirectories.Temp & IO.Path.DirectorySeparatorChar & "Slips7ream" & IO.Path.DirectorySeparatorChar
+      If String.IsNullOrEmpty(tempDir) Then tempDir = IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.Temp, "Slips7ream")
       If Not IO.Directory.Exists(tempDir) Then IO.Directory.CreateDirectory(tempDir)
       Return tempDir
     End Get

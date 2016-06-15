@@ -21,8 +21,6 @@
     If Not info1.Name.ToLower = info2.Name.ToLower Then Return False
     If Not CompareArchitectures(info1.Architecture, info2.Architecture, False) Then Return False
     If Not (info1.Language.ToLower = info2.Language.ToLower) And Not (info1.Language.ToLower = "neutral" And String.IsNullOrEmpty(info2.Language)) And Not (String.IsNullOrEmpty(info1.Language) And info2.Language.ToLower = "neutral") Then Return False
-    If Not info1.Token.ToLower = info2.Token.ToLower Then Debug.Print("Different Tokens") : Stop ' Return False
-    If Not info1.Version = info2.Version Then Debug.Print("Different Versions") : Stop ' Return False
     Return True
   End Operator
   Public Shared Operator <>(info1 As Update_Identity, info2 As Update_Identity) As Boolean

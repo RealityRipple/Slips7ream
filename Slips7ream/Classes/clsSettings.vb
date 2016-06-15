@@ -180,7 +180,7 @@
   End Property
   Public Sub New()
     If My.Computer.Registry.CurrentUser.OpenSubKey("Software").GetSubKeyNames.Contains(Application.CompanyName) Then
-      If My.Computer.Registry.CurrentUser.OpenSubKey("Software\" & Application.CompanyName).GetSubKeyNames.Contains(Application.ProductName) Then
+      If My.Computer.Registry.CurrentUser.OpenSubKey(IO.Path.Combine("Software", Application.CompanyName)).GetSubKeyNames.Contains(Application.ProductName) Then
         ReadRegistry()
         Return
       End If
@@ -188,7 +188,7 @@
     ReadLegacy()
   End Sub
   Private Sub ReadRegistry()
-    Dim Hive As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.OpenSubKey("Software\" & Application.CompanyName & "\" & Application.ProductName)
+    Dim Hive As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.OpenSubKey(IO.Path.Combine("Software", Application.CompanyName, Application.ProductName))
     If Hive.GetValueNames.Contains("Temp Directory") Then
       c_TempDir = Hive.GetValue("Temp Directory", My.Settings.TempDir)
     Else
@@ -328,8 +328,8 @@
   End Sub
   Public Sub Save()
     If Not My.Computer.Registry.CurrentUser.OpenSubKey("Software").GetSubKeyNames.Contains(Application.CompanyName) Then My.Computer.Registry.CurrentUser.OpenSubKey("Software", True).CreateSubKey(Application.CompanyName)
-    If Not My.Computer.Registry.CurrentUser.OpenSubKey("Software\" & Application.CompanyName).GetSubKeyNames.Contains(Application.ProductName) Then My.Computer.Registry.CurrentUser.OpenSubKey("Software\" & Application.CompanyName, True).CreateSubKey(Application.ProductName)
-    Dim ActiveHive As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.OpenSubKey("Software\" & Application.CompanyName & "\" & Application.ProductName, True)
+    If Not My.Computer.Registry.CurrentUser.OpenSubKey(IO.Path.Combine("Software", Application.CompanyName)).GetSubKeyNames.Contains(Application.ProductName) Then My.Computer.Registry.CurrentUser.OpenSubKey(IO.Path.Combine("Software", Application.CompanyName), True).CreateSubKey(Application.ProductName)
+    Dim ActiveHive As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.OpenSubKey(IO.Path.Combine("Software", Application.CompanyName, Application.ProductName), True)
     ActiveHive.SetValue("Temp Directory", c_TempDir, Microsoft.Win32.RegistryValueKind.String)
     ActiveHive.SetValue("Timeout", c_Timeout, Microsoft.Win32.RegistryValueKind.DWord)
     ActiveHive.SetValue("x86 Whitelist", c_x86WhiteList, Microsoft.Win32.RegistryValueKind.MultiString)

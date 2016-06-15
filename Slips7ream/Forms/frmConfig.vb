@@ -4,7 +4,7 @@ Public Class frmConfig
   Private Sub frmConfig_Load(sender As Object, e As System.EventArgs) Handles Me.Load
     mySettings = New MySettings
     txtTemp.Text = mySettings.TempDir
-    If String.IsNullOrEmpty(txtTemp.Text) Then txtTemp.Text = My.Computer.FileSystem.SpecialDirectories.Temp & IO.Path.DirectorySeparatorChar & "Slips7ream"
+    If String.IsNullOrEmpty(txtTemp.Text) Then txtTemp.Text = IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.Temp, "Slips7ream")
     txtWhitelist.Text = Join(mySettings.x86WhiteList, vbNewLine)
     txtTimeout.Value = mySettings.Timeout / 1000 / 60
     If txtTimeout.Value = 0 Then
@@ -12,7 +12,7 @@ Public Class frmConfig
     ElseIf txtTimeout.Value = 1 Then
       lblTimeoutS.Text = " minute"
     ElseIf txtTimeout.Value > 59 Then
-      lblTimeoutS.Text = " minutes (" & ConvertTime(txtTimeout.Value * 60UL * 1000UL, False) & ")"
+      lblTimeoutS.Text = String.Format(" minutes ({0})", ConvertTime(txtTimeout.Value * 60UL * 1000UL, False))
     Else
       lblTimeoutS.Text = " minutes"
     End If
@@ -39,8 +39,8 @@ Public Class frmConfig
       Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
       cdlBrowse.Controls.Add(cmdHelp)
       AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "2_Configuration\2.1_Temp_Directory_Path.htm")
-      cdlBrowse.InitialDirectory = IIf(String.IsNullOrEmpty(txtTemp.Text), IO.Path.GetTempPath, IO.Path.GetDirectoryName(IO.Path.GetDirectoryName(IIf(txtTemp.Text.EndsWith(IO.Path.DirectorySeparatorChar), txtTemp.Text, txtTemp.Text & IO.Path.DirectorySeparatorChar))))
-      If cdlBrowse.ShowDialog(Me.Handle) = CommonFileDialogResult.Ok Then txtTemp.Text = IO.Path.Combine(cdlBrowse.FileName, "Slips7ream") & IO.Path.DirectorySeparatorChar
+      cdlBrowse.InitialDirectory = IIf(String.IsNullOrEmpty(txtTemp.Text), IO.Path.GetTempPath, IO.Path.GetDirectoryName(IO.Path.GetDirectoryName(IIf(txtTemp.Text.EndsWith(IO.Path.DirectorySeparatorChar), txtTemp.Text, String.Concat(txtTemp.Text, IO.Path.DirectorySeparatorChar)))))
+      If cdlBrowse.ShowDialog(Me.Handle) = CommonFileDialogResult.Ok Then txtTemp.Text = String.Concat(IO.Path.Combine(cdlBrowse.FileName, "Slips7ream"), IO.Path.DirectorySeparatorChar)
     End Using
   End Sub
   Private Sub txtTimeout_KeyUp(sender As Object, e As System.EventArgs) Handles txtTimeout.KeyUp, txtTimeout.ValueChanged
@@ -49,7 +49,7 @@ Public Class frmConfig
     ElseIf txtTimeout.Value = 1 Then
       lblTimeoutS.Text = " minute"
     ElseIf txtTimeout.Value > 59 Then
-      lblTimeoutS.Text = " minutes (" & ConvertTime(txtTimeout.Value * 60UL * 1000UL, False) & ")"
+      lblTimeoutS.Text = String.Format(" minutes ({0})", ConvertTime(txtTimeout.Value * 60UL * 1000UL, False))
     Else
       lblTimeoutS.Text = " minutes"
     End If
@@ -63,7 +63,7 @@ Public Class frmConfig
   Private Sub cmdAlertBrowse_Click(sender As System.Object, e As System.EventArgs) Handles cmdAlertBrowse.Click
     Dim defDir As String
     If String.IsNullOrEmpty(txtAlertPath.Text) Then
-      defDir = Environment.GetFolderPath(Environment.SpecialFolder.Windows) & "\Media\"
+      defDir = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Media")
     Else
       defDir = IO.Path.GetDirectoryName(txtAlertPath.Text)
     End If
@@ -82,7 +82,7 @@ Public Class frmConfig
       cdlBrowse.RestoreDirectory = False
       cdlBrowse.ShowPlacesList = True
       cdlBrowse.CookieIdentifier = New Guid("00000000-0000-0000-0000-000000000012")
-      cdlBrowse.AddPlace(Environment.GetFolderPath(Environment.SpecialFolder.Windows) & "\Media\", Microsoft.WindowsAPICodePack.Shell.FileDialogAddPlaceLocation.Top)
+      cdlBrowse.AddPlace(IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Media"), Microsoft.WindowsAPICodePack.Shell.FileDialogAddPlaceLocation.Top)
       Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
       cdlBrowse.Controls.Add(cmdHelp)
       AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "2_Configuration\2.4_Alert_on_Complete.htm")
@@ -96,7 +96,7 @@ Public Class frmConfig
   End Sub
   Private Sub cmdPlay_Click(sender As System.Object, e As System.EventArgs) Handles cmdPlay.Click
     If chkDefault.Checked Then
-      Dim tada As String = Environment.GetFolderPath(Environment.SpecialFolder.Windows) & "\Media\tada.wav"
+      Dim tada As String = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Media", "tada.wav")
       If IO.File.Exists(tada) Then
         My.Computer.Audio.Play(tada, AudioPlayMode.Background)
       Else
@@ -116,14 +116,14 @@ Public Class frmConfig
     Process.Start("http://realityripple.com/donate.php?itm=SLIPS7REAM")
   End Sub
   Private Sub cmdOK_Click(sender As System.Object, e As System.EventArgs) Handles cmdOK.Click
-    If String.IsNullOrEmpty(txtTemp.Text) Then txtTemp.Text = My.Computer.FileSystem.SpecialDirectories.Temp & IO.Path.DirectorySeparatorChar & "Slips7ream"
-    If Not txtTemp.Text.EndsWith(IO.Path.DirectorySeparatorChar) Then txtTemp.Text &= IO.Path.DirectorySeparatorChar
+    If String.IsNullOrEmpty(txtTemp.Text) Then txtTemp.Text = IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.Temp, "Slips7ream")
+    If Not txtTemp.Text.EndsWith(IO.Path.DirectorySeparatorChar) Then txtTemp.Text = String.Concat(txtTemp.Text, IO.Path.DirectorySeparatorChar)
     Dim sDir As String = IO.Path.GetDirectoryName(IO.Path.GetDirectoryName(txtTemp.Text))
     If IO.Directory.Exists(sDir) Then
       mySettings.TempDir = txtTemp.Text
     Else
       txtTemp.Focus()
-      MsgDlg(Me, "Please choose a directory that exists to put the Temp directory in.", "Unable to find parent directory.", "Folder Not Found", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder, , """" & sDir & """ does not exist.", "Temp Folder Not Found")
+      MsgDlg(Me, "Please choose a directory that exists to put the Temp directory in.", "Unable to find parent directory.", "Folder Not Found", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder, , String.Format("""{0}"" does not exist.", sDir), "Temp Folder Not Found")
       Return
     End If
     mySettings.x86WhiteList = Split(txtWhitelist.Text, vbNewLine)

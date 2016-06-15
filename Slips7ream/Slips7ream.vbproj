@@ -229,6 +229,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ctlExpander.resx">
       <DependentUpon>ctlExpander.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmConfig.resx">
       <DependentUpon>frmConfig.vb</DependentUpon>
@@ -248,9 +249,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmOutput.resx">
       <DependentUpon>frmOutput.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Property Dialogs\frmDriverProps.resx">
       <DependentUpon>frmDriverProps.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Property Dialogs\frmPackageProps.resx">
       <DependentUpon>frmPackageProps.vb</DependentUpon>

@@ -1,6 +1,7 @@
 ﻿Imports Microsoft.WindowsAPICodePack.Dialogs
 Imports System.Runtime.InteropServices
 Public Module modFunctions
+  Public Const en As String = ChrW(&H2003)
   Public Declare Function WindowFromPoint Lib "user32" (pt As Point) As IntPtr
   Public Declare Function SendMessageA Lib "user32" (hWnd As IntPtr, msg As Integer, wParam As IntPtr, lParam As IntPtr) As IntPtr
   Private Declare Function SetupDiGetClassImageList Lib "setupapi" (ByRef classImageListData As SP_CLASSIMAGELIST_DATA) As Boolean
@@ -20,6 +21,15 @@ Public Module modFunctions
     Merge
     All
   End Enum
+  Public Enum ActivityType
+    [Nothing]
+    Integrating
+    LoadingPackageData
+    LoadingPackageFeatures
+    LoadingPackageUpdates
+    LoadingPackageDrivers
+    LoadingUpdates
+  End Enum
   <StructLayout(LayoutKind.Sequential)>
   Private Structure SP_CLASSIMAGELIST_DATA
     Public cbSize As UInteger
@@ -32,10 +42,10 @@ Public Module modFunctions
         Case UpdateType.EXE
           Dim fInfo As FileVersionInfo = FileVersionInfo.GetVersionInfo(sPath)
           If fInfo.OriginalFilename = "iesetup.exe" And fInfo.ProductMajorPart > 9 Then
-            Dim EXEPath As String = Update_File.WorkDir & "UpdateEXE_Extract" & IO.Path.DirectorySeparatorChar
+            Dim EXEPath As String = IO.Path.Combine(Update_File.WorkDir, "UpdateEXE_Extract")
             If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
             IO.Directory.CreateDirectory(EXEPath)
-            Dim iExtract As New Process With {.StartInfo = New ProcessStartInfo(sPath, "/x:" & EXEPath)}
+            Dim iExtract As New Process With {.StartInfo = New ProcessStartInfo(sPath, String.Format("/x:{0}", EXEPath))}
             If iExtract.Start Then
               iExtract.WaitForExit()
               Dim updateList As New List(Of Update_File)
@@ -69,30 +79,30 @@ Public Module modFunctions
   Public Function GetUpdateName(Ident As Update_Identity) As String
     Select Case Ident.Name
       Case "WUClient-SelfUpdate-Core-TopLevel"
-        Return "Windows Update Agent " & Ident.Version.Substring(0, Ident.Version.IndexOf(".", Ident.Version.IndexOf(".") + 1))
+        Return String.Format("Windows Update Agent {0}", Ident.Version.Substring(0, Ident.Version.IndexOf(".", Ident.Version.IndexOf(".") + 1)))
       Case "Microsoft-Windows-InternetExplorer-LanguagePack"
         Dim ieVer As String = Ident.Version.Substring(0, Ident.Version.IndexOf("."))
-        Return Ident.Language & " IE" & ieVer & " Language Pack"
+        Return String.Format("{1} IE{0} Language Pack", ieVer, Ident.Language)
       Case "Microsoft-Windows-InternetExplorer-LIPPack"
         Dim ieVer As String = Ident.Version.Substring(0, Ident.Version.IndexOf("."))
-        Return Ident.Language & " IE" & ieVer & " Language Interface Pack"
+        Return String.Format("{1} IE{0} Language Interface Pack", ieVer, Ident.Language)
       Case "Microsoft-Windows-InternetExplorer-Package-TopLevel"
         Dim ieVer As String = Ident.Version.Substring(0, Ident.Version.IndexOf("."))
-        Return "Internet Explorer " & ieVer
+        Return String.Format("Internet Explorer {0}", ieVer)
       Case "Microsoft-Windows-PlatformUpdate-Win7-SRV08R2-Package-TopLevel" : Return "Platform Update for Windows 7"
-      Case "Microsoft-Windows-Client-LanguagePack-Package" : Return Ident.Language & " Multilingual User Interface Pack"
-      Case "Microsoft-Windows-Client-Refresh-LanguagePack-Package" : Return Ident.Language & " Multilingual User Interface Pack"
-      Case "Microsoft-Windows-LIP-LanguagePack-Package" : Return Ident.Language & " Language Interface Pack"
+      Case "Microsoft-Windows-Client-LanguagePack-Package" : Return String.Format("{0} Multilingual User Interface Pack", Ident.Language)
+      Case "Microsoft-Windows-Client-Refresh-LanguagePack-Package" : Return String.Format("{0} Multilingual User Interface Pack", Ident.Language)
+      Case "Microsoft-Windows-LIP-LanguagePack-Package" : Return String.Format("{0} Language Interface Pack", Ident.Language)
       Case "Microsoft-Windows-RDP-WinIP-Package-TopLevel" : Return "Remote Desktop Protocol Update"
       Case "Microsoft-Windows-RDP-BlueIP-Package-TopLevel" : Return "Remote App and Desktop Connections Update"
       Case "Microsoft-Windows-Security-WindowsActivationTechnologies-Package" : Return "Windows Activation Update"
       Case Else
         If Ident.Name.StartsWith("Package_for_") Then
-          Return Ident.Name.Substring(12) & " Update"
+          Return String.Format("{0} Update", Ident.Name.Substring(12))
         ElseIf Ident.Name.StartsWith("Microsoft-Windows-IE-Spelling-Parent-Package") Then
-          Return "IE Spelling Package for " & Ident.Name.Substring(Ident.Name.LastIndexOf("-") + 1)
+          Return String.Format("IE Spelling Package for {0}", Ident.Name.Substring(Ident.Name.LastIndexOf("-") + 1))
         ElseIf Ident.Name.StartsWith("Microsoft-Windows-IE-Hyphenation-Parent-Package") Then
-          Return "IE Hyphenation Package for " & Ident.Name.Substring(Ident.Name.LastIndexOf("-") + 1)
+          Return String.Format("IE Hyphenation Package for {0}", Ident.Name.Substring(Ident.Name.LastIndexOf("-") + 1))
         Else
           Return Ident.Name
         End If
@@ -117,7 +127,7 @@ Public Module modFunctions
       If String.IsNullOrEmpty(Provider) Then Return "Unknown"
     Loop
     For Each refItem In ReferenceList
-      If Provider.StartsWith(refItem & " ") Then Provider = refItem
+      If Provider.StartsWith(String.Concat(refItem, " ")) Then Provider = refItem
     Next
     Select Case Provider.ToLower
       Case "%msft%", "msft" : Return "Microsoft"
@@ -141,7 +151,7 @@ Public Module modFunctions
       Dim sB As String = Path.Substring(Path.IndexOf("%", Path.IndexOf("%") + 1) + 1)
       Dim sE As String = Path.Substring(Path.IndexOf("%") + 1)
       sE = sE.Substring(0, sE.IndexOf("%"))
-      Path = sA & GetEnvPath(sE, OriginalINF, arch) & sB
+      Path = String.Concat(sA, GetEnvPath(sE, OriginalINF, arch), sB)
     Loop
     If IsNumeric(Path) Then Path = GetEnvPath(Path, OriginalINF, arch)
     Return Path.Trim
@@ -318,7 +328,7 @@ Public Module modFunctions
             End If
             sIconPath = ConvertPathVars(CleanupINFString(sIconPath), DriverINFPath, architecture)
             sIconNum = CleanupINFString(sIconNum)
-            If Not sIconPath.Contains(":\") Then sIconPath = GuessPath(sIconPath, sDefPaths.ToArray, DriverINFPath)
+            If Not sIconPath.Contains(String.Concat(IO.Path.VolumeSeparatorChar, IO.Path.DirectorySeparatorChar)) Then sIconPath = GuessPath(sIconPath, sDefPaths.ToArray, DriverINFPath)
             If IO.File.Exists(sIconPath) Then
               Dim icoPtr(0) As IntPtr
               Dim siNumber As Int16 = Int16.Parse(sIconNum)
@@ -338,7 +348,7 @@ Public Module modFunctions
             Dim sIconPath As String = CleanupINFString(sParts(4))
             Dim sIconParts() As String = Split(sIconPath, ",", 2)
             Dim siFilePath As String = ConvertPathVars(sIconParts(0), DriverINFPath, architecture)
-            If Not siFilePath.Contains(":\") Then siFilePath = GuessPath(siFilePath, sDefPaths.ToArray, DriverINFPath)
+            If Not siFilePath.Contains(String.Concat(IO.Path.VolumeSeparatorChar, IO.Path.DirectorySeparatorChar)) Then siFilePath = GuessPath(siFilePath, sDefPaths.ToArray, DriverINFPath)
             If IO.File.Exists(siFilePath) Then
               Dim siNumber As Int16 = Int16.Parse(sIconParts(1))
               Dim icoPtr(0) As IntPtr
@@ -368,8 +378,8 @@ Public Module modFunctions
                   Return ico
                 End If
               ElseIf Not String.IsNullOrEmpty(sResPath) Then
-                sIcon = "-" & sIcon
-                If Not sResPath.Contains(":\") Then sResPath = GuessPath(sResPath, sDefPaths.ToArray, DriverINFPath)
+                sIcon = String.Concat("-", sIcon)
+                If Not sResPath.Contains(String.Concat(IO.Path.VolumeSeparatorChar, IO.Path.DirectorySeparatorChar)) Then sResPath = GuessPath(sResPath, sDefPaths.ToArray, DriverINFPath)
                 If IO.File.Exists(sResPath) Then
                   Dim icoPtr(0) As IntPtr
                   If ExtractIconEx(sResPath, Int16.Parse(sIcon), Nothing, icoPtr, 1) > 0 Then
@@ -492,7 +502,7 @@ Public Module modFunctions
               End If
               sIconPath = ConvertPathVars(CleanupINFString(sIconPath), DriverINFPath, architecture)
               sIconNum = CleanupINFString(sIconNum)
-              If Not sIconPath.Contains(":\") Then sIconPath = GuessPath(sIconPath, sDefPaths.ToArray, DriverINFPath)
+              If Not sIconPath.Contains(String.Concat(IO.Path.VolumeSeparatorChar, IO.Path.DirectorySeparatorChar)) Then sIconPath = GuessPath(sIconPath, sDefPaths.ToArray, DriverINFPath)
               If IO.File.Exists(sIconPath) Then
                 Dim icoPtr(0) As IntPtr
                 Dim siNumber As Int16 = Int16.Parse(sIconNum)
@@ -522,8 +532,8 @@ Public Module modFunctions
                     Return ico
                   End If
                 ElseIf Not String.IsNullOrEmpty(sResPath) Then
-                  sIcon = "-" & sIcon
-                  If Not sResPath.Contains(":\") Then sResPath = GuessPath(sResPath, sDefPaths.ToArray, DriverINFPath)
+                  sIcon = String.Concat("-", sIcon)
+                  If Not sResPath.Contains(String.Concat(IO.Path.VolumeSeparatorChar, IO.Path.DirectorySeparatorChar)) Then sResPath = GuessPath(sResPath, sDefPaths.ToArray, DriverINFPath)
                   If IO.File.Exists(sResPath) Then
                     Dim icoPtr(0) As IntPtr
                     If ExtractIconEx(sResPath, Int16.Parse(sIcon), Nothing, icoPtr, 1) > 0 Then
@@ -558,23 +568,11 @@ Public Module modFunctions
     End Try
   End Function
   Public Function ByteSize(InBytes As UInt64) As String
-    If InBytes > 1024 Then
-      If InBytes / 1024 > 1024 Then
-        If InBytes / 1024 / 1024 > 1024 Then
-          If InBytes / 1024 / 1024 / 1024 > 1024 Then
-            Return Format((InBytes) / 1024 / 1024 / 1024 / 1024, "0.0#") & " TB"
-          Else
-            Return Format((InBytes) / 1024 / 1024 / 1024, "0.0#") & " GB"
-          End If
-        Else
-          Return Format((InBytes) / 1024 / 1024, "0.0#") & " MB"
-        End If
-      Else
-        Return Format((InBytes) / 1024, "0.0#") & " KB"
-      End If
-    Else
-      Return (InBytes) & " B"
-    End If
+    If InBytes >= 1099511627776UL Then Return String.Format("{0:0.0#} TB", InBytes / 1099511627776UL)
+    If InBytes >= 1073741824UL Then Return String.Format("{0:0.0#} GB", InBytes / 1073741824UL)
+    If InBytes >= 1048576UL Then Return String.Format("{0:0.0#} MB", InBytes / 1048576UL)
+    If InBytes >= 1024UL Then Return String.Format("{0:0.0#} KB", InBytes / 1024UL)
+    Return String.Format("{0:0} B", InBytes)
   End Function
   Private Function getTotalSize(ioDir As IO.DirectoryInfo) As UInt64
     Dim uSize As UInt64 = 0
@@ -585,20 +583,19 @@ Public Module modFunctions
   End Function
   Public ReadOnly Property AIKDir As String
     Get
-      Dim toolsDir As String = Application.StartupPath & IO.Path.DirectorySeparatorChar & "tools" & IO.Path.DirectorySeparatorChar
+      Dim toolsDir As String = IO.Path.Combine(Application.StartupPath, "tools")
       If Environment.Is64BitProcess Then
-        toolsDir &= "amd64" & IO.Path.DirectorySeparatorChar
+        toolsDir = IO.Path.Combine(toolsDir, "amd64")
       Else
-        toolsDir &= "x86" & IO.Path.DirectorySeparatorChar
+        toolsDir = IO.Path.Combine(toolsDir, "x86")
       End If
       Return toolsDir
     End Get
   End Property
   Public ReadOnly Property DismPath As String
     Get
-      Dim localDir As String = AIKDir
-      localDir &= "Dism.exe"
-      Dim systemDir As String = Environment.SystemDirectory & IO.Path.DirectorySeparatorChar & "Dism.exe"
+      Dim localDir As String = IO.Path.Combine(AIKDir, "Dism.exe")
+      Dim systemDir As String = IO.Path.Combine(Environment.SystemDirectory, "Dism.exe")
       If IO.File.Exists(systemDir) Then
         Dim sysInfo As FileVersionInfo = FileVersionInfo.GetVersionInfo(systemDir)
         Dim locInfo As FileVersionInfo = FileVersionInfo.GetVersionInfo(localDir)
@@ -622,7 +619,7 @@ Public Module modFunctions
   Public Function NumericVal(value As String) As Long
     Dim sSize As String = value
     For J As Integer = sSize.Length - 1 To 0 Step -1
-      If Not IsNumeric(sSize(J)) Then sSize = sSize.Substring(0, J) & sSize.Substring(J + 1)
+      If Not IsNumeric(sSize(J)) Then sSize = String.Concat(sSize.Substring(0, J), sSize.Substring(J + 1))
     Next
     If String.IsNullOrEmpty(sSize) Then Return 0
     Dim lRet As Long
@@ -695,7 +692,11 @@ Public Module modFunctions
     If sRet = "OK" Then
       Return True
     Else
-      MsgDlg(frmMain, sRet, "Unable to " & IIf(Move, "move ", "copy ") & IO.Path.GetFileNameWithoutExtension(File) & ".", "File Transfer Failure", MessageBoxButtons.OK, TaskDialogIcon.HardDrive, "Slow Copy File Transfer Failure")
+      If Move Then
+        MsgDlg(frmMain, sRet, String.Format("Unable to move {0}.", IO.Path.GetFileNameWithoutExtension(File)), "File Transfer Failure", MessageBoxButtons.OK, TaskDialogIcon.HardDrive, "Slow Move File Transfer Failure")
+      Else
+        MsgDlg(frmMain, sRet, String.Format("Unable to copy {0}.", IO.Path.GetFileNameWithoutExtension(File)), "File Transfer Failure", MessageBoxButtons.OK, TaskDialogIcon.HardDrive, "Slow Copy File Transfer Failure")
+      End If
       Return False
     End If
   End Function
@@ -715,7 +716,7 @@ Public Module modFunctions
         Const iChunkSize As Integer = 16 * 1024
         Using ioSource As New IO.FileStream(File, IO.FileMode.Open, IO.FileAccess.Read, IO.FileShare.Read, iChunkSize * 4, True)
           If ioSource.Length > destFreeSpace Then
-            c_SlowCopyRet(cIndex) = "Not Enough Space on Drive " & Destination(0) & ":\"
+            c_SlowCopyRet(cIndex) = String.Format("Not Enough Space on Drive {0}", String.Concat(Destination(0), IO.Path.VolumeSeparatorChar, IO.Path.DirectorySeparatorChar))
             Return
           End If
           Using ioReader As New IO.BinaryReader(ioSource)
@@ -842,53 +843,30 @@ Public Module modFunctions
     lngSeconds = lngSeconds Mod 60
     If Abbreviated Then
       If Trimmed Then
-        If lngWeeks > 0 Then
-          Return lngWeeks & "w " & lngDays & "d"
-        ElseIf lngDays > 0 Then
-          If lngHours > 20 Then
-            If lngDays >= 6 Then
-              Return "1 w"
-            Else
-              Return lngDays + 1 & " d"
-            End If
-          Else
-            Return lngDays & IIf(lngHours > 14, "¾ d", IIf(lngHours > 8, "½ d", IIf(lngHours > 2, "¼ d", " d")))
-          End If
-        ElseIf lngHours > 0 Then
-          If lngHours >= 22 Or (lngHours = 21 And lngMins > 50) Then
-            Return "1 d"
-          ElseIf lngMins > 50 Then
-            Return lngHours + 1 & " h"
-          Else
-            Return lngHours & IIf(lngMins > 35, "¾ h", IIf(lngMins > 20, "½ h", IIf(lngMins > 5, "¼ h", " h")))
-          End If
-        ElseIf lngMins > 0 Then
-          If lngMins >= 55 Or (lngMins = 54 And lngSeconds > 50) Then
-            Return "1 h"
-          ElseIf lngSeconds > 50 Then
-            Return lngMins + 1 & " m"
-          Else
-            Return lngMins & IIf(lngSeconds > 35, "¾ m", IIf(lngSeconds > 20, "½ m", IIf(lngSeconds > 5, "¼ m", " m")))
-          End If
-        Else
-          If lngSeconds > 55 Then
-            Return "1 m"
-          Else
-            Return lngSeconds & "s"
-          End If
+        If lngWeeks > 0 Then Return String.Format("{0} w {1} d", lngWeeks, lngDays)
+        If lngDays > 0 Then
+          If lngHours <= 20 Then Return String.Concat(lngDays, IIf(lngHours > 14, "¾ d", IIf(lngHours > 8, "½ d", IIf(lngHours > 2, "¼ d", " d"))))
+          If lngDays >= 6 Then Return "1 w"
+          Return String.Format("{0} d", lngDays + 1)
         End If
+        If lngHours > 0 Then
+          If lngHours >= 22 Or (lngHours = 21 And lngMins > 50) Then Return "1 d"
+          If lngMins > 50 Then Return String.Format("{0} h", lngHours + 1)
+          Return String.Concat(lngHours, IIf(lngMins > 35, "¾ h", IIf(lngMins > 20, "½ h", IIf(lngMins > 5, "¼ h", " h"))))
+        End If
+        If lngMins > 0 Then
+          If lngMins >= 55 Or (lngMins = 54 And lngSeconds > 50) Then Return "1 h"
+          If lngSeconds > 50 Then Return String.Format("{0} m", lngMins + 1)
+          Return String.Concat(lngMins, IIf(lngSeconds > 35, "¾ m", IIf(lngSeconds > 20, "½ m", IIf(lngSeconds > 5, "¼ m", " m"))))
+        End If
+        If lngSeconds > 55 Then Return "1 m"
+        Return String.Format("{0} s", lngSeconds)
       Else
-        If lngWeeks > 0 Then
-          Return lngWeeks & "w " & lngDays & "d " & lngHours & "h " & lngMins & "m " & lngSeconds & "s"
-        ElseIf lngDays > 0 Then
-          Return lngDays & "d " & lngHours & "h " & lngMins & "m " & lngSeconds & "s"
-        ElseIf lngHours > 0 Then
-          Return lngHours & "h " & lngMins & "m " & lngSeconds & "s"
-        ElseIf lngMins > 0 Then
-          Return lngMins & "m " & lngSeconds & "s"
-        Else
-          Return lngSeconds & "s"
-        End If
+        If lngWeeks > 0 Then Return String.Format("{0} w, {0} d, {0} h, {0} m, {0} s", lngWeeks, lngDays, lngHours, lngMins, lngSeconds)
+        If lngDays > 0 Then Return String.Format("{0} d, {0} h, {0} m, {0} s", lngDays, lngHours, lngMins, lngSeconds)
+        If lngHours > 0 Then Return String.Format("{0} h, {0} m, {0} s", lngHours, lngMins, lngSeconds)
+        If lngMins > 0 Then Return String.Format("{0} m, {0} s", lngMins, lngSeconds)
+        Return String.Format("{0} s", lngSeconds)
       End If
     Else
       Dim strWeeks As String = IIf(lngWeeks = 1, vbNullString, "s")
@@ -897,53 +875,30 @@ Public Module modFunctions
       Dim strMins As String = IIf(lngMins = 1, vbNullString, "s")
       Dim strSeconds As String = IIf(lngSeconds = 1, vbNullString, "s")
       If Trimmed Then
-        If lngWeeks > 0 Then
-          Return lngWeeks & " Week" & strWeeks & " and " & lngDays & " Day" & strDays
-        ElseIf lngDays > 0 Then
-          If lngHours > 20 Then
-            If lngDays >= 6 Then
-              Return "1 Week"
-            Else
-              Return lngDays + 1 & " Days"
-            End If
-          Else
-            Return lngDays & IIf(lngHours > 14, " and Three Quarter Days", IIf(lngHours > 8, " and a Half Days", IIf(lngHours > 2, " and a Quarter Days", " Day" & strDays)))
-          End If
-        ElseIf lngHours > 0 Then
-          If lngHours >= 22 Or (lngHours = 21 And lngMins > 50) Then
-            Return "1 Day"
-          ElseIf lngMins > 50 Then
-            Return lngHours + 1 & " Hours"
-          Else
-            Return lngHours & IIf(lngMins > 35, " and Three Quarter Hours", IIf(lngMins > 20, " and a Half Hours", IIf(lngMins > 5, " and a Quarter Hours", " Hour" & strHours)))
-          End If
-        ElseIf lngMins > 0 Then
-          If lngMins >= 55 Or (lngMins = 54 And lngSeconds > 55) Then
-            Return "1 Hour"
-          ElseIf lngSeconds > 50 Then
-            Return lngMins + 1 & " Minutes"
-          Else
-            Return lngMins & IIf(lngSeconds > 35, " and Three Quarter Minutes", IIf(lngSeconds > 20, " and a Half Minutes", IIf(lngSeconds > 5, " and a Quarter Minutes", " Minute" & strMins)))
-          End If
-        Else
-          If lngSeconds > 55 Then
-            Return "1 Minute"
-          Else
-            Return lngSeconds & " Second" & strSeconds
-          End If
+        If lngWeeks > 0 Then Return String.Format("{0} Week{2} and {1} Day{3}", lngWeeks, lngDays, strWeeks, strDays)
+        If lngDays > 0 Then
+          If lngHours <= 20 Then Return String.Concat(lngDays, IIf(lngHours > 14, " and Three Quarter Days", IIf(lngHours > 8, " and a Half Days", IIf(lngHours > 2, " and a Quarter Days", String.Concat(" Day", strDays)))))
+          If lngDays >= 6 Then Return "1 Week"
+          Return String.Format("{0} Days", lngDays + 1)
         End If
+        If lngHours > 0 Then
+          If lngHours >= 22 Or (lngHours = 21 And lngMins > 50) Then Return "1 Day"
+          If lngMins > 50 Then Return String.Format("{0} Hours", lngHours + 1)
+          Return String.Concat(lngHours, IIf(lngMins > 35, " and Three Quarter Hours", IIf(lngMins > 20, " and a Half Hours", IIf(lngMins > 5, " and a Quarter Hours", String.Concat(" Hour", strHours)))))
+        End If
+        If lngMins > 0 Then
+          If lngMins >= 55 Or (lngMins = 54 And lngSeconds > 55) Then Return "1 Hour"
+          If lngSeconds > 50 Then Return String.Format("{0} Minutes", lngMins + 1)
+          Return String.Concat(lngMins, IIf(lngSeconds > 35, " and Three Quarter Minutes", IIf(lngSeconds > 20, " and a Half Minutes", IIf(lngSeconds > 5, " and a Quarter Minutes", String.Concat(" Minute", strMins)))))
+        End If
+        If lngSeconds > 55 Then Return "1 Minute"
+        Return String.Format("{0} Second{1}", lngSeconds, strSeconds)
       Else
-        If lngWeeks > 0 Then
-          Return lngWeeks & " Week" & strWeeks & ", " & lngDays & " Day" & strDays & ", " & lngHours & " Hour" & strHours & ", " & lngMins & " Minute" & strMins & ", and " & lngSeconds & " Second" & strSeconds
-        ElseIf lngDays > 0 Then
-          Return lngDays & " Day" & strDays & ", " & lngHours & " Hour" & strHours & ", " & lngMins & " Minute" & strMins & ", and " & lngSeconds & " Second" & strSeconds
-        ElseIf lngHours > 0 Then
-          Return lngHours & " Hour" & strHours & ", " & lngMins & " Minute" & strMins & ", and " & lngSeconds & " Second" & strSeconds
-        ElseIf lngMins > 0 Then
-          Return lngMins & " Minute" & strMins & " and " & lngSeconds & " Second" & strSeconds
-        Else
-          Return lngSeconds & " Second" & strSeconds
-        End If
+        If lngWeeks > 0 Then Return String.Format("{0} Week{5}, {1} Day{6}, {2} Hour{7}, {3} Minute{8}, and {4} Second{9}", lngWeeks, lngDays, lngHours, lngMins, lngSeconds, strWeeks, strDays, strHours, strMins, strSeconds)
+        If lngDays > 0 Then Return String.Format("{0} Day{4}, {1} Hour{5}, {2} Minute{6}, and {3} Second{7}", lngDays, lngHours, lngMins, lngSeconds, strDays, strHours, strMins, strSeconds)
+        If lngHours > 0 Then Return String.Format("{0} Hour{3}, {1} Minute{4}, and {2} Second{5}", lngHours, lngMins, lngSeconds, strHours, strMins, strSeconds)
+        If lngMins > 0 Then Return String.Format("{0} Minute{2} and {1} Second{3}", lngMins, lngSeconds, strMins, strSeconds)
+        Return String.Format("{0} Second{1}", lngSeconds, strSeconds)
       End If
     End If
   End Function
@@ -993,6 +948,44 @@ Public Module modFunctions
       typeB = ArchitectureList.x86
     End If
     Return typeA = typeB
+  End Function
+
+  Public Function CompareArchitecturesVal(archA As String, archB As String, neutralEqual As Boolean) As Integer
+    Dim typeA As ArchitectureList
+    If archA.ToLower = "ia64" Then
+      typeA = ArchitectureList.ia64
+    ElseIf archA.Contains("64") Then
+      typeA = ArchitectureList.amd64
+    ElseIf archA.Contains("86") Or archA.Contains("32") Then
+      typeA = ArchitectureList.x86
+    ElseIf archA.ToLower = "neutral" Then
+      If neutralEqual Then Return True
+      If archB.ToLower = "neutral" Then Return True
+      Return False
+    Else
+      Debug.Print("Unknown A Architecture: " & archA)
+      typeA = ArchitectureList.x86
+    End If
+    Dim typeB As ArchitectureList
+    If archB.ToLower = "ia64" Then
+      typeB = ArchitectureList.ia64
+    ElseIf archB.Contains("64") Then
+      typeB = ArchitectureList.amd64
+    ElseIf archB.Contains("86") Or archB.Contains("32") Then
+      typeB = ArchitectureList.x86
+    ElseIf archB.ToLower = "neutral" Then
+      Return neutralEqual
+    Else
+      Debug.Print("Unknown B Architecture: " & archB)
+      typeB = ArchitectureList.x86
+    End If
+    If typeA = typeB Then Return 0
+    If typeA = ArchitectureList.x86 Then Return -1
+    If typeB = ArchitectureList.x86 Then Return 1
+    If typeA = ArchitectureList.ia64 Then Return 1
+    If typeB = ArchitectureList.ia64 Then Return -1
+    Debug.Print("Unknown Architecture Comparison Response: " & archA & " vs " & archB)
+    Return 0
   End Function
   Public Function CompareMSVersions(Ver1 As String, Ver2 As String) As Integer
     Dim v1Ver(3) As String
@@ -1064,6 +1057,7 @@ Public Module modFunctions
 #Region "Task Dialogs"
   Public Function UpdateSelectionBox(owner As Form, newData As Update_File, oldData As Update_File, ByRef Always As Boolean) As TaskDialogResult
     If TaskDialog.IsPlatformSupported Then
+      Dim em As String = String.Concat(en, en)
       Dim UpdateName As String = Nothing
       If String.IsNullOrEmpty(oldData.Failure) Then
         If oldData.Name.Contains("Internet Explorer") Then
@@ -1089,32 +1083,30 @@ Public Module modFunctions
           dlgUpdate.Cancelable = False
           dlgUpdate.StartupLocation = TaskDialogStartupLocation.CenterOwner
           dlgUpdate.Caption = "Replace Older Version?"
-          dlgUpdate.InstructionText = "There is already an older version of " & UpdateName & " in the Update List."
+          dlgUpdate.InstructionText = String.Format("There is already an older version of {0} in the Update List.", UpdateName)
           dlgUpdate.StandardButtons = TaskDialogStandardButtons.None
           dlgUpdate.Text = "Click the version you want to keep"
           dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
           dlgUpdate.FooterCheckBoxChecked = False
           dlgUpdate.FooterCheckBoxText = "&Do this for all new versions"
-          Dim en As String = ChrW(&H2003)
-          Dim em As String = en & en
           Dim sYes As String
           Dim newFInfo As New IO.FileInfo(newData.Path)
           If String.IsNullOrEmpty(newData.Failure) Then
             Dim newDate As String = newData.BuildDate
             If String.IsNullOrEmpty(newDate) Then newDate = newFInfo.LastWriteTime.ToShortDateString
-            sYes = "Replace the update with this new version:" & vbNewLine &
-              em & newData.DisplayName & vbNewLine &
-              em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
-              em & "Built: " & newDate
+            sYes = String.Concat("Replace the update with this new version:", vbNewLine,
+                                 em, newData.DisplayName, vbNewLine,
+                                 em, String.Format("Size: {0}", ByteSize(newFInfo.Length)), vbNewLine,
+                                 em, String.Format("Built: {0}", newDate))
           Else
-            sYes = "Replace the update with this new version:" & vbNewLine &
-              em & IO.Path.GetFileNameWithoutExtension(newData.Path) & vbNewLine &
-              em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
-              em & "Built: " & newFInfo.LastWriteTime.ToShortDateString
+            sYes = String.Concat("Replace the update with this new version:", vbNewLine,
+                                 em, IO.Path.GetFileNameWithoutExtension(newData.Path), vbNewLine,
+                                 em, String.Format("Size: {0}", ByteSize(newFInfo.Length)), vbNewLine,
+                                 em, String.Format("Built: {0}", newFInfo.LastWriteTime.ToShortDateString))
           End If
           Dim cmdYes As New CommandLink(
             "cmdYes",
-            "Use Newer Version " & newData.KBVersion,
+            String.Format("Use Newer Version {0}", newData.KBVersion),
             sYes)
           cmdYes.Default = True
           AddHandler cmdYes.Click, AddressOf SelectionDialogCommandLink_Click
@@ -1124,19 +1116,19 @@ Public Module modFunctions
           If String.IsNullOrEmpty(oldData.Failure) Then
             Dim oldDate As String = oldData.BuildDate
             If String.IsNullOrEmpty(oldDate) Then oldDate = oldFInfo.LastWriteTime.ToShortDateString
-            sNo = "This update will not be replaced:" & vbNewLine &
-              em & oldData.DisplayName & vbNewLine &
-              em & "Size: " & ByteSize(oldFInfo.Length) & vbNewLine &
-              em & "Built: " & oldDate
+            sNo = String.Concat("This update will not be replaced:", vbNewLine,
+                                em, oldData.DisplayName, vbNewLine,
+                                em, String.Format("Size: {0}", ByteSize(oldFInfo.Length)), vbNewLine,
+                                em, String.Format("Built: {0}", oldDate))
           Else
-            sNo = "This update will not be replaced:" & vbNewLine &
-              em & IO.Path.GetFileNameWithoutExtension(oldData.Path) & vbNewLine &
-              em & "Size: " & ByteSize(oldFInfo.Length) & vbNewLine &
-              em & "Built: " & oldFInfo.LastWriteTime.ToShortDateString
+            sNo = String.Concat("This update will not be replaced:", vbNewLine,
+                                em, IO.Path.GetFileNameWithoutExtension(oldData.Path), vbNewLine,
+                                em, String.Format("Size: {0}", ByteSize(oldFInfo.Length)), vbNewLine,
+                                em, String.Format("Built: {0}", oldFInfo.LastWriteTime.ToShortDateString))
           End If
           Dim cmdNo As New CommandLink(
             "cmdNo",
-            "Use Older Version " & oldData.KBVersion,
+            String.Format("Use Older Version {0}", oldData.KBVersion),
             sNo)
           AddHandler cmdNo.Click, AddressOf SelectionDialogCommandLink_Click
           dlgUpdate.Controls.Add(cmdNo)
@@ -1156,32 +1148,30 @@ Public Module modFunctions
           dlgUpdate.Cancelable = False
           dlgUpdate.StartupLocation = TaskDialogStartupLocation.CenterOwner
           dlgUpdate.Caption = "Replace Newer Version?"
-          dlgUpdate.InstructionText = "There is already a newer version of " & UpdateName & " in the Update List."
+          dlgUpdate.InstructionText = String.Format("There is already a newer version of {0} in the Update List.", UpdateName)
           dlgUpdate.StandardButtons = TaskDialogStandardButtons.None
           dlgUpdate.Text = "Click the version you want to keep"
           dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
           dlgUpdate.FooterCheckBoxChecked = False
           dlgUpdate.FooterCheckBoxText = "&Do this for all old versions"
-          Dim en As String = ChrW(&H2003)
-          Dim em As String = en & en
           Dim sYes As String
           Dim newFInfo As New IO.FileInfo(newData.Path)
           If String.IsNullOrEmpty(newData.Failure) Then
             Dim newDate As String = newData.BuildDate
             If String.IsNullOrEmpty(newDate) Then newDate = newFInfo.LastWriteTime.ToShortDateString
-            sYes = "Replace the update with this old version:" & vbNewLine &
-              em & newData.DisplayName & vbNewLine &
-              em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
-              em & "Built: " & newDate
+            sYes = String.Concat("Replace the update with this old version:", vbNewLine,
+                                 em, newData.DisplayName, vbNewLine,
+                                 em, String.Format("Size: {0}", ByteSize(newFInfo.Length)), vbNewLine,
+                                 em, String.Format("Built: {0}", newDate))
           Else
-            sYes = "Replace the update with this old version:" & vbNewLine &
-              em & IO.Path.GetFileNameWithoutExtension(newData.Path) & vbNewLine &
-              em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
-              em & "Built: " & newFInfo.LastWriteTime.ToShortDateString
+            sYes = String.Concat("Replace the update with this old version:", vbNewLine,
+                                 em, IO.Path.GetFileNameWithoutExtension(newData.Path), vbNewLine,
+                                 em, String.Format("Size: {0}", ByteSize(newFInfo.Length)), vbNewLine,
+                                 em, String.Format("Built: {0}", newFInfo.LastWriteTime.ToShortDateString))
           End If
           Dim cmdYes As New CommandLink(
             "cmdYes",
-            "Use Older Version " & newData.KBVersion,
+            String.Format("Use Older Version {0}", newData.KBVersion),
             sYes)
           AddHandler cmdYes.Click, AddressOf SelectionDialogCommandLink_Click
           Dim sNo As String
@@ -1189,19 +1179,19 @@ Public Module modFunctions
           If String.IsNullOrEmpty(oldData.Failure) Then
             Dim oldDate As String = oldData.BuildDate
             If String.IsNullOrEmpty(oldDate) Then oldDate = oldFInfo.LastWriteTime.ToShortDateString
-            sNo = "This update will not be replaced:" & vbNewLine &
-              em & oldData.DisplayName & vbNewLine &
-              em & "Size: " & ByteSize(oldFInfo.Length) & vbNewLine &
-              em & "Built: " & oldDate
+            sNo = String.Concat("This update will not be replaced:", vbNewLine,
+                                em, oldData.DisplayName, vbNewLine,
+                                em, String.Format("Size: {0}", ByteSize(oldFInfo.Length)), vbNewLine,
+                                em, String.Format("Built: {0}", oldDate))
           Else
-            sNo = "This update will not be replaced:" & vbNewLine &
-              em & IO.Path.GetFileNameWithoutExtension(oldData.Path) & vbNewLine &
-              em & "Size: " & ByteSize(oldFInfo.Length) & vbNewLine &
-              em & "Built: " & oldFInfo.LastWriteTime.ToShortDateString
+            sNo = String.Concat("This update will not be replaced:", vbNewLine,
+                                em, IO.Path.GetFileNameWithoutExtension(oldData.Path), vbNewLine,
+                                em, String.Format("Size: {0}", ByteSize(oldFInfo.Length)), vbNewLine,
+                                em, String.Format("Built: {0}", oldFInfo.LastWriteTime.ToShortDateString))
           End If
           Dim cmdNo As New CommandLink(
             "cmdNo",
-            "Use Newer Version " & oldData.KBVersion,
+            String.Format("Use Newer Version {0}", oldData.KBVersion),
             sNo)
           cmdNo.Default = True
           AddHandler cmdNo.Click, AddressOf SelectionDialogCommandLink_Click
@@ -1245,12 +1235,12 @@ Public Module modFunctions
       UpdateName = IO.Path.GetFileNameWithoutExtension(oldData.Path)
     End If
     If CompareMSVersions(newData.KBVersion, oldData.KBVersion) > 0 Then
-      Dim ret As DialogResult = MessageBox.Show(owner, "There is already an older version of this update in the list." & vbNewLine & "Do you want to replace " & UpdateName & " with version " & newData.KBVersion & "?", "Replace Older Version?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1)
+      Dim ret As DialogResult = MessageBox.Show(owner, String.Concat("There is already an older version of this update in the list.", vbNewLine, String.Format("Do you want to replace {0} with version {1}?", UpdateName, newData.KBVersion)), "Replace Older Version?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1)
       If ret = DialogResult.Yes Then Return TaskDialogResult.Yes
       If ret = DialogResult.No Then Return TaskDialogResult.No
       Return TaskDialogResult.Cancel
     Else
-      Dim ret As DialogResult = MessageBox.Show(owner, "There is already a newer version of this update in the list." & vbNewLine & "Do you want to replace " & UpdateName & " with version " & newData.KBVersion & "?", "Replace Newer Version?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+      Dim ret As DialogResult = MessageBox.Show(owner, String.Concat("There is already a newer version of this update in the list.", vbNewLine, String.Format("Do you want to replace {0} with version {1}?", UpdateName, newData.KBVersion)), "Replace Newer Version?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
       If ret = DialogResult.Yes Then Return TaskDialogResult.Yes
       If ret = DialogResult.No Then Return TaskDialogResult.No
       Return TaskDialogResult.Cancel
@@ -1263,6 +1253,7 @@ Public Module modFunctions
   End Enum
   Public Function IntegratedUpdateSelectionBox(owner As Form, newData As Update_File, oldPData() As Update_Integrated, PList() As ImagePackage, ByRef Always As Boolean, newCompared As Comparison) As TaskDialogResult
     If TaskDialog.IsPlatformSupported Then
+      Dim em As String = String.Concat(en, en)
       Dim UpdateName As String = Nothing
       If String.IsNullOrEmpty(newData.Failure) Then
         If newData.Name.Contains("Internet Explorer") Then
@@ -1280,32 +1271,30 @@ Public Module modFunctions
             dlgUpdate.Cancelable = True
             dlgUpdate.StartupLocation = TaskDialogStartupLocation.CenterOwner
             dlgUpdate.Caption = "Replace Older Versions?"
-            dlgUpdate.InstructionText = "There are already older versions of " & UpdateName & " integrated into Image Packages."
+            dlgUpdate.InstructionText = String.Format("There are already older versions of {0} integrated into Image Packages.", UpdateName)
             dlgUpdate.StandardButtons = TaskDialogStandardButtons.Cancel
             dlgUpdate.Text = "Click the version you want to keep"
             dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
             dlgUpdate.FooterCheckBoxChecked = False
             dlgUpdate.FooterCheckBoxText = "&Do this for all new versions"
-            Dim en As String = ChrW(&H2003)
-            Dim em As String = en & en
             Dim sYes As String
             Dim newFInfo As New IO.FileInfo(newData.Path)
             If String.IsNullOrEmpty(newData.Failure) Then
               Dim newDate As String = newData.BuildDate
               If String.IsNullOrEmpty(newDate) Then newDate = newFInfo.LastWriteTime.ToShortDateString
-              sYes = "Replace the updates with this new version:" & vbNewLine &
-                em & newData.DisplayName & vbNewLine &
-                em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
-                em & "Built: " & newDate
+              sYes = String.Concat("Replace the updates with this new version:", vbNewLine,
+                                   em, newData.DisplayName, vbNewLine,
+                                   em, String.Format("Size: {0}", ByteSize(newFInfo.Length)), vbNewLine,
+                                   em, String.Format("Built: {0}", newDate))
             Else
-              sYes = "Replace the updates with this new version:" & vbNewLine &
-                em & IO.Path.GetFileNameWithoutExtension(newData.Path) & vbNewLine &
-                em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
-                em & "Built: " & newFInfo.LastWriteTime.ToShortDateString
+              sYes = String.Concat("Replace the updates with this new version:", vbNewLine,
+                                   em, IO.Path.GetFileNameWithoutExtension(newData.Path), vbNewLine,
+                                   em, String.Format("Size: {0}", ByteSize(newFInfo.Length)), vbNewLine,
+                                   em, String.Format("Built: {0}", newFInfo.LastWriteTime.ToShortDateString))
             End If
             Dim cmdYes As New CommandLink(
               "cmdYes",
-              "Use Newer Version " & newData.KBVersion,
+              String.Format("Use Newer Version {0}", newData.KBVersion),
               sYes)
             cmdYes.Default = True
             AddHandler cmdYes.Click, AddressOf SelectionDialogCommandLink_Click
@@ -1316,14 +1305,14 @@ Public Module modFunctions
             For I As Integer = 0 To oldPData.Length - 1
               If String.IsNullOrEmpty(oldPData(I).Identity) Then
                 If String.IsNullOrEmpty(sOther) Then sOther = "These updates could not be determined:"
-                sOther &= vbNewLine & en & PList(I).Name
+                sOther = String.Concat(sOther, vbNewLine, en, PList(I).Name)
               Else
                 If CompareMSVersions(newData.Ident.Version, oldPData(I).Ident.Version) > 0 Then
                   Dim oldV As String = oldPData(I).Ident.Version
                   If oldV.StartsWith("6.1.") Then oldV = oldV.Substring(4)
-                  sNo &= vbNewLine &
-                         en & oldPData(I).Ident.Name & " (" & oldV & ")" & vbNewLine &
-                         em & "Installed in " & PList(I).Name
+                  sNo = String.Concat(sNo, vbNewLine,
+                                      en, String.Format("{0} ({1})", oldPData(I).Ident.Name, oldV), vbNewLine,
+                                      em, String.Format("Installed in {0}", PList(I).Name))
                 End If
               End If
             Next
@@ -1337,7 +1326,7 @@ Public Module modFunctions
               dlgUpdate.ExpansionMode = TaskDialogExpandedDetailsLocation.ExpandFooter
               dlgUpdate.DetailsCollapsedLabel = "Show Unknown Versions"
               dlgUpdate.DetailsExpandedLabel = "Hide Unknown Versions"
-              dlgUpdate.DetailsExpandedText = sOther & vbNewLine & "The list of Integrated Windows Updates for these Image Packages may not have been loaded or these Editions of Windows may not be supported by this Update."
+              dlgUpdate.DetailsExpandedText = String.Concat(sOther, vbNewLine, "The list of Integrated Windows Updates for these Image Packages may not have been loaded or these Editions of Windows may not be supported by this Update.")
             End If
             dlgUpdate.OwnerWindowHandle = owner.Handle
             AddHandler dlgUpdate.Opened, AddressOf RefreshDlg
@@ -1355,32 +1344,30 @@ Public Module modFunctions
             dlgUpdate.Cancelable = True
             dlgUpdate.StartupLocation = TaskDialogStartupLocation.CenterOwner
             dlgUpdate.Caption = "Replace Newer Versions?"
-            dlgUpdate.InstructionText = "There are already newer versions of " & UpdateName & " integrated into Image Packages."
+            dlgUpdate.InstructionText = String.Format("There are already newer versions of {0} integrated into Image Packages.", UpdateName)
             dlgUpdate.StandardButtons = TaskDialogStandardButtons.Cancel
             dlgUpdate.Text = "Click the version you want to keep"
             dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
             dlgUpdate.FooterCheckBoxChecked = False
             dlgUpdate.FooterCheckBoxText = "&Do this for all old versions"
-            Dim en As String = ChrW(&H2003)
-            Dim em As String = en & en
             Dim sYes As String
             Dim newFInfo As New IO.FileInfo(newData.Path)
             If String.IsNullOrEmpty(newData.Failure) Then
               Dim newDate As String = newData.BuildDate
               If String.IsNullOrEmpty(newDate) Then newDate = newFInfo.LastWriteTime.ToShortDateString
-              sYes = "Replace the updates with this old version:" & vbNewLine &
-                em & newData.DisplayName & vbNewLine &
-                em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
-                em & "Built: " & newDate
+              sYes = String.Concat("Replace the updates with this old version:", vbNewLine,
+                                   em, newData.DisplayName, vbNewLine,
+                                   em, String.Format("Size: {0}", ByteSize(newFInfo.Length)), vbNewLine,
+                                   em, String.Format("Built: {0}", newDate))
             Else
-              sYes = "Replace the updates with this old version:" & vbNewLine &
-                em & IO.Path.GetFileNameWithoutExtension(newData.Path) & vbNewLine &
-                em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
-                em & "Built: " & newFInfo.LastWriteTime.ToShortDateString
+              sYes = String.Concat("Replace the updates with this old version:", vbNewLine,
+                                   em, IO.Path.GetFileNameWithoutExtension(newData.Path), vbNewLine,
+                                   em, String.Format("Size: {0}", ByteSize(newFInfo.Length)), vbNewLine,
+                                   em, String.Format("Built: {0}", newFInfo.LastWriteTime.ToShortDateString))
             End If
             Dim cmdYes As New CommandLink(
               "cmdYes",
-              "Use Older Version " & newData.KBVersion,
+              String.Format("Use Older Version {0}", newData.KBVersion),
               sYes)
             AddHandler cmdYes.Click, AddressOf SelectionDialogCommandLink_Click
             Dim sNo As String
@@ -1389,14 +1376,14 @@ Public Module modFunctions
             For I As Integer = 0 To oldPData.Length - 1
               If String.IsNullOrEmpty(oldPData(I).Identity) Then
                 If String.IsNullOrEmpty(sOther) Then sOther = "These updates could not be determined:"
-                sOther &= vbNewLine & en & PList(I).Name
+                sOther = String.Concat(sOther, vbNewLine, en, PList(I).Name)
               Else
                 If CompareMSVersions(newData.Ident.Version, oldPData(I).Ident.Version) > 0 Then
                   Dim oldV As String = oldPData(I).Ident.Version
                   If oldV.StartsWith("6.1.") Then oldV = oldV.Substring(4)
-                  sNo &= vbNewLine &
-                         en & oldPData(I).Ident.Name & " (" & oldV & ")" & vbNewLine &
-                         em & "Installed in " & PList(I).Name
+                  sNo = String.Concat(sNo, vbNewLine,
+                                      en, String.Format("{0} ({1})", oldPData(I).Ident.Name, oldV), vbNewLine,
+                                      em, String.Format("Installed in {0}", PList(I).Name))
                 End If
               End If
             Next
@@ -1412,7 +1399,7 @@ Public Module modFunctions
               dlgUpdate.ExpansionMode = TaskDialogExpandedDetailsLocation.ExpandFooter
               dlgUpdate.DetailsCollapsedLabel = "Show Unknown Versions"
               dlgUpdate.DetailsExpandedLabel = "Hide Unknown Versions"
-              dlgUpdate.DetailsExpandedText = sOther & vbNewLine & "The list of Integrated Windows Updates for these Image Packages may not have been loaded or these Editions of Windows may not be supported by this Update."
+              dlgUpdate.DetailsExpandedText = String.Concat(sOther, vbNewLine, "The list of Integrated Windows Updates for these Image Packages may not have been loaded or these Editions of Windows may not be supported by this Update.")
             End If
             dlgUpdate.OwnerWindowHandle = owner.Handle
             AddHandler dlgUpdate.Opened, AddressOf RefreshDlg
@@ -1430,30 +1417,28 @@ Public Module modFunctions
             dlgUpdate.Cancelable = True
             dlgUpdate.StartupLocation = TaskDialogStartupLocation.CenterOwner
             dlgUpdate.Caption = "Replace Other Versions?"
-            dlgUpdate.InstructionText = "There are already other versions of " & UpdateName & " integrated into Image Packages."
+            dlgUpdate.InstructionText = String.Format("There are already other versions of {0} integrated into Image Packages.", UpdateName)
             dlgUpdate.StandardButtons = TaskDialogStandardButtons.Cancel
             dlgUpdate.Text = "Click the versions you want to keep"
             dlgUpdate.Icon = TaskDialogIcon.WindowsUpdate
-            Dim en As String = ChrW(&H2003)
-            Dim em As String = en & en
             Dim sAll As String
             Dim newFInfo As New IO.FileInfo(newData.Path)
             If String.IsNullOrEmpty(newData.Failure) Then
               Dim newDate As String = newData.BuildDate
               If String.IsNullOrEmpty(newDate) Then newDate = newFInfo.LastWriteTime.ToShortDateString
-              sAll = "Replace all updates with this version:" & vbNewLine &
-                em & newData.DisplayName & vbNewLine &
-                em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
-                em & "Built: " & newDate
+              sAll = String.Concat("Replace all updates with this version:", vbNewLine,
+                                   em, newData.DisplayName, vbNewLine,
+                                   em, String.Format("Size: {0}", ByteSize(newFInfo.Length)), vbNewLine,
+                                   em, String.Format("Built: {0}", newDate))
             Else
-              sAll = "Replace all updates with this version:" & vbNewLine &
-                em & IO.Path.GetFileNameWithoutExtension(newData.Path) & vbNewLine &
-                em & "Size: " & ByteSize(newFInfo.Length) & vbNewLine &
-                em & "Built: " & newFInfo.LastWriteTime.ToShortDateString
+              sAll = String.Concat("Replace all updates with this version:", vbNewLine,
+                                   em, IO.Path.GetFileNameWithoutExtension(newData.Path), vbNewLine,
+                                   em, String.Format("Size: {0}", ByteSize(newFInfo.Length)), vbNewLine,
+                                   em, String.Format("Built: {0}", newFInfo.LastWriteTime.ToShortDateString))
             End If
             Dim cmdAll As New CommandLink(
               "cmdAll",
-              "Use Version " & newData.KBVersion,
+              String.Format("Use Version {0}", newData.KBVersion),
               sAll)
             AddHandler cmdAll.Click, AddressOf SelectionDialogCommandLink_Click
             Dim sYes As String
@@ -1462,21 +1447,21 @@ Public Module modFunctions
             For I As Integer = 0 To oldPData.Length - 1
               If String.IsNullOrEmpty(oldPData(I).Identity) Then
                 If String.IsNullOrEmpty(sOther) Then sOther = "These updates could not be determined:"
-                sOther &= vbNewLine & en & PList(I).Name
+                sOther = String.Concat(sOther, vbNewLine, en, PList(I).Name)
               Else
                 If CompareMSVersions(newData.Ident.Version, oldPData(I).Ident.Version) > 0 Then
                   Dim oldV As String = oldPData(I).Ident.Version
                   If oldV.StartsWith("6.1.") Then oldV = oldV.Substring(4)
-                  sYes &= vbNewLine &
-                          en & oldPData(I).Ident.Name & " (" & oldV & ")" & vbNewLine &
-                          em & "Installed in " & PList(I).Name
+                  sYes = String.Concat(sYes, vbNewLine,
+                                       en, String.Format("{0} ({1})", oldPData(I).Ident.Name, oldV), vbNewLine,
+                                       em, String.Format("Installed in {0}", PList(I).Name))
                 End If
               End If
             Next
-            If Not sYes.Contains(vbNewLine) Then sYes &= vbNewLine & en & "Unable to determine! See Unknown Versions below"
+            If Not sYes.Contains(vbNewLine) Then sYes = String.Concat(sYes, vbNewLine, en, "Unable to determine! See Unknown Versions below")
             Dim cmdYes As New CommandLink(
               "cmdYes",
-              "Use Newer Version " & newData.KBVersion & " on Older Updates",
+              String.Format("Use Newer Version {0} on Older Updates", newData.KBVersion),
               sYes)
             AddHandler cmdYes.Click, AddressOf SelectionDialogCommandLink_Click
             cmdYes.Default = True
@@ -1487,15 +1472,15 @@ Public Module modFunctions
               If CompareMSVersions(newData.Ident.Version, oldPData(I).Ident.Version) < 0 Then
                 Dim oldV As String = oldPData(I).Ident.Version
                 If oldV.StartsWith("6.1.") Then oldV = oldV.Substring(4)
-                sNo &= vbNewLine &
-                       en & oldPData(I).Ident.Name & " (" & oldV & ")" & vbNewLine &
-                       em & "Installed in " & PList(I).Name
+                sNo = String.Concat(sNo, vbNewLine,
+                                    en, String.Format("{0} ({1})", oldPData(I).Ident.Name, oldV), vbNewLine,
+                                    em, String.Format("Installed in {0}", PList(I).Name))
               End If
             Next
-            If Not sNo.Contains(vbNewLine) Then sNo &= vbNewLine & en & "Unable to determine! See Unknown Versions below"
+            If Not sNo.Contains(vbNewLine) Then sNo = String.Format(sNo, vbNewLine, en, "Unable to determine! See Unknown Versions below")
             Dim cmdNo As New CommandLink(
               "cmdNo",
-              "Use Older Version " & newData.KBVersion & " on Newer Updates",
+              String.Format("Use Older Version {0} on Newer Updates", newData.KBVersion),
               sNo)
             AddHandler cmdNo.Click, AddressOf SelectionDialogCommandLink_Click
             Dim cmdNone As New CommandLink(
@@ -1506,20 +1491,20 @@ Public Module modFunctions
             dlgUpdate.Controls.Add(cmdYes)
             dlgUpdate.Controls.Add(cmdNo)
             dlgUpdate.Controls.Add(cmdNone)
-            If Not String.IsNullOrEmpty(sOther) Then sOther &= vbNewLine & "The list of Integrated Windows Updates for these Image Packages may not have been loaded or these Editions of Windows may not be supported by this Update."
+            If Not String.IsNullOrEmpty(sOther) Then sOther = String.Concat(sOther, vbNewLine, "The list of Integrated Windows Updates for these Image Packages may not have been loaded or these Editions of Windows may not be supported by this Update.")
             For I As Integer = 0 To oldPData.Length - 1
               If String.IsNullOrEmpty(oldPData(I).Identity) Then Continue For
               If CompareMSVersions(newData.Ident.Version, oldPData(I).Ident.Version) = 0 Then
                 If String.IsNullOrEmpty(sOther) Then
                   sOther = "These updates are already the same version:"
                 Else
-                  sOther &= vbNewLine & vbNewLine & "These updates are already the same version:"
+                  sOther = String.Concat(sOther, vbNewLine, vbNewLine, "These updates are already the same version:")
                 End If
                 Dim oldV As String = oldPData(I).Ident.Version
                 If oldV.StartsWith("6.1.") Then oldV = oldV.Substring(4)
-                sOther &= vbNewLine &
-                       en & oldPData(I).Ident.Name & " (" & oldV & ")" & vbNewLine &
-                       em & "Installed in " & PList(I).Name
+                sOther = String.Concat(sOther, vbNewLine,
+                       en, String.Format("{0} ({1})", oldPData(I).Ident.Name, oldV), vbNewLine,
+                       em, String.Format("Installed in {0}", PList(I).Name))
               End If
             Next
             If Not String.IsNullOrEmpty(sOther) Then
@@ -1557,17 +1542,17 @@ Public Module modFunctions
     End If
     Select Case newCompared
       Case Comparison.Newer
-        Dim ret As DialogResult = MessageBox.Show(owner, "There are already older versions of this update integrated in the Image Package." & vbNewLine & "Do you want to replace " & UpdateName & " with version " & newData.KBVersion & "?", "Replace Older Versions?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1)
+        Dim ret As DialogResult = MessageBox.Show(owner, String.Concat("There are already older versions of this update integrated in the Image Package.", vbNewLine, String.Format("Do you want to replace {0} with version {1}?", UpdateName, newData.KBVersion)), "Replace Older Versions?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1)
         If ret = DialogResult.Yes Then Return TaskDialogResult.Yes
         If ret = DialogResult.No Then Return TaskDialogResult.No
       Case Comparison.Older
-        Dim ret As DialogResult = MessageBox.Show(owner, "There are already newer versions of this update integrated in the Image Package." & vbNewLine & "Do you want to replace " & UpdateName & " with version " & newData.KBVersion & "?", "Replace Newer Versions?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+        Dim ret As DialogResult = MessageBox.Show(owner, String.Concat("There are already newer versions of this update integrated in the Image Package.", vbNewLine, String.Format("Do you want to replace {0} with version {1}?", UpdateName, newData.KBVersion)), "Replace Newer Versions?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
         If ret = DialogResult.Yes Then Return TaskDialogResult.Yes
         If ret = DialogResult.No Then Return TaskDialogResult.No
       Case Comparison.Mixed
-        Dim oldRet As DialogResult = MessageBox.Show(owner, "There are already older versions of this update integrated in the Image Package." & vbNewLine & "Do you want to replace " & UpdateName & " with version " & newData.KBVersion & "?", "Replace Older Versions?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1)
+        Dim oldRet As DialogResult = MessageBox.Show(owner, String.Concat("There are already older versions of this update integrated in the Image Package.", vbNewLine, String.Format("Do you want to replace {0} with version {1}?", UpdateName, newData.KBVersion)), "Replace Older Versions?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1)
         If oldRet = DialogResult.Cancel Then Return TaskDialogResult.Cancel
-        Dim newRet As DialogResult = MessageBox.Show(owner, "There are already newer versions of this update integrated in the Image Package." & vbNewLine & "Do you want to replace " & UpdateName & " with version " & newData.KBVersion & "?", "Replace Newer Versions?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+        Dim newRet As DialogResult = MessageBox.Show(owner, String.Concat("There are already newer versions of this update integrated in the Image Package.", vbNewLine, String.Format("Do you want to replace {0} with version {1}?", UpdateName, newData.KBVersion)), "Replace Newer Versions?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
         If newRet = DialogResult.Cancel Then Return TaskDialogResult.Cancel
         If oldRet = DialogResult.Yes And newRet = DialogResult.Yes Then
           Return TaskDialogResult.Ok
@@ -1619,7 +1604,7 @@ Public Module modFunctions
       ElseIf noLabel And Not noInstruction Then
         str = Me.Instruction
       Else
-        str = Me.Text & vbLf & Me.Instruction
+        str = String.Concat(Me.Text, vbLf, Me.Instruction)
       End If
       Return str
     End Function
@@ -1854,7 +1839,7 @@ Public Module modFunctions
       If TaskDialog.IsPlatformSupported Then
         Using dlgMessage As New TaskDialog
           dlgMessage.Cancelable = True
-          dlgMessage.Caption = "SLIPS7REAM - " & Caption
+          dlgMessage.Caption = String.Format("SLIPS7REAM - {0}", Caption)
           dlgMessage.InstructionText = Title
           dlgMessage.Text = Text
           dlgMessage.Icon = Icon
@@ -2029,7 +2014,7 @@ Public Module modFunctions
     ElseIf String.IsNullOrEmpty(Text) Then
       Content = Title
     Else
-      Content = Title & vbNewLine & vbNewLine & Text
+      Content = String.Concat(Title, vbNewLine, vbNewLine, Text)
     End If
     Dim msgIcon As MessageBoxIcon = MessageBoxIcon.None
     Select Case Icon
@@ -2052,6 +2037,48 @@ Public Module modFunctions
       Return MessageBox.Show(owner, Content, Caption, Buttons, msgIcon, DefaultButton)
     End If
   End Function
+  Public Structure ActivityRet
+    Public Activity As String
+    Public Process As String
+    Public Title As String
+    Public Sub New(sActivity As String, sProc As String, sTitle As String)
+      Activity = sActivity
+      Process = sProc
+      Title = sTitle
+    End Sub
+  End Structure
+  Public Function ActivityParser(Activity As ActivityType) As ActivityRet
+    Dim sActivity As String = "doing work"
+    Dim sProc As String = "current"
+    Dim sTitle As String = "Working"
+    Select Case Activity
+      Case ActivityType.Integrating
+        sActivity = "slipstreaming updates and packages"
+        sProc = "update integration"
+        sTitle = "Integrating"
+      Case ActivityType.LoadingPackageData
+        sActivity = "extracting and reading Image Package data"
+        sProc = "extraction"
+        sTitle = "Loading Package Data"
+      Case ActivityType.LoadingPackageFeatures
+        sActivity = "extracting and reading Windows Feature data"
+        sProc = "extraction"
+        sTitle = "Loading Windows Features"
+      Case ActivityType.LoadingPackageUpdates
+        sActivity = "extracting and reading Integrated Windows Update data"
+        sProc = "extraction"
+        sTitle = "Loading Integrated Windows Updates"
+      Case ActivityType.LoadingPackageDrivers
+        sActivity = "extracting and reading Integrated Driver data"
+        sProc = "extraction"
+        sTitle = "Loading Integrated Drivers"
+      Case ActivityType.LoadingUpdates
+        sActivity = "extracting and reading Update data"
+        sProc = "update parsing"
+        sTitle = "Loading Updates"
+    End Select
+    Return New ActivityRet(sActivity, sProc, sTitle)
+  End Function
   Private Function HelpTopicPath(helpTopic As String) As String
     Select Case helpTopic
       Case "Error Adding Updates" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.1_Error_Adding_Updates.htm"
@@ -2071,6 +2098,12 @@ Public Module modFunctions
       Case "Stop Integrating and Close" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.7_Interrupt.htm#integration_close"
       Case "Stop Loading Package Data" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.7_Interrupt.htm#packages"
       Case "Stop Loading Package Data and Close" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.7_Interrupt.htm#packages_close"
+      Case "Stop Loading Windows Features" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.7_Interrupt.htm#windowsfeatures"
+      Case "Stop Loading Windows Features and Close" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.7_Interrupt.htm#windowsfeatures_close"
+      Case "Stop Loading Integrated Windows Updates" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.7_Interrupt.htm#integratedwindowsupdates"
+      Case "Stop Loading Integrated Windows Updates and Close" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.7_Interrupt.htm#integratedwindowsupdates_close"
+      Case "Stop Loading Integrated Drivers" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.7_Interrupt.htm#integrateddrivers"
+      Case "Stop Loading Integrated Drivers and Close" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.7_Interrupt.htm#integrateddrivers_close"
       Case "Stop Loading Updates" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.7_Interrupt.htm#updates"
       Case "Stop Loading Updates and Close" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.7_Interrupt.htm#updates_close"
       Case "Alert File Failure" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.8_Alert_Problem.htm#failure"
@@ -2082,6 +2115,7 @@ Public Module modFunctions
       Case "No Updates" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.11_Package_Failure.htm#updates"
       Case "No Drivers" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.11_Package_Failure.htm#drivers"
       Case "Slow Copy File Transfer Failure" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.12_File_Transfer_Failure.htm"
+      Case "Program Busy" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.13_Busy.htm"
       Case Else
         Debug.Print("No Help Page for """ & helpTopic & """")
         Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.0_Dialogs.htm"

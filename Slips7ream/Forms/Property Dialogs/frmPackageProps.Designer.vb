@@ -262,7 +262,6 @@ Partial Class frmPackageProps
     Me.txtDesc.Margin = New System.Windows.Forms.Padding(2)
     Me.txtDesc.MinimumSize = New System.Drawing.Size(200, 4)
     Me.txtDesc.Name = "txtDesc"
-    Me.txtDesc.ReadOnly = True
     Me.txtDesc.Size = New System.Drawing.Size(200, 20)
     Me.txtDesc.TabIndex = 5
     '
