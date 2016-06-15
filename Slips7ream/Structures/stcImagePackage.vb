@@ -1,4 +1,5 @@
 ﻿Public Structure ImagePackage
+  Private UniqueID As String
   Public Index As Integer
   Public Name As String
   Public Desc As String
@@ -74,6 +75,7 @@
         LangList = sLangs.ToArray
       End If
     Next
+    UniqueID = BitConverter.ToString(New Security.Cryptography.MD5Cng().ComputeHash(System.Text.Encoding.GetEncoding(1252).GetBytes(String.Concat(Index, Size, Architecture, HAL, Version, SPLevel, SPBuild, Edition, Installation, ProductType, ProductSuite, SystemRoot, Directories, Files, Created, Modified, Join(LangList, ""))))).Replace("-", "")
   End Sub
   Public Sub PopulateUpdateList(List As List(Of Update_Integrated))
     IntegratedUpdateList = List
@@ -84,6 +86,9 @@
     Else
       Return Nothing
     End If
+  End Function
+  Public Overrides Function ToString() As String
+    Return UniqueID
   End Function
   Public Shared Operator =(info1 As ImagePackage, info2 As ImagePackage) As Boolean
     If Not info1.Index = info2.Index Then Return False
@@ -117,4 +122,26 @@
   Public Shared Operator <>(info1 As ImagePackage, info2 As ImagePackage) As Boolean
     Return Not info1 = info2
   End Operator
+  Public ReadOnly Property IsEmpty As Boolean
+    Get
+      If Index > 0 Then Return False
+      If Not String.IsNullOrEmpty(Desc) Then Return False
+      If Size > 0 Then Return False
+      If Not String.IsNullOrEmpty(Architecture) Then Return False
+      If Not String.IsNullOrEmpty(HAL) Then Return False
+      If Not String.IsNullOrEmpty(Version) Then Return False
+      If SPLevel > 0 Then Return False
+      If SPBuild > 0 Then Return False
+      If Not String.IsNullOrEmpty(Edition) Then Return False
+      If Not String.IsNullOrEmpty(Installation) Then Return False
+      If Not String.IsNullOrEmpty(ProductType) Then Return False
+      If Not String.IsNullOrEmpty(ProductSuite) Then Return False
+      If Not String.IsNullOrEmpty(SystemRoot) Then Return False
+      If Directories > 0 Then Return False
+      If Files > 0 Then Return False
+      If Not String.IsNullOrEmpty(Created) Then Return False
+      If Not String.IsNullOrEmpty(Modified) Then Return False
+      Return True
+    End Get
+  End Property
 End Structure
