@@ -13,7 +13,7 @@ Language=0x409 English (United States)
 Title=Help for SLIPS7REAM
 
 [WINDOWS]
-Slips7ream="Help for SLIPS7REAM 3.0","Table of Contents.hhc","Index.hhk","welcome.htm","welcome.htm",,,"5_Glossary_of_Terms\5.0_Glossary_of_Terms.htm","Glossary",0x2520,,0x8004c,[1101,188,1876,746],,,,,,,0
+Slips7ream="Help for SLIPS7REAM 3.1","Table of Contents.hhc","Index.hhk","welcome.htm","welcome.htm",,,"5_Glossary_of_Terms\5.0_Glossary_of_Terms.htm","Glossary",0x2520,,0x8004c,[1101,188,1876,746],,,,,,,0
 
 
 [FILES]
@@ -61,6 +61,7 @@ welcome.htm
 1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.10_Dependent_Features.htm
 1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.11_Package_Failure.htm
 1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.12_File_Transfer_Failure.htm
+1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.13_Busy.htm
 2_Configuration\2.0_Configuration.htm
 2_Configuration\2.1_Temp_Directory_Path.htm
 2_Configuration\2.2_Update_Whitelist.htm
@@ -134,6 +135,7 @@ icons\1.10.9.png
 icons\1.10.10.png
 icons\1.10.11.png
 icons\1.10.12.png
+icons\1.10.13.png
 icons\2.0.png
 icons\2.1.png
 icons\2.2.png

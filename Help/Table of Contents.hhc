@@ -166,6 +166,10 @@
 				<param name="Name" value="Unable to transfer file">
 				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.12_File_Transfer_Failure.htm">
 				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Busy with another task">
+				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.13_Busy.htm">
+				</OBJECT>
 		</UL>
 	</UL>
 	<LI> <OBJECT type="text/sitemap">
