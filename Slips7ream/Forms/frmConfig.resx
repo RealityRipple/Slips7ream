@@ -120,9 +120,19 @@
   <metadata name="helpS7M.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>98, 17</value>
   </metadata>
+  <data name="txtTimeout.HelpString" xml:space="preserve">
+    <value>This field sets how long SLIPS7REAM will wait for a response from an external process. SLIPS7REAM makes calls to programs such as DISM frequently, and can be told to fail if these calls take too long.
+By default, the Command Timeout feature is disabled (with a value of 0), which means that SLIPS7REAM will wait until the program closes on its own before continuing.</value>
+  </data>
+  <data name="txtTemp.HelpString" xml:space="preserve">
+    <value>The Temp Directory is used for all the hard work done by SLIPS7REAM. When files need to be extracted, copied, or modified for internal use of the program, the Temp Directory is where all the files are stored. SLIPS7REAM automatically clears this directory regularly, so it's important that this directory be empty and unused for any other purpose.</value>
+  </data>
   <metadata name="ttInfo.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="txtWhitelist.HelpString" xml:space="preserve">
+    <value>This field contains a list of names for 32-Bit Windows Updates that are allowed in x64 Image Packages. Each update should be listed on its own line, and should be identified by the Display Name for the update.</value>
+  </data>
   <data name="txtWhitelist.ToolTip" xml:space="preserve">
     <value>x86 Windows Updates allowed in x64 Images. One update by Display Name per line.
 

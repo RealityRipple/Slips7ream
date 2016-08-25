@@ -98,8 +98,15 @@ Partial Class frmUpdateProps
     '
     Me.lblIdentity.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblIdentity.AutoSize = True
+    Me.helpS7M.SetHelpString(Me.lblIdentity, "The Identity string contains the following data, delimited by tildes (~):" & vbNewLine &
+        "  Name: The Identity Name is the name of the update. It's how SLIPS7REAM tells one update from another, and how it knows to compare different versions of the same update." & vbNewLine &
+        "  Token: The Token value is almost always 31bf3856ad364e35." & vbNewLine &
+        "  Architecture: (Usually) redundant with the Architecture value below. If empty, then this update is ""AnyCPU"" or Architecture-neutral." & vbNewLine &
+        "  Language: The Language this update applies to. If empty, then this update is Language-neutral." & vbNewLine &
+        "  Version: (Usually) redundant with the Version value below.")
     Me.lblIdentity.Location = New System.Drawing.Point(3, 58)
     Me.lblIdentity.Name = "lblIdentity"
+    Me.helpS7M.SetShowHelp(Me.lblIdentity, True)
     Me.lblIdentity.Size = New System.Drawing.Size(44, 13)
     Me.lblIdentity.TabIndex = 4
     Me.lblIdentity.Text = "Identity:"
@@ -107,9 +114,18 @@ Partial Class frmUpdateProps
     'txtIdentity
     '
     Me.txtIdentity.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.helpS7M.SetHelpKeyword(Me.txtIdentity, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.2_Update_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtIdentity, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtIdentity, "The Identity string contains the following data, delimited by tildes (~):" & vbNewLine &
+        "  Name: The Identity Name is the name of the update. It's how SLIPS7REAM tells one update from another, and how it knows to compare different versions of the same update." & vbNewLine &
+        "  Token: The Token value is almost always 31bf3856ad364e35." & vbNewLine &
+        "  Architecture: (Usually) redundant with the Architecture value below. If empty, then this update is ""AnyCPU"" or Architecture-neutral." & vbNewLine &
+        "  Language: The Language this update applies to. If empty, then this update is Language-neutral." & vbNewLine &
+        "  Version: (Usually) redundant with the Version value below.")
     Me.txtIdentity.Location = New System.Drawing.Point(99, 55)
     Me.txtIdentity.Name = "txtIdentity"
     Me.txtIdentity.ReadOnly = True
+    Me.helpS7M.SetShowHelp(Me.txtIdentity, True)
     Me.txtIdentity.Size = New System.Drawing.Size(232, 20)
     Me.txtIdentity.TabIndex = 5
     '
@@ -117,8 +133,15 @@ Partial Class frmUpdateProps
     '
     Me.lblDisplayName.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblDisplayName.AutoSize = True
+    Me.helpS7M.SetHelpString(Me.lblDisplayName, "Depends on the type of file, but is generally a common name of the update, often " & _
+        "with a version number." & vbNewLine &
+        "  For MSU Files, this is the * part of the ""*pkgProperties.txt"" file inside the update." & vbNewLine &
+        "  For CAB files, this is the ""displayName"" value in the ""update.mum"" XML file." & vbNewLine &
+        "  For LIP files, MSI and LP.CAB Language files, this is the ""identifier"" value in the ""update.mum"" XML file." & vbNewLine &
+        "  EXE parsing uses either CAB or Language rules depending on what it is.")
     Me.lblDisplayName.Location = New System.Drawing.Point(3, 32)
     Me.lblDisplayName.Name = "lblDisplayName"
+    Me.helpS7M.SetShowHelp(Me.lblDisplayName, True)
     Me.lblDisplayName.Size = New System.Drawing.Size(75, 13)
     Me.lblDisplayName.TabIndex = 2
     Me.lblDisplayName.Text = "Display Name:"
@@ -126,9 +149,18 @@ Partial Class frmUpdateProps
     'txtDisplayName
     '
     Me.txtDisplayName.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.helpS7M.SetHelpKeyword(Me.txtDisplayName, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.2_Update_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtDisplayName, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtDisplayName, "Depends on the type of file, but is generally a common name of the update, often " & _
+        "with a version number." & vbNewLine &
+        "  For MSU Files, this is the * part of the ""*pkgProperties.txt"" file inside the update." & vbNewLine &
+        "  For CAB files, this is the ""displayName"" value in the ""update.mum"" XML file." & vbNewLine &
+        "  For LIP files, MSI and LP.CAB Language files, this is the ""identifier"" value in the ""update.mum"" XML file." & vbNewLine &
+        "  EXE parsing uses either CAB or Language rules depending on what it is.")
     Me.txtDisplayName.Location = New System.Drawing.Point(99, 29)
     Me.txtDisplayName.Name = "txtDisplayName"
     Me.txtDisplayName.ReadOnly = True
+    Me.helpS7M.SetShowHelp(Me.txtDisplayName, True)
     Me.txtDisplayName.Size = New System.Drawing.Size(232, 20)
     Me.txtDisplayName.TabIndex = 3
     '
@@ -136,8 +168,10 @@ Partial Class frmUpdateProps
     '
     Me.lblAppliesTo.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblAppliesTo.AutoSize = True
+    Me.helpS7M.SetHelpString(Me.lblAppliesTo, "The Operating System or Program which the Update applies to.")
     Me.lblAppliesTo.Location = New System.Drawing.Point(3, 84)
     Me.lblAppliesTo.Name = "lblAppliesTo"
+    Me.helpS7M.SetShowHelp(Me.lblAppliesTo, True)
     Me.lblAppliesTo.Size = New System.Drawing.Size(56, 13)
     Me.lblAppliesTo.TabIndex = 6
     Me.lblAppliesTo.Text = "Applies to:"
@@ -145,9 +179,13 @@ Partial Class frmUpdateProps
     'txtAppliesTo
     '
     Me.txtAppliesTo.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.helpS7M.SetHelpKeyword(Me.txtAppliesTo, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.2_Update_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtAppliesTo, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtAppliesTo, "The Operating System or Program which the Update applies to.")
     Me.txtAppliesTo.Location = New System.Drawing.Point(99, 81)
     Me.txtAppliesTo.Name = "txtAppliesTo"
     Me.txtAppliesTo.ReadOnly = True
+    Me.helpS7M.SetShowHelp(Me.txtAppliesTo, True)
     Me.txtAppliesTo.Size = New System.Drawing.Size(232, 20)
     Me.txtAppliesTo.TabIndex = 7
     '
@@ -155,8 +193,11 @@ Partial Class frmUpdateProps
     '
     Me.lblArchitecture.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblArchitecture.AutoSize = True
+    Me.helpS7M.SetHelpString(Me.lblArchitecture, "The OS Architecture this update is designed for. SLIPS7REAM uses this value to de" & _
+        "termine if it should be integrated into an Image Package.")
     Me.lblArchitecture.Location = New System.Drawing.Point(3, 110)
     Me.lblArchitecture.Name = "lblArchitecture"
+    Me.helpS7M.SetShowHelp(Me.lblArchitecture, True)
     Me.lblArchitecture.Size = New System.Drawing.Size(67, 13)
     Me.lblArchitecture.TabIndex = 8
     Me.lblArchitecture.Text = "Architecture:"
@@ -164,9 +205,14 @@ Partial Class frmUpdateProps
     'txtArchitecture
     '
     Me.txtArchitecture.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.helpS7M.SetHelpKeyword(Me.txtArchitecture, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.2_Update_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtArchitecture, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtArchitecture, "The OS Architecture this update is designed for. SLIPS7REAM uses this value to de" & _
+        "termine if it should be integrated into an Image Package.")
     Me.txtArchitecture.Location = New System.Drawing.Point(99, 107)
     Me.txtArchitecture.Name = "txtArchitecture"
     Me.txtArchitecture.ReadOnly = True
+    Me.helpS7M.SetShowHelp(Me.txtArchitecture, True)
     Me.txtArchitecture.Size = New System.Drawing.Size(232, 20)
     Me.txtArchitecture.TabIndex = 9
     '
@@ -174,8 +220,10 @@ Partial Class frmUpdateProps
     '
     Me.lblBuildDate.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblBuildDate.AutoSize = True
+    Me.helpS7M.SetHelpString(Me.lblBuildDate, "This is usually in the format of YEAR/MM/DD.")
     Me.lblBuildDate.Location = New System.Drawing.Point(3, 136)
     Me.lblBuildDate.Name = "lblBuildDate"
+    Me.helpS7M.SetShowHelp(Me.lblBuildDate, True)
     Me.lblBuildDate.Size = New System.Drawing.Size(59, 13)
     Me.lblBuildDate.TabIndex = 10
     Me.lblBuildDate.Text = "Build Date:"
@@ -183,9 +231,13 @@ Partial Class frmUpdateProps
     'txtBuildDate
     '
     Me.txtBuildDate.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.helpS7M.SetHelpKeyword(Me.txtBuildDate, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.2_Update_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtBuildDate, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtBuildDate, "This is usually in the format of YEAR/MM/DD.")
     Me.txtBuildDate.Location = New System.Drawing.Point(99, 133)
     Me.txtBuildDate.Name = "txtBuildDate"
     Me.txtBuildDate.ReadOnly = True
+    Me.helpS7M.SetShowHelp(Me.txtBuildDate, True)
     Me.txtBuildDate.Size = New System.Drawing.Size(232, 20)
     Me.txtBuildDate.TabIndex = 11
     '
@@ -193,9 +245,12 @@ Partial Class frmUpdateProps
     '
     Me.lblKBArticle.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblKBArticle.AutoSize = True
+    Me.helpS7M.SetHelpString(Me.lblKBArticle, "You can click the KB Article link to view details about this update, if this upda" & _
+        "te has a KB Article Number, or Details if it's a Support Link.")
     Me.lblKBArticle.Location = New System.Drawing.Point(3, 188)
     Me.lblKBArticle.Margin = New System.Windows.Forms.Padding(3, 6, 3, 7)
     Me.lblKBArticle.Name = "lblKBArticle"
+    Me.helpS7M.SetShowHelp(Me.lblKBArticle, True)
     Me.lblKBArticle.Size = New System.Drawing.Size(90, 13)
     Me.lblKBArticle.TabIndex = 14
     Me.lblKBArticle.Text = "Knowledge Base:"
@@ -207,8 +262,13 @@ Partial Class frmUpdateProps
     Me.lblKBLink.Cursor = System.Windows.Forms.Cursors.Hand
     Me.lblKBLink.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!)
     Me.lblKBLink.ForeColor = System.Drawing.Color.MediumBlue
+    Me.helpS7M.SetHelpKeyword(Me.lblKBLink, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.2_Update_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.lblKBLink, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.lblKBLink, "You can click the KB Article link to view details about this update, if this upda" & _
+        "te has a KB Article Number, or Details if it's a Support Link.")
     Me.lblKBLink.Location = New System.Drawing.Point(99, 188)
     Me.lblKBLink.Name = "lblKBLink"
+    Me.helpS7M.SetShowHelp(Me.lblKBLink, True)
     Me.lblKBLink.Size = New System.Drawing.Size(45, 13)
     Me.lblKBLink.TabIndex = 15
     Me.lblKBLink.TabStop = True
@@ -222,10 +282,14 @@ Partial Class frmUpdateProps
     Me.cmdClose.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
     Me.cmdClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
     Me.cmdClose.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.helpS7M.SetHelpKeyword(Me.cmdClose, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.2_Update_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.cmdClose, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.cmdClose, "Close the Windows Update Properties window.")
     Me.cmdClose.Location = New System.Drawing.Point(251, 213)
     Me.cmdClose.MinimumSize = New System.Drawing.Size(80, 25)
     Me.cmdClose.Name = "cmdClose"
     Me.cmdClose.Padding = New System.Windows.Forms.Padding(1)
+    Me.helpS7M.SetShowHelp(Me.cmdClose, True)
     Me.cmdClose.Size = New System.Drawing.Size(80, 25)
     Me.cmdClose.TabIndex = 16
     Me.cmdClose.Text = "&Close"
@@ -235,8 +299,10 @@ Partial Class frmUpdateProps
     '
     Me.lblName.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblName.AutoSize = True
+    Me.helpS7M.SetHelpString(Me.lblName, "The name SLIPS7REAM uses in the Update List.")
     Me.lblName.Location = New System.Drawing.Point(3, 6)
     Me.lblName.Name = "lblName"
+    Me.helpS7M.SetShowHelp(Me.lblName, True)
     Me.lblName.Size = New System.Drawing.Size(38, 13)
     Me.lblName.TabIndex = 0
     Me.lblName.Text = "Name:"
@@ -244,9 +310,13 @@ Partial Class frmUpdateProps
     'txtName
     '
     Me.txtName.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.helpS7M.SetHelpKeyword(Me.txtName, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.2_Update_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtName, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtName, "The name SLIPS7REAM uses in the Update List.")
     Me.txtName.Location = New System.Drawing.Point(99, 3)
     Me.txtName.Name = "txtName"
     Me.txtName.ReadOnly = True
+    Me.helpS7M.SetShowHelp(Me.txtName, True)
     Me.txtName.Size = New System.Drawing.Size(232, 20)
     Me.txtName.TabIndex = 1
     '
@@ -254,8 +324,11 @@ Partial Class frmUpdateProps
     '
     Me.lblVersion.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblVersion.AutoSize = True
+    Me.helpS7M.SetHelpString(Me.lblVersion, "The Version of most Windows Updates is 6.1.Update_Major.Update_Minor to identify " & _
+        "them as updates for Windows 7 (or other numbers for other versions).")
     Me.lblVersion.Location = New System.Drawing.Point(3, 162)
     Me.lblVersion.Name = "lblVersion"
+    Me.helpS7M.SetShowHelp(Me.lblVersion, True)
     Me.lblVersion.Size = New System.Drawing.Size(45, 13)
     Me.lblVersion.TabIndex = 12
     Me.lblVersion.Text = "Version:"
@@ -263,9 +336,14 @@ Partial Class frmUpdateProps
     'txtVersion
     '
     Me.txtVersion.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.helpS7M.SetHelpKeyword(Me.txtVersion, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.2_Update_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtVersion, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtVersion, "The Version of most Windows Updates is 6.1.Update_Major.Update_Minor to identify " & _
+        "them as updates for Windows 7 (or other numbers for other versions).")
     Me.txtVersion.Location = New System.Drawing.Point(99, 159)
     Me.txtVersion.Name = "txtVersion"
     Me.txtVersion.ReadOnly = True
+    Me.helpS7M.SetShowHelp(Me.txtVersion, True)
     Me.txtVersion.Size = New System.Drawing.Size(232, 20)
     Me.txtVersion.TabIndex = 13
     '
@@ -283,7 +361,7 @@ Partial Class frmUpdateProps
     Me.CancelButton = Me.cmdClose
     Me.ClientSize = New System.Drawing.Size(334, 241)
     Me.Controls.Add(Me.pnlUpdateData)
-    Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
+    Me.HelpButton = True
     Me.helpS7M.SetHelpKeyword(Me, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.2_Update_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me, System.Windows.Forms.HelpNavigator.Topic)
     Me.Icon = Global.Slips7ream.My.Resources.Resources.icon

@@ -126,6 +126,8 @@ Partial Class frmDriverProps
     Me.pnlDriverData.Controls.Add(Me.grpClass, 0, 8)
     Me.pnlDriverData.Controls.Add(Me.pctDriverIcon, 1, 0)
     Me.pnlDriverData.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.helpS7M.SetHelpString(Me.pnlDriverData, "Only included in Integrated Drivers. This was the name of the INF before it was i" & _
+        "ntegrated.")
     Me.pnlDriverData.Location = New System.Drawing.Point(0, 0)
     Me.pnlDriverData.Margin = New System.Windows.Forms.Padding(0)
     Me.pnlDriverData.Name = "pnlDriverData"
@@ -139,6 +141,7 @@ Partial Class frmDriverProps
     Me.pnlDriverData.RowStyles.Add(New System.Windows.Forms.RowStyle())
     Me.pnlDriverData.RowStyles.Add(New System.Windows.Forms.RowStyle())
     Me.pnlDriverData.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+    Me.helpS7M.SetShowHelp(Me.pnlDriverData, True)
     Me.pnlDriverData.Size = New System.Drawing.Size(267, 310)
     Me.pnlDriverData.TabIndex = 0
     '
@@ -147,8 +150,11 @@ Partial Class frmDriverProps
     Me.lblDriverStorePath.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblDriverStorePath.AutoSize = True
     Me.pnlDriverData.SetColumnSpan(Me.lblDriverStorePath, 2)
+    Me.helpS7M.SetHelpString(Me.lblDriverStorePath, "In Integrated Drivers, this is the location where the INF and any other Driver fi" & _
+        "les are stored. In the Updates list, this is the same as the Published Name.")
     Me.lblDriverStorePath.Location = New System.Drawing.Point(3, 58)
     Me.lblDriverStorePath.Name = "lblDriverStorePath"
+    Me.helpS7M.SetShowHelp(Me.lblDriverStorePath, True)
     Me.lblDriverStorePath.Size = New System.Drawing.Size(91, 13)
     Me.lblDriverStorePath.TabIndex = 4
     Me.lblDriverStorePath.Text = "Driver Store Path:"
@@ -156,9 +162,14 @@ Partial Class frmDriverProps
     'txtDriverStorePath
     '
     Me.txtDriverStorePath.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.helpS7M.SetHelpKeyword(Me.txtDriverStorePath, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtDriverStorePath, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtDriverStorePath, "In Integrated Drivers, this is the location where the INF and any other Driver fi" & _
+        "les are stored. In the Updates list, this is the same as the Published Name.")
     Me.txtDriverStorePath.Location = New System.Drawing.Point(101, 55)
     Me.txtDriverStorePath.Name = "txtDriverStorePath"
     Me.txtDriverStorePath.ReadOnly = True
+    Me.helpS7M.SetShowHelp(Me.txtDriverStorePath, True)
     Me.txtDriverStorePath.Size = New System.Drawing.Size(163, 20)
     Me.txtDriverStorePath.TabIndex = 5
     '
@@ -167,8 +178,11 @@ Partial Class frmDriverProps
     Me.lblPublishedName.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblPublishedName.AutoSize = True
     Me.pnlDriverData.SetColumnSpan(Me.lblPublishedName, 2)
+    Me.helpS7M.SetHelpString(Me.lblPublishedName, "In Integrated Drivers, this is the new name of the INF after integration. In the " & _
+        "Updates list, this is the path where the driver INF file is located.")
     Me.lblPublishedName.Location = New System.Drawing.Point(3, 32)
     Me.lblPublishedName.Name = "lblPublishedName"
+    Me.helpS7M.SetShowHelp(Me.lblPublishedName, True)
     Me.lblPublishedName.Size = New System.Drawing.Size(87, 13)
     Me.lblPublishedName.TabIndex = 2
     Me.lblPublishedName.Text = "Published Name:"
@@ -176,9 +190,14 @@ Partial Class frmDriverProps
     'txtPublishedName
     '
     Me.txtPublishedName.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.helpS7M.SetHelpKeyword(Me.txtPublishedName, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtPublishedName, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtPublishedName, "In Integrated Drivers, this is the new name of the INF after integration. In the " & _
+        "Updates list, this is the path where the driver INF file is located.")
     Me.txtPublishedName.Location = New System.Drawing.Point(101, 29)
     Me.txtPublishedName.Name = "txtPublishedName"
     Me.txtPublishedName.ReadOnly = True
+    Me.helpS7M.SetShowHelp(Me.txtPublishedName, True)
     Me.txtPublishedName.Size = New System.Drawing.Size(163, 20)
     Me.txtPublishedName.TabIndex = 3
     '
@@ -187,8 +206,11 @@ Partial Class frmDriverProps
     Me.lblInBox.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblInBox.AutoSize = True
     Me.pnlDriverData.SetColumnSpan(Me.lblInBox, 2)
+    Me.helpS7M.SetHelpString(Me.lblInBox, "Only included in Integrated Drivers. Determines if the driver is In-Box or Out-of" & _
+        "-Box (whether or not it came with Windows, basically).")
     Me.lblInBox.Location = New System.Drawing.Point(3, 84)
     Me.lblInBox.Name = "lblInBox"
+    Me.helpS7M.SetShowHelp(Me.lblInBox, True)
     Me.lblInBox.Size = New System.Drawing.Size(40, 13)
     Me.lblInBox.TabIndex = 6
     Me.lblInBox.Text = "In-Box:"
@@ -196,9 +218,14 @@ Partial Class frmDriverProps
     'txtInBox
     '
     Me.txtInBox.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.helpS7M.SetHelpKeyword(Me.txtInBox, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtInBox, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtInBox, "Only included in Integrated Drivers. Determines if the driver is In-Box or Out-of" & _
+        "-Box (whether or not it came with Windows, basically).")
     Me.txtInBox.Location = New System.Drawing.Point(101, 81)
     Me.txtInBox.Name = "txtInBox"
     Me.txtInBox.ReadOnly = True
+    Me.helpS7M.SetShowHelp(Me.txtInBox, True)
     Me.txtInBox.Size = New System.Drawing.Size(163, 20)
     Me.txtInBox.TabIndex = 7
     '
@@ -207,9 +234,12 @@ Partial Class frmDriverProps
     Me.lblProviderName.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblProviderName.AutoSize = True
     Me.pnlDriverData.SetColumnSpan(Me.lblProviderName, 2)
+    Me.helpS7M.SetHelpString(Me.lblProviderName, "The company that wrote the Driver. Not necessarily the same as the Hardware Manuf" & _
+        "acturer.")
     Me.lblProviderName.Location = New System.Drawing.Point(3, 110)
     Me.lblProviderName.Margin = New System.Windows.Forms.Padding(3, 6, 3, 7)
     Me.lblProviderName.Name = "lblProviderName"
+    Me.helpS7M.SetShowHelp(Me.lblProviderName, True)
     Me.lblProviderName.Size = New System.Drawing.Size(80, 13)
     Me.lblProviderName.TabIndex = 8
     Me.lblProviderName.Text = "Provider Name:"
@@ -227,18 +257,28 @@ Partial Class frmDriverProps
     'txtOriginalFileName
     '
     Me.txtOriginalFileName.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.helpS7M.SetHelpKeyword(Me.txtOriginalFileName, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtOriginalFileName, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtOriginalFileName, "Only included in Integrated Drivers. This was the name of the INF before it was i" & _
+        "ntegrated.")
     Me.txtOriginalFileName.Location = New System.Drawing.Point(101, 3)
     Me.txtOriginalFileName.Name = "txtOriginalFileName"
     Me.txtOriginalFileName.ReadOnly = True
+    Me.helpS7M.SetShowHelp(Me.txtOriginalFileName, True)
     Me.txtOriginalFileName.Size = New System.Drawing.Size(163, 20)
     Me.txtOriginalFileName.TabIndex = 1
     '
     'txtProviderName
     '
     Me.txtProviderName.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.helpS7M.SetHelpKeyword(Me.txtProviderName, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtProviderName, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtProviderName, "The company that wrote the Driver. Not necessarily the same as the Hardware Manuf" & _
+        "acturer.")
     Me.txtProviderName.Location = New System.Drawing.Point(101, 107)
     Me.txtProviderName.Name = "txtProviderName"
     Me.txtProviderName.ReadOnly = True
+    Me.helpS7M.SetShowHelp(Me.txtProviderName, True)
     Me.txtProviderName.Size = New System.Drawing.Size(163, 20)
     Me.txtProviderName.TabIndex = 9
     '
@@ -247,9 +287,11 @@ Partial Class frmDriverProps
     Me.lblDate.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblDate.AutoSize = True
     Me.pnlDriverData.SetColumnSpan(Me.lblDate, 2)
+    Me.helpS7M.SetHelpString(Me.lblDate, "This is the date the driver was written.")
     Me.lblDate.Location = New System.Drawing.Point(3, 136)
     Me.lblDate.Margin = New System.Windows.Forms.Padding(3, 6, 3, 7)
     Me.lblDate.Name = "lblDate"
+    Me.helpS7M.SetShowHelp(Me.lblDate, True)
     Me.lblDate.Size = New System.Drawing.Size(33, 13)
     Me.lblDate.TabIndex = 10
     Me.lblDate.Text = "Date:"
@@ -257,9 +299,13 @@ Partial Class frmDriverProps
     'txtDate
     '
     Me.txtDate.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.helpS7M.SetHelpKeyword(Me.txtDate, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtDate, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtDate, "This is the date the driver was written.")
     Me.txtDate.Location = New System.Drawing.Point(101, 133)
     Me.txtDate.Name = "txtDate"
     Me.txtDate.ReadOnly = True
+    Me.helpS7M.SetShowHelp(Me.txtDate, True)
     Me.txtDate.Size = New System.Drawing.Size(163, 20)
     Me.txtDate.TabIndex = 11
     '
@@ -268,9 +314,12 @@ Partial Class frmDriverProps
     Me.lblVersion.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblVersion.AutoSize = True
     Me.pnlDriverData.SetColumnSpan(Me.lblVersion, 2)
+    Me.helpS7M.SetHelpString(Me.lblVersion, "This is the version of the driver. The driver version is usually the same as the " & _
+        "OS version for drivers that came with Windows.")
     Me.lblVersion.Location = New System.Drawing.Point(3, 162)
     Me.lblVersion.Margin = New System.Windows.Forms.Padding(3, 6, 3, 7)
     Me.lblVersion.Name = "lblVersion"
+    Me.helpS7M.SetShowHelp(Me.lblVersion, True)
     Me.lblVersion.Size = New System.Drawing.Size(45, 13)
     Me.lblVersion.TabIndex = 12
     Me.lblVersion.Text = "Version:"
@@ -278,9 +327,14 @@ Partial Class frmDriverProps
     'txtVersion
     '
     Me.txtVersion.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.helpS7M.SetHelpKeyword(Me.txtVersion, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtVersion, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtVersion, "This is the version of the driver. The driver version is usually the same as the " & _
+        "OS version for drivers that came with Windows.")
     Me.txtVersion.Location = New System.Drawing.Point(101, 159)
     Me.txtVersion.Name = "txtVersion"
     Me.txtVersion.ReadOnly = True
+    Me.helpS7M.SetShowHelp(Me.txtVersion, True)
     Me.txtVersion.Size = New System.Drawing.Size(163, 20)
     Me.txtVersion.TabIndex = 13
     '
@@ -289,9 +343,11 @@ Partial Class frmDriverProps
     Me.lblBootCritical.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblBootCritical.AutoSize = True
     Me.pnlDriverData.SetColumnSpan(Me.lblBootCritical, 2)
+    Me.helpS7M.SetHelpString(Me.lblBootCritical, "If Yes, then this driver is critical for booting Windows when in use.")
     Me.lblBootCritical.Location = New System.Drawing.Point(3, 188)
     Me.lblBootCritical.Margin = New System.Windows.Forms.Padding(3, 6, 3, 7)
     Me.lblBootCritical.Name = "lblBootCritical"
+    Me.helpS7M.SetShowHelp(Me.lblBootCritical, True)
     Me.lblBootCritical.Size = New System.Drawing.Size(66, 13)
     Me.lblBootCritical.TabIndex = 14
     Me.lblBootCritical.Text = "Boot Critical:"
@@ -299,9 +355,13 @@ Partial Class frmDriverProps
     'txtBootCritical
     '
     Me.txtBootCritical.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.helpS7M.SetHelpKeyword(Me.txtBootCritical, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtBootCritical, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtBootCritical, "If Yes, then this driver is critical for booting Windows when in use.")
     Me.txtBootCritical.Location = New System.Drawing.Point(101, 185)
     Me.txtBootCritical.Name = "txtBootCritical"
     Me.txtBootCritical.ReadOnly = True
+    Me.helpS7M.SetShowHelp(Me.txtBootCritical, True)
     Me.txtBootCritical.Size = New System.Drawing.Size(163, 20)
     Me.txtBootCritical.TabIndex = 15
     '
@@ -344,8 +404,10 @@ Partial Class frmDriverProps
     '
     Me.lblClassName.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblClassName.AutoSize = True
+    Me.helpS7M.SetHelpString(Me.lblClassName, "The Class Name, identifying what kind of hardware this driver describes.")
     Me.lblClassName.Location = New System.Drawing.Point(3, 6)
     Me.lblClassName.Name = "lblClassName"
+    Me.helpS7M.SetShowHelp(Me.lblClassName, True)
     Me.lblClassName.Size = New System.Drawing.Size(38, 13)
     Me.lblClassName.TabIndex = 0
     Me.lblClassName.Text = "Name:"
@@ -355,8 +417,10 @@ Partial Class frmDriverProps
     Me.lblClassDescription.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblClassDescription.AutoSize = True
     Me.pnlClass.SetColumnSpan(Me.lblClassDescription, 2)
+    Me.helpS7M.SetHelpString(Me.lblClassDescription, "Usually a slightly more descriptive version of the Class Name.")
     Me.lblClassDescription.Location = New System.Drawing.Point(3, 31)
     Me.lblClassDescription.Name = "lblClassDescription"
+    Me.helpS7M.SetShowHelp(Me.lblClassDescription, True)
     Me.lblClassDescription.Size = New System.Drawing.Size(63, 13)
     Me.lblClassDescription.TabIndex = 2
     Me.lblClassDescription.Text = "Description:"
@@ -366,8 +430,10 @@ Partial Class frmDriverProps
     Me.lblClassGUID.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblClassGUID.AutoSize = True
     Me.pnlClass.SetColumnSpan(Me.lblClassGUID, 2)
+    Me.helpS7M.SetHelpString(Me.lblClassGUID, "The Class GUID, which universally identifies the Driver Class.")
     Me.lblClassGUID.Location = New System.Drawing.Point(3, 57)
     Me.lblClassGUID.Name = "lblClassGUID"
+    Me.helpS7M.SetShowHelp(Me.lblClassGUID, True)
     Me.lblClassGUID.Size = New System.Drawing.Size(37, 13)
     Me.lblClassGUID.TabIndex = 4
     Me.lblClassGUID.Text = "GUID:"
@@ -375,36 +441,51 @@ Partial Class frmDriverProps
     'txtClassName
     '
     Me.txtClassName.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.helpS7M.SetHelpKeyword(Me.txtClassName, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtClassName, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtClassName, "The Class Name, identifying what kind of hardware this driver describes.")
     Me.txtClassName.Location = New System.Drawing.Point(72, 3)
     Me.txtClassName.Name = "txtClassName"
     Me.txtClassName.ReadOnly = True
+    Me.helpS7M.SetShowHelp(Me.txtClassName, True)
     Me.txtClassName.Size = New System.Drawing.Size(180, 20)
     Me.txtClassName.TabIndex = 1
     '
     'txtClassDescription
     '
     Me.txtClassDescription.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.helpS7M.SetHelpKeyword(Me.txtClassDescription, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtClassDescription, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtClassDescription, "Usually a slightly more descriptive version of the Class Name.")
     Me.txtClassDescription.Location = New System.Drawing.Point(72, 28)
     Me.txtClassDescription.Name = "txtClassDescription"
     Me.txtClassDescription.ReadOnly = True
+    Me.helpS7M.SetShowHelp(Me.txtClassDescription, True)
     Me.txtClassDescription.Size = New System.Drawing.Size(180, 20)
     Me.txtClassDescription.TabIndex = 3
     '
     'txtClassGUID
     '
     Me.txtClassGUID.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.helpS7M.SetHelpKeyword(Me.txtClassGUID, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtClassGUID, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtClassGUID, "The Class GUID, which universally identifies the Driver Class.")
     Me.txtClassGUID.Location = New System.Drawing.Point(72, 53)
     Me.txtClassGUID.Name = "txtClassGUID"
     Me.txtClassGUID.ReadOnly = True
+    Me.helpS7M.SetShowHelp(Me.txtClassGUID, True)
     Me.txtClassGUID.Size = New System.Drawing.Size(180, 20)
     Me.txtClassGUID.TabIndex = 5
     '
     'pctClassIcon
     '
     Me.pctClassIcon.Anchor = System.Windows.Forms.AnchorStyles.Right
+    Me.helpS7M.SetHelpString(Me.pctClassIcon, "This icon identifies the type of hardware this driver is supposed to be used for." & _
+        "")
     Me.pctClassIcon.Location = New System.Drawing.Point(53, 4)
     Me.pctClassIcon.Margin = New System.Windows.Forms.Padding(0)
     Me.pctClassIcon.Name = "pctClassIcon"
+    Me.helpS7M.SetShowHelp(Me.pctClassIcon, True)
     Me.pctClassIcon.Size = New System.Drawing.Size(16, 16)
     Me.pctClassIcon.TabIndex = 6
     Me.pctClassIcon.TabStop = False
@@ -412,9 +493,11 @@ Partial Class frmDriverProps
     'pctDriverIcon
     '
     Me.pctDriverIcon.Anchor = System.Windows.Forms.AnchorStyles.None
+    Me.helpS7M.SetHelpString(Me.pctDriverIcon, "This is the icon specified by the driver for use by the Task Manager.")
     Me.pctDriverIcon.Location = New System.Drawing.Point(82, 5)
     Me.pctDriverIcon.Margin = New System.Windows.Forms.Padding(0)
     Me.pctDriverIcon.Name = "pctDriverIcon"
+    Me.helpS7M.SetShowHelp(Me.pctDriverIcon, True)
     Me.pctDriverIcon.Size = New System.Drawing.Size(16, 16)
     Me.pctDriverIcon.TabIndex = 17
     Me.pctDriverIcon.TabStop = False
@@ -427,10 +510,12 @@ Partial Class frmDriverProps
     Me.pnlDriver.SetColumnSpan(Me.cmdClose, 2)
     Me.cmdClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
     Me.cmdClose.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.helpS7M.SetHelpString(Me.cmdClose, "Close the Driver INF Properties window.")
     Me.cmdClose.Location = New System.Drawing.Point(451, 313)
     Me.cmdClose.MinimumSize = New System.Drawing.Size(80, 25)
     Me.cmdClose.Name = "cmdClose"
     Me.cmdClose.Padding = New System.Windows.Forms.Padding(1)
+    Me.helpS7M.SetShowHelp(Me.cmdClose, True)
     Me.cmdClose.Size = New System.Drawing.Size(80, 25)
     Me.cmdClose.TabIndex = 2
     Me.cmdClose.Text = "&Close"
@@ -461,8 +546,12 @@ Partial Class frmDriverProps
     '
     Me.lblArchitecture.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblArchitecture.AutoSize = True
+    Me.helpS7M.SetHelpString(Me.lblArchitecture, "The Architecture dropdown includes all compatible CPU Architectures included in t" & _
+        "he driver. Selecting an Architecture entry will re-populate the Hardware dropdow" & _
+        "n below.")
     Me.lblArchitecture.Location = New System.Drawing.Point(3, 7)
     Me.lblArchitecture.Name = "lblArchitecture"
+    Me.helpS7M.SetShowHelp(Me.lblArchitecture, True)
     Me.lblArchitecture.Size = New System.Drawing.Size(67, 13)
     Me.lblArchitecture.TabIndex = 0
     Me.lblArchitecture.Text = "Architecture:"
@@ -473,8 +562,14 @@ Partial Class frmDriverProps
     Me.cmbArchitecture.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
     Me.cmbArchitecture.FlatStyle = System.Windows.Forms.FlatStyle.System
     Me.cmbArchitecture.FormattingEnabled = True
+    Me.helpS7M.SetHelpKeyword(Me.cmbArchitecture, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.cmbArchitecture, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.cmbArchitecture, "The Architecture dropdown includes all compatible CPU Architectures included in t" & _
+        "he driver. Selecting an Architecture entry will re-populate the Hardware dropdow" & _
+        "n below.")
     Me.cmbArchitecture.Location = New System.Drawing.Point(76, 3)
     Me.cmbArchitecture.Name = "cmbArchitecture"
+    Me.helpS7M.SetShowHelp(Me.cmbArchitecture, True)
     Me.cmbArchitecture.Size = New System.Drawing.Size(188, 21)
     Me.cmbArchitecture.TabIndex = 1
     '
@@ -482,8 +577,12 @@ Partial Class frmDriverProps
     '
     Me.lblHardware.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblHardware.AutoSize = True
+    Me.helpS7M.SetHelpString(Me.lblHardware, "The Hardware dropdown includes all compatible hardware for the selected CPU Archi" & _
+        "tecture included in the driver. Selecting a Hardware entry will re-populate the " & _
+        "Hardware Description entries below.")
     Me.lblHardware.Location = New System.Drawing.Point(3, 34)
     Me.lblHardware.Name = "lblHardware"
+    Me.helpS7M.SetShowHelp(Me.lblHardware, True)
     Me.lblHardware.Size = New System.Drawing.Size(56, 13)
     Me.lblHardware.TabIndex = 2
     Me.lblHardware.Text = "Hardware:"
@@ -494,8 +593,14 @@ Partial Class frmDriverProps
     Me.cmbHardware.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
     Me.cmbHardware.FlatStyle = System.Windows.Forms.FlatStyle.System
     Me.cmbHardware.FormattingEnabled = True
+    Me.helpS7M.SetHelpKeyword(Me.cmbHardware, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.cmbHardware, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.cmbHardware, "The Hardware dropdown includes all compatible hardware for the selected CPU Archi" & _
+        "tecture included in the driver. Selecting a Hardware entry will re-populate the " & _
+        "Hardware Description entries below.")
     Me.cmbHardware.Location = New System.Drawing.Point(76, 30)
     Me.cmbHardware.Name = "cmbHardware"
+    Me.helpS7M.SetShowHelp(Me.cmbHardware, True)
     Me.cmbHardware.Size = New System.Drawing.Size(188, 21)
     Me.cmbHardware.TabIndex = 3
     '
@@ -549,9 +654,12 @@ Partial Class frmDriverProps
     '
     Me.lblHWIDs.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblHWIDs.AutoSize = True
+    Me.helpS7M.SetHelpString(Me.lblHWIDs, "A list of all the Hardware IDs supported by this driver. Selecting an ID will re-" & _
+        "populate the Compatible IDs and Exclude IDs lists below.")
     Me.lblHWIDs.Location = New System.Drawing.Point(3, 84)
     Me.lblHWIDs.Margin = New System.Windows.Forms.Padding(3, 6, 3, 7)
     Me.lblHWIDs.Name = "lblHWIDs"
+    Me.helpS7M.SetShowHelp(Me.lblHWIDs, True)
     Me.lblHWIDs.Size = New System.Drawing.Size(75, 13)
     Me.lblHWIDs.TabIndex = 8
     Me.lblHWIDs.Text = "Hardware IDs:"
@@ -560,9 +668,12 @@ Partial Class frmDriverProps
     '
     Me.lblHWCompatibleIDs.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblHWCompatibleIDs.AutoSize = True
+    Me.helpS7M.SetHelpString(Me.lblHWCompatibleIDs, "A list of any Hardware IDs that should be included in support along with the sele" & _
+        "cted Hardware ID above.")
     Me.lblHWCompatibleIDs.Location = New System.Drawing.Point(3, 134)
     Me.lblHWCompatibleIDs.Margin = New System.Windows.Forms.Padding(3, 6, 3, 7)
     Me.lblHWCompatibleIDs.Name = "lblHWCompatibleIDs"
+    Me.helpS7M.SetShowHelp(Me.lblHWCompatibleIDs, True)
     Me.lblHWCompatibleIDs.Size = New System.Drawing.Size(81, 13)
     Me.lblHWCompatibleIDs.TabIndex = 10
     Me.lblHWCompatibleIDs.Text = "Compatible IDs:"
@@ -571,9 +682,12 @@ Partial Class frmDriverProps
     '
     Me.lblHWExcludeIDs.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblHWExcludeIDs.AutoSize = True
+    Me.helpS7M.SetHelpString(Me.lblHWExcludeIDs, "A list of any Hardware IDs that should be excluded from support in the range defi" & _
+        "ned by the selected Hardware ID above.")
     Me.lblHWExcludeIDs.Location = New System.Drawing.Point(3, 185)
     Me.lblHWExcludeIDs.Margin = New System.Windows.Forms.Padding(3, 6, 3, 7)
     Me.lblHWExcludeIDs.Name = "lblHWExcludeIDs"
+    Me.helpS7M.SetShowHelp(Me.lblHWExcludeIDs, True)
     Me.lblHWExcludeIDs.Size = New System.Drawing.Size(67, 13)
     Me.lblHWExcludeIDs.TabIndex = 12
     Me.lblHWExcludeIDs.Text = "Exclude IDs:"
@@ -582,11 +696,16 @@ Partial Class frmDriverProps
     '
     Me.lstHWCompatibleIDs.Dock = System.Windows.Forms.DockStyle.Fill
     Me.lstHWCompatibleIDs.FormattingEnabled = True
+    Me.helpS7M.SetHelpKeyword(Me.lstHWCompatibleIDs, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.lstHWCompatibleIDs, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.lstHWCompatibleIDs, "A list of any Hardware IDs that should be included in support along with the sele" & _
+        "cted Hardware ID above.")
     Me.lstHWCompatibleIDs.IntegralHeight = False
     Me.lstHWCompatibleIDs.Location = New System.Drawing.Point(90, 131)
     Me.lstHWCompatibleIDs.Name = "lstHWCompatibleIDs"
     Me.pnlHardware.SetRowSpan(Me.lstHWCompatibleIDs, 2)
     Me.lstHWCompatibleIDs.ScrollAlwaysVisible = True
+    Me.helpS7M.SetShowHelp(Me.lstHWCompatibleIDs, True)
     Me.lstHWCompatibleIDs.Size = New System.Drawing.Size(162, 45)
     Me.lstHWCompatibleIDs.TabIndex = 11
     '
@@ -594,11 +713,16 @@ Partial Class frmDriverProps
     '
     Me.lstHWExcludeIDs.Dock = System.Windows.Forms.DockStyle.Fill
     Me.lstHWExcludeIDs.FormattingEnabled = True
+    Me.helpS7M.SetHelpKeyword(Me.lstHWExcludeIDs, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.lstHWExcludeIDs, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.lstHWExcludeIDs, "A list of any Hardware IDs that should be excluded from support in the range defi" & _
+        "ned by the selected Hardware ID above.")
     Me.lstHWExcludeIDs.IntegralHeight = False
     Me.lstHWExcludeIDs.Location = New System.Drawing.Point(90, 182)
     Me.lstHWExcludeIDs.Name = "lstHWExcludeIDs"
     Me.pnlHardware.SetRowSpan(Me.lstHWExcludeIDs, 2)
     Me.lstHWExcludeIDs.ScrollAlwaysVisible = True
+    Me.helpS7M.SetShowHelp(Me.lstHWExcludeIDs, True)
     Me.lstHWExcludeIDs.Size = New System.Drawing.Size(162, 46)
     Me.lstHWExcludeIDs.TabIndex = 13
     '
@@ -606,11 +730,16 @@ Partial Class frmDriverProps
     '
     Me.lstHWIDs.Dock = System.Windows.Forms.DockStyle.Fill
     Me.lstHWIDs.FormattingEnabled = True
+    Me.helpS7M.SetHelpKeyword(Me.lstHWIDs, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.lstHWIDs, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.lstHWIDs, "A list of all the Hardware IDs supported by this driver. Selecting an ID will re-" & _
+        "populate the Compatible IDs and Exclude IDs lists below.")
     Me.lstHWIDs.IntegralHeight = False
     Me.lstHWIDs.Location = New System.Drawing.Point(90, 81)
     Me.lstHWIDs.Name = "lstHWIDs"
     Me.pnlHardware.SetRowSpan(Me.lstHWIDs, 2)
     Me.lstHWIDs.ScrollAlwaysVisible = True
+    Me.helpS7M.SetShowHelp(Me.lstHWIDs, True)
     Me.lstHWIDs.Size = New System.Drawing.Size(162, 44)
     Me.lstHWIDs.TabIndex = 9
     '
@@ -618,9 +747,11 @@ Partial Class frmDriverProps
     '
     Me.lblHWServiceName.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblHWServiceName.AutoSize = True
+    Me.helpS7M.SetHelpString(Me.lblHWServiceName, "The short name of the Windows Service which this driver is attached to.")
     Me.lblHWServiceName.Location = New System.Drawing.Point(3, 6)
     Me.lblHWServiceName.Margin = New System.Windows.Forms.Padding(3, 6, 3, 7)
     Me.lblHWServiceName.Name = "lblHWServiceName"
+    Me.helpS7M.SetShowHelp(Me.lblHWServiceName, True)
     Me.lblHWServiceName.Size = New System.Drawing.Size(77, 13)
     Me.lblHWServiceName.TabIndex = 0
     Me.lblHWServiceName.Text = "Service Name:"
@@ -628,9 +759,13 @@ Partial Class frmDriverProps
     'txtHWServiceName
     '
     Me.txtHWServiceName.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.helpS7M.SetHelpKeyword(Me.txtHWServiceName, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtHWServiceName, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtHWServiceName, "The short name of the Windows Service which this driver is attached to.")
     Me.txtHWServiceName.Location = New System.Drawing.Point(90, 3)
     Me.txtHWServiceName.Name = "txtHWServiceName"
     Me.txtHWServiceName.ReadOnly = True
+    Me.helpS7M.SetShowHelp(Me.txtHWServiceName, True)
     Me.txtHWServiceName.Size = New System.Drawing.Size(162, 20)
     Me.txtHWServiceName.TabIndex = 1
     '
@@ -638,9 +773,11 @@ Partial Class frmDriverProps
     '
     Me.lblHWManufacturer.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblHWManufacturer.AutoSize = True
+    Me.helpS7M.SetHelpString(Me.lblHWManufacturer, "The name of the company that created the hardware.")
     Me.lblHWManufacturer.Location = New System.Drawing.Point(3, 58)
     Me.lblHWManufacturer.Margin = New System.Windows.Forms.Padding(3, 6, 3, 7)
     Me.lblHWManufacturer.Name = "lblHWManufacturer"
+    Me.helpS7M.SetShowHelp(Me.lblHWManufacturer, True)
     Me.lblHWManufacturer.Size = New System.Drawing.Size(73, 13)
     Me.lblHWManufacturer.TabIndex = 6
     Me.lblHWManufacturer.Text = "Manufacturer:"
@@ -649,9 +786,11 @@ Partial Class frmDriverProps
     '
     Me.lblHWArchitecture.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblHWArchitecture.AutoSize = True
+    Me.helpS7M.SetHelpString(Me.lblHWArchitecture, "Usually redundant with the Architecture dropdown above.")
     Me.lblHWArchitecture.Location = New System.Drawing.Point(3, 32)
     Me.lblHWArchitecture.Margin = New System.Windows.Forms.Padding(3, 6, 3, 7)
     Me.lblHWArchitecture.Name = "lblHWArchitecture"
+    Me.helpS7M.SetShowHelp(Me.lblHWArchitecture, True)
     Me.lblHWArchitecture.Size = New System.Drawing.Size(67, 13)
     Me.lblHWArchitecture.TabIndex = 4
     Me.lblHWArchitecture.Text = "Architecture:"
@@ -659,18 +798,26 @@ Partial Class frmDriverProps
     'txtHWManufacturer
     '
     Me.txtHWManufacturer.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.helpS7M.SetHelpKeyword(Me.txtHWManufacturer, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtHWManufacturer, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtHWManufacturer, "The name of the company that created the hardware.")
     Me.txtHWManufacturer.Location = New System.Drawing.Point(90, 55)
     Me.txtHWManufacturer.Name = "txtHWManufacturer"
     Me.txtHWManufacturer.ReadOnly = True
+    Me.helpS7M.SetShowHelp(Me.txtHWManufacturer, True)
     Me.txtHWManufacturer.Size = New System.Drawing.Size(162, 20)
     Me.txtHWManufacturer.TabIndex = 7
     '
     'txtHWArchitecture
     '
     Me.txtHWArchitecture.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.helpS7M.SetHelpKeyword(Me.txtHWArchitecture, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtHWArchitecture, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtHWArchitecture, "Usually redundant with the Architecture dropdown above.")
     Me.txtHWArchitecture.Location = New System.Drawing.Point(90, 29)
     Me.txtHWArchitecture.Name = "txtHWArchitecture"
     Me.txtHWArchitecture.ReadOnly = True
+    Me.helpS7M.SetShowHelp(Me.txtHWArchitecture, True)
     Me.txtHWArchitecture.Size = New System.Drawing.Size(162, 20)
     Me.txtHWArchitecture.TabIndex = 5
     '
@@ -684,7 +831,7 @@ Partial Class frmDriverProps
     Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
     Me.ClientSize = New System.Drawing.Size(534, 341)
     Me.Controls.Add(Me.pnlDriver)
-    Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
+    Me.HelpButton = True
     Me.helpS7M.SetHelpKeyword(Me, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me, System.Windows.Forms.HelpNavigator.Topic)
     Me.Icon = Global.Slips7ream.My.Resources.Resources.icon
@@ -693,6 +840,7 @@ Partial Class frmDriverProps
     Me.MinimumSize = New System.Drawing.Size(550, 375)
     Me.Name = "frmDriverProps"
     Me.helpS7M.SetShowHelp(Me, True)
+    Me.ShowIcon = False
     Me.ShowInTaskbar = False
     Me.Text = "Driver INF Properties"
     Me.pnlDriver.ResumeLayout(False)

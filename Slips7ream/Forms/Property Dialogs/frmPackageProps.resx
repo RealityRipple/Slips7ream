@@ -117,21 +117,39 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="imlUpdates.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
-  <metadata name="imlFeatures.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>130, 17</value>
-  </metadata>
   <metadata name="helpS7M.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>887, 17</value>
   </metadata>
+  <data name="lblName.HelpString" xml:space="preserve">
+    <value>The name by which the Image Package is identified when working with WIM files, and what will be shown in the list of Operating Systems during Installation. The Name can be edited to be anything you want, but it must be unique in the Image, so please make sure that no two Packages use the same Name.</value>
+  </data>
+  <data name="txtName.HelpString" xml:space="preserve">
+    <value>The name by which the Image Package is identified when working with WIM files, and what will be shown in the list of Operating Systems during Installation. The Name can be edited to be anything you want, but it must be unique in the Image, so please make sure that no two Packages use the same Name.</value>
+  </data>
+  <data name="tvFeatures.HelpString" xml:space="preserve">
+    <value>This list displays all the Windows Features available in this Image Package. A checked box means the feature will be enabled on installation, an unchecked box means the feature will be disabled by default. Some features require other features or may be necessary for functionality in Windows. Please note that you must run the Slipstream Process before any settings will be changed.</value>
+  </data>
+  <metadata name="imlFeatures.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>130, 17</value>
+  </metadata>
+  <data name="lvUpdates.HelpString" xml:space="preserve">
+    <value>This list displays the Windows Updates and Language Packs that have already been integrated into the Image Package. If you want to remove an Update or Language, uncheck the box next to it. Please note that you must run the Slipstream Process before any settings will be changed.</value>
+  </data>
+  <metadata name="imlUpdates.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="lvDriverClass.HelpString" xml:space="preserve">
+    <value>This is the list of driver classes in the Image Package, which generally define the type of hardware the driver is used for. Select one of the items in this list to populate the Provider list which will let you find a Driver INF by the company that provided the driver.</value>
+  </data>
   <metadata name="imlDriverClass.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>487, 17</value>
   </metadata>
   <metadata name="imlDriverCompany.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>734, 17</value>
   </metadata>
+  <data name="lvDriverINF.HelpString" xml:space="preserve">
+    <value>These INF files are all the drivers which were released by the selected Provider for the selected type of hardware. You can uncheck an INF File to remove it from the Image Package. Please make sure the driver is not Boot Critical or you may end up with an installation of Windows that does not boot or has other major problems. Please note that you must run the Slipstream Process before any settings will be changed.</value>
+  </data>
   <metadata name="imlDriverINF.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>615, 17</value>
   </metadata>

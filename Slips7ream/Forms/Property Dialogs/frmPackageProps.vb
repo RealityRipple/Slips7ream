@@ -23,8 +23,6 @@
   End Class
   Public Event Response(sender As Object, e As PackagePropertiesEventArgs)
   Private bLoading As Boolean = False
-  Private originalPackageName As String
-  Private originalPackageDesc As String
   Private selFeature As TreeNode
   Private selUpdate As ListViewItem
   Private LoadingFeatures As Boolean = False
@@ -46,9 +44,7 @@
     txtIndex.Text = Data.Index
     Me.Text = String.Format("{0} Image Package Properties", Data.Name)
     txtName.Text = Data.Name
-    originalPackageName = Data.Name
     txtDesc.Text = Data.Desc
-    originalPackageDesc = Data.Desc
     txtSize.Text = String.Format("{1} ({0} bytes)", FormatNumber(Data.Size, 0, TriState.False, TriState.False, TriState.True), ByteSize(Data.Size))
     txtArchitecture.Text = Data.Architecture
     txtHAL.Text = Data.HAL
@@ -94,6 +90,7 @@
   Private Sub frmPackageProps_Shown(sender As Object, e As System.EventArgs) Handles Me.Shown
     AsyncResizeUpdates()
     AsyncResizeDrivers()
+    txtName.Focus()
   End Sub
   Private Sub frmPackageProps_Resize(sender As Object, e As System.EventArgs) Handles Me.Resize
     AsyncResizeUpdates()
@@ -738,6 +735,7 @@
   End Sub
   Private Sub ToggleUI(Enable As Boolean)
     txtName.ReadOnly = Not Enable
+    txtDesc.ReadOnly = Not Enable
     cmdLoadFeatures.Enabled = Enable
     tvFeatures.ReadOnly = Not Enable
     cmdLoadUpdates.Enabled = Enable

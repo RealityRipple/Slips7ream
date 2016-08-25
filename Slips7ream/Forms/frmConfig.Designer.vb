@@ -85,8 +85,11 @@ Partial Class frmConfig
     '
     Me.lblTimeout.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblTimeout.AutoSize = True
+    Me.helpS7M.SetHelpKeyword(Me.lblTimeout, "/2_Configuration/2.3_Command_Timeout.htm")
+    Me.helpS7M.SetHelpNavigator(Me.lblTimeout, System.Windows.Forms.HelpNavigator.Topic)
     Me.lblTimeout.Location = New System.Drawing.Point(3, 153)
     Me.lblTimeout.Name = "lblTimeout"
+    Me.helpS7M.SetShowHelp(Me.lblTimeout, True)
     Me.lblTimeout.Size = New System.Drawing.Size(98, 13)
     Me.lblTimeout.TabIndex = 5
     Me.lblTimeout.Text = "Command Time&out:"
@@ -96,8 +99,12 @@ Partial Class frmConfig
     Me.cmdCancel.Anchor = System.Windows.Forms.AnchorStyles.Right
     Me.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
     Me.cmdCancel.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.helpS7M.SetHelpKeyword(Me.cmdCancel, "/2_Configuration/2.0_Configuration.htm")
+    Me.helpS7M.SetHelpNavigator(Me.cmdCancel, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.cmdCancel, "Close the SLIPS7REAM Configuration window.")
     Me.cmdCancel.Location = New System.Drawing.Point(383, 206)
     Me.cmdCancel.Name = "cmdCancel"
+    Me.helpS7M.SetShowHelp(Me.cmdCancel, True)
     Me.cmdCancel.Size = New System.Drawing.Size(75, 23)
     Me.cmdCancel.TabIndex = 11
     Me.cmdCancel.Text = "Cancel"
@@ -107,8 +114,12 @@ Partial Class frmConfig
     '
     Me.cmdOK.Anchor = System.Windows.Forms.AnchorStyles.Right
     Me.cmdOK.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.helpS7M.SetHelpKeyword(Me.cmdOK, "/2_Configuration/2.0_Configuration.htm")
+    Me.helpS7M.SetHelpNavigator(Me.cmdOK, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.cmdOK, "Save changes to your settings and close the SLIPS7REAM Configuration window.")
     Me.cmdOK.Location = New System.Drawing.Point(302, 206)
     Me.cmdOK.Name = "cmdOK"
+    Me.helpS7M.SetShowHelp(Me.cmdOK, True)
     Me.cmdOK.Size = New System.Drawing.Size(75, 23)
     Me.cmdOK.TabIndex = 10
     Me.cmdOK.Text = "OK"
@@ -119,6 +130,7 @@ Partial Class frmConfig
     Me.txtTimeout.Anchor = System.Windows.Forms.AnchorStyles.Right
     Me.helpS7M.SetHelpKeyword(Me.txtTimeout, "/2_Configuration/2.3_Command_Timeout.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtTimeout, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtTimeout, resources.GetString("txtTimeout.HelpString"))
     Me.txtTimeout.Location = New System.Drawing.Point(127, 150)
     Me.txtTimeout.Maximum = New Decimal(New Integer() {1440, 0, 0, 0})
     Me.txtTimeout.Name = "txtTimeout"
@@ -130,8 +142,11 @@ Partial Class frmConfig
     '
     Me.lblTemp.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblTemp.AutoSize = True
+    Me.helpS7M.SetHelpKeyword(Me.lblTemp, "/2_Configuration/2.1_Temp_Directory_Path.htm")
+    Me.helpS7M.SetHelpNavigator(Me.lblTemp, System.Windows.Forms.HelpNavigator.Topic)
     Me.lblTemp.Location = New System.Drawing.Point(3, 8)
     Me.lblTemp.Name = "lblTemp"
+    Me.helpS7M.SetShowHelp(Me.lblTemp, True)
     Me.lblTemp.Size = New System.Drawing.Size(107, 13)
     Me.lblTemp.TabIndex = 0
     Me.lblTemp.Text = "&Temp Directory Path:"
@@ -142,6 +157,7 @@ Partial Class frmConfig
     Me.pnlConfig.SetColumnSpan(Me.txtTemp, 2)
     Me.helpS7M.SetHelpKeyword(Me.txtTemp, "/2_Configuration/2.1_Temp_Directory_Path.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtTemp, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtTemp, resources.GetString("txtTemp.HelpString"))
     Me.txtTemp.Location = New System.Drawing.Point(127, 4)
     Me.txtTemp.Name = "txtTemp"
     Me.helpS7M.SetShowHelp(Me.txtTemp, True)
@@ -165,9 +181,12 @@ Partial Class frmConfig
     'lblWhitelist
     '
     Me.lblWhitelist.AutoSize = True
+    Me.helpS7M.SetHelpKeyword(Me.lblWhitelist, "/2_Configuration/2.2_Update_Whitelist.htm")
+    Me.helpS7M.SetHelpNavigator(Me.lblWhitelist, System.Windows.Forms.HelpNavigator.Topic)
     Me.lblWhitelist.Location = New System.Drawing.Point(3, 35)
     Me.lblWhitelist.Margin = New System.Windows.Forms.Padding(3, 6, 3, 0)
     Me.lblWhitelist.Name = "lblWhitelist"
+    Me.helpS7M.SetShowHelp(Me.lblWhitelist, True)
     Me.lblWhitelist.Size = New System.Drawing.Size(108, 13)
     Me.lblWhitelist.TabIndex = 3
     Me.lblWhitelist.Text = "x86 Update &Whitelist:"
@@ -179,6 +198,7 @@ Partial Class frmConfig
     Me.txtWhitelist.Dock = System.Windows.Forms.DockStyle.Fill
     Me.helpS7M.SetHelpKeyword(Me.txtWhitelist, "/2_Configuration/2.2_Update_Whitelist.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtWhitelist, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtWhitelist, resources.GetString("txtWhitelist.HelpString"))
     Me.txtWhitelist.Location = New System.Drawing.Point(127, 32)
     Me.txtWhitelist.Multiline = True
     Me.txtWhitelist.Name = "txtWhitelist"
@@ -193,8 +213,11 @@ Partial Class frmConfig
     Me.lblTimeoutS.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblTimeoutS.AutoSize = True
     Me.pnlConfig.SetColumnSpan(Me.lblTimeoutS, 2)
+    Me.helpS7M.SetHelpKeyword(Me.lblTimeoutS, "/2_Configuration/2.3_Command_Timeout.htm")
+    Me.helpS7M.SetHelpNavigator(Me.lblTimeoutS, System.Windows.Forms.HelpNavigator.Topic)
     Me.lblTimeoutS.Location = New System.Drawing.Point(193, 153)
     Me.lblTimeoutS.Name = "lblTimeoutS"
+    Me.helpS7M.SetShowHelp(Me.lblTimeoutS, True)
     Me.lblTimeoutS.Size = New System.Drawing.Size(43, 13)
     Me.lblTimeoutS.TabIndex = 7
     Me.lblTimeoutS.Text = "minutes"
@@ -206,6 +229,8 @@ Partial Class frmConfig
     Me.chkAlert.FlatStyle = System.Windows.Forms.FlatStyle.System
     Me.helpS7M.SetHelpKeyword(Me.chkAlert, "/2_Configuration/2.4_Alert_on_Complete.htm")
     Me.helpS7M.SetHelpNavigator(Me.chkAlert, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.chkAlert, "The Alert on Complete feature lets you play a sound effect when the Slipstream Pr" & _
+        "ocess completes.")
     Me.chkAlert.Location = New System.Drawing.Point(3, 179)
     Me.chkAlert.Name = "chkAlert"
     Me.helpS7M.SetShowHelp(Me.chkAlert, True)
@@ -243,8 +268,14 @@ Partial Class frmConfig
     '
     Me.txtAlertPath.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
     Me.txtAlertPath.Enabled = False
+    Me.helpS7M.SetHelpKeyword(Me.txtAlertPath, "/2_Configuration/2.4_Alert_on_Complete.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtAlertPath, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtAlertPath, "The Alert on Complete feature lets you play a sound effect when the Slipstream Pr" & _
+        "ocess completes." & vbNewLine & "This file should be a WAV audio file, although any audio file m" & _
+        "ay be selected.")
     Me.txtAlertPath.Location = New System.Drawing.Point(3, 5)
     Me.txtAlertPath.Name = "txtAlertPath"
+    Me.helpS7M.SetShowHelp(Me.txtAlertPath, True)
     Me.txtAlertPath.Size = New System.Drawing.Size(238, 20)
     Me.txtAlertPath.TabIndex = 0
     Me.ttInfo.SetToolTip(Me.txtAlertPath, "Path to the WAV file to play when the Slipstream process has completed.")
@@ -254,8 +285,11 @@ Partial Class frmConfig
     Me.cmdAlertBrowse.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.cmdAlertBrowse.Enabled = False
     Me.cmdAlertBrowse.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.helpS7M.SetHelpKeyword(Me.cmdAlertBrowse, "/2_Configuration/2.4_Alert_on_Complete.htm")
+    Me.helpS7M.SetHelpNavigator(Me.cmdAlertBrowse, System.Windows.Forms.HelpNavigator.Topic)
     Me.cmdAlertBrowse.Location = New System.Drawing.Point(247, 3)
     Me.cmdAlertBrowse.Name = "cmdAlertBrowse"
+    Me.helpS7M.SetShowHelp(Me.cmdAlertBrowse, True)
     Me.cmdAlertBrowse.Size = New System.Drawing.Size(29, 23)
     Me.cmdAlertBrowse.TabIndex = 1
     Me.cmdAlertBrowse.Text = ". . ."
@@ -265,9 +299,13 @@ Partial Class frmConfig
     '
     Me.cmdPlay.Anchor = System.Windows.Forms.AnchorStyles.None
     Me.cmdPlay.Enabled = False
+    Me.helpS7M.SetHelpKeyword(Me.cmdPlay, "/2_Configuration/2.4_Alert_on_Complete.htm")
+    Me.helpS7M.SetHelpNavigator(Me.cmdPlay, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.cmdPlay, "This button will test the playback of the selected Alert audio file.")
     Me.cmdPlay.Image = Global.Slips7ream.My.Resources.Resources.play
     Me.cmdPlay.Location = New System.Drawing.Point(311, 3)
     Me.cmdPlay.Name = "cmdPlay"
+    Me.helpS7M.SetShowHelp(Me.cmdPlay, True)
     Me.cmdPlay.Size = New System.Drawing.Size(23, 23)
     Me.cmdPlay.TabIndex = 3
     Me.ttInfo.SetToolTip(Me.cmdPlay, "Play the Alert sound.")
@@ -278,9 +316,14 @@ Partial Class frmConfig
     Me.chkDefault.Anchor = System.Windows.Forms.AnchorStyles.None
     Me.chkDefault.Appearance = System.Windows.Forms.Appearance.Button
     Me.chkDefault.Enabled = False
+    Me.helpS7M.SetHelpKeyword(Me.chkDefault, "/2_Configuration/2.4_Alert_on_Complete.htm")
+    Me.helpS7M.SetHelpNavigator(Me.chkDefault, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.chkDefault, "Instead of using a custom sound file, you can use the built-in Windows ""tada.wav""" & _
+        " sound file or default alert sound.")
     Me.chkDefault.Image = Global.Slips7ream.My.Resources.Resources.win
     Me.chkDefault.Location = New System.Drawing.Point(282, 3)
     Me.chkDefault.Name = "chkDefault"
+    Me.helpS7M.SetShowHelp(Me.chkDefault, True)
     Me.chkDefault.Size = New System.Drawing.Size(23, 23)
     Me.chkDefault.TabIndex = 2
     Me.chkDefault.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -299,8 +342,11 @@ Partial Class frmConfig
     Me.lblDonate.Cursor = System.Windows.Forms.Cursors.Hand
     Me.lblDonate.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!)
     Me.lblDonate.ForeColor = System.Drawing.Color.MediumBlue
+    Me.helpS7M.SetHelpString(Me.lblDonate, "Click this link to visit realityripple.com and make a donation to support develop" & _
+        "ment of SLIPS7REAM.")
     Me.lblDonate.Location = New System.Drawing.Point(50, 211)
     Me.lblDonate.Name = "lblDonate"
+    Me.helpS7M.SetShowHelp(Me.lblDonate, True)
     Me.lblDonate.Size = New System.Drawing.Size(89, 13)
     Me.lblDonate.TabIndex = 12
     Me.lblDonate.Text = "Make a &Donation"
@@ -314,6 +360,7 @@ Partial Class frmConfig
     Me.ClientSize = New System.Drawing.Size(461, 232)
     Me.Controls.Add(Me.pnlConfig)
     Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
+    Me.HelpButton = True
     Me.helpS7M.SetHelpKeyword(Me, "/2_Configuration/2.0_Configuration.htm")
     Me.helpS7M.SetHelpNavigator(Me, System.Windows.Forms.HelpNavigator.Topic)
     Me.Icon = Global.Slips7ream.My.Resources.Resources.icon

@@ -33,6 +33,7 @@ Partial Class frmFS
     Me.cmdUseCurrent = New System.Windows.Forms.Button()
     Me.cmdCancel = New System.Windows.Forms.Button()
     Me.ttFS = New Slips7ream.ToolTip(Me.components)
+    Me.helpS7M = New System.Windows.Forms.HelpProvider()
     Me.pnlFS.SuspendLayout()
     Me.pnlButtons.SuspendLayout()
     Me.SuspendLayout()
@@ -57,8 +58,13 @@ Partial Class frmFS
     'lblDescription
     '
     Me.lblDescription.AutoSize = True
+    Me.helpS7M.SetHelpKeyword(Me.lblDescription, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.4_File_System.htm")
+    Me.helpS7M.SetHelpNavigator(Me.lblDescription, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.lblDescription, "This text is telling you the File System you selected won't work. You should prob" & _
+        "ably read it, not this help message.")
     Me.lblDescription.Location = New System.Drawing.Point(3, 0)
     Me.lblDescription.Name = "lblDescription"
+    Me.helpS7M.SetShowHelp(Me.lblDescription, True)
     Me.lblDescription.Size = New System.Drawing.Size(464, 65)
     Me.lblDescription.TabIndex = 1
     Me.lblDescription.Text = resources.GetString("lblDescription.Text")
@@ -67,11 +73,15 @@ Partial Class frmFS
     '
     Me.txtLargeFiles.BackColor = System.Drawing.SystemColors.Window
     Me.txtLargeFiles.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.helpS7M.SetHelpKeyword(Me.txtLargeFiles, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.4_File_System.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtLargeFiles, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtLargeFiles, "This is a list of files that are too large for ISO 9960 File Systems.")
     Me.txtLargeFiles.Location = New System.Drawing.Point(3, 68)
     Me.txtLargeFiles.Multiline = True
     Me.txtLargeFiles.Name = "txtLargeFiles"
     Me.txtLargeFiles.ReadOnly = True
     Me.txtLargeFiles.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+    Me.helpS7M.SetShowHelp(Me.txtLargeFiles, True)
     Me.txtLargeFiles.Size = New System.Drawing.Size(472, 78)
     Me.txtLargeFiles.TabIndex = 2
     '
@@ -101,8 +111,13 @@ Partial Class frmFS
     '
     Me.cmdUseUDF.AutoSize = True
     Me.cmdUseUDF.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.helpS7M.SetHelpKeyword(Me.cmdUseUDF, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.4_File_System.htm")
+    Me.helpS7M.SetHelpNavigator(Me.cmdUseUDF, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.cmdUseUDF, "Universal Disk Format, or ISO/IEC 13346. Superior standard, but less compatible. " & _
+        "Large file sizes are supported. This is probably your easiest option.")
     Me.cmdUseUDF.Location = New System.Drawing.Point(3, 3)
     Me.cmdUseUDF.Name = "cmdUseUDF"
+    Me.helpS7M.SetShowHelp(Me.cmdUseUDF, True)
     Me.cmdUseUDF.Size = New System.Drawing.Size(75, 23)
     Me.cmdUseUDF.TabIndex = 0
     Me.cmdUseUDF.Text = "Use U&DF"
@@ -114,8 +129,13 @@ Partial Class frmFS
     '
     Me.cmdUseUDF102.AutoSize = True
     Me.cmdUseUDF102.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.helpS7M.SetHelpKeyword(Me.cmdUseUDF102, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.4_File_System.htm")
+    Me.helpS7M.SetHelpNavigator(Me.cmdUseUDF102, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.cmdUseUDF102, "If your hardware is older and only understands the legacy UDF 1.02 format, you'll" & _
+        " have to use this instead of UDF.")
     Me.cmdUseUDF102.Location = New System.Drawing.Point(84, 3)
     Me.cmdUseUDF102.Name = "cmdUseUDF102"
+    Me.helpS7M.SetShowHelp(Me.cmdUseUDF102, True)
     Me.cmdUseUDF102.Size = New System.Drawing.Size(89, 23)
     Me.cmdUseUDF102.TabIndex = 1
     Me.cmdUseUDF102.Text = "Use &UDF 1.02"
@@ -127,8 +147,13 @@ Partial Class frmFS
     '
     Me.cmdUseCurrent.AutoSize = True
     Me.cmdUseCurrent.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.helpS7M.SetHelpKeyword(Me.cmdUseCurrent, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.4_File_System.htm")
+    Me.helpS7M.SetHelpNavigator(Me.cmdUseCurrent, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.cmdUseCurrent, "If you understand the risks and want to make the ISO without any changes to the F" & _
+        "ile System, this is the button you should choose.")
     Me.cmdUseCurrent.Location = New System.Drawing.Point(179, 3)
     Me.cmdUseCurrent.Name = "cmdUseCurrent"
+    Me.helpS7M.SetShowHelp(Me.cmdUseCurrent, True)
     Me.cmdUseCurrent.Size = New System.Drawing.Size(93, 23)
     Me.cmdUseCurrent.TabIndex = 2
     Me.cmdUseCurrent.Text = "Use Current &FS"
@@ -140,13 +165,22 @@ Partial Class frmFS
     Me.cmdCancel.AutoSize = True
     Me.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
     Me.cmdCancel.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.helpS7M.SetHelpKeyword(Me.cmdCancel, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.4_File_System.htm")
+    Me.helpS7M.SetHelpNavigator(Me.cmdCancel, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.cmdCancel, "Cancelling will let you choose different options. SLIPS7REAM suggests splitting a" & _
+        " WIM if it's too large for your preferred File System.")
     Me.cmdCancel.Location = New System.Drawing.Point(278, 3)
     Me.cmdCancel.Name = "cmdCancel"
+    Me.helpS7M.SetShowHelp(Me.cmdCancel, True)
     Me.cmdCancel.Size = New System.Drawing.Size(117, 25)
     Me.cmdCancel.TabIndex = 3
     Me.cmdCancel.Text = "&Cancel ISO Creation"
     Me.ttFS.SetToolTip(Me.cmdCancel, "Don't make an ISO, cancel any further action.")
     Me.cmdCancel.UseVisualStyleBackColor = True
+    '
+    'helpS7M
+    '
+    Me.helpS7M.HelpNamespace = "S7M.chm"
     '
     'frmFS
     '
@@ -156,10 +190,14 @@ Partial Class frmFS
     Me.ClientSize = New System.Drawing.Size(478, 180)
     Me.Controls.Add(Me.pnlFS)
     Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
+    Me.HelpButton = True
+    Me.helpS7M.SetHelpKeyword(Me, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.4_File_System.htm")
+    Me.helpS7M.SetHelpNavigator(Me, System.Windows.Forms.HelpNavigator.Topic)
     Me.Icon = Global.Slips7ream.My.Resources.Resources.icon
     Me.MaximizeBox = False
     Me.MinimizeBox = False
     Me.Name = "frmFS"
+    Me.helpS7M.SetShowHelp(Me, True)
     Me.ShowInTaskbar = False
     Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
     Me.Text = "SLIPS7REAM File System Size Conflict"
@@ -179,4 +217,5 @@ Partial Class frmFS
   Friend WithEvents cmdUseCurrent As System.Windows.Forms.Button
   Friend WithEvents cmdCancel As System.Windows.Forms.Button
   Friend WithEvents ttFS As Slips7ream.ToolTip
+  Friend WithEvents helpS7M As System.Windows.Forms.HelpProvider
 End Class

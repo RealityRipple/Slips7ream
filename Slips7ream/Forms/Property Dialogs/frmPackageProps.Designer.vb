@@ -23,6 +23,7 @@ Partial Class frmPackageProps
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
     Me.components = New System.ComponentModel.Container()
+    Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmPackageProps))
     Me.pnlProps = New System.Windows.Forms.TableLayoutPanel()
     Me.lblIndex = New System.Windows.Forms.Label()
     Me.txtIndex = New System.Windows.Forms.TextBox()
@@ -163,6 +164,7 @@ Partial Class frmPackageProps
     Me.pnlProps.Margin = New System.Windows.Forms.Padding(0)
     Me.pnlProps.Name = "pnlProps"
     Me.pnlProps.RowCount = 38
+    Me.pnlMain.SetRowSpan(Me.pnlProps, 2)
     Me.pnlProps.RowStyles.Add(New System.Windows.Forms.RowStyle())
     Me.pnlProps.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 2.777627!))
     Me.pnlProps.RowStyles.Add(New System.Windows.Forms.RowStyle())
@@ -200,16 +202,22 @@ Partial Class frmPackageProps
     Me.pnlProps.RowStyles.Add(New System.Windows.Forms.RowStyle())
     Me.pnlProps.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 2.777627!))
     Me.pnlProps.RowStyles.Add(New System.Windows.Forms.RowStyle())
-    Me.pnlProps.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.00272!))
-    Me.pnlProps.Size = New System.Drawing.Size(313, 491)
+    Me.pnlProps.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.00273!))
+    Me.pnlProps.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
+    Me.pnlProps.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
+    Me.pnlProps.Size = New System.Drawing.Size(293, 512)
     Me.pnlProps.TabIndex = 0
     '
     'lblIndex
     '
     Me.lblIndex.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblIndex.AutoSize = True
+    Me.helpS7M.SetHelpString(Me.lblIndex, "This is the index of the Image Package in its parent WIM file. Indexes start from" & _
+        " 1. This is the order in which the Installer will list your Operating System cho" & _
+        "ices.")
     Me.lblIndex.Location = New System.Drawing.Point(3, 5)
     Me.lblIndex.Name = "lblIndex"
+    Me.helpS7M.SetShowHelp(Me.lblIndex, True)
     Me.lblIndex.Size = New System.Drawing.Size(36, 13)
     Me.lblIndex.TabIndex = 0
     Me.lblIndex.Text = "Index:"
@@ -217,20 +225,29 @@ Partial Class frmPackageProps
     'txtIndex
     '
     Me.txtIndex.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.helpS7M.SetHelpKeyword(Me.txtIndex, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+        "ge_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtIndex, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtIndex, "This is the index of the Image Package in its parent WIM file. Indexes start from" & _
+        " 1. This is the order in which the Installer will list your Operating System cho" & _
+        "ices.")
     Me.txtIndex.Location = New System.Drawing.Point(111, 2)
     Me.txtIndex.Margin = New System.Windows.Forms.Padding(2)
-    Me.txtIndex.MinimumSize = New System.Drawing.Size(200, 4)
+    Me.txtIndex.MinimumSize = New System.Drawing.Size(180, 4)
     Me.txtIndex.Name = "txtIndex"
     Me.txtIndex.ReadOnly = True
-    Me.txtIndex.Size = New System.Drawing.Size(200, 20)
+    Me.helpS7M.SetShowHelp(Me.txtIndex, True)
+    Me.txtIndex.Size = New System.Drawing.Size(180, 20)
     Me.txtIndex.TabIndex = 1
     '
     'lblName
     '
     Me.lblName.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblName.AutoSize = True
-    Me.lblName.Location = New System.Drawing.Point(3, 29)
+    Me.helpS7M.SetHelpString(Me.lblName, resources.GetString("lblName.HelpString"))
+    Me.lblName.Location = New System.Drawing.Point(3, 30)
     Me.lblName.Name = "lblName"
+    Me.helpS7M.SetShowHelp(Me.lblName, True)
     Me.lblName.Size = New System.Drawing.Size(38, 13)
     Me.lblName.TabIndex = 2
     Me.lblName.Text = "&Name:"
@@ -238,19 +255,28 @@ Partial Class frmPackageProps
     'txtName
     '
     Me.txtName.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtName.Location = New System.Drawing.Point(111, 26)
+    Me.helpS7M.SetHelpKeyword(Me.txtName, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+        "ge_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtName, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtName, resources.GetString("txtName.HelpString"))
+    Me.txtName.Location = New System.Drawing.Point(111, 27)
     Me.txtName.Margin = New System.Windows.Forms.Padding(2)
-    Me.txtName.MinimumSize = New System.Drawing.Size(200, 4)
+    Me.txtName.MinimumSize = New System.Drawing.Size(180, 4)
     Me.txtName.Name = "txtName"
-    Me.txtName.Size = New System.Drawing.Size(200, 20)
+    Me.helpS7M.SetShowHelp(Me.txtName, True)
+    Me.txtName.Size = New System.Drawing.Size(180, 20)
     Me.txtName.TabIndex = 3
     '
     'lblDesc
     '
     Me.lblDesc.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblDesc.AutoSize = True
-    Me.lblDesc.Location = New System.Drawing.Point(3, 53)
+    Me.helpS7M.SetHelpString(Me.lblDesc, "A simple description of the Operating System, used by the Installer. You can set " & _
+        "this to whatever you want to be shown below the list of Operating Systems when t" & _
+        "his Package's Name is selected.")
+    Me.lblDesc.Location = New System.Drawing.Point(3, 55)
     Me.lblDesc.Name = "lblDesc"
+    Me.helpS7M.SetShowHelp(Me.lblDesc, True)
     Me.lblDesc.Size = New System.Drawing.Size(63, 13)
     Me.lblDesc.TabIndex = 4
     Me.lblDesc.Text = "Description:"
@@ -258,19 +284,29 @@ Partial Class frmPackageProps
     'txtDesc
     '
     Me.txtDesc.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtDesc.Location = New System.Drawing.Point(111, 50)
+    Me.helpS7M.SetHelpKeyword(Me.txtDesc, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+        "ge_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtDesc, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtDesc, "A simple description of the Operating System, used by the Installer. You can set " & _
+        "this to whatever you want to be shown below the list of Operating Systems when t" & _
+        "his Package's Name is selected.")
+    Me.txtDesc.Location = New System.Drawing.Point(111, 52)
     Me.txtDesc.Margin = New System.Windows.Forms.Padding(2)
-    Me.txtDesc.MinimumSize = New System.Drawing.Size(200, 4)
+    Me.txtDesc.MinimumSize = New System.Drawing.Size(180, 4)
     Me.txtDesc.Name = "txtDesc"
-    Me.txtDesc.Size = New System.Drawing.Size(200, 20)
+    Me.helpS7M.SetShowHelp(Me.txtDesc, True)
+    Me.txtDesc.Size = New System.Drawing.Size(180, 20)
     Me.txtDesc.TabIndex = 5
     '
     'lblSize
     '
     Me.lblSize.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblSize.AutoSize = True
-    Me.lblSize.Location = New System.Drawing.Point(3, 77)
+    Me.helpS7M.SetHelpString(Me.lblSize, "The total size of the Image Package once extracted, not the actual file size of t" & _
+        "he compressed Image Package.")
+    Me.lblSize.Location = New System.Drawing.Point(3, 80)
     Me.lblSize.Name = "lblSize"
+    Me.helpS7M.SetShowHelp(Me.lblSize, True)
     Me.lblSize.Size = New System.Drawing.Size(30, 13)
     Me.lblSize.TabIndex = 6
     Me.lblSize.Text = "Size:"
@@ -278,20 +314,29 @@ Partial Class frmPackageProps
     'txtSize
     '
     Me.txtSize.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtSize.Location = New System.Drawing.Point(111, 74)
+    Me.helpS7M.SetHelpKeyword(Me.txtSize, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+        "ge_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtSize, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtSize, "The total size of the Image Package once extracted, not the actual file size of t" & _
+        "he compressed Image Package.")
+    Me.txtSize.Location = New System.Drawing.Point(111, 77)
     Me.txtSize.Margin = New System.Windows.Forms.Padding(2)
-    Me.txtSize.MinimumSize = New System.Drawing.Size(200, 4)
+    Me.txtSize.MinimumSize = New System.Drawing.Size(180, 4)
     Me.txtSize.Name = "txtSize"
     Me.txtSize.ReadOnly = True
-    Me.txtSize.Size = New System.Drawing.Size(200, 20)
+    Me.helpS7M.SetShowHelp(Me.txtSize, True)
+    Me.txtSize.Size = New System.Drawing.Size(180, 20)
     Me.txtSize.TabIndex = 7
     '
     'lblArchitecture
     '
     Me.lblArchitecture.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblArchitecture.AutoSize = True
-    Me.lblArchitecture.Location = New System.Drawing.Point(3, 101)
+    Me.helpS7M.SetHelpString(Me.lblArchitecture, "This identifies the architecture of the Windows 7 Image Package as either x86 or " & _
+        "x64.")
+    Me.lblArchitecture.Location = New System.Drawing.Point(3, 105)
     Me.lblArchitecture.Name = "lblArchitecture"
+    Me.helpS7M.SetShowHelp(Me.lblArchitecture, True)
     Me.lblArchitecture.Size = New System.Drawing.Size(67, 13)
     Me.lblArchitecture.TabIndex = 8
     Me.lblArchitecture.Text = "Architecture:"
@@ -299,20 +344,29 @@ Partial Class frmPackageProps
     'txtArchitecture
     '
     Me.txtArchitecture.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtArchitecture.Location = New System.Drawing.Point(111, 98)
+    Me.helpS7M.SetHelpKeyword(Me.txtArchitecture, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+        "ge_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtArchitecture, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtArchitecture, "This identifies the architecture of the Windows 7 Image Package as either x86 or " & _
+        "x64.")
+    Me.txtArchitecture.Location = New System.Drawing.Point(111, 102)
     Me.txtArchitecture.Margin = New System.Windows.Forms.Padding(2)
-    Me.txtArchitecture.MinimumSize = New System.Drawing.Size(200, 4)
+    Me.txtArchitecture.MinimumSize = New System.Drawing.Size(180, 4)
     Me.txtArchitecture.Name = "txtArchitecture"
     Me.txtArchitecture.ReadOnly = True
-    Me.txtArchitecture.Size = New System.Drawing.Size(200, 20)
+    Me.helpS7M.SetShowHelp(Me.txtArchitecture, True)
+    Me.txtArchitecture.Size = New System.Drawing.Size(180, 20)
     Me.txtArchitecture.TabIndex = 9
     '
     'lblHAL
     '
     Me.lblHAL.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblHAL.AutoSize = True
-    Me.lblHAL.Location = New System.Drawing.Point(3, 125)
+    Me.helpS7M.SetHelpString(Me.lblHAL, "The Hardware Application Layer used by the OS, which, as far as I know, is always" & _
+        " ""acpiapic"".")
+    Me.lblHAL.Location = New System.Drawing.Point(3, 130)
     Me.lblHAL.Name = "lblHAL"
+    Me.helpS7M.SetShowHelp(Me.lblHAL, True)
     Me.lblHAL.Size = New System.Drawing.Size(31, 13)
     Me.lblHAL.TabIndex = 10
     Me.lblHAL.Text = "HAL:"
@@ -320,20 +374,29 @@ Partial Class frmPackageProps
     'txtHAL
     '
     Me.txtHAL.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtHAL.Location = New System.Drawing.Point(111, 122)
+    Me.helpS7M.SetHelpKeyword(Me.txtHAL, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+        "ge_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtHAL, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtHAL, "The Hardware Application Layer used by the OS, which, as far as I know, is always" & _
+        " ""acpiapic"".")
+    Me.txtHAL.Location = New System.Drawing.Point(111, 127)
     Me.txtHAL.Margin = New System.Windows.Forms.Padding(2)
-    Me.txtHAL.MinimumSize = New System.Drawing.Size(200, 4)
+    Me.txtHAL.MinimumSize = New System.Drawing.Size(180, 4)
     Me.txtHAL.Name = "txtHAL"
     Me.txtHAL.ReadOnly = True
-    Me.txtHAL.Size = New System.Drawing.Size(200, 20)
+    Me.helpS7M.SetShowHelp(Me.txtHAL, True)
+    Me.txtHAL.Size = New System.Drawing.Size(180, 20)
     Me.txtHAL.TabIndex = 11
     '
     'lblVersion
     '
     Me.lblVersion.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblVersion.AutoSize = True
-    Me.lblVersion.Location = New System.Drawing.Point(3, 149)
+    Me.helpS7M.SetHelpString(Me.lblVersion, "The Operating System Version for Windows 7 is always 6.1. Windows 7 RTM is 6.1.76" & _
+        "00, Service Pack 1 is 6.1.7601. No other versions currently exist.")
+    Me.lblVersion.Location = New System.Drawing.Point(3, 155)
     Me.lblVersion.Name = "lblVersion"
+    Me.helpS7M.SetShowHelp(Me.lblVersion, True)
     Me.lblVersion.Size = New System.Drawing.Size(45, 13)
     Me.lblVersion.TabIndex = 12
     Me.lblVersion.Text = "Version:"
@@ -341,20 +404,28 @@ Partial Class frmPackageProps
     'txtVersion
     '
     Me.txtVersion.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtVersion.Location = New System.Drawing.Point(111, 146)
+    Me.helpS7M.SetHelpKeyword(Me.txtVersion, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+        "ge_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtVersion, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtVersion, "The Operating System Version for Windows 7 is always 6.1. Windows 7 RTM is 6.1.76" & _
+        "00, Service Pack 1 is 6.1.7601. No other versions currently exist.")
+    Me.txtVersion.Location = New System.Drawing.Point(111, 152)
     Me.txtVersion.Margin = New System.Windows.Forms.Padding(2)
-    Me.txtVersion.MinimumSize = New System.Drawing.Size(200, 4)
+    Me.txtVersion.MinimumSize = New System.Drawing.Size(180, 4)
     Me.txtVersion.Name = "txtVersion"
     Me.txtVersion.ReadOnly = True
-    Me.txtVersion.Size = New System.Drawing.Size(200, 20)
+    Me.helpS7M.SetShowHelp(Me.txtVersion, True)
+    Me.txtVersion.Size = New System.Drawing.Size(180, 20)
     Me.txtVersion.TabIndex = 13
     '
     'lblEdition
     '
     Me.lblEdition.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblEdition.AutoSize = True
-    Me.lblEdition.Location = New System.Drawing.Point(3, 221)
+    Me.helpS7M.SetHelpString(Me.lblEdition, "The Edition of Windows 7 contained in this Image Package.")
+    Me.lblEdition.Location = New System.Drawing.Point(3, 230)
     Me.lblEdition.Name = "lblEdition"
+    Me.helpS7M.SetShowHelp(Me.lblEdition, True)
     Me.lblEdition.Size = New System.Drawing.Size(42, 13)
     Me.lblEdition.TabIndex = 18
     Me.lblEdition.Text = "Edition:"
@@ -362,20 +433,28 @@ Partial Class frmPackageProps
     'txtEdition
     '
     Me.txtEdition.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtEdition.Location = New System.Drawing.Point(111, 218)
+    Me.helpS7M.SetHelpKeyword(Me.txtEdition, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+        "ge_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtEdition, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtEdition, "The Edition of Windows 7 contained in this Image Package.")
+    Me.txtEdition.Location = New System.Drawing.Point(111, 227)
     Me.txtEdition.Margin = New System.Windows.Forms.Padding(2)
-    Me.txtEdition.MinimumSize = New System.Drawing.Size(200, 4)
+    Me.txtEdition.MinimumSize = New System.Drawing.Size(180, 4)
     Me.txtEdition.Name = "txtEdition"
     Me.txtEdition.ReadOnly = True
-    Me.txtEdition.Size = New System.Drawing.Size(200, 20)
+    Me.helpS7M.SetShowHelp(Me.txtEdition, True)
+    Me.txtEdition.Size = New System.Drawing.Size(180, 20)
     Me.txtEdition.TabIndex = 19
     '
     'lblInstallation
     '
     Me.lblInstallation.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblInstallation.AutoSize = True
-    Me.lblInstallation.Location = New System.Drawing.Point(3, 245)
+    Me.helpS7M.SetHelpString(Me.lblInstallation, "The target Installation type for this Operating System. Windows 7 is always ""Clie" & _
+        "nt"".")
+    Me.lblInstallation.Location = New System.Drawing.Point(3, 255)
     Me.lblInstallation.Name = "lblInstallation"
+    Me.helpS7M.SetShowHelp(Me.lblInstallation, True)
     Me.lblInstallation.Size = New System.Drawing.Size(60, 13)
     Me.lblInstallation.TabIndex = 20
     Me.lblInstallation.Text = "Installation:"
@@ -383,20 +462,28 @@ Partial Class frmPackageProps
     'txtInstallation
     '
     Me.txtInstallation.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtInstallation.Location = New System.Drawing.Point(111, 242)
+    Me.helpS7M.SetHelpKeyword(Me.txtInstallation, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+        "ge_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtInstallation, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtInstallation, "The target Installation type for this Operating System. Windows 7 is always ""Clie" & _
+        "nt"".")
+    Me.txtInstallation.Location = New System.Drawing.Point(111, 252)
     Me.txtInstallation.Margin = New System.Windows.Forms.Padding(2)
-    Me.txtInstallation.MinimumSize = New System.Drawing.Size(200, 4)
+    Me.txtInstallation.MinimumSize = New System.Drawing.Size(180, 4)
     Me.txtInstallation.Name = "txtInstallation"
     Me.txtInstallation.ReadOnly = True
-    Me.txtInstallation.Size = New System.Drawing.Size(200, 20)
+    Me.helpS7M.SetShowHelp(Me.txtInstallation, True)
+    Me.txtInstallation.Size = New System.Drawing.Size(180, 20)
     Me.txtInstallation.TabIndex = 21
     '
     'lblProductType
     '
     Me.lblProductType.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblProductType.AutoSize = True
-    Me.lblProductType.Location = New System.Drawing.Point(3, 269)
+    Me.helpS7M.SetHelpString(Me.lblProductType, "The product type of Windows 7 is always ""WinNT"".")
+    Me.lblProductType.Location = New System.Drawing.Point(3, 280)
     Me.lblProductType.Name = "lblProductType"
+    Me.helpS7M.SetShowHelp(Me.lblProductType, True)
     Me.lblProductType.Size = New System.Drawing.Size(74, 13)
     Me.lblProductType.TabIndex = 22
     Me.lblProductType.Text = "Product Type:"
@@ -404,20 +491,27 @@ Partial Class frmPackageProps
     'txtProductType
     '
     Me.txtProductType.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtProductType.Location = New System.Drawing.Point(111, 266)
+    Me.helpS7M.SetHelpKeyword(Me.txtProductType, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+        "ge_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtProductType, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtProductType, "The product type of Windows 7 is always ""WinNT"".")
+    Me.txtProductType.Location = New System.Drawing.Point(111, 277)
     Me.txtProductType.Margin = New System.Windows.Forms.Padding(2)
-    Me.txtProductType.MinimumSize = New System.Drawing.Size(200, 4)
+    Me.txtProductType.MinimumSize = New System.Drawing.Size(180, 4)
     Me.txtProductType.Name = "txtProductType"
     Me.txtProductType.ReadOnly = True
-    Me.txtProductType.Size = New System.Drawing.Size(200, 20)
+    Me.helpS7M.SetShowHelp(Me.txtProductType, True)
+    Me.txtProductType.Size = New System.Drawing.Size(180, 20)
     Me.txtProductType.TabIndex = 23
     '
     'lblProductSuite
     '
     Me.lblProductSuite.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblProductSuite.AutoSize = True
-    Me.lblProductSuite.Location = New System.Drawing.Point(3, 293)
+    Me.helpS7M.SetHelpString(Me.lblProductSuite, "The product suite of Windows 7 is always ""Terminal Server"".")
+    Me.lblProductSuite.Location = New System.Drawing.Point(3, 305)
     Me.lblProductSuite.Name = "lblProductSuite"
+    Me.helpS7M.SetShowHelp(Me.lblProductSuite, True)
     Me.lblProductSuite.Size = New System.Drawing.Size(74, 13)
     Me.lblProductSuite.TabIndex = 24
     Me.lblProductSuite.Text = "Product Suite:"
@@ -425,20 +519,28 @@ Partial Class frmPackageProps
     'txtProductSuite
     '
     Me.txtProductSuite.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtProductSuite.Location = New System.Drawing.Point(111, 290)
+    Me.helpS7M.SetHelpKeyword(Me.txtProductSuite, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+        "ge_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtProductSuite, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtProductSuite, "The product suite of Windows 7 is always ""Terminal Server"".")
+    Me.txtProductSuite.Location = New System.Drawing.Point(111, 302)
     Me.txtProductSuite.Margin = New System.Windows.Forms.Padding(2)
-    Me.txtProductSuite.MinimumSize = New System.Drawing.Size(200, 4)
+    Me.txtProductSuite.MinimumSize = New System.Drawing.Size(180, 4)
     Me.txtProductSuite.Name = "txtProductSuite"
     Me.txtProductSuite.ReadOnly = True
-    Me.txtProductSuite.Size = New System.Drawing.Size(200, 20)
+    Me.helpS7M.SetShowHelp(Me.txtProductSuite, True)
+    Me.txtProductSuite.Size = New System.Drawing.Size(180, 20)
     Me.txtProductSuite.TabIndex = 25
     '
     'lblSystemRoot
     '
     Me.lblSystemRoot.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblSystemRoot.AutoSize = True
-    Me.lblSystemRoot.Location = New System.Drawing.Point(3, 317)
+    Me.helpS7M.SetHelpString(Me.lblSystemRoot, "This is the folder where all the Windows files are stored. Windows 7 uses ""WINDOW" & _
+        "S"", though this may be modifiable.")
+    Me.lblSystemRoot.Location = New System.Drawing.Point(3, 330)
     Me.lblSystemRoot.Name = "lblSystemRoot"
+    Me.helpS7M.SetShowHelp(Me.lblSystemRoot, True)
     Me.lblSystemRoot.Size = New System.Drawing.Size(70, 13)
     Me.lblSystemRoot.TabIndex = 26
     Me.lblSystemRoot.Text = "System Root:"
@@ -446,20 +548,28 @@ Partial Class frmPackageProps
     'txtSystemRoot
     '
     Me.txtSystemRoot.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtSystemRoot.Location = New System.Drawing.Point(111, 314)
+    Me.helpS7M.SetHelpKeyword(Me.txtSystemRoot, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+        "ge_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtSystemRoot, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtSystemRoot, "This is the folder where all the Windows files are stored. Windows 7 uses ""WINDOW" & _
+        "S"", though this may be modifiable.")
+    Me.txtSystemRoot.Location = New System.Drawing.Point(111, 327)
     Me.txtSystemRoot.Margin = New System.Windows.Forms.Padding(2)
-    Me.txtSystemRoot.MinimumSize = New System.Drawing.Size(200, 4)
+    Me.txtSystemRoot.MinimumSize = New System.Drawing.Size(180, 4)
     Me.txtSystemRoot.Name = "txtSystemRoot"
     Me.txtSystemRoot.ReadOnly = True
-    Me.txtSystemRoot.Size = New System.Drawing.Size(200, 20)
+    Me.helpS7M.SetShowHelp(Me.txtSystemRoot, True)
+    Me.txtSystemRoot.Size = New System.Drawing.Size(180, 20)
     Me.txtSystemRoot.TabIndex = 27
     '
     'lblFiles
     '
     Me.lblFiles.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblFiles.AutoSize = True
-    Me.lblFiles.Location = New System.Drawing.Point(3, 341)
+    Me.helpS7M.SetHelpString(Me.lblFiles, "The total number of files contained in this Image Package.")
+    Me.lblFiles.Location = New System.Drawing.Point(3, 355)
     Me.lblFiles.Name = "lblFiles"
+    Me.helpS7M.SetShowHelp(Me.lblFiles, True)
     Me.lblFiles.Size = New System.Drawing.Size(57, 13)
     Me.lblFiles.TabIndex = 28
     Me.lblFiles.Text = "File Count:"
@@ -467,20 +577,27 @@ Partial Class frmPackageProps
     'txtFiles
     '
     Me.txtFiles.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtFiles.Location = New System.Drawing.Point(111, 338)
+    Me.helpS7M.SetHelpKeyword(Me.txtFiles, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+        "ge_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtFiles, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtFiles, "The total number of files contained in this Image Package.")
+    Me.txtFiles.Location = New System.Drawing.Point(111, 352)
     Me.txtFiles.Margin = New System.Windows.Forms.Padding(2)
-    Me.txtFiles.MinimumSize = New System.Drawing.Size(200, 4)
+    Me.txtFiles.MinimumSize = New System.Drawing.Size(180, 4)
     Me.txtFiles.Name = "txtFiles"
     Me.txtFiles.ReadOnly = True
-    Me.txtFiles.Size = New System.Drawing.Size(200, 20)
+    Me.helpS7M.SetShowHelp(Me.txtFiles, True)
+    Me.txtFiles.Size = New System.Drawing.Size(180, 20)
     Me.txtFiles.TabIndex = 29
     '
     'lblDirectories
     '
     Me.lblDirectories.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblDirectories.AutoSize = True
-    Me.lblDirectories.Location = New System.Drawing.Point(3, 365)
+    Me.helpS7M.SetHelpString(Me.lblDirectories, "The total number of folders contained in this Image Package.")
+    Me.lblDirectories.Location = New System.Drawing.Point(3, 380)
     Me.lblDirectories.Name = "lblDirectories"
+    Me.helpS7M.SetShowHelp(Me.lblDirectories, True)
     Me.lblDirectories.Size = New System.Drawing.Size(83, 13)
     Me.lblDirectories.TabIndex = 30
     Me.lblDirectories.Text = "Directory Count:"
@@ -488,20 +605,28 @@ Partial Class frmPackageProps
     'txtDirectories
     '
     Me.txtDirectories.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtDirectories.Location = New System.Drawing.Point(111, 362)
+    Me.helpS7M.SetHelpKeyword(Me.txtDirectories, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+        "ge_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtDirectories, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtDirectories, "The total number of folders contained in this Image Package.")
+    Me.txtDirectories.Location = New System.Drawing.Point(111, 377)
     Me.txtDirectories.Margin = New System.Windows.Forms.Padding(2)
-    Me.txtDirectories.MinimumSize = New System.Drawing.Size(200, 4)
+    Me.txtDirectories.MinimumSize = New System.Drawing.Size(180, 4)
     Me.txtDirectories.Name = "txtDirectories"
     Me.txtDirectories.ReadOnly = True
-    Me.txtDirectories.Size = New System.Drawing.Size(200, 20)
+    Me.helpS7M.SetShowHelp(Me.txtDirectories, True)
+    Me.txtDirectories.Size = New System.Drawing.Size(180, 20)
     Me.txtDirectories.TabIndex = 31
     '
     'lblCreated
     '
     Me.lblCreated.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblCreated.AutoSize = True
-    Me.lblCreated.Location = New System.Drawing.Point(3, 389)
+    Me.helpS7M.SetHelpString(Me.lblCreated, "The date this Image Package was created. This is the date shown by the Installer." & _
+        "")
+    Me.lblCreated.Location = New System.Drawing.Point(3, 405)
     Me.lblCreated.Name = "lblCreated"
+    Me.helpS7M.SetShowHelp(Me.lblCreated, True)
     Me.lblCreated.Size = New System.Drawing.Size(47, 13)
     Me.lblCreated.TabIndex = 32
     Me.lblCreated.Text = "Created:"
@@ -509,20 +634,29 @@ Partial Class frmPackageProps
     'txtCreated
     '
     Me.txtCreated.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtCreated.Location = New System.Drawing.Point(111, 386)
+    Me.helpS7M.SetHelpKeyword(Me.txtCreated, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+        "ge_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtCreated, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtCreated, "The date this Image Package was created. This is the date shown by the Installer." & _
+        "")
+    Me.txtCreated.Location = New System.Drawing.Point(111, 402)
     Me.txtCreated.Margin = New System.Windows.Forms.Padding(2)
-    Me.txtCreated.MinimumSize = New System.Drawing.Size(200, 4)
+    Me.txtCreated.MinimumSize = New System.Drawing.Size(180, 4)
     Me.txtCreated.Name = "txtCreated"
     Me.txtCreated.ReadOnly = True
-    Me.txtCreated.Size = New System.Drawing.Size(200, 20)
+    Me.helpS7M.SetShowHelp(Me.txtCreated, True)
+    Me.txtCreated.Size = New System.Drawing.Size(180, 20)
     Me.txtCreated.TabIndex = 33
     '
     'lblModified
     '
     Me.lblModified.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblModified.AutoSize = True
-    Me.lblModified.Location = New System.Drawing.Point(3, 413)
+    Me.helpS7M.SetHelpString(Me.lblModified, "The date this Image Package was last modified. This date is not shown in the Inst" & _
+        "aller.")
+    Me.lblModified.Location = New System.Drawing.Point(3, 430)
     Me.lblModified.Name = "lblModified"
+    Me.helpS7M.SetShowHelp(Me.lblModified, True)
     Me.lblModified.Size = New System.Drawing.Size(50, 13)
     Me.lblModified.TabIndex = 34
     Me.lblModified.Text = "Modified:"
@@ -530,21 +664,30 @@ Partial Class frmPackageProps
     'txtModified
     '
     Me.txtModified.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtModified.Location = New System.Drawing.Point(111, 410)
+    Me.helpS7M.SetHelpKeyword(Me.txtModified, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+        "ge_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtModified, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtModified, "The date this Image Package was last modified. This date is not shown in the Inst" & _
+        "aller.")
+    Me.txtModified.Location = New System.Drawing.Point(111, 427)
     Me.txtModified.Margin = New System.Windows.Forms.Padding(2)
-    Me.txtModified.MinimumSize = New System.Drawing.Size(200, 4)
+    Me.txtModified.MinimumSize = New System.Drawing.Size(180, 4)
     Me.txtModified.Name = "txtModified"
     Me.txtModified.ReadOnly = True
-    Me.txtModified.Size = New System.Drawing.Size(200, 20)
+    Me.helpS7M.SetShowHelp(Me.txtModified, True)
+    Me.txtModified.Size = New System.Drawing.Size(180, 20)
     Me.txtModified.TabIndex = 35
     '
     'lblLanguages
     '
     Me.lblLanguages.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblLanguages.AutoSize = True
-    Me.lblLanguages.Location = New System.Drawing.Point(3, 438)
+    Me.helpS7M.SetHelpString(Me.lblLanguages, "This is a list of all the languages which are integrated into this Image Package." & _
+        "")
+    Me.lblLanguages.Location = New System.Drawing.Point(3, 456)
     Me.lblLanguages.Margin = New System.Windows.Forms.Padding(3, 6, 3, 6)
     Me.lblLanguages.Name = "lblLanguages"
+    Me.helpS7M.SetShowHelp(Me.lblLanguages, True)
     Me.lblLanguages.Size = New System.Drawing.Size(63, 13)
     Me.lblLanguages.TabIndex = 36
     Me.lblLanguages.Text = "&Languages:"
@@ -552,23 +695,32 @@ Partial Class frmPackageProps
     'txtLanguages
     '
     Me.txtLanguages.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.txtLanguages.Location = New System.Drawing.Point(111, 434)
+    Me.helpS7M.SetHelpKeyword(Me.txtLanguages, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+        "ge_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtLanguages, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtLanguages, "This is a list of all the languages which are integrated into this Image Package." & _
+        "")
+    Me.txtLanguages.Location = New System.Drawing.Point(111, 452)
     Me.txtLanguages.Margin = New System.Windows.Forms.Padding(2)
-    Me.txtLanguages.MinimumSize = New System.Drawing.Size(200, 55)
+    Me.txtLanguages.MinimumSize = New System.Drawing.Size(180, 55)
     Me.txtLanguages.Multiline = True
     Me.txtLanguages.Name = "txtLanguages"
     Me.txtLanguages.ReadOnly = True
     Me.pnlProps.SetRowSpan(Me.txtLanguages, 2)
     Me.txtLanguages.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-    Me.txtLanguages.Size = New System.Drawing.Size(200, 55)
+    Me.helpS7M.SetShowHelp(Me.txtLanguages, True)
+    Me.txtLanguages.Size = New System.Drawing.Size(180, 58)
     Me.txtLanguages.TabIndex = 37
     '
     'lblSPBuild
     '
     Me.lblSPBuild.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblSPBuild.AutoSize = True
-    Me.lblSPBuild.Location = New System.Drawing.Point(3, 197)
+    Me.helpS7M.SetHelpString(Me.lblSPBuild, "The Build number is usually seen at the end of the Version (above) in a full OS V" & _
+        "ersion.")
+    Me.lblSPBuild.Location = New System.Drawing.Point(3, 205)
     Me.lblSPBuild.Name = "lblSPBuild"
+    Me.helpS7M.SetShowHelp(Me.lblSPBuild, True)
     Me.lblSPBuild.Size = New System.Drawing.Size(100, 13)
     Me.lblSPBuild.TabIndex = 16
     Me.lblSPBuild.Text = "Service Pack Build:"
@@ -577,8 +729,10 @@ Partial Class frmPackageProps
     '
     Me.lblSPLevel.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblSPLevel.AutoSize = True
-    Me.lblSPLevel.Location = New System.Drawing.Point(3, 173)
+    Me.helpS7M.SetHelpString(Me.lblSPLevel, "This value is 0 for Windows 7 RTM and 1 for Service Pack 1.")
+    Me.lblSPLevel.Location = New System.Drawing.Point(3, 180)
     Me.lblSPLevel.Name = "lblSPLevel"
+    Me.helpS7M.SetShowHelp(Me.lblSPLevel, True)
     Me.lblSPLevel.Size = New System.Drawing.Size(103, 13)
     Me.lblSPLevel.TabIndex = 14
     Me.lblSPLevel.Text = "Service Pack Level:"
@@ -586,23 +740,34 @@ Partial Class frmPackageProps
     'txtSPBuild
     '
     Me.txtSPBuild.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtSPBuild.Location = New System.Drawing.Point(111, 194)
+    Me.helpS7M.SetHelpKeyword(Me.txtSPBuild, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+        "ge_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtSPBuild, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtSPBuild, "The Build number is usually seen at the end of the Version (above) in a full OS V" & _
+        "ersion.")
+    Me.txtSPBuild.Location = New System.Drawing.Point(111, 202)
     Me.txtSPBuild.Margin = New System.Windows.Forms.Padding(2)
-    Me.txtSPBuild.MinimumSize = New System.Drawing.Size(200, 4)
+    Me.txtSPBuild.MinimumSize = New System.Drawing.Size(180, 4)
     Me.txtSPBuild.Name = "txtSPBuild"
     Me.txtSPBuild.ReadOnly = True
-    Me.txtSPBuild.Size = New System.Drawing.Size(200, 20)
+    Me.helpS7M.SetShowHelp(Me.txtSPBuild, True)
+    Me.txtSPBuild.Size = New System.Drawing.Size(180, 20)
     Me.txtSPBuild.TabIndex = 17
     '
     'txtSPLevel
     '
     Me.txtSPLevel.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtSPLevel.Location = New System.Drawing.Point(111, 170)
+    Me.helpS7M.SetHelpKeyword(Me.txtSPLevel, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+        "ge_Properties.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtSPLevel, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.txtSPLevel, "This value is 0 for Windows 7 RTM and 1 for Service Pack 1.")
+    Me.txtSPLevel.Location = New System.Drawing.Point(111, 177)
     Me.txtSPLevel.Margin = New System.Windows.Forms.Padding(2)
-    Me.txtSPLevel.MinimumSize = New System.Drawing.Size(200, 4)
+    Me.txtSPLevel.MinimumSize = New System.Drawing.Size(180, 4)
     Me.txtSPLevel.Name = "txtSPLevel"
     Me.txtSPLevel.ReadOnly = True
-    Me.txtSPLevel.Size = New System.Drawing.Size(200, 20)
+    Me.helpS7M.SetShowHelp(Me.txtSPLevel, True)
+    Me.txtSPLevel.Size = New System.Drawing.Size(180, 20)
     Me.txtSPLevel.TabIndex = 15
     '
     'pnlButtons
@@ -615,7 +780,7 @@ Partial Class frmPackageProps
     Me.pnlButtons.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
     Me.pnlButtons.Controls.Add(Me.cmdCancel, 1, 0)
     Me.pnlButtons.Controls.Add(Me.cmdOK, 0, 0)
-    Me.pnlButtons.Location = New System.Drawing.Point(447, 491)
+    Me.pnlButtons.Location = New System.Drawing.Point(427, 481)
     Me.pnlButtons.Margin = New System.Windows.Forms.Padding(0)
     Me.pnlButtons.Name = "pnlButtons"
     Me.pnlButtons.RowCount = 1
@@ -629,10 +794,12 @@ Partial Class frmPackageProps
     Me.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
     Me.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
     Me.cmdCancel.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.helpS7M.SetHelpString(Me.cmdCancel, "Close the Image Package Properties window.")
     Me.cmdCancel.Location = New System.Drawing.Point(89, 3)
     Me.cmdCancel.MinimumSize = New System.Drawing.Size(80, 25)
     Me.cmdCancel.Name = "cmdCancel"
     Me.cmdCancel.Padding = New System.Windows.Forms.Padding(1)
+    Me.helpS7M.SetShowHelp(Me.cmdCancel, True)
     Me.cmdCancel.Size = New System.Drawing.Size(80, 25)
     Me.cmdCancel.TabIndex = 1
     Me.cmdCancel.Text = "&Cancel"
@@ -643,10 +810,13 @@ Partial Class frmPackageProps
     Me.cmdOK.AutoSize = True
     Me.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
     Me.cmdOK.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.helpS7M.SetHelpString(Me.cmdOK, "Save the Name and Description, and any changes to the Features, Updates, or Drive" & _
+        "rs and close the Image Package Properties window.")
     Me.cmdOK.Location = New System.Drawing.Point(3, 3)
     Me.cmdOK.MinimumSize = New System.Drawing.Size(80, 25)
     Me.cmdOK.Name = "cmdOK"
     Me.cmdOK.Padding = New System.Windows.Forms.Padding(1)
+    Me.helpS7M.SetShowHelp(Me.cmdOK, True)
     Me.cmdOK.Size = New System.Drawing.Size(80, 25)
     Me.cmdOK.TabIndex = 0
     Me.cmdOK.Text = "OK"
@@ -672,8 +842,10 @@ Partial Class frmPackageProps
     Me.helpS7M.SetHelpKeyword(Me.cmdLoadFeatures, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.1_Windo" & _
         "ws_Features.htm")
     Me.helpS7M.SetHelpNavigator(Me.cmdLoadFeatures, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.cmdLoadFeatures, "Click this button to populate the list of Windows Features available in this Imag" & _
+        "e Package.")
     Me.cmdLoadFeatures.Image = Global.Slips7ream.My.Resources.Resources.load_feature
-    Me.cmdLoadFeatures.Location = New System.Drawing.Point(68, 135)
+    Me.cmdLoadFeatures.Location = New System.Drawing.Point(68, 132)
     Me.cmdLoadFeatures.MinimumSize = New System.Drawing.Size(80, 25)
     Me.cmdLoadFeatures.Name = "cmdLoadFeatures"
     Me.cmdLoadFeatures.Padding = New System.Windows.Forms.Padding(1)
@@ -692,8 +864,10 @@ Partial Class frmPackageProps
     Me.helpS7M.SetHelpKeyword(Me.cmdLoadUpdates, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.2_Integ" & _
         "rated_Windows_Updates.htm")
     Me.helpS7M.SetHelpNavigator(Me.cmdLoadUpdates, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.cmdLoadUpdates, "Click this button to populate the list of Integrated Windows Updates and Language" & _
+        " Packs in this Image Package.")
     Me.cmdLoadUpdates.Image = Global.Slips7ream.My.Resources.Resources.load_update
-    Me.cmdLoadUpdates.Location = New System.Drawing.Point(43, 298)
+    Me.cmdLoadUpdates.Location = New System.Drawing.Point(43, 292)
     Me.cmdLoadUpdates.MinimumSize = New System.Drawing.Size(80, 25)
     Me.cmdLoadUpdates.Name = "cmdLoadUpdates"
     Me.cmdLoadUpdates.Padding = New System.Windows.Forms.Padding(1)
@@ -735,7 +909,7 @@ Partial Class frmPackageProps
     Me.pnlMain.RowCount = 2
     Me.pnlMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
     Me.pnlMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
-    Me.pnlMain.Size = New System.Drawing.Size(619, 522)
+    Me.pnlMain.Size = New System.Drawing.Size(599, 512)
     Me.pnlMain.TabIndex = 0
     '
     'pnlLists
@@ -754,7 +928,7 @@ Partial Class frmPackageProps
     Me.pnlLists.Controls.Add(Me.cmdLoadDrivers, 0, 8)
     Me.pnlLists.Controls.Add(Me.pnlDrivers, 0, 7)
     Me.pnlLists.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.pnlLists.Location = New System.Drawing.Point(313, 0)
+    Me.pnlLists.Location = New System.Drawing.Point(293, 0)
     Me.pnlLists.Margin = New System.Windows.Forms.Padding(0)
     Me.pnlLists.Name = "pnlLists"
     Me.pnlLists.RowCount = 9
@@ -768,7 +942,7 @@ Partial Class frmPackageProps
     Me.pnlLists.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
     Me.pnlLists.RowStyles.Add(New System.Windows.Forms.RowStyle())
     Me.pnlLists.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
-    Me.pnlLists.Size = New System.Drawing.Size(306, 491)
+    Me.pnlLists.Size = New System.Drawing.Size(306, 481)
     Me.pnlLists.TabIndex = 1
     '
     'expFeatures
@@ -779,6 +953,8 @@ Partial Class frmPackageProps
     Me.helpS7M.SetHelpKeyword(Me.expFeatures, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.1_Windo" & _
         "ws_Features.htm")
     Me.helpS7M.SetHelpNavigator(Me.expFeatures, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.expFeatures, "Toggle display of the Windows Features list, which allows you to control which fe" & _
+        "atures are enabled or disabled on installation.")
     Me.expFeatures.Location = New System.Drawing.Point(3, 6)
     Me.expFeatures.Margin = New System.Windows.Forms.Padding(3, 6, 3, 6)
     Me.expFeatures.Name = "expFeatures"
@@ -796,6 +972,7 @@ Partial Class frmPackageProps
     Me.helpS7M.SetHelpKeyword(Me.tvFeatures, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.1_Windo" & _
         "ws_Features.htm")
     Me.helpS7M.SetHelpNavigator(Me.tvFeatures, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.tvFeatures, resources.GetString("tvFeatures.HelpString"))
     Me.tvFeatures.HideSelection = False
     Me.tvFeatures.ImageIndex = 0
     Me.tvFeatures.ImageList = Me.imlFeatures
@@ -805,7 +982,7 @@ Partial Class frmPackageProps
     Me.tvFeatures.ReadOnly = False
     Me.tvFeatures.SelectedImageIndex = 0
     Me.helpS7M.SetShowHelp(Me.tvFeatures, True)
-    Me.tvFeatures.Size = New System.Drawing.Size(300, 95)
+    Me.tvFeatures.Size = New System.Drawing.Size(300, 92)
     Me.tvFeatures.TabIndex = 1
     Me.tvFeatures.TooltipTitles = True
     '
@@ -817,7 +994,10 @@ Partial Class frmPackageProps
     Me.helpS7M.SetHelpKeyword(Me.expUpdates, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.2_Integ" & _
         "rated_Windows_Updates.htm")
     Me.helpS7M.SetHelpNavigator(Me.expUpdates, System.Windows.Forms.HelpNavigator.Topic)
-    Me.expUpdates.Location = New System.Drawing.Point(3, 169)
+    Me.helpS7M.SetHelpString(Me.expUpdates, "Toggle display of the Integrated Windows Updates list, which displays all the Upd" & _
+        "ates and Language Packs which have already been integrated into the Image Packag" & _
+        "e.")
+    Me.expUpdates.Location = New System.Drawing.Point(3, 166)
     Me.expUpdates.Margin = New System.Windows.Forms.Padding(3, 6, 3, 6)
     Me.expUpdates.Name = "expUpdates"
     Me.helpS7M.SetShowHelp(Me.expUpdates, True)
@@ -837,14 +1017,15 @@ Partial Class frmPackageProps
     Me.helpS7M.SetHelpKeyword(Me.lvUpdates, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.2_Integ" & _
         "rated_Windows_Updates.htm")
     Me.helpS7M.SetHelpNavigator(Me.lvUpdates, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.lvUpdates, resources.GetString("lvUpdates.HelpString"))
     Me.lvUpdates.HideSelection = False
-    Me.lvUpdates.Location = New System.Drawing.Point(3, 197)
+    Me.lvUpdates.Location = New System.Drawing.Point(3, 194)
     Me.lvUpdates.MinimumSize = New System.Drawing.Size(300, 4)
     Me.lvUpdates.MultiSelect = False
     Me.lvUpdates.Name = "lvUpdates"
     Me.lvUpdates.ReadOnly = False
     Me.helpS7M.SetShowHelp(Me.lvUpdates, True)
-    Me.lvUpdates.Size = New System.Drawing.Size(300, 95)
+    Me.lvUpdates.Size = New System.Drawing.Size(300, 92)
     Me.lvUpdates.SmallImageList = Me.imlUpdates
     Me.lvUpdates.TabIndex = 4
     Me.lvUpdates.TooltipTitles = True
@@ -869,7 +1050,9 @@ Partial Class frmPackageProps
     Me.helpS7M.SetHelpKeyword(Me.expDrivers, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.3_Integ" & _
         "rated_Drivers.htm")
     Me.helpS7M.SetHelpNavigator(Me.expDrivers, System.Windows.Forms.HelpNavigator.Topic)
-    Me.expDrivers.Location = New System.Drawing.Point(3, 332)
+    Me.helpS7M.SetHelpString(Me.expDrivers, "Toggle display of the Integrated Drivers list, which displays all the Drivers whi" & _
+        "ch have already been integrated into the Image Package.")
+    Me.expDrivers.Location = New System.Drawing.Point(3, 326)
     Me.expDrivers.Margin = New System.Windows.Forms.Padding(3, 6, 3, 6)
     Me.expDrivers.Name = "expDrivers"
     Me.helpS7M.SetShowHelp(Me.expDrivers, True)
@@ -885,8 +1068,10 @@ Partial Class frmPackageProps
     Me.helpS7M.SetHelpKeyword(Me.cmdLoadDrivers, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.3_Integ" & _
         "rated_Drivers.htm")
     Me.helpS7M.SetHelpNavigator(Me.cmdLoadDrivers, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.cmdLoadDrivers, "Click this button to populate the list of Integrated Drivers in this Image Packag" & _
+        "e.")
     Me.cmdLoadDrivers.Image = Global.Slips7ream.My.Resources.Resources.load_driver
-    Me.cmdLoadDrivers.Location = New System.Drawing.Point(70, 462)
+    Me.cmdLoadDrivers.Location = New System.Drawing.Point(70, 452)
     Me.cmdLoadDrivers.MinimumSize = New System.Drawing.Size(80, 25)
     Me.cmdLoadDrivers.Name = "cmdLoadDrivers"
     Me.cmdLoadDrivers.Padding = New System.Windows.Forms.Padding(1)
@@ -910,12 +1095,12 @@ Partial Class frmPackageProps
     Me.pnlDrivers.Controls.Add(Me.lblDriverProvider, 1, 0)
     Me.pnlDrivers.Controls.Add(Me.lblDriverINF, 2, 0)
     Me.pnlDrivers.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.pnlDrivers.Location = New System.Drawing.Point(3, 360)
+    Me.pnlDrivers.Location = New System.Drawing.Point(3, 354)
     Me.pnlDrivers.Name = "pnlDrivers"
     Me.pnlDrivers.RowCount = 2
     Me.pnlDrivers.RowStyles.Add(New System.Windows.Forms.RowStyle())
     Me.pnlDrivers.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-    Me.pnlDrivers.Size = New System.Drawing.Size(300, 95)
+    Me.pnlDrivers.Size = New System.Drawing.Size(300, 92)
     Me.pnlDrivers.TabIndex = 7
     '
     'lvDriverClass
@@ -929,13 +1114,14 @@ Partial Class frmPackageProps
     Me.helpS7M.SetHelpKeyword(Me.lvDriverClass, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.3_Integ" & _
         "rated_Drivers.htm")
     Me.helpS7M.SetHelpNavigator(Me.lvDriverClass, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.lvDriverClass, resources.GetString("lvDriverClass.HelpString"))
     Me.lvDriverClass.HideSelection = False
     Me.lvDriverClass.Location = New System.Drawing.Point(3, 16)
     Me.lvDriverClass.MultiSelect = False
     Me.lvDriverClass.Name = "lvDriverClass"
     Me.lvDriverClass.ReadOnly = False
     Me.helpS7M.SetShowHelp(Me.lvDriverClass, True)
-    Me.lvDriverClass.Size = New System.Drawing.Size(93, 76)
+    Me.lvDriverClass.Size = New System.Drawing.Size(93, 73)
     Me.lvDriverClass.SmallImageList = Me.imlDriverClass
     Me.lvDriverClass.TabIndex = 1
     Me.lvDriverClass.TooltipTitles = True
@@ -963,13 +1149,16 @@ Partial Class frmPackageProps
     Me.helpS7M.SetHelpKeyword(Me.lvDriverProvider, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.3_Integ" & _
         "rated_Drivers.htm")
     Me.helpS7M.SetHelpNavigator(Me.lvDriverProvider, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.lvDriverProvider, "This is the list of providers that have provided a Driver INF for the selected Dr" & _
+        "iver Class. Select one to populate the list of INF Files included in this Image " & _
+        "Package in the selected Class.")
     Me.lvDriverProvider.HideSelection = False
     Me.lvDriverProvider.Location = New System.Drawing.Point(102, 16)
     Me.lvDriverProvider.MultiSelect = False
     Me.lvDriverProvider.Name = "lvDriverProvider"
     Me.lvDriverProvider.ReadOnly = False
     Me.helpS7M.SetShowHelp(Me.lvDriverProvider, True)
-    Me.lvDriverProvider.Size = New System.Drawing.Size(94, 76)
+    Me.lvDriverProvider.Size = New System.Drawing.Size(94, 73)
     Me.lvDriverProvider.SmallImageList = Me.imlDriverCompany
     Me.lvDriverProvider.TabIndex = 3
     Me.lvDriverProvider.TooltipTitles = True
@@ -998,13 +1187,14 @@ Partial Class frmPackageProps
     Me.helpS7M.SetHelpKeyword(Me.lvDriverINF, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.3_Integ" & _
         "rated_Drivers.htm")
     Me.helpS7M.SetHelpNavigator(Me.lvDriverINF, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.lvDriverINF, resources.GetString("lvDriverINF.HelpString"))
     Me.lvDriverINF.HideSelection = False
     Me.lvDriverINF.Location = New System.Drawing.Point(202, 16)
     Me.lvDriverINF.MultiSelect = False
     Me.lvDriverINF.Name = "lvDriverINF"
     Me.lvDriverINF.ReadOnly = False
     Me.helpS7M.SetShowHelp(Me.lvDriverINF, True)
-    Me.lvDriverINF.Size = New System.Drawing.Size(95, 76)
+    Me.lvDriverINF.Size = New System.Drawing.Size(95, 73)
     Me.lvDriverINF.SmallImageList = Me.imlDriverINF
     Me.lvDriverINF.TabIndex = 5
     Me.lvDriverINF.TooltipTitles = True
@@ -1111,15 +1301,19 @@ Partial Class frmPackageProps
     Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
     Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
     Me.CancelButton = Me.cmdCancel
-    Me.ClientSize = New System.Drawing.Size(619, 522)
+    Me.ClientSize = New System.Drawing.Size(599, 512)
     Me.Controls.Add(Me.pnlMain)
+    Me.HelpButton = True
     Me.helpS7M.SetHelpKeyword(Me, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
         "ge_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me, System.Windows.Forms.HelpNavigator.Topic)
     Me.Icon = Global.Slips7ream.My.Resources.Resources.icon
-    Me.MinimumSize = New System.Drawing.Size(635, 560)
+    Me.MaximizeBox = False
+    Me.MinimizeBox = False
+    Me.MinimumSize = New System.Drawing.Size(615, 550)
     Me.Name = "frmPackageProps"
     Me.helpS7M.SetShowHelp(Me, True)
+    Me.ShowIcon = False
     Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
     Me.Text = "Image Package Properties"
     Me.pnlProps.ResumeLayout(False)
