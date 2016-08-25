@@ -2080,8 +2080,8 @@
 		<param name="Name" value="x64">
 		<param name="Name" value="Configuration - x86 Update Whitelist">
 		<param name="Local" value="2_Configuration\2.2_Update_Whitelist.htm">
-		<param name="Name" value="Glossary of Terms - 64-bit / x64 / amd64">
-		<param name="Local" value="5_Glossary_of_Terms\5.2_64-bit.htm">
+		<param name="Name" value="Glossary of Terms - 64-Bit / x64 / amd64">
+		<param name="Local" value="5_Glossary_of_Terms\5.2_64-Bit.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="x64 Service Pack">
@@ -2094,8 +2094,8 @@
 		<param name="Name" value="x86">
 		<param name="Name" value="Configuration - x86 Update Whitelist">
 		<param name="Local" value="2_Configuration\2.2_Update_Whitelist.htm">
-		<param name="Name" value="Glossary of Terms - 32-bit / x86">
-		<param name="Local" value="5_Glossary_of_Terms\5.1_32-bit.htm">
+		<param name="Name" value="Glossary of Terms - 32-Bit / x86">
+		<param name="Local" value="5_Glossary_of_Terms\5.1_32-Bit.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="x86 Service Pack">

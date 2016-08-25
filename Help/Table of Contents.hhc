@@ -244,12 +244,12 @@
 		</OBJECT>
 	<UL>
 		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="32-bit / x86">
-			<param name="Local" value="5_Glossary_of_Terms\5.1_32-bit.htm">
+			<param name="Name" value="32-Bit / x86">
+			<param name="Local" value="5_Glossary_of_Terms\5.1_32-Bit.htm">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="64-bit / x64 / amd64">
-			<param name="Local" value="5_Glossary_of_Terms\5.2_64-bit.htm">
+			<param name="Name" value="64-Bit / x64 / amd64">
+			<param name="Local" value="5_Glossary_of_Terms\5.2_64-Bit.htm">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Disc / ISO">
