@@ -959,9 +959,9 @@ Public Module modFunctions
     ElseIf archA.Contains("86") Or archA.Contains("32") Then
       typeA = ArchitectureList.x86
     ElseIf archA.ToLower = "neutral" Then
-      If neutralEqual Then Return True
-      If archB.ToLower = "neutral" Then Return True
-      Return False
+      If neutralEqual Then Return 0
+      If archB.ToLower = "neutral" Then Return 0
+      Return -1
     Else
       Debug.Print("Unknown A Architecture: " & archA)
       typeA = ArchitectureList.x86
@@ -974,7 +974,8 @@ Public Module modFunctions
     ElseIf archB.Contains("86") Or archB.Contains("32") Then
       typeB = ArchitectureList.x86
     ElseIf archB.ToLower = "neutral" Then
-      Return neutralEqual
+      If neutralEqual Then Return 0
+      Return -1
     Else
       Debug.Print("Unknown B Architecture: " & archB)
       typeB = ArchitectureList.x86
@@ -2083,6 +2084,7 @@ Public Module modFunctions
     Select Case helpTopic
       Case "Error Adding Updates" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.1_Error_Adding_Updates.htm"
       Case "Remove All Updates" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.2_Remove_All_Updates.htm"
+      Case "Unique Names" : Return "1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm"
       Case "No Parse Data Selected" : Return "1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm"
       Case "Open Folder File Missing" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.3_Open_Folder_Missing.htm#file"
       Case "Open Folder Folder Missing" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.3_Open_Folder_Missing.htm#folder"
