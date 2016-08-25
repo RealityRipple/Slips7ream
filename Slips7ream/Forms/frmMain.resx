@@ -189,7 +189,7 @@ the ISO 9960 standard when the selected format can't be read.)</value>
     <value>Enable Unified Extensible Firmware Interface compatibility,
 which may be necessary for newer systems (particularly machines that came with Windows 8 and above).
 
-UEFI requires a 64-bit Operating System, so please only use x64 Image Packages with UEFI.
+UEFI requires a 64-Bit Operating System, so please only use x64 Image Packages with UEFI.
 
 UEFI requires a custom Video Card driver which is only built for Windows 8 and above,
 so please enable your UEFI's compatibility module to allow Windows 7 access to the video card.</value>

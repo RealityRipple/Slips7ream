@@ -263,7 +263,11 @@ Public Class frmMain
           mySettings.Size = New Size(Me.Width, Me.Height - HeightDifferentialB)
         End If
       Else
-        mySettings.Size = Me.Size
+        If txtOutput.Visible Then
+          mySettings.Size = New Size(Me.Width, Me.Height - HeightDifferentialA)
+        Else
+          mySettings.Size = Me.Size
+        End If
       End If
     End If
     If Not tmrAnimation.Enabled Then
@@ -496,13 +500,21 @@ Public Class frmMain
     lblMSU.Enabled = bEnabled
     If Not bEnabled And msuBGList.Count = 0 Then
       For Each lvItem As ListViewItem In lvMSU.Items
-        msuBGList.Add(MSUDataList(lvItem.Tag).Update.Identity, lvItem.BackColor)
+        If MSUDataList(lvItem.Tag).Update.Name = "DRIVER" Then
+          msuBGList.Add(MSUDataList(lvItem.Tag).Update.DriverData.PublishedName, lvItem.BackColor)
+        Else
+          msuBGList.Add(MSUDataList(lvItem.Tag).Update.Identity, lvItem.BackColor)
+        End If
       Next
     End If
     lvMSU.ReadOnly = Not bEnabled
     If bEnabled And msuBGList.Count > 0 Then
       For Each lvItem As ListViewItem In lvMSU.Items
-        If msuBGList.ContainsKey(MSUDataList(lvItem.Tag).Update.Identity) Then lvItem.BackColor = msuBGList(MSUDataList(lvItem.Tag).Update.Identity)
+        If MSUDataList(lvItem.Tag).Update.Name = "DRIVER" Then
+          If msuBGList.ContainsKey(MSUDataList(lvItem.Tag).Update.DriverData.PublishedName) Then lvItem.BackColor = msuBGList(MSUDataList(lvItem.Tag).Update.DriverData.PublishedName)
+        Else
+          If msuBGList.ContainsKey(MSUDataList(lvItem.Tag).Update.Identity) Then lvItem.BackColor = msuBGList(MSUDataList(lvItem.Tag).Update.Identity)
+        End If
       Next
       msuBGList.Clear()
     End If
@@ -1083,36 +1095,38 @@ Public Class frmMain
         Next
         Data = newData.ToArray
       End If
-      If FileCount > 2 Then
-        RunActivity = ActivityType.LoadingUpdates
-        StopRun = False
-        SetDisp(MNGList.Delete)
-        SetTitle("Parsing Update Information", "Reading data from update files...")
-        ToggleInputs(False)
-        SetTotal(0, FileCount)
-        SetProgress(0, 0)
-        SetStatus("Reading Update Information...")
-      End If
+      RunActivity = ActivityType.LoadingUpdates
+      StopRun = False
+      SetDisp(MNGList.Delete)
+      SetTitle("Parsing Update Information", "Reading data from update files...")
+      ToggleInputs(False)
+      SetTotal(0, FileCount)
+      SetProgress(0, 0)
+      SetStatus("Reading Update Information...")
       Dim FailCollection As New List(Of String)
       Dim iProg As Integer = 0
       lvMSU.BeginUpdate()
       For Each Item In Data
-        If FileCount > 2 Then
-          iProg += 1
-          SetTotal(iProg, FileCount)
-          Application.DoEvents()
-          If StopRun Then
-            SetProgress(0, 1)
-            ToggleInputs(True)
-            lvMSU.EndUpdate()
-            Return
-          End If
+        iProg += 1
+        SetTotal(iProg, FileCount)
+        Application.DoEvents()
+        If StopRun Then
+          SetProgress(0, 1)
+          ToggleInputs(True)
+          lvMSU.EndUpdate()
+          Return
         End If
         Dim Cancelled As Boolean = False
         Dim newUpdateList As Update_File() = GetUpdateInfo(Item)
-        If newUpdateList IsNot Nothing AndAlso newUpdateList.Count > 0 Then
+        Dim UpdateCount As Integer = 0
+        If newUpdateList IsNot Nothing Then UpdateCount = newUpdateList.Count
+        Dim iProg2 As Integer = 0
+        SetProgress(0, UpdateCount)
+        If UpdateCount > 0 Then
           For Each msuData As Update_File In newUpdateList
             Dim addRet As AddResult = AddToUpdates(msuData)
+            iProg2 += 1
+            SetProgress(iProg2, UpdateCount)
             SetRequirements()
             If addRet.Cancel Then
               Cancelled = True
@@ -1139,10 +1153,8 @@ Public Class frmMain
         End If
         If Cancelled Then Exit For
       Next
-      If FileCount > 2 Then
-        SetProgress(0, 1)
-        ToggleInputs(True)
-      End If
+      SetProgress(0, 1)
+      ToggleInputs(True)
       lvMSU.EndUpdate()
       RedoColumns()
       If FailCollection.Count > 0 Then
@@ -1336,33 +1348,35 @@ Public Class frmMain
       If cdlBrowse.ShowDialog(Me.Handle) = Windows.Forms.DialogResult.OK Then
         Dim FailCollection As New List(Of String)
         Dim FileCount As Integer = cdlBrowse.FileNames.Count
-        If FileCount > 2 Then
-          RunActivity = ActivityType.LoadingUpdates
-          StopRun = False
-          SetDisp(MNGList.Delete)
-          SetTitle("Parsing Update Information", "Reading data from update files...")
-          ToggleInputs(False)
-          SetTotal(0, FileCount)
-          SetProgress(0, 0)
-          SetStatus("Reading Update Information...")
-        End If
+        RunActivity = ActivityType.LoadingUpdates
+        StopRun = False
+        SetDisp(MNGList.Delete)
+        SetTitle("Parsing Update Information", "Reading data from update files...")
+        ToggleInputs(False)
+        SetTotal(0, FileCount)
+        SetProgress(0, 0)
+        SetStatus("Reading Update Information...")
         For I As Integer = 0 To cdlBrowse.FileNames.Count - 1
           Dim sUpdate As String = cdlBrowse.FileNames(I)
-          If FileCount > 2 Then
-            SetTotal(I + 1, FileCount)
-            Application.DoEvents()
-            If StopRun Then
-              SetProgress(0, 1)
-              ToggleInputs(True)
-              lvMSU.EndUpdate()
-              Return
-            End If
+          SetTotal(I + 1, FileCount)
+          Application.DoEvents()
+          If StopRun Then
+            SetProgress(0, 1)
+            ToggleInputs(True)
+            lvMSU.EndUpdate()
+            Return
           End If
           Dim Cancelled As Boolean = False
           Dim newUpdateList As Update_File() = GetUpdateInfo(sUpdate)
-          If newUpdateList IsNot Nothing AndAlso newUpdateList.Count > 0 Then
+          Dim UpdateCount As Integer = 0
+          If newUpdateList IsNot Nothing Then UpdateCount = newUpdateList.Count
+          Dim iProg2 As Integer = 0
+          SetProgress(0, UpdateCount)
+          If UpdateCount > 0 Then
             For Each msuData As Update_File In newUpdateList
               Dim addRet As AddResult = AddToUpdates(msuData)
+              iProg2 += 1
+              SetProgress(iProg2, UpdateCount)
               SetRequirements()
               If addRet.Cancel Then
                 Cancelled = True
@@ -1391,10 +1405,8 @@ Public Class frmMain
           End If
           If Cancelled Then Exit For
         Next
-        If FileCount > 2 Then
-          SetProgress(0, 1)
-          ToggleInputs(True)
-        End If
+        SetProgress(0, 1)
+        ToggleInputs(True)
         RedoColumns()
         If FailCollection.Count > 0 Then
           MsgDlg(Me, String.Concat("Some files could not be added to the Update List.", vbNewLine, "Click View Details to see a complete list."), "Unable to add files to the Update List.", "Error Adding Updates", MessageBoxButtons.OK, TaskDialogIcon.WindowsUpdate, , CleanupFailures(FailCollection), "Error Adding Updates")
@@ -1488,7 +1500,7 @@ Public Class frmMain
       Dim ttProviderName As String = Nothing
       If Not String.IsNullOrEmpty(msuData.DriverData.ProviderName) Then ttProviderName = String.Concat(en, String.Format("Provider: {0}", msuData.DriverData.ProviderName))
       Dim ttDate As String = Nothing
-      If Not String.IsNullOrEmpty(msuData.DriverData.Date) Then ttDate = String.Concat(String.Format("Date: {0}", msuData.DriverData.Date))
+      If Not String.IsNullOrEmpty(msuData.DriverData.Date) Then ttDate = String.Concat(en, String.Format("Date: {0}", msuData.DriverData.Date))
       Dim ttArch As String = Nothing
       If msuData.DriverData.Architectures IsNot Nothing AndAlso msuData.DriverData.Architectures.Count > 0 Then ttArch = String.Concat(en, String.Format("Supported Architectures: {0}", Join(msuData.DriverData.Architectures.ToArray, ", ")))
       Dim ttBootCritical As String = Nothing
@@ -1705,7 +1717,7 @@ Public Class frmMain
       lvItem.Tag = lTag
       Dim bWhitelist As Boolean = CompareArchitectures(msuData.Architecture, ArchitectureList.x86, True) AndAlso CheckWhitelist(msuData.DisplayName)
       Dim ttItem As String = IIf(String.IsNullOrEmpty(msuData.KBArticle), msuData.Name, String.Format("KB{0}", msuData.KBArticle))
-      ttItem = String.Concat(ttItem, vbNewLine, en, String.Format("{0} {1}{2}", msuData.AppliesTo, msuData.Architecture, IIf(bWhitelist, " [Whitelisted for 64-bit]", "")))
+      ttItem = String.Concat(ttItem, vbNewLine, en, String.Format("{0} {1}{2}", msuData.AppliesTo, msuData.Architecture, IIf(bWhitelist, " [Whitelisted for 64-Bit]", "")))
       If Not String.IsNullOrEmpty(msuData.BuildDate) Then ttItem = String.Concat(ttItem, vbNewLine, en, String.Format("Built: {0}", msuData.BuildDate))
       ttItem = String.Concat(ttItem, vbNewLine, en, ShortenPath(msuData.Path))
       lvItem.BackColor = IIf(bWhitelist, SystemColors.GradientInactiveCaption, lvMSU.BackColor)
@@ -3109,13 +3121,18 @@ Public Class frmMain
       If ImageDataList(lvItem.Tag).Package.ToString = e.ImageID Then
         Dim imageDataItem As ImagePackageData = ImageDataList(lvItem.Tag)
         If Not String.IsNullOrEmpty(e.NewImageName) Then
-          imageDataItem.NewName = e.NewImageName
           lvItem.SubItems(1).Text = e.NewImageName
+          Dim oldName As String = imageDataItem.NewName
+          imageDataItem.NewName = e.NewImageName
+          Dim ttItem As String = lvItem.ToolTipText
+          If ttItem.StartsWith(String.Concat(oldName, vbNewLine)) Then
+            ttItem = String.Concat(e.NewImageName, vbNewLine, ttItem.Substring(String.Concat(oldName, vbNewLine).Length))
+          End If
+          If Not lvItem.ToolTipText = ttItem Then lvItem.ToolTipText = ttItem
         End If
         If Not String.IsNullOrEmpty(e.NewImageDesc) Then
           Dim oldDesc As String = imageDataItem.NewDesc
           imageDataItem.NewDesc = e.NewImageDesc
-
           Dim ttItem As String = lvItem.ToolTipText
           If ttItem.Contains(String.Concat(vbNewLine, en, oldDesc, vbNewLine)) Then
             ttItem = ttItem.Replace(String.Concat(vbNewLine, en, oldDesc, vbNewLine), String.Concat(vbNewLine, en, e.NewImageDesc, vbNewLine))
@@ -3213,7 +3230,6 @@ Public Class frmMain
     ElseIf imageOrderCol = 3 Then
       sortOrder = LVItemSorter.OrderBy.Size
     End If
-
     If chkMerge.Checked And sortOrder = LVItemSorter.OrderBy.Display Then
       lvImages.ShowGroups = True
       lvImages.Groups.Clear()
@@ -3280,38 +3296,34 @@ Public Class frmMain
         Case OrderBy.OS
           Dim packageX As ImagePackage = ImageDataList(x.Tag).Package
           Dim packageY As ImagePackage = ImageDataList(y.Tag).Package
-          If CompareArchitectures(packageX.Architecture, ArchitectureList.amd64, False) And Not CompareArchitectures(packageY.Architecture, ArchitectureList.amd64, False) Then Return 1
-          If Not CompareArchitectures(packageX.Architecture, ArchitectureList.amd64, False) And CompareArchitectures(packageY.Architecture, ArchitectureList.amd64, False) Then Return -1
-          If packageX.SPLevel > packageY.SPLevel Then Return 1
-          If packageX.SPLevel < packageY.SPLevel Then Return -1
           Dim iX As Integer = 0
           Dim iY As Integer = 0
-          If packageX.Desc = "Windows 7 STARTER" Then
+          If packageX.Edition = "Starter" Then
             iX = 1
-          ElseIf packageX.Desc = "Windows 7 HOMEBASIC" Then
+          ElseIf packageX.Edition = "HomeBasic" Then
             iX = 2
-          ElseIf packageX.Desc = "Windows 7 HOMEPREMIUM" Then
+          ElseIf packageX.Edition = "HomePremium" Then
             iX = 3
-          ElseIf packageX.Desc = "Windows 7 PROFESSIONAL" Then
+          ElseIf packageX.Edition = "Professional" Then
             iX = 4
-          ElseIf packageX.Desc = "Windows 7 ULTIMATE" Then
+          ElseIf packageX.Edition = "Ultimate" Then
             iX = 5
-          ElseIf packageX.Desc = "Windows 7 ENTERPRISE" Then
+          ElseIf packageX.Edition = "Enterprise" Then
             iX = 6
           Else
             iX = 7
           End If
-          If packageY.Desc = "Windows 7 STARTER" Then
+          If packageY.Edition = "Starter" Then
             iY = 1
-          ElseIf packageY.Desc = "Windows 7 HOMEBASIC" Then
+          ElseIf packageY.Edition = "HomeBasic" Then
             iY = 2
-          ElseIf packageY.Desc = "Windows 7 HOMEPREMIUM" Then
+          ElseIf packageY.Edition = "HomePremium" Then
             iY = 3
-          ElseIf packageY.Desc = "Windows 7 PROFESSIONAL" Then
+          ElseIf packageY.Edition = "Professional" Then
             iY = 4
-          ElseIf packageY.Desc = "Windows 7 ULTIMATE" Then
+          ElseIf packageY.Edition = "Ultimate" Then
             iY = 5
-          ElseIf packageY.Desc = "Windows 7 ENTERPRISE" Then
+          ElseIf packageY.Edition = "Enterprise" Then
             iY = 6
           Else
             iY = 7
@@ -3321,6 +3333,20 @@ Public Class frmMain
           ElseIf iX < iY Then
             Return -1
           End If
+          If CompareArchitectures(packageX.Architecture, ArchitectureList.ia64, False) Then
+            If CompareArchitectures(packageY.Architecture, ArchitectureList.amd64, False) Then Return 1
+            If CompareArchitectures(packageY.Architecture, ArchitectureList.x86, False) Then Return 1
+          End If
+          If CompareArchitectures(packageX.Architecture, ArchitectureList.amd64, False) Then
+            If CompareArchitectures(packageY.Architecture, ArchitectureList.ia64, False) Then Return -1
+            If CompareArchitectures(packageY.Architecture, ArchitectureList.x86, False) Then Return 1
+          End If
+          If CompareArchitectures(packageX.Architecture, ArchitectureList.x86, False) Then
+            If CompareArchitectures(packageY.Architecture, ArchitectureList.ia64, False) Then Return -1
+            If CompareArchitectures(packageY.Architecture, ArchitectureList.amd64, False) Then Return -1
+          End If
+          If packageX.SPLevel > packageY.SPLevel Then Return 1
+          If packageX.SPLevel < packageY.SPLevel Then Return -1
           Return Date.Compare(Date.Parse(packageX.Modified.Replace(" - ", " ")), Date.Parse(packageY.Modified.Replace(" - ", " ")))
         Case OrderBy.Architecture
           Dim packageX As ImagePackage = ImageDataList(x.Tag).Package
@@ -4369,6 +4395,7 @@ Public Class frmMain
       Loop
       Me.Height = newHeight
       pnlSlips7ream.ResumeLayout(True)
+      frmMain_Resize(Me, New EventArgs)
     End If
   End Sub
   Private Sub expOutput_Opened(sender As System.Object, e As System.EventArgs) Handles expOutput.Opened
@@ -4402,6 +4429,7 @@ Public Class frmMain
       End If
       pnlSlips7ream.ResumeLayout(True)
       redrawCaption()
+      frmMain_Resize(Me, New EventArgs)
     End If
   End Sub
   Private Enum OutputType
@@ -4587,6 +4615,24 @@ Public Class frmMain
     WriteToOutput(String.Format("DISM {0}", Args))
     Dim PackageList As String = RunWithReturn(DismPath, String.Format("{0} /English", Args))
     Dim Info As New ImagePackage(PackageList)
+    Args = String.Format("/info ""{0}"" {1}", ShortenPath(WIMFile), Index)
+    WriteToOutput(String.Format("IMAGEX {0}", Args))
+    Dim ExtraList As String = RunWithReturn(IO.Path.Combine(AIKDir, "imagex"), Args)
+    Dim extraLines() As String = Split(ExtraList, vbNewLine)
+    For Each extraLine In extraLines
+      If extraLine.Contains("<DISPLAYNAME>") Then
+        Dim sText As String = extraLine
+        sText = sText.Substring(sText.IndexOf("<DISPLAYNAME>") + 13)
+        If sText.Contains("</") Then sText = sText.Substring(0, sText.IndexOf("</"))
+        If Not String.IsNullOrEmpty(sText) Then Info.Name = sText
+      End If
+      If extraLine.Contains("<DISPLAYDESCRIPTION>") Then
+        Dim sText As String = extraLine
+        sText = sText.Substring(sText.IndexOf("<DISPLAYDESCRIPTION>") + 20)
+        If sText.Contains("</") Then sText = sText.Substring(0, sText.IndexOf("</"))
+        If Not String.IsNullOrEmpty(sText) Then Info.Desc = sText
+      End If
+    Next
     Return Info
   End Function
   Private Function AddPackageItemToDISM(MountPath As String, AddPath As String) As Boolean
@@ -4760,21 +4806,11 @@ Public Class frmMain
     Return sRet.Contains("Successfully split")
   End Function
   Private Function ExportWIM(SourceWIM As String, SourceIndex As Integer, DestWIM As String, DestName As String, DestDescr As String) As Boolean
-    If Not String.IsNullOrEmpty(DestName) Then
-      Dim RNArgs As String = Nothing
-      If String.IsNullOrEmpty(DestDescr) Then
-        RNArgs = String.Format("/info ""{0}"" {1} ""{2}""", SourceWIM, SourceIndex, DestName)
-      Else
-        RNArgs = String.Format("/info ""{0}"" {1} ""{2}"" ""{3}""", SourceWIM, SourceIndex, DestName, DestDescr)
-      End If
-      ReturnProgress = True
-      WriteToOutput(String.Format("IMAGEX {0}", RNArgs))
-      Dim RNRet As String = RunWithReturn(IO.Path.Combine(AIKDir, "imagex"), RNArgs)
-      ReturnProgress = False
-      'If Not RNRet.Contains("Successfully set image name") Then
-    End If
-    ReturnProgress = True
+    Dim RNArgs As String = String.Format("/info ""{0}"" {1} ""{2}"" ""{3}""", SourceWIM, SourceIndex, DestName, DestDescr)
+    WriteToOutput(String.Format("IMAGEX {0}", RNArgs))
+    Dim RNRet As String = RunWithReturn(IO.Path.Combine(AIKDir, "imagex"), RNArgs)
     Dim Args As String = String.Format("/export ""{0}"" {1} ""{2}"" ""{3}"" /compress maximum", SourceWIM, SourceIndex, DestWIM, DestName)
+    ReturnProgress = True
     WriteToOutput(String.Format("IMAGEX {0}", Args))
     Dim sRet As String = RunWithReturn(IO.Path.Combine(AIKDir, "imagex"), Args)
     ReturnProgress = False
@@ -5238,13 +5274,13 @@ Public Class frmMain
   Private ReturnProgress As Boolean
 #Region "Run With Return"
   Private c_RunWithReturnRet As New List(Of String)
-  Private Function RunWithReturn(Filename As String, Arguments As String, Optional IgnoreStopRun As Boolean = False) As String
+  Private Function RunWithReturn(Filename As String, Arguments As String, Optional IgnoreStopRun As Boolean = False, Optional DisplayOutput As Boolean = True) As String
     Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncRunWithReturn))
     Dim cIndex As Integer = c_RunWithReturnRet.Count
     c_RunWithReturnRet.Add(Nothing)
     c_RunWithReturnAccumulation.Add(Nothing)
     c_RunWithReturnErrorAccumulation.Add(Nothing)
-    tRunWithReturn.Start({Filename, Arguments, cIndex, Process.GetCurrentProcess.PriorityClass})
+    tRunWithReturn.Start({Filename, Arguments, cIndex, DisplayOutput, Process.GetCurrentProcess.PriorityClass})
     Do While c_RunWithReturnRet(cIndex) Is Nothing
       Application.DoEvents()
       Threading.Thread.Sleep(1)
@@ -5260,15 +5296,15 @@ Public Class frmMain
     c_RunWithReturnRet(cIndex) = Nothing
     Return sRet
   End Function
-  Private Delegate Sub RunWithReturnRetCallBack(Index As Integer, Output As String)
-  Private Sub RunWithReturnRet(Index As Integer, Output As String)
+  Private Delegate Sub RunWithReturnRetCallBack(Index As Integer, Output As String, WriteOutput As Boolean)
+  Private Sub RunWithReturnRet(Index As Integer, Output As String, WriteOutput As Boolean)
     If Me.InvokeRequired Then
-      Me.Invoke(New RunWithReturnRetCallBack(AddressOf RunWithReturnRet), Index, Output)
+      Me.Invoke(New RunWithReturnRetCallBack(AddressOf RunWithReturnRet), Index, Output, WriteOutput)
       Return
     End If
     If Output.StartsWith(String.Concat("!", vbNewLine)) Then
       Output = Output.Substring(3)
-    Else
+    ElseIf WriteOutput Then
       WriteToOutput(Output, OutputType.Output)
     End If
     c_RunWithReturnRet(Index) = Output
@@ -5277,7 +5313,8 @@ Public Class frmMain
     Dim Filename As String = Obj(0)
     Dim Arguments As String = Obj(1)
     Dim Index As Integer = Obj(2)
-    Dim Priority As Diagnostics.ProcessPriorityClass = Obj(3)
+    Dim DisplayOutput As Boolean = Obj(3)
+    Dim Priority As Diagnostics.ProcessPriorityClass = Obj(4)
     Dim PkgList As New Process
     PkgList.StartInfo.FileName = Filename
     PkgList.StartInfo.Arguments = Arguments
@@ -5287,6 +5324,7 @@ Public Class frmMain
     PkgList.StartInfo.RedirectStandardError = True
     PkgList.StartInfo.CreateNoWindow = True
     PkgList.StartInfo.EnvironmentVariables.Add("RUNNING_INDEX", Index)
+    PkgList.StartInfo.EnvironmentVariables.Add("WRITE_OUTPUT", IIf(DisplayOutput, "1", "0"))
     AddHandler PkgList.OutputDataReceived, AddressOf RunWithReturnOutputHandler
     AddHandler PkgList.ErrorDataReceived, AddressOf RunWithReturnErrorHandler
     PkgList.Start()
@@ -5300,15 +5338,15 @@ Public Class frmMain
         PkgList.WaitForExit()
       End If
     Catch ex As Exception
-      RunWithReturnRet(Index, ex.Message)
+      RunWithReturnRet(Index, ex.Message, True)
       Err.Clear()
     End Try
   End Sub
   Private c_RunWithReturnAccumulation As New List(Of String)
   Private c_RunWithReturnErrorAccumulation As New List(Of String)
-  Private Sub AsyncRunWithReturnRet(Index As Integer, Output As String)
+  Private Sub AsyncRunWithReturnRet(Index As Integer, Output As String, WriteOutput As Boolean)
     If Me.InvokeRequired Then
-      Me.Invoke(New RunWithReturnRetCallBack(AddressOf AsyncRunWithReturnRet), Index, Output)
+      Me.Invoke(New RunWithReturnRetCallBack(AddressOf AsyncRunWithReturnRet), Index, Output, WriteOutput)
       Return
     End If
     If Output Is Nothing Then
@@ -5323,16 +5361,16 @@ Public Class frmMain
         End If
       End If
       c_RunWithReturnAccumulation(Index) = String.Concat(c_RunWithReturnAccumulation(Index), Output, vbNewLine)
-      WriteToOutput(Output, OutputType.Output)
+      If WriteOutput Then WriteToOutput(Output, OutputType.Output)
     End If
   End Sub
-  Private Sub AsyncRunWithReturnErrorRet(Index As Integer, Output As String)
+  Private Sub AsyncRunWithReturnErrorRet(Index As Integer, Output As String, WriteOutput As Boolean)
     If Me.InvokeRequired Then
-      Me.Invoke(New RunWithReturnRetCallBack(AddressOf AsyncRunWithReturnErrorRet), Index, Output)
+      Me.Invoke(New RunWithReturnRetCallBack(AddressOf AsyncRunWithReturnErrorRet), Index, Output, WriteOutput)
       Return
     End If
     If String.IsNullOrEmpty(Output) Then
-      WriteToOutput(Nothing, OutputType.Output)
+      If WriteOutput Then WriteToOutput(Nothing, OutputType.Output)
       Return
     End If
     If ReturnProgress Then
@@ -5340,8 +5378,8 @@ Public Class frmMain
         Dim ProgI As String = Output.Substring(0, Output.IndexOf("%"))
         SetSubProgress(Val(ProgI), 100)
       End If
-      WriteToOutput(Output, OutputType.Output)
-    Else
+      If WriteOutput Then WriteToOutput(Output, OutputType.Output)
+    ElseIf WriteOutput Then
       If Output.Contains("% complete") Then
         WriteToOutput(Output, OutputType.Output)
       Else
@@ -5350,17 +5388,19 @@ Public Class frmMain
     End If
   End Sub
   Private Sub RunWithReturnOutputHandler(sender As Object, e As DataReceivedEventArgs)
+    If StopRun Then Return
     Dim tmpData As String = e.Data
     Dim pkgData As Process = sender
     Dim Index As Integer = pkgData.StartInfo.EnvironmentVariables("RUNNING_INDEX")
-    AsyncRunWithReturnRet(Index, tmpData)
+    AsyncRunWithReturnRet(Index, tmpData, pkgData.StartInfo.EnvironmentVariables("WRITE_OUTPUT") = "1")
   End Sub
   Private Sub RunWithReturnErrorHandler(sender As Object, e As DataReceivedEventArgs)
+    If StopRun Then Return
     Dim tmpData As String = e.Data
     If Not tmpData Is Nothing Then
       Dim pkgData As Process = sender
       Dim Index As Integer = pkgData.StartInfo.EnvironmentVariables("RUNNING_INDEX")
-      AsyncRunWithReturnErrorRet(Index, tmpData)
+      AsyncRunWithReturnErrorRet(Index, tmpData, pkgData.StartInfo.EnvironmentVariables("WRITE_OUTPUT") = "1")
     End If
   End Sub
 #End Region
@@ -5443,18 +5483,69 @@ Public Class frmMain
       Beep()
       Return
     End If
+    Dim IdenticalNames As New List(Of String)
     For I As Integer = 0 To lvImages.Items.Count - 1
       Dim selName As String = ImageDataList(lvImages.Items(I).Tag).NewName
       For J As Integer = 0 To lvImages.Items.Count - 1
         If J = I Then Continue For
         If ImageDataList(lvImages.Items(J).Tag).NewName = selName Then
-          SetStatus("All Image Packages must have different names!")
-          lvImages.Focus()
-          Beep()
-          Return
+          If Not IdenticalNames.Contains(selName) Then IdenticalNames.Add(selName)
         End If
       Next
     Next
+    If IdenticalNames.Count > 0 Then
+      SetStatus("All Image Packages must have different names!")
+      Dim no64 As Boolean = True
+      Dim all86 As Boolean = True
+      Dim all64 As Boolean = True
+      Dim allIA As Boolean = True
+      For I As Integer = 0 To lvImages.Items.Count - 1
+        If Not IdenticalNames.Contains(ImageDataList(lvImages.Items(I).Tag).NewName) Then Continue For
+        If ImageDataList(lvImages.Items(I).Tag).NewName.Contains("64") Then no64 = False
+        If CompareArchitectures(ImageDataList(lvImages.Items(I).Tag).Package.Architecture, ArchitectureList.x86, False) Then all64 = False : allIA = False
+        If CompareArchitectures(ImageDataList(lvImages.Items(I).Tag).Package.Architecture, ArchitectureList.amd64, False) Then all86 = False : allIA = False
+        If CompareArchitectures(ImageDataList(lvImages.Items(I).Tag).Package.Architecture, ArchitectureList.ia64, False) Then all86 = False : all64 = False
+      Next
+      If all86 Or all64 Or allIA Then no64 = False
+      If no64 Then
+        If MsgDlg(Me, "Would you like to add ""x64"" (or ""ia64"") to 64-Bit image names automatically? This may resolve the issue. It will not change the Display Name.", "All Image Packages must have different names!", "Unable to Begin Slipstream Process", MessageBoxButtons.YesNo, TaskDialogIcon.FontBigA, MessageBoxDefaultButton.Button2, String.Concat("The following Image Package Names have been used more than once: ", vbNewLine, Join(IdenticalNames.ToArray, vbNewLine)), "Unique Names") = Windows.Forms.DialogResult.Yes Then
+          For I As Integer = 0 To lvImages.Items.Count - 1
+            Dim imgD As ImagePackageData = ImageDataList(lvImages.Items(I).Tag)
+            If CompareArchitectures(imgD.Package.Architecture, ArchitectureList.amd64, False) Then
+              If Not imgD.NewName.Contains("64") Then
+                Dim oldName As String = imgD.NewName
+                imgD.NewName = String.Concat(imgD.NewName, " x64")
+                Dim ttItem As String = lvImages.Items(I).ToolTipText
+                If ttItem.StartsWith(String.Concat(oldName, vbNewLine)) Then
+                  ttItem = String.Concat(imgD.NewName, vbNewLine, ttItem.Substring(String.Concat(oldName, vbNewLine).Length))
+                End If
+                If Not lvImages.Items(I).ToolTipText = ttItem Then lvImages.Items(I).ToolTipText = ttItem
+                ImageDataList(lvImages.Items(I).Tag) = imgD
+              End If
+            ElseIf CompareArchitectures(imgD.Package.Architecture, ArchitectureList.ia64, False) Then
+              If Not imgD.NewName.Contains("64") Then
+                Dim oldName As String = imgD.NewName
+                imgD.NewName = String.Concat(imgD.NewName(" ia64"))
+                Dim ttItem As String = lvImages.Items(I).ToolTipText
+                If ttItem.StartsWith(String.Concat(oldName, vbNewLine)) Then
+                  ttItem = String.Concat(imgD.NewName, vbNewLine, ttItem.Substring(String.Concat(oldName, vbNewLine).Length))
+                End If
+                If Not lvImages.Items(I).ToolTipText = ttItem Then lvImages.Items(I).ToolTipText = ttItem
+                ImageDataList(lvImages.Items(I).Tag) = imgD
+              End If
+            End If
+          Next
+          Slipstream()
+        Else
+          lvImages.Focus()
+        End If
+      Else
+        MsgDlg(Me, "Please change any image package names which are identical.", "All Image Packages must have different names!", "Unable to Begin Slipstream Process", MessageBoxButtons.OK, TaskDialogIcon.FontBigA, , Join(IdenticalNames.ToArray, vbNewLine), "Unique Names")
+        lvImages.Focus()
+        Beep()
+      End If
+      Return
+    End If
     RunComplete = False
     StopRun = False
     LangChange = False
@@ -6053,7 +6144,7 @@ Public Class frmMain
         Dim RowDesc As String = NewWIMPackageInfo.Desc
         SetProgress(I, NewWIMPackageCount, True)
         SetStatus(String.Format("Integrating and Compressing INSTALL.WIM Package ""{0}""...", RowName))
-        If ExportWIM(WIMFile, RowIndex, ISOWIMFile, Nothing, Nothing) Then
+        If ExportWIM(WIMFile, RowIndex, ISOWIMFile, RowName, RowDesc) Then
           Continue For
         Else
           ToggleInputs(True, String.Format("Failed to Integrate WIM Package ""{0}""", RowName))
@@ -6506,7 +6597,7 @@ Public Class frmMain
         If Not SlowCopyFile(ISOBak, ISOFile, True) Then
           ToggleInputs(True, "ISO Build and backup ISO restore failed!")
         End If
-        ToggleInputs("Failed to build ISO!")
+        ToggleInputs(True, "Failed to build ISO!")
         Return
       End If
     Else

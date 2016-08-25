@@ -1788,7 +1788,7 @@ Partial Class frmMain
     Me.txtSP64.Size = New System.Drawing.Size(232, 20)
     Me.txtSP64.TabIndex = 0
     Me.ttInfo.SetToolTip(Me.txtSP64, "Windows 7 x64 Service Pack 1 installer EXE." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(Note that x64 Integration requires " & _
-        "a 64-bit Operating System.)")
+        "a 64-Bit Operating System.)")
     '
     'cmdSP64
     '
@@ -1856,7 +1856,7 @@ Partial Class frmMain
     Me.txtSP.Size = New System.Drawing.Size(232, 20)
     Me.txtSP.TabIndex = 0
     Me.ttInfo.SetToolTip(Me.txtSP, "Windows 7 Service Pack 1 installer EXE." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(Note that x64 Integration requires a 64" & _
-        "-bit Operating System.)")
+        "-Bit Operating System.)")
     '
     'cmdSP
     '
