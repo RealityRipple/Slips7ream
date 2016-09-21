@@ -82,7 +82,9 @@
   End Sub
   Private Function GetVal(line As String) As String
     If line.Contains(" : ") Then
-      Return line.Substring(line.IndexOf(" : ") + 3)
+      Dim sRet As String = line.Substring(line.IndexOf(" : ") + 3)
+      If sRet = "<undefined>" Then Return Nothing
+      Return sRet
     Else
       Return Nothing
     End If
