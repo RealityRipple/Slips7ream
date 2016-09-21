@@ -606,6 +606,7 @@
     End If
     ToggleUI(False)
     frmMain.LoadPackageDrivers(Group, txtIndex.Text)
+    If Me.Disposing Or Me.IsDisposed Then Return
     Dim lvItem As ListViewItem = Nothing
     For Each item As ListViewItem In frmMain.lvImages.Items
       If frmMain.ImageDataList(item.Tag).Package.ToString = imgID Then
@@ -734,6 +735,7 @@
     imlUpdates.Images.Add("NO", My.Resources.u_n)
   End Sub
   Private Sub ToggleUI(Enable As Boolean)
+    If Me.Disposing Or Me.IsDisposed Then Return
     txtName.ReadOnly = Not Enable
     txtDesc.ReadOnly = Not Enable
     cmdLoadFeatures.Enabled = Enable
@@ -748,6 +750,7 @@
     cmdCancel.Enabled = Enable
   End Sub
   Private Sub PositionViews()
+    If Me.Disposing Or Me.IsDisposed Then Return
     pnlProps.SuspendLayout()
     Dim SomethingOpen As Boolean = False
     If expFeatures.Open Then
@@ -793,6 +796,7 @@
   End Sub
 #Region "Features"
   Private Sub DisplayFeatures()
+    If tvFeatures.Disposing Or tvFeatures.IsDisposed Then Return
     If tvFeatures.Nodes.Count > 0 Then Return
     If FeatureData Is Nothing Then
       tvFeatures.ReadOnly = True
@@ -1000,6 +1004,7 @@
 #End Region
 #Region "Updates"
   Private Sub DisplayUpdates()
+    If lvUpdates.Disposing Or lvUpdates.IsDisposed Then Return
     If lvUpdates.Items.Count > 0 Then Return
     If UpdateData Is Nothing Then
       lvUpdates.ReadOnly = True
@@ -1424,7 +1429,7 @@
         If Not String.IsNullOrEmpty(sGroupName) Then sGroupKey = String.Concat("lvg{0}", sGroupName.Replace(" ", "_"))
         lvUpdates.Items.Add(lvItem)
         lvItem.Group = lvUpdates.Groups(sGroupKey)
-        End If
+      End If
     Next
     lvUpdates.Sort()
     LoadingUpdates = False
@@ -1485,6 +1490,7 @@
 #End Region
 #Region "Drivers"
   Private Sub DisplayDrivers()
+    If lvDriverClass.Disposing Or lvDriverClass.IsDisposed Then Return
     If lvDriverClass.Items.Count > 0 Then Return
     If DriverData Is Nothing Then
       lvDriverClass.Items.Clear()
