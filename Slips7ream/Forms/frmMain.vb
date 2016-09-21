@@ -1242,6 +1242,7 @@ Public Class frmMain
   End Sub
   Private LastClick As Long = 0
   Private Sub lvMSU_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles lvMSU.MouseDown
+    If sourceRows.Count = 0 Then Return
     sourceRows.Clear()
     If e.Button = Windows.Forms.MouseButtons.Left And lvMSU.SelectedItems.Count > 0 Then
       For Each item As ListViewItem In lvMSU.SelectedItems
@@ -3619,6 +3620,11 @@ Public Class frmMain
           SetProgress(progVal, progMax)
           SetStatus(String.Format("Populating {0} Package Feature List...", Package.Name))
           Dim FeatureNames() As String = GetDISMFeatures(Mount)
+          If FeatureNames Is Nothing Then
+            SetStatus(String.Format("Failed to read {0} Package Feature List!", Package.Name))
+            LoadFeatureComplete = True
+            Return
+          End If
           Dim FeatureCount As Integer = FeatureNames.Length
           If StopRun Then Return
           Dim Features As New List(Of Feature)
@@ -3773,6 +3779,11 @@ Public Class frmMain
           SetProgress(progVal, progMax)
           SetStatus(String.Format("Populating {0} Package Update List...", Package.Name))
           Dim upList As List(Of Update_Integrated) = GetDISMPackageItems(Mount, Package)
+          If upList Is Nothing Then
+            SetStatus(String.Format("Failed to read {0} Package Update List!", Package.Name))
+            LoadUpdateComplete = True
+            Return
+          End If
           For J As Integer = 0 To upList.Count - 1
             SetProgress(progVal * upList.Count + (J + 1), progMax * upList.Count)
             SetStatus(String.Format("Parsing {0} Package Update {2} of {3}: {1}...", Package.Name, upList(J).Ident.Name, (J + 1), upList.Count))
@@ -3929,6 +3940,11 @@ Public Class frmMain
           SetProgress(progVal, progMax)
           SetStatus(String.Format("Populating {0} Package Driver List...", Package.Name))
           Dim driverList As List(Of Driver) = GetDISMDriverItems(Mount, True)
+          If driverList Is Nothing Then
+            SetStatus(String.Format("Failed to read {0} Package Driver List!", Package.Name))
+            LoadDriverComplete = True
+            Return
+          End If
           For J As Integer = 0 To driverList.Count - 1
             SetProgress(progVal * driverList.Count + (J + 1), progMax * driverList.Count)
             SetStatus(String.Format("Parsing {0} Package Driver {2} of {3}: {1}...", Package.Name, driverList(J).OriginalFileName, (J + 1), driverList.Count))
