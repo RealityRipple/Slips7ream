@@ -992,9 +992,9 @@ Public Class frmMain
 #End Region
 #Region "Updates"
   Private Sub lvMSU_DoubleClick(sender As Object, e As System.EventArgs) Handles lvMSU.DoubleClick
-    If lvMSU.SelectedItems IsNot Nothing AndAlso lvMSU.SelectedItems.Count > 0 Then ShowUpdatePropserties(lvMSU.SelectedItems)
+    If lvMSU.SelectedItems IsNot Nothing AndAlso lvMSU.SelectedItems.Count > 0 Then ShowUpdateProperties(lvMSU.SelectedItems)
   End Sub
-  Private Sub ShowUpdatePropserties(items As ListView.SelectedListViewItemCollection)
+  Private Sub ShowUpdateProperties(items As ListView.SelectedListViewItemCollection)
     For Each lvItem As ListViewItem In items
       Dim msuData As Update_File = MSUDataList(lvItem.Tag).Update
       If Not String.IsNullOrEmpty(msuData.Failure) Then If ExtractFailureAlert(msuData.Failure) Then Continue For
@@ -1071,6 +1071,11 @@ Public Class frmMain
     Next
     Return sFiles.ToArray
   End Function
+  Public Sub DragDropCallback(obj As Object)
+    Dim sender As Object = obj(0)
+    Dim e As DragEventArgs = obj(1)
+    Me.Invoke(New EventHandler(Of DragEventArgs)(AddressOf DragDropEvent), sender, e)
+  End Sub
   Public Sub DragDropEvent(sender As Object, e As DragEventArgs)
     ReplaceAllOldUpdates = TriState.UseDefault
     ReplaceAllNewUpdates = TriState.UseDefault
@@ -1201,7 +1206,8 @@ Public Class frmMain
     If sourceRows.Count > 0 Then
       sourceRows.Clear()
     Else
-      DragDropEvent(sender, e)
+      Dim tDragDrop As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf DragDropCallback))
+      tDragDrop.Start({sender, e})
     End If
   End Sub
   Private Sub lvMSU_DragEnter(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles lvMSU.DragEnter
@@ -2414,7 +2420,7 @@ Public Class frmMain
   End Sub
   Private Sub mnuUpdateProperties_Click(sender As System.Object, e As System.EventArgs) Handles mnuUpdateProperties.Click
     If SelectedlvMSUList Is Nothing OrElse SelectedlvMSUList.Count = 0 Then Return
-    ShowUpdatePropserties(SelectedlvMSUList)
+    ShowUpdateProperties(SelectedlvMSUList)
   End Sub
 #End Region
 #End Region
