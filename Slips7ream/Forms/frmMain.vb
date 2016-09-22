@@ -24,6 +24,7 @@ Public Class frmMain
   Private mySettings As MySettings
   Private outputWindow As Boolean = False
   Private UnlockCheckbox As TriState = TriState.UseDefault
+  Private sWIMText As String
 #Region "Data Lists"
   Public Structure ImagePackageData
     Public Group As WIMGroup
@@ -812,6 +813,8 @@ Public Class frmMain
     TextBoxDragOverEvent(sender, e, {".wim", ".iso"})
   End Sub
   Private Sub txtWIM_TextChanged(sender As System.Object, e As System.EventArgs) Handles txtWIM.TextChanged
+    If txtWIM.Text = sWIMText Then Return
+    sWIMText = txtWIM.Text
     If Not IO.File.Exists(txtWIM.Text) Then Return
     RunComplete = False
     StopRun = False
