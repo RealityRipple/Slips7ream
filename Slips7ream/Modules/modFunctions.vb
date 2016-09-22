@@ -89,15 +89,23 @@ Public Module modFunctions
       Case "Microsoft-Windows-InternetExplorer-Package-TopLevel"
         Dim ieVer As String = Ident.Version.Substring(0, Ident.Version.IndexOf("."))
         Return String.Format("Internet Explorer {0}", ieVer)
-      Case "Microsoft-Windows-PlatformUpdate-Win7-SRV08R2-Package-TopLevel" : Return "Platform Update for Windows 7"
+      Case "Microsoft-Windows-PlatformUpdate-Win7-SRV08R2-Package-TopLevel" : Return "Platform Update for Windows"
       Case "Microsoft-Windows-Client-LanguagePack-Package" : Return String.Format("{0} Multilingual User Interface Pack", Ident.Language)
       Case "Microsoft-Windows-Client-Refresh-LanguagePack-Package" : Return String.Format("{0} Multilingual User Interface Pack", Ident.Language)
       Case "Microsoft-Windows-LIP-LanguagePack-Package" : Return String.Format("{0} Language Interface Pack", Ident.Language)
       Case "Microsoft-Windows-RDP-WinIP-Package-TopLevel" : Return "Remote Desktop Protocol Update"
       Case "Microsoft-Windows-RDP-BlueIP-Package-TopLevel" : Return "Remote App and Desktop Connections Update"
       Case "Microsoft-Windows-Security-WindowsActivationTechnologies-Package" : Return "Windows Activation Update"
+      Case "Package_for_RollupFix" : Return "Update Rollup for Windows"
       Case Else
         If Ident.Name.StartsWith("Package_for_") Then
+          If Not String.IsNullOrEmpty(Ident.Version) Then
+            If Ident.Version.StartsWith("6.1.") Then
+              Return String.Format("Update for Windows ({0})", Ident.Name.Substring(12))
+            ElseIf Ident.Version.StartsWith("9.4") Or Ident.Version.StartsWith("10.2") Or Ident.Version.StartsWith("11.2") Then
+              Return String.Format("Update for IE ({0})", Ident.Name.Substring(12))
+            End If
+          End If
           Return String.Format("{0} Update", Ident.Name.Substring(12))
         ElseIf Ident.Name.StartsWith("Microsoft-Windows-IE-Spelling-Parent-Package") Then
           Return String.Format("IE Spelling Package for {0}", Ident.Name.Substring(Ident.Name.LastIndexOf("-") + 1))
