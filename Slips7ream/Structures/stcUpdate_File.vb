@@ -12,6 +12,7 @@
   Public Failure As String
   Public Ident As Update_Identity
   Public DriverData As Driver
+  Public ReleaseType As String
   Private Shared c_ExtractRet As New List(Of String)
   Public Sub New(Location As String)
     Path = Location
@@ -84,7 +85,6 @@
             Dim xAssemblyIdentity As XElement = xPackage.Element("{urn:schemas-microsoft-com:unattend}assemblyIdentity")
             Identity = MakeIdentity(xAssemblyIdentity.Attribute("name").Value, xAssemblyIdentity.Attribute("publicKeyToken").Value, xAssemblyIdentity.Attribute("processorArchitecture").Value, xAssemblyIdentity.Attribute("language").Value, xAssemblyIdentity.Attribute("version").Value)
             Ident = New Update_Identity(Identity)
-            Name = GetUpdateName(Ident)
             If Ident.Name = "Microsoft-Windows-InternetExplorer-LanguagePack" Then
               Dim ieVer As String = Ident.Version.Substring(0, Ident.Version.IndexOf("."))
               AppliesTo = String.Format("Internet Explorer {0}", ieVer)
@@ -98,6 +98,46 @@
             Else
               KBVersion = "0"
             End If
+            Dim CABFile As String = IO.Path.GetFileName(sFile).Replace("-pkgProperties.txt", ".cab")
+            exRet = ExtractAFile(Location, MSUPath, CABFile)
+            If Not exRet = "OK" Then
+              If exRet = "File Not Found" Then
+                Failure = "Update CAB file not found."
+              ElseIf exRet.StartsWith("Error Opening: ") Then
+                Failure = String.Format("Update MSU {0}", exRet)
+              ElseIf exRet.StartsWith("Error Extracting: ") Then
+                Failure = String.Format("Update CAB file {0}", exRet)
+              Else
+                Failure = String.Format("Update CAB file Error: {0}", exRet)
+              End If
+              Return
+            End If
+            If Not IO.File.Exists(IO.Path.Combine(MSUPath, CABFile)) Then
+              Failure = "Update CAB file could not be extracted."
+              Return
+            End If
+            Dim MUMFile As String = "update.mum"
+            exRet = ExtractAFile(IO.Path.Combine(MSUPath, CABFile), MSUPath, MUMFile)
+            If Not exRet = "OK" Then
+              If exRet = "File Not Found" Then
+                Failure = "Update MUM file not found."
+              ElseIf exRet.StartsWith("Error Opening: ") Then
+                Failure = String.Format("Update CAB {0}", exRet)
+              ElseIf exRet.StartsWith("Error Extracting: ") Then
+                Failure = String.Format("Update MUM file {0}", exRet)
+              Else
+                Failure = String.Format("Update MUM file Error: {0}", exRet)
+              End If
+              Return
+            End If
+            If Not IO.File.Exists(IO.Path.Combine(MSUPath, MUMFile)) Then
+              Failure = "Update MUM file could not be extracted."
+              Return
+            End If
+            Dim xMUM As XElement = XElement.Load(IO.Path.Combine(MSUPath, MUMFile))
+            Dim xMUMPackage As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}package")
+            ReleaseType = xMUMPackage.Attribute("releaseType").Value
+            Name = GetUpdateName(Ident, ReleaseType)
           Catch ex As Exception
             Failure = ex.Message
           Finally
@@ -132,7 +172,6 @@
             Architecture = xAssemblyIdentity.Attribute("processorArchitecture").Value
             Identity = MakeIdentity(xAssemblyIdentity.Attribute("name").Value, xAssemblyIdentity.Attribute("publicKeyToken").Value, Architecture, xAssemblyIdentity.Attribute("language").Value, xAssemblyIdentity.Attribute("version").Value)
             Ident = New Update_Identity(Identity)
-            Name = GetUpdateName(Ident)
             If Not String.IsNullOrEmpty(Ident.Version) Then
               If Ident.Version.StartsWith("6.1.") Or Ident.Version.StartsWith("6.2.") Or Ident.Version.StartsWith("6.3.") Then
                 KBVersion = Ident.Version.Substring(4)
@@ -144,6 +183,8 @@
             End If
             Dim xPackage As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}package")
             KBArticle = xPackage.Attribute("identifier").Value
+            ReleaseType = xPackage.Attribute("releaseType").Value
+            Name = GetUpdateName(Ident, ReleaseType)
             If KBArticle.StartsWith("KB") Then KBArticle = KBArticle.Substring(2)
             Dim xParent As XElement = xPackage.Element("{urn:schemas-microsoft-com:asm.v3}parent")
             Dim xParentAssemblyIdentity As XElement = xParent.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
@@ -183,7 +224,6 @@
             Architecture = xAssemblyIdentity.Attribute("processorArchitecture").Value
             Identity = MakeIdentity(xAssemblyIdentity.Attribute("name").Value, xAssemblyIdentity.Attribute("publicKeyToken").Value, Architecture, xAssemblyIdentity.Attribute("language").Value, xAssemblyIdentity.Attribute("version").Value)
             Ident = New Update_Identity(Identity)
-            Name = GetUpdateName(Ident)
             If Not String.IsNullOrEmpty(Ident.Version) Then
               KBVersion = Ident.Version
             Else
@@ -191,6 +231,8 @@
             End If
             Dim xPackage As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}package")
             DisplayName = xPackage.Attribute("identifier").Value
+            ReleaseType = xPackage.Attribute("releaseType").Value
+            Name = GetUpdateName(Ident, ReleaseType)
             KBArticle = Nothing
             Dim xInfo As XElement = xPackage.Element("{urn:schemas-microsoft-com:asm.v3}customInformation")
             If xInfo.Attribute("LPTargetSPLevel").Value = "1" Then
@@ -208,7 +250,6 @@
             End If
             Dim wDate As Date = New IO.FileInfo(IO.Path.Combine(LPPath, "update.mum")).CreationTime
             BuildDate = wDate.ToString("yyyy/MM/dd")
-
           Catch ex As Exception
             Failure = ex.Message
           Finally
@@ -242,7 +283,6 @@
             Architecture = xAssemblyIdentity.Attribute("processorArchitecture").Value
             Identity = MakeIdentity(xAssemblyIdentity.Attribute("name").Value, xAssemblyIdentity.Attribute("publicKeyToken").Value, Architecture, xAssemblyIdentity.Attribute("language").Value, xAssemblyIdentity.Attribute("version").Value)
             Ident = New Update_Identity(Identity)
-            Name = GetUpdateName(Ident)
             If Not String.IsNullOrEmpty(Ident.Version) Then
               KBVersion = Ident.Version
             Else
@@ -250,6 +290,8 @@
             End If
             Dim xPackage As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}package")
             DisplayName = xPackage.Attribute("identifier").Value
+            ReleaseType = xPackage.Attribute("releaseType").Value
+            Name = GetUpdateName(Ident, ReleaseType)
             KBArticle = Nothing
             Dim xParent As XElement = xPackage.Element("{urn:schemas-microsoft-com:asm.v3}parent")
             Dim xInfo As XElement = xPackage.Element("{urn:schemas-microsoft-com:asm.v3}customInformation")
@@ -327,7 +369,6 @@
             Architecture = xAssemblyIdentity.Attribute("processorArchitecture").Value
             Identity = MakeIdentity(xAssemblyIdentity.Attribute("name").Value, xAssemblyIdentity.Attribute("publicKeyToken").Value, Architecture, xAssemblyIdentity.Attribute("language").Value, xAssemblyIdentity.Attribute("version").Value)
             Ident = New Update_Identity(Identity)
-            Name = GetUpdateName(Ident)
             If Not String.IsNullOrEmpty(Ident.Version) Then
               KBVersion = Ident.Version
             Else
@@ -335,6 +376,8 @@
             End If
             Dim xPackage As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}package")
             DisplayName = xPackage.Attribute("identifier").Value
+            ReleaseType = xPackage.Attribute("releaseType").Value
+            Name = GetUpdateName(Ident, ReleaseType)
             KBArticle = Nothing
             Dim xParent As XElement = xPackage.Element("{urn:schemas-microsoft-com:asm.v3}parent")
             Dim xInfo As XElement = xPackage.Element("{urn:schemas-microsoft-com:asm.v3}customInformation")
@@ -370,7 +413,6 @@
                     Architecture = xAssemblyIdentity.Attribute("processorArchitecture").Value
                     Identity = MakeIdentity(xAssemblyIdentity.Attribute("name").Value, xAssemblyIdentity.Attribute("publicKeyToken").Value, Architecture, xAssemblyIdentity.Attribute("language").Value, xAssemblyIdentity.Attribute("version").Value)
                     Ident = New Update_Identity(Identity)
-                    Name = GetUpdateName(Ident)
                     If Not String.IsNullOrEmpty(Ident.Version) Then
                       KBVersion = Ident.Version
                     Else
@@ -380,6 +422,9 @@
                     AppliesTo = "Windows 7"
                     Dim wDate As Date = New IO.FileInfo(IO.Path.Combine(EXEPath, "update.mum")).CreationTime
                     BuildDate = wDate.ToString("yyyy/MM/dd")
+                    Dim xPackage As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}package")
+                    ReleaseType = xPackage.Attribute("releaseType").Value
+                    Name = GetUpdateName(Ident, ReleaseType)
                   Else
                     Failure = "Description File Not Found"
                   End If
@@ -401,7 +446,6 @@
                 Architecture = xAssemblyIdentity.Attribute("processorArchitecture").Value
                 Identity = MakeIdentity(xAssemblyIdentity.Attribute("name").Value, xAssemblyIdentity.Attribute("publicKeyToken").Value, Architecture, xAssemblyIdentity.Attribute("language").Value, xAssemblyIdentity.Attribute("version").Value)
                 Ident = New Update_Identity(Identity)
-                Name = GetUpdateName(Ident)
                 If Not String.IsNullOrEmpty(Ident.Version) Then
                   KBVersion = Ident.Version
                 Else
@@ -409,6 +453,8 @@
                 End If
                 Dim xPackage As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}package")
                 DisplayName = xPackage.Attribute("identifier").Value
+                ReleaseType = xPackage.Attribute("releaseType").Value
+                Name = GetUpdateName(Ident, ReleaseType)
                 KBArticle = Nothing
                 Dim xInfo As XElement = xPackage.Element("{urn:schemas-microsoft-com:asm.v3}customInformation")
                 If xInfo.Attribute("LPTargetSPLevel").Value = "1" Then
@@ -445,6 +491,7 @@
           KBVersion = Nothing
           BuildDate = Nothing
           Failure = Nothing
+          ReleaseType = Nothing
         Case UpdateType.Other
           Name = Nothing
           DisplayName = Nothing
@@ -454,6 +501,7 @@
           KBArticle = Nothing
           KBVersion = Nothing
           BuildDate = Nothing
+          ReleaseType = Nothing
           Dim sExt As String = IO.Path.GetExtension(Path).Substring(1).ToUpper
           Select Case sExt
             Case "CAT" : Failure = "Security Catalogs are included when needed automatically and do not need to be added."

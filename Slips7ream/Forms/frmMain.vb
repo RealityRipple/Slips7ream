@@ -1011,10 +1011,11 @@ Public Class frmMain
           Next
           Dim props As New frmUpdateProps
           props.Name = String.Format("frmUpdate{0}Props", msuData.Name)
-          props.Text = String.Format("{0} Properties", GetUpdateName(msuData.Ident))
+          props.Text = String.Format("{0} Properties", GetUpdateName(msuData.Ident, msuData.ReleaseType))
           props.txtName.Text = msuData.Name
           props.txtDisplayName.Text = msuData.DisplayName
           props.txtIdentity.Text = msuData.Identity
+          props.txtReleaseType.Text = msuData.ReleaseType
           props.txtAppliesTo.Text = msuData.AppliesTo
           props.txtArchitecture.Text = msuData.Architecture
           props.txtVersion.Text = msuData.KBVersion
@@ -5350,6 +5351,8 @@ Public Class frmMain
     PkgList.StartInfo.CreateNoWindow = True
     PkgList.StartInfo.EnvironmentVariables.Add("RUNNING_INDEX", Index)
     PkgList.StartInfo.EnvironmentVariables.Add("WRITE_OUTPUT", IIf(DisplayOutput, "1", "0"))
+    PkgList.StartInfo.StandardErrorEncoding = System.Text.Encoding.UTF8
+    PkgList.StartInfo.StandardOutputEncoding = System.Text.Encoding.UTF8
     AddHandler PkgList.OutputDataReceived, AddressOf RunWithReturnOutputHandler
     AddHandler PkgList.ErrorDataReceived, AddressOf RunWithReturnErrorHandler
     PkgList.Start()

@@ -118,8 +118,38 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <metadata name="helpS7M.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>198, 17</value>
+    <value>99, 17</value>
   </metadata>
+  <data name="lblIdentity.HelpString" xml:space="preserve">
+    <value>The Identity string contains the following data, delimited by tildes (~):
+  Name: The Identity Name is the name of the update. It's how SLIPS7REAM tells one update from another, and how it knows to compare different versions of the same update.
+  Token: The Token value is almost always 31bf3856ad364e35.
+  Architecture: (Usually) redundant with the Architecture value below. If empty, then this update is "AnyCPU" or Architecture-neutral.
+  Language: The Language this update applies to. If empty, then this update is Language-neutral.
+  Version: (Usually) redundant with the Version value below.</value>
+  </data>
+  <data name="txtIdentity.HelpString" xml:space="preserve">
+    <value>The Identity string contains the following data, delimited by tildes (~):
+  Name: The Identity Name is the name of the update. It's how SLIPS7REAM tells one update from another, and how it knows to compare different versions of the same update.
+  Token: The Token value is almost always 31bf3856ad364e35.
+  Architecture: (Usually) redundant with the Architecture value below. If empty, then this update is "AnyCPU" or Architecture-neutral.
+  Language: The Language this update applies to. If empty, then this update is Language-neutral.
+  Version: (Usually) redundant with the Version value below.</value>
+  </data>
+  <data name="lblDisplayName.HelpString" xml:space="preserve">
+    <value>Depends on the type of file, but is generally a common name of the update, often with a version number.
+  For MSU Files, this is the * part of the "*pkgProperties.txt" file inside the update.
+  For CAB files, this is the "displayName" value in the "update.mum" XML file.
+  For LIP files, MSI and LP.CAB Language files, this is the "identifier" value in the "update.mum" XML file.
+  EXE parsing uses either CAB or Language rules depending on what it is.</value>
+  </data>
+  <data name="txtDisplayName.HelpString" xml:space="preserve">
+    <value>Depends on the type of file, but is generally a common name of the update, often with a version number.
+  For MSU Files, this is the * part of the "*pkgProperties.txt" file inside the update.
+  For CAB files, this is the "displayName" value in the "update.mum" XML file.
+  For LIP files, MSI and LP.CAB Language files, this is the "identifier" value in the "update.mum" XML file.
+  EXE parsing uses either CAB or Language rules depending on what it is.</value>
+  </data>
   <metadata name="ttLink.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>

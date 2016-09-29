@@ -76,7 +76,8 @@ Public Module modFunctions
       Return Nothing
     End If
   End Function
-  Public Function GetUpdateName(Ident As Update_Identity) As String
+  Public Function GetUpdateName(Ident As Update_Identity, ReleaseType As String) As String
+    Debug.Print(ReleaseType)
     Select Case Ident.Name
       Case "WUClient-SelfUpdate-Core-TopLevel"
         Return String.Format("Windows Update Agent {0}", Ident.Version.Substring(0, Ident.Version.IndexOf(".", Ident.Version.IndexOf(".") + 1)))
@@ -99,14 +100,25 @@ Public Module modFunctions
       Case "Package_for_RollupFix" : Return "Update Rollup for Windows"
       Case Else
         If Ident.Name.StartsWith("Package_for_") Then
-          If Not String.IsNullOrEmpty(Ident.Version) Then
-            If Ident.Version.StartsWith("6.1.") Then
-              Return String.Format("Update for Windows ({0})", Ident.Name.Substring(12))
-            ElseIf Ident.Version.StartsWith("9.4") Or Ident.Version.StartsWith("10.2") Or Ident.Version.StartsWith("11.2") Then
-              Return String.Format("Update for IE ({0})", Ident.Name.Substring(12))
+          If String.IsNullOrEmpty(ReleaseType) Then
+            If Not String.IsNullOrEmpty(Ident.Version) Then
+              If Ident.Version.StartsWith("6.1.") Then
+                Return String.Format("Update for Windows ({0})", Ident.Name.Substring(12))
+              ElseIf Ident.Version.StartsWith("9.4") Or Ident.Version.StartsWith("10.2") Or Ident.Version.StartsWith("11.2") Then
+                Return String.Format("Update for IE ({0})", Ident.Name.Substring(12))
+              End If
             End If
+            Return String.Format("{0} Update", Ident.Name.Substring(12))
+          Else
+            If Not String.IsNullOrEmpty(Ident.Version) Then
+              If Ident.Version.StartsWith("6.1.") Then
+                Return String.Format("{1} for Windows ({0})", Ident.Name.Substring(12), ReleaseType)
+              ElseIf Ident.Version.StartsWith("9.4") Or Ident.Version.StartsWith("10.2") Or Ident.Version.StartsWith("11.2") Then
+                Return String.Format("{1} for IE ({0})", Ident.Name.Substring(12), ReleaseType)
+              End If
+            End If
+            Return String.Format("{0} {1}", Ident.Name.Substring(12), ReleaseType)
           End If
-          Return String.Format("{0} Update", Ident.Name.Substring(12))
         ElseIf Ident.Name.StartsWith("Microsoft-Windows-IE-Spelling-Parent-Package") Then
           Return String.Format("IE Spelling Package for {0}", Ident.Name.Substring(Ident.Name.LastIndexOf("-") + 1))
         ElseIf Ident.Name.StartsWith("Microsoft-Windows-IE-Hyphenation-Parent-Package") Then
