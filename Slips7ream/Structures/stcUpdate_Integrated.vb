@@ -102,7 +102,7 @@ Public Structure Update_Integrated_Info
         Do
           J += 1
           If infoLines.Length - 1 < J Then Exit Do
-          sProp = Trim(infoLines(J))
+          sProp = infoLines(J).Trim
           sProp = sProp.Replace(vbTab, "")
           If Not String.IsNullOrEmpty(sProp) Then sProps.Add(sProp)
         Loop Until String.IsNullOrEmpty(sProp)
@@ -118,7 +118,7 @@ Public Structure Update_Integrated_Info
         Do
           J += 1
           If infoLines.Length - 1 < J Then Exit Do
-          sFeat = Trim(infoLines(J))
+          sFeat = infoLines(J).Trim
           sFeat = sFeat.Replace(vbTab, "")
           If Not String.IsNullOrEmpty(sFeat) Then sFeats.Add(sFeat)
         Loop Until String.IsNullOrEmpty(sFeat)

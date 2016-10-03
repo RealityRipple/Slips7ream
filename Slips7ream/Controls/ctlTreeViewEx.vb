@@ -22,7 +22,7 @@ Public Class TreeViewEx
       Next
     End Set
   End Property
-  <DefaultValue(False), Browsable(True), EditorBrowsable(True), Description("Turn the first line of the Tooltip Text for each TreeNode into a bold title."), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)>
+  <DefaultValue(False), Browsable(True), EditorBrowsable(EditorBrowsableState.Always), Description("Turn the first line of the Tooltip Text for each TreeNode into a bold title."), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)>
   Public Property TooltipTitles As Boolean
     Get
       Return c_TooltipTitles

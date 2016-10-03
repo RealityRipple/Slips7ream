@@ -14,17 +14,19 @@ Public Class Expander
   Public Event Opened(sender As Object, e As EventArgs)
   <Description("Event occurs when the expander has been closed.")>
   Public Event Closed(sender As Object, e As EventArgs)
-  <DefaultValue(False), Browsable(True), EditorBrowsable(True), Description("Indicates whether the component is in the open state.")>
+  <DefaultValue(False), Browsable(True), EditorBrowsable(EditorBrowsableState.Always), Description("Indicates whether the component is in the open state.")>
   Public Property Open As Boolean
     Get
       Return c_Open
     End Get
     Set(value As Boolean)
       c_Open = value
-      DrawExpander(IIf(c_Open, EXP_OPEN, EXP_CLOSED))
+      Dim drawAs As Integer = EXP_CLOSED
+      If c_Open Then drawAs = EXP_OPEN
+      DrawExpander(drawAs)
     End Set
   End Property
-  <DefaultValue("Expander"), Browsable(True), EditorBrowsable(True), Description("The text associated with the control."), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)>
+  <DefaultValue("Expander"), Browsable(True), EditorBrowsable(EditorBrowsableState.Always), Description("The text associated with the control."), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)>
   Public Overrides Property Text As String
     Get
       Return c_Text
@@ -51,11 +53,19 @@ Public Class Expander
     Else
       lblExpander.Padding = New Padding(3, 0, 3, 0)
     End If
-    DrawExpander(IIf(c_Open, EXP_OPEN, EXP_CLOSED) Or EXP_NORM)
+    Dim drawAs As Integer = EXP_NORM
+    If c_Open Then
+      drawAs = drawAs Or EXP_OPEN
+    Else
+      drawAs = drawAs Or EXP_CLOSED
+    End If
+    DrawExpander(drawAs)
   End Sub
   Public Sub PerformClick()
     c_Open = Not c_Open
-    DrawExpander(IIf(c_Open, EXP_OPEN, EXP_CLOSED))
+    Dim drawAs As Integer = EXP_CLOSED
+    If c_Open Then drawAs = EXP_OPEN
+    DrawExpander(drawAs)
     If c_Open Then
       RaiseEvent Opened(Me, New EventArgs)
     Else
@@ -68,13 +78,15 @@ Public Class Expander
   End Sub
   Private Sub pctExpander_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles pctExpander.MouseUp
     If Not e.Button = Windows.Forms.MouseButtons.Left Then Return
-    If c_Hover Or c_Focus Then
-      DrawExpander(EXP_HOVER)
-    Else
-      DrawExpander(EXP_NORM)
-    End If
+    Dim drawAs As Integer = EXP_NORM
+    If c_Hover Or c_Focus Then drawAs = EXP_HOVER
     c_Open = Not c_Open
-    DrawExpander(IIf(c_Open, EXP_OPEN, EXP_CLOSED))
+    If c_Open Then
+      drawAs = drawAs Or EXP_OPEN
+    Else
+      drawAs = drawAs Or EXP_CLOSED
+    End If
+    DrawExpander(drawAs)
     If c_Open Then
       RaiseEvent Opened(Me, New EventArgs)
     Else
@@ -93,19 +105,19 @@ Public Class Expander
     Static Last10 As Integer
     Static Last1 As Integer
     Dim iItem As Integer = -1
-    If (iFlags And EXP_NORM) Then
+    If (iFlags And EXP_NORM) = EXP_NORM Then
       iItem = 0
-    ElseIf (iFlags And EXP_HOVER) Then
+    ElseIf (iFlags And EXP_HOVER) = EXP_HOVER Then
       iItem = 1
-    ElseIf (iFlags And EXP_DOWN) Then
+    ElseIf (iFlags And EXP_DOWN) = EXP_DOWN Then
       iItem = 2
     End If
     If iItem = -1 Then
-      If (Last1 And EXP_NORM) Then
+      If (Last1 And EXP_NORM) = EXP_NORM Then
         iItem = 0
-      ElseIf (Last1 And EXP_HOVER) Then
+      ElseIf (Last1 And EXP_HOVER) = EXP_HOVER Then
         iItem = 1
-      ElseIf (Last1 And EXP_DOWN) Then
+      ElseIf (Last1 And EXP_DOWN) = EXP_DOWN Then
         iItem = 2
       End If
     Else
@@ -113,15 +125,15 @@ Public Class Expander
     End If
     If iItem = -1 Then iItem = 0
     Dim DrawOpenClosed As TriState = TriState.UseDefault
-    If iFlags And EXP_OPEN Then
+    If (iFlags And EXP_OPEN) = EXP_OPEN Then
       DrawOpenClosed = TriState.True
-    ElseIf iFlags And EXP_CLOSED Then
+    ElseIf (iFlags And EXP_CLOSED) = EXP_CLOSED Then
       DrawOpenClosed = TriState.False
     End If
     If DrawOpenClosed = TriState.UseDefault Then
-      If Last10 And EXP_OPEN Then
+      If (Last10 And EXP_OPEN) = EXP_OPEN Then
         DrawOpenClosed = TriState.True
-      ElseIf Last10 And EXP_CLOSED Then
+      ElseIf (Last10 And EXP_CLOSED) = EXP_CLOSED Then
         DrawOpenClosed = TriState.False
       End If
     Else
@@ -138,7 +150,7 @@ Public Class Expander
         g.Clear(Color.Transparent)
         g.DrawImage(My.Resources.expander, New Rectangle(0, 0, Square, Square), New Rectangle(0, (iItem * Square), Square, Square), GraphicsUnit.Pixel)
       End Using
-      pctExpander.Image = expanderChunk.Clone
+      pctExpander.Image = CType(expanderChunk.Clone, Image)
     End Using
     Application.DoEvents()
   End Sub
@@ -153,13 +165,15 @@ Public Class Expander
   End Sub
   Private Sub Expander_KeyUp(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyUp
     If e.KeyCode = Keys.Return Or e.KeyCode = Keys.Space Then
-      If c_Hover Or c_Focus Then
-        DrawExpander(EXP_HOVER)
-      Else
-        DrawExpander(EXP_NORM)
-      End If
+      Dim drawAs As Integer = EXP_NORM
+      If c_Hover Or c_Focus Then drawAs = EXP_HOVER
       c_Open = Not c_Open
-      DrawExpander(IIf(c_Open, EXP_OPEN, EXP_CLOSED))
+      If c_Open Then
+        drawAs = drawAs Or EXP_OPEN
+      Else
+        drawAs = drawAs Or EXP_CLOSED
+      End If
+      DrawExpander(drawAs)
       If c_Open Then
         RaiseEvent Opened(Me, New EventArgs)
       Else

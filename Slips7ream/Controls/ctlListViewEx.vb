@@ -35,7 +35,7 @@ Public Class ListViewEx
       End If
     End Set
   End Property
-  <DefaultValue(False), Browsable(True), EditorBrowsable(True), Description("Show Tooltip Text for each ListViewItem across its entire row, not just in the first column."), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)>
+  <DefaultValue(False), Browsable(True), EditorBrowsable(EditorBrowsableState.Always), Description("Show Tooltip Text for each ListViewItem across its entire row, not just in the first column."), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)>
   Public Property FullRowTooltip As Boolean
     Get
       Return c_FullRowTooltip
@@ -44,7 +44,7 @@ Public Class ListViewEx
       c_FullRowTooltip = value
     End Set
   End Property
-  <DefaultValue(False), Browsable(True), EditorBrowsable(True), Description("Turn the first line of the Tooltip Text for each ListViewItem into a bold title."), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)>
+  <DefaultValue(False), Browsable(True), EditorBrowsable(EditorBrowsableState.Always), Description("Turn the first line of the Tooltip Text for each ListViewItem into a bold title."), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)>
   Public Property TooltipTitles As Boolean
     Get
       Return c_TooltipTitles
@@ -170,7 +170,15 @@ Public Class ListViewEx
           m.Result = IntPtr.Zero
           Return
         ElseIf htInfo.Location = ListViewHitTestLocations.StateImage Then
-          OnItemCheck(New ItemCheckEventArgs(htInfo.Item.Index, Not htInfo.Item.Checked, htInfo.Item.Checked))
+          Dim cYin, cYang As CheckState
+          If htInfo.Item.Checked Then
+            cYin = CheckState.Checked
+            cYang = CheckState.Unchecked
+          Else
+            cYin = CheckState.Unchecked
+            cYang = CheckState.Checked
+          End If
+          OnItemCheck(New ItemCheckEventArgs(htInfo.Item.Index, cYang, cYin))
           htInfo.Item.Checked = Not htInfo.Item.Checked
           OnItemChecked(New ItemCheckedEventArgs(htInfo.Item))
           m.Result = IntPtr.Zero

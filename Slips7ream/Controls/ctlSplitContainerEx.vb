@@ -26,6 +26,15 @@ Public Class SplitContainerEx
       Me.Invalidate()
     End Set
   End Property
+  <Browsable(False), DefaultValue(GetType(Cursor), "Default")>
+  Public Overrides Property Cursor As System.Windows.Forms.Cursor
+    Get
+      Return MyBase.Cursor
+    End Get
+    Set(value As System.Windows.Forms.Cursor)
+      'MyBase.Cursor = Cursors.Default
+    End Set
+  End Property
   Protected Overrides Sub OnPaint(e As System.Windows.Forms.PaintEventArgs)
     MyBase.OnPaint(e)
     If c_DrawHandle Then
@@ -33,7 +42,7 @@ Public Class SplitContainerEx
       Dim GripDots(4) As Rectangle
       If MyBase.Orientation = Windows.Forms.Orientation.Vertical Then
         SmallerRect = New Rectangle(Me.SplitterRectangle.X, Me.SplitterRectangle.Y + 3, Me.SplitterRectangle.Width, Me.SplitterRectangle.Height - 6)
-        Dim Center As New Point(Me.SplitterRectangle.X + (Me.SplitterRectangle.Width / 2), Me.SplitterRectangle.Y + (Me.SplitterRectangle.Height / 2))
+        Dim Center As New Point(Me.SplitterRectangle.X + CInt(Me.SplitterRectangle.Width / 2), Me.SplitterRectangle.Y + CInt(Me.SplitterRectangle.Height / 2))
         GripDots(0) = New Rectangle(Center.X - 2, Center.Y - 9, 3, 3)
         GripDots(1) = New Rectangle(Center.X - 2, Center.Y - 5, 3, 3)
         GripDots(2) = New Rectangle(Center.X - 2, Center.Y - 1, 3, 3)
@@ -52,7 +61,7 @@ Public Class SplitContainerEx
         End If
       Else
         SmallerRect = New Rectangle(Me.SplitterRectangle.X + 3, Me.SplitterRectangle.Y, Me.SplitterRectangle.Width - 6, Me.SplitterRectangle.Height)
-        Dim Center As New Point(Me.SplitterRectangle.X + (Me.SplitterRectangle.Width / 2), Me.SplitterRectangle.Y + (Me.SplitterRectangle.Height / 2))
+        Dim Center As New Point(Me.SplitterRectangle.X + CInt(Me.SplitterRectangle.Width / 2), Me.SplitterRectangle.Y + CInt(Me.SplitterRectangle.Height / 2))
         GripDots(0) = New Rectangle(Center.X - 9, Center.Y - 2, 3, 3)
         GripDots(1) = New Rectangle(Center.X - 5, Center.Y - 2, 3, 3)
         GripDots(2) = New Rectangle(Center.X - 1, Center.Y - 2, 3, 3)

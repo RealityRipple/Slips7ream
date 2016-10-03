@@ -164,8 +164,8 @@ Public Class frmOutput
     txtOutput.ContextMenu = mnuOutput
   End Sub
   Private Sub mnuOutput_Popup(sender As System.Object, e As System.EventArgs) Handles mnuOutput.Popup
-    Dim mParent As ContextMenu = sender
-    Dim txtSel As TextBox = mParent.SourceControl
+    Dim mParent As ContextMenu = CType(sender, ContextMenu)
+    Dim txtSel As TextBox = CType(mParent.SourceControl, TextBox)
     mnuSelectAll.Enabled = Not txtSel.TextLength = 0
     mnuClear.Enabled = Not txtSel.TextLength = 0
     mnuCopy.Enabled = Not txtSel.SelectedText.Length = 0
@@ -200,7 +200,7 @@ Public Class frmOutput
       Do While sText.Contains(String.Concat(vbNewLine, vbNewLine))
         sText = sText.Replace(String.Concat(vbNewLine, vbNewLine), vbNewLine)
       Loop
-      sText = sText.Trim(vbCr, vbLf)
+      sText = sText.Trim
       Dim sLines() As String = Split(sText, vbNewLine)
       sText = Nothing
       For I As Integer = 0 To sLines.Length - 1
@@ -275,15 +275,15 @@ Public Class frmOutput
     End Select
   End Sub
   Private Sub mnuCopy_Click(sender As System.Object, e As System.EventArgs) Handles mnuCopy.Click
-    Dim mSender As MenuItem = sender
-    Dim mParent As ContextMenu = mSender.Parent
-    Dim txtSel As TextBox = mParent.SourceControl
+    Dim mSender As MenuItem = CType(sender, MenuItem)
+    Dim mParent As ContextMenu = CType(mSender.Parent, ContextMenu)
+    Dim txtSel As TextBox = CType(mParent.SourceControl, TextBox)
     If Not txtSel.SelectedText.Length = 0 Then Clipboard.SetText(txtSel.SelectedText)
   End Sub
   Private Sub mnuCopyCommands_Click(sender As System.Object, e As System.EventArgs) Handles mnuCopyCommands.Click
-    Dim mSender As MenuItem = sender
-    Dim mParent As ContextMenu = mSender.Parent
-    Dim txtSel As TextBox = mParent.SourceControl
+    Dim mSender As MenuItem = CType(sender, MenuItem)
+    Dim mParent As ContextMenu = CType(mSender.Parent, ContextMenu)
+    Dim txtSel As TextBox = CType(mParent.SourceControl, TextBox)
     If Not txtSel.SelectedText.Length = 0 Then
       Dim sSelFrom As Integer = txtSel.SelectionStart
       Dim StartLastNewLine As Integer = -1
@@ -315,7 +315,7 @@ Public Class frmOutput
       Do While sText.Contains(String.Concat(vbNewLine, vbNewLine))
         sText = sText.Replace(String.Concat(vbNewLine, vbNewLine), vbNewLine)
       Loop
-      sText = sText.Trim(vbCr, vbLf)
+      sText = sText.Trim
       Dim sLines() As String = Split(sText, vbNewLine)
       sText = Nothing
       For I As Integer = 0 To sLines.Length - 1
@@ -324,19 +324,19 @@ Public Class frmOutput
         sText = String.Concat(sText, sLines(I), vbNewLine)
       Next
       If String.IsNullOrEmpty(sText) Then Return
-      Clipboard.SetText(sText.TrimEnd(vbCr, vbLf))
+      Clipboard.SetText(sText.TrimEnd)
     End If
   End Sub
   Private Sub mnuClear_Click(sender As System.Object, e As System.EventArgs) Handles mnuClear.Click
-    Dim mSender As MenuItem = sender
-    Dim mParent As ContextMenu = mSender.Parent
-    Dim txtSel As TextBox = mParent.SourceControl
+    Dim mSender As MenuItem = CType(sender, MenuItem)
+    Dim mParent As ContextMenu = CType(mSender.Parent, ContextMenu)
+    Dim txtSel As TextBox = CType(mParent.SourceControl, TextBox)
     txtSel.Text = ""
   End Sub
   Private Sub mnuSelectAll_Click(sender As System.Object, e As System.EventArgs) Handles mnuSelectAll.Click
-    Dim mSender As MenuItem = sender
-    Dim mParent As ContextMenu = mSender.Parent
-    Dim txtSel As TextBox = mParent.SourceControl
+    Dim mSender As MenuItem = CType(sender, MenuItem)
+    Dim mParent As ContextMenu = CType(mSender.Parent, ContextMenu)
+    Dim txtSel As TextBox = CType(mParent.SourceControl, TextBox)
     If Not txtSel.TextLength = 0 Then
       txtSel.SelectionStart = 0
       txtSel.SelectionLength = txtSel.TextLength

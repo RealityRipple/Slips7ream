@@ -41,7 +41,7 @@
     If FeatureData IsNot Nothing AndAlso FeatureData.Count = 0 Then FeatureData = Nothing
     DriverData = Drivers
     If DriverData IsNot Nothing AndAlso DriverData.Count = 0 Then DriverData = Nothing
-    txtIndex.Text = Data.Index
+    txtIndex.Text = CStr(Data.Index)
     Me.Text = String.Format("{0} Image Package Properties", Data.Name)
     txtName.Text = Data.Name
     txtDesc.Text = Data.Desc
@@ -49,8 +49,8 @@
     txtArchitecture.Text = Data.Architecture
     txtHAL.Text = Data.HAL
     txtVersion.Text = Data.Version
-    txtSPLevel.Text = Data.SPLevel
-    txtSPBuild.Text = Data.SPBuild
+    txtSPLevel.Text = CStr(Data.SPLevel)
+    txtSPBuild.Text = CStr(Data.SPBuild)
     txtEdition.Text = Data.Edition
     txtInstallation.Text = Data.Installation
     txtProductType.Text = Data.ProductType
@@ -88,17 +88,17 @@
     bLoading = False
   End Sub
   Private Sub frmPackageProps_Shown(sender As Object, e As System.EventArgs) Handles Me.Shown
-    AsyncResizeUpdates()
-    AsyncResizeDrivers()
+    AsyncResizeUpdates(Nothing)
+    AsyncResizeDrivers(Nothing)
     txtName.Focus()
   End Sub
   Private Sub frmPackageProps_Resize(sender As Object, e As System.EventArgs) Handles Me.Resize
-    AsyncResizeUpdates()
-    AsyncResizeDrivers()
+    AsyncResizeUpdates(Nothing)
+    AsyncResizeDrivers(Nothing)
   End Sub
   Private Sub frmPackageProps_ResizeEnd(sender As Object, e As System.EventArgs) Handles Me.ResizeEnd
-    AsyncResizeUpdates()
-    AsyncResizeDrivers()
+    AsyncResizeUpdates(Nothing)
+    AsyncResizeDrivers(Nothing)
   End Sub
 #Region "Buttons"
   Private Sub cmdOK_Click(sender As System.Object, e As System.EventArgs) Handles cmdOK.Click
@@ -332,18 +332,20 @@
       Return
     End If
     ToggleUI(False)
-    frmMain.LoadPackageFeatures(Group, txtIndex.Text)
+    frmMain.LoadPackageFeatures(Group, CInt(txtIndex.Text))
     Dim lvItem As ListViewItem = Nothing
     For Each item As ListViewItem In frmMain.lvImages.Items
-      If frmMain.ImageDataList(item.Tag).Package.ToString = imgID Then
+      Dim lvIndex2 As Integer = CInt(item.Tag)
+      If frmMain.ImageDataList(lvIndex2).Package.ToString = imgID Then
         lvItem = item
         Exit For
       End If
     Next
     ToggleUI(True)
     If lvItem IsNot Nothing Then
-      If frmMain.ImageDataList(lvItem.Tag).FeatureList IsNot Nothing Then
-        FeatureData = frmMain.ImageDataList(lvItem.Tag).FeatureList
+      Dim lvIndex As Integer = CInt(lvItem.Tag)
+      If frmMain.ImageDataList(lvIndex).FeatureList IsNot Nothing Then
+        FeatureData = frmMain.ImageDataList(lvIndex).FeatureList
         DisplayFeatures()
         PositionViews()
       Else
@@ -398,18 +400,20 @@
       Return
     End If
     ToggleUI(False)
-    frmMain.LoadPackageUpdates(Group, txtIndex.Text)
+    frmMain.LoadPackageUpdates(Group, CInt(txtIndex.Text))
     Dim lvItem As ListViewItem = Nothing
     For Each item As ListViewItem In frmMain.lvImages.Items
-      If frmMain.ImageDataList(item.Tag).Package.ToString = imgID Then
+      Dim lvIndex2 As Integer = CInt(item.Tag)
+      If frmMain.ImageDataList(lvIndex2).Package.ToString = imgID Then
         lvItem = item
         Exit For
       End If
     Next
     ToggleUI(True)
     If lvItem IsNot Nothing Then
-      If frmMain.ImageDataList(lvItem.Tag).Package.IntegratedUpdateList IsNot Nothing Then
-        UpdateData = frmMain.ImageDataList(lvItem.Tag).Package.IntegratedUpdateList
+      Dim lvIndex As Integer = CInt(lvItem.Tag)
+      If frmMain.ImageDataList(lvIndex).Package.IntegratedUpdateList IsNot Nothing Then
+        UpdateData = frmMain.ImageDataList(lvIndex).Package.IntegratedUpdateList
         DisplayUpdates()
         PositionViews()
       Else
@@ -544,7 +548,7 @@
         If Not String.IsNullOrEmpty(ttDate) Then sDeviceTT = String.Concat(sDeviceTT, ttDate, vbNewLine)
         If Not String.IsNullOrEmpty(ttArch) Then sDeviceTT = String.Concat(sDeviceTT, ttArch, vbNewLine)
         If Not String.IsNullOrEmpty(ttBootCritical) Then sDeviceTT = String.Concat(sDeviceTT, ttBootCritical, vbNewLine)
-        lvDeviceItem.ToolTipText = sDeviceTT.TrimEnd(vbCr, vbLf)
+        lvDeviceItem.ToolTipText = sDeviceTT.TrimEnd
         lvDeviceItem.Checked = Not pDriver.Remove
       End If
     Next
@@ -605,19 +609,21 @@
       Return
     End If
     ToggleUI(False)
-    frmMain.LoadPackageDrivers(Group, txtIndex.Text)
+    frmMain.LoadPackageDrivers(Group, CInt(txtIndex.Text))
     If Me.Disposing Or Me.IsDisposed Then Return
     Dim lvItem As ListViewItem = Nothing
     For Each item As ListViewItem In frmMain.lvImages.Items
-      If frmMain.ImageDataList(item.Tag).Package.ToString = imgID Then
+      Dim lvIndex2 As Integer = CInt(item.Tag)
+      If frmMain.ImageDataList(lvIndex2).Package.ToString = imgID Then
         lvItem = item
         Exit For
       End If
     Next
     ToggleUI(True)
     If lvItem IsNot Nothing Then
-      If frmMain.ImageDataList(lvItem.Tag).DriverList IsNot Nothing Then
-        DriverData = frmMain.ImageDataList(lvItem.Tag).DriverList
+      Dim lvIndex As Integer = CInt(lvItem.Tag)
+      If frmMain.ImageDataList(lvIndex).DriverList IsNot Nothing Then
+        DriverData = frmMain.ImageDataList(lvIndex).DriverList
         DisplayDrivers()
         PositionViews()
       Else
@@ -886,7 +892,7 @@
               End If
               sCustomProps = String.Concat(sCustomProps, en, String.Format("{0}: {1}", sPropKey, sPropVal), vbNewLine)
             Next
-            sCustomProps = sCustomProps.TrimEnd(vbCr, vbLf)
+            sCustomProps = sCustomProps.TrimEnd
           End If
           tvItem.ToolTipText = String.Concat(FeatureDisplayName, vbNewLine,
                                en, Replace(sDescription, vbNewLine, String.Concat(vbNewLine, en)), vbNewLine,
@@ -1014,19 +1020,7 @@
     lvUpdates.ReadOnly = False
     Dim sGroupList As New SortedDictionary(Of String, String)
     For Each pUpdate As Update_Integrated In UpdateData
-      Dim sReleaseType As String = pUpdate.ReleaseType
-      If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.ReleaseType) Then sReleaseType = pUpdate.UpdateInfo.ReleaseType
-      Dim sGroupName As String = "Unknown"
-      If Not String.IsNullOrEmpty(sReleaseType) Then sGroupName = sReleaseType
-      If sGroupName = "Security Update" Then
-        If Not String.IsNullOrEmpty(pUpdate.Ident.Version) Then
-          If Split(pUpdate.Ident.Version, ".", 4)(0) > 7 Then
-            sGroupName = String.Concat(sGroupName, " for Internet Explorer")
-          Else
-            sGroupName = String.Concat(sGroupName, " for Windows")
-          End If
-        End If
-      End If
+      Dim sGroupName As String = ConvertIDToGroup(pUpdate)
       Dim sGroupKey As String = "lvgUnknown"
       If Not String.IsNullOrEmpty(sGroupName) Then sGroupKey = String.Format("lvg{0}", sGroupName.Replace(" ", "_"))
       If Not sGroupList.ContainsKey(sGroupKey) Then sGroupList.Add(sGroupKey, sGroupName)
@@ -1151,7 +1145,7 @@
         If Not String.IsNullOrEmpty(ttInstalled) Then sUpdateTT = String.Concat(sUpdateTT, ttInstalled, vbNewLine)
         If Not String.IsNullOrEmpty(ttArch) Then sUpdateTT = String.Concat(sUpdateTT, ttArch, vbNewLine)
         If Not String.IsNullOrEmpty(ttLang) Then sUpdateTT = String.Concat(sUpdateTT, ttLang, vbNewLine)
-        lvItem.ToolTipText = sUpdateTT.TrimEnd(vbCr, vbLf)
+        lvItem.ToolTipText = sUpdateTT.TrimEnd
         Select Case pUpdate.State
           Case "Installed", "Staged", "Enabled" : lvItem.ImageKey = "DID"
           Case "Install Pending", "Enable Pending" : lvItem.ImageKey = "DO"
@@ -1160,17 +1154,7 @@
           Case Else : lvItem.ImageKey = "NO"
         End Select
         lvItem.Tag = pUpdate
-        Dim sGroupName As String = "Unknown"
-        If Not String.IsNullOrEmpty(pUpdate.ReleaseType) Then sGroupName = pUpdate.ReleaseType
-        If sGroupName = "Security Update" Then
-          If Not String.IsNullOrEmpty(pUpdate.Ident.Version) Then
-            If Split(pUpdate.Ident.Version, ".", 4)(0) > 7 Then
-              sGroupName = String.Concat(sGroupName, " for Internet Explorer")
-            Else
-              sGroupName = String.Concat(sGroupName, " for Windows")
-            End If
-          End If
-        End If
+        Dim sGroupName As String = ConvertIDToGroup(pUpdate)
         Dim sGroupKey As String = "lvgUnknown"
         If Not String.IsNullOrEmpty(sGroupName) Then sGroupKey = String.Format("lvg{0}", sGroupName.Replace(" ", "_"))
         lvUpdates.Items.Add(lvItem)
@@ -1377,7 +1361,7 @@
               ttCustom = String.Concat(ttCustom, en, String.Format("{0}: {1}", sPropKey, sPropVal), vbNewLine)
             End If
           Next
-          If Not String.IsNullOrEmpty(ttCustom) Then ttCustom = ttCustom.TrimEnd(vbCr, vbLf)
+          If Not String.IsNullOrEmpty(ttCustom) Then ttCustom = ttCustom.TrimEnd
         End If
         Dim ttFeature As String = Nothing
         If Not pUpdate.UpdateInfo.FeatureList Is Nothing Then
@@ -1392,7 +1376,7 @@
               ttFeature = String.Concat(ttFeature, en, String.Format("{0}: {1}", sFeatKey, sFeatVal), vbNewLine)
             End If
           Next
-          If Not String.IsNullOrEmpty(ttFeature) Then ttFeature = ttFeature.TrimEnd(vbCr, vbLf)
+          If Not String.IsNullOrEmpty(ttFeature) Then ttFeature = ttFeature.TrimEnd
         End If
         Dim sFeatureTT As String = Nothing
         If Not String.IsNullOrEmpty(ttName) Then sFeatureTT = String.Concat(sFeatureTT, ttName, vbNewLine)
@@ -1405,7 +1389,7 @@
         If Not String.IsNullOrEmpty(ttArch) Then sFeatureTT = String.Concat(sFeatureTT, ttArch, vbNewLine)
         If Not String.IsNullOrEmpty(ttLang) Then sFeatureTT = String.Concat(sFeatureTT, ttLang, vbNewLine)
         If Not String.IsNullOrEmpty(ttCustom) Then sFeatureTT = String.Concat(sFeatureTT, ttCustom, vbNewLine)
-        lvItem.ToolTipText = sFeatureTT.TrimEnd(vbCr, vbLf)
+        lvItem.ToolTipText = sFeatureTT.TrimEnd
         Select Case pUpdate.UpdateInfo.State
           Case "Installed", "Staged", "Enabled" : lvItem.ImageKey = "DID"
           Case "Install Pending", "Enable Pending" : lvItem.ImageKey = "DO"
@@ -1414,17 +1398,7 @@
           Case Else : lvItem.ImageKey = "NO"
         End Select
         lvItem.Tag = pUpdate
-        Dim sGroupName As String = "Unknown"
-        If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.ReleaseType) Then sGroupName = pUpdate.UpdateInfo.ReleaseType
-        If sGroupName = "Security Update" Then
-          If Not String.IsNullOrEmpty(pUpdate.Ident.Version) Then
-            If Split(pUpdate.Ident.Version, ".", 4)(0) > 7 Then
-              sGroupName = String.Concat(sGroupName, " for Internet Explorer")
-            Else
-              sGroupName = String.Concat(sGroupName, " for Windows")
-            End If
-          End If
-        End If
+        Dim sGroupName As String = ConvertIDToGroup(pUpdate)
         Dim sGroupKey As String = "lvgUnknown"
         If Not String.IsNullOrEmpty(sGroupName) Then sGroupKey = String.Concat("lvg{0}", sGroupName.Replace(" ", "_"))
         lvUpdates.Items.Add(lvItem)
@@ -1438,13 +1412,13 @@
     If Not VerString.Contains(".") Then Return {New Version(0, 0), New Version(0, 0)}
     Dim ver() As String = Split(VerString, ".", 4)
     If ver.Length = 4 Then
-      Return {New Version(ver(0), ver(1)), New Version(ver(2), ver(3))}
+      Return {New Version(CInt(ver(0)), CInt(ver(1))), New Version(CInt(ver(2)), CInt(ver(3)))}
     ElseIf ver.Length = 3 Then
-      Return {New Version(ver(0), ver(1)), New Version(ver(2), 0)}
+      Return {New Version(CInt(ver(0)), CInt(ver(1))), New Version(CInt(ver(2)), 0)}
     ElseIf ver.Length = 2 Then
-      Return {New Version(ver(0), ver(1)), New Version(0, 0)}
+      Return {New Version(CInt(ver(0)), CInt(ver(1))), New Version(0, 0)}
     Else
-      Return {New Version(ver(0), 0), New Version(0, 0)}
+      Return {New Version(CInt(ver(0)), 0), New Version(0, 0)}
     End If
   End Function
   Private Function ConvertOSVerToID(OSVer As Version) As String
@@ -1461,6 +1435,42 @@
     End If
     Return String.Format("Windows {0}.{1}", OSVer.Major, OSVer.Minor)
   End Function
+  Private Function ConvertIDToGroup(pUpdate As Update_Integrated) As String
+    Dim sReleaseType As String = pUpdate.ReleaseType
+    If Not String.IsNullOrEmpty(pUpdate.UpdateInfo.ReleaseType) Then sReleaseType = pUpdate.UpdateInfo.ReleaseType
+    Dim sGroupName As String = "Unknown"
+    If Not String.IsNullOrEmpty(sReleaseType) Then sGroupName = sReleaseType
+    If sGroupName = "Security Update" Then
+      If Not String.IsNullOrEmpty(pUpdate.Ident.Version) Then
+        Try
+          Dim vVal As New Version(pUpdate.Ident.Version)
+          'TODO: Check the vVal version value for various updates to verify validity universally
+          Stop
+          If vVal.Major > 7 And vVal.Major < 12 Then
+            sGroupName = String.Concat(sGroupName, " for Internet Explorer")
+          Else
+            sGroupName = String.Concat(sGroupName, " for Windows")
+          End If
+        Catch ex As Exception
+          Debug.Print("VERSION: " & pUpdate.Ident.Version)
+          Debug.Print(ex.Message)
+          'TODO: Something doesn't like being a version!
+          Stop
+          If pUpdate.Ident.Version.Contains(".") Then
+            Dim sMajor As String = pUpdate.Ident.Version.Substring(0, pUpdate.Ident.Version.IndexOf("."c))
+            If Val(sMajor) > 7 And Val(sMajor) < 12 Then
+              sGroupName = String.Concat(sGroupName, " for Internet Explorer")
+            Else
+              sGroupName = String.Concat(sGroupName, " for Windows")
+            End If
+          Else
+            sGroupName = String.Concat(sGroupName, " for Windows")
+          End If
+        End Try
+      End If
+    End If
+    Return sGroupName
+  End Function
 #Region "Resize Updates"
   Private Sub ResizeUpdates()
     If Me.InvokeRequired Then
@@ -1469,9 +1479,9 @@
     End If
     Dim tUpdates As New Threading.Timer(New Threading.TimerCallback(AddressOf AsyncResizeUpdates), Nothing, 200, System.Threading.Timeout.Infinite)
   End Sub
-  Private Sub AsyncResizeUpdates()
+  Private Sub AsyncResizeUpdates(state As Object)
     If Me.InvokeRequired Then
-      Me.Invoke(New MethodInvoker(AddressOf AsyncResizeUpdates))
+      Me.Invoke(New Threading.TimerCallback(AddressOf AsyncResizeUpdates), state)
       Return
     End If
     If bLoading Then Return
@@ -1568,9 +1578,9 @@
     End If
     Dim tDrivers As New Threading.Timer(New Threading.TimerCallback(AddressOf AsyncResizeDrivers), Nothing, 200, System.Threading.Timeout.Infinite)
   End Sub
-  Private Sub AsyncResizeDrivers()
+  Private Sub AsyncResizeDrivers(state As Object)
     If Me.InvokeRequired Then
-      Me.Invoke(New MethodInvoker(AddressOf AsyncResizeDrivers))
+      Me.Invoke(New Threading.TimerCallback(AddressOf AsyncResizeDrivers), state)
       Return
     End If
     If bLoading Then Return

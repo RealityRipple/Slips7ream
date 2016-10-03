@@ -20,13 +20,13 @@
     If Not RowData.Contains("|") Then Return
     Dim DriverData() As String = Split(RowData, "|")
     If Not DriverData.Length = 7 Then Return
-    PublishedName = Trim(DriverData(0))
-    OriginalFileName = Trim(DriverData(1))
-    InBox = Trim(DriverData(2))
-    ClassName = Trim(DriverData(3))
-    ProviderName = Trim(DriverData(4))
-    [Date] = Trim(DriverData(5))
-    Version = Trim(DriverData(6))
+    PublishedName = DriverData(0).Trim
+    OriginalFileName = DriverData(1).Trim
+    InBox = DriverData(2).Trim
+    ClassName = DriverData(3).Trim
+    ProviderName = DriverData(4).Trim
+    [Date] = DriverData(5).Trim
+    Version = DriverData(6).Trim
     Remove = False
   End Sub
   Public Sub ReadExtraData(ExtraData As String, TrimStorePath As String, arch As ArchitectureList)
@@ -81,7 +81,7 @@
             End If
             Exit Do
           End If
-          Dim sLine As String = Trim(dataLines(J))
+          Dim sLine As String = dataLines(J).Trim
           If String.IsNullOrEmpty(sLine) Then
             If Not String.IsNullOrEmpty(sDriverInfoChunk) Then
               sDriverInfos.Add(sDriverInfoChunk)
@@ -179,7 +179,7 @@ Public Structure Driver_Hardware
       Return Nothing
     End If
   End Function
-  Public Shared Operator =(hw1 As Driver_Hardware, hw2 As Driver_Hardware)
+  Public Shared Operator =(hw1 As Driver_Hardware, hw2 As Driver_Hardware) As Boolean
     If Not StrComp(hw1.ServiceName, hw2.ServiceName, CompareMethod.Text) = 0 Then Return False
     If Not StrComp(hw1.Description, hw2.Description, CompareMethod.Text) = 0 Then Return False
     If Not StrComp(hw1.Manufacturer, hw2.Manufacturer, CompareMethod.Text) = 0 Then Return False
@@ -212,7 +212,7 @@ Public Structure Driver_Hardware
     Next
     Return True
   End Operator
-  Public Shared Operator <>(hw1 As Driver_Hardware, hw2 As Driver_Hardware)
+  Public Shared Operator <>(hw1 As Driver_Hardware, hw2 As Driver_Hardware) As Boolean
     Return Not hw1 = hw2
   End Operator
 End Structure

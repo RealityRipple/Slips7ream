@@ -514,7 +514,7 @@
     Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractAFile))
     Dim cIndex As Integer = c_ExtractRet.Count
     c_ExtractRet.Add(Nothing)
-    tRunWithReturn.Start({Source, Destination, File, cIndex})
+    tRunWithReturn.Start(CType({Source, Destination, File, cIndex}, Object()))
     Do While String.IsNullOrEmpty(c_ExtractRet(cIndex))
       Application.DoEvents()
       Threading.Thread.Sleep(1)
@@ -525,10 +525,10 @@
   End Function
   Private Sub AsyncExtractAFile(Obj As Object)
     Dim Source, Destination, Find As String
-    Source = Obj(0)
-    Destination = Obj(1)
-    Find = Obj(2)
-    Dim cIndex As UInteger = Obj(3)
+    Source = CStr(CType(Obj, Object())(0))
+    Destination = CStr(CType(Obj, Object())(1))
+    Find = CStr(CType(Obj, Object())(2))
+    Dim cIndex As Integer = CInt(CType(Obj, Object())(3))
     Dim bFound As Boolean = False
     Using Extractor As New Extraction.ArchiveFile(New IO.FileInfo(Source), GetUpdateCompression(Source))
       Try

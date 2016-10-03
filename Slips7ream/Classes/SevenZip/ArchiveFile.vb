@@ -145,9 +145,9 @@ Namespace Extraction
         Using ar = New Archive(m_archive, Me, c_format)
           Dim indices = New List(Of UInteger)()
           Dim files = New Dictionary(Of UInteger, IArchiveEntry)()
-          Dim e = ar.GetNumberOfItems()
+          Dim e As UInteger = ar.GetNumberOfItems()
           If e > 0 Then
-            For i As UInteger = 0 To e - 1
+            For i As UInteger = 0 To e - 1UI
               Dim name = ar.GetProperty(i, ItemPropId.Path).GetString()
               If String.IsNullOrEmpty(name) Then Continue For
               If c_format = ArchiveFormat.GetClassIdFromKnownFormat(ArchiveFormat.KnownSevenZipFormat.Split) Then
@@ -211,7 +211,7 @@ Namespace Extraction
               Dim minIndex As UInteger = 0
               Dim e = ar.GetNumberOfItems()
               If e < 1 Then Continue For
-              For I As UInteger = 0 To e - 1
+              For I As UInteger = 0 To e - 1UI
                 If ar.GetProperty(I, ItemPropId.IsDir).GetBool() Then Continue For
                 Dim name As String
                 If f = ArchiveFormat.GetClassIdFromKnownFormat(ArchiveFormat.KnownSevenZipFormat.Split) Then
@@ -264,12 +264,12 @@ Namespace Extraction
     Public Sub SetTotal(files As IntPtr, bytes As IntPtr) Implements IArchiveOpenCallback.SetTotal
     End Sub
     Private c_ecount As UInteger = 0
-    Public ReadOnly Property ExtractionCount As Integer
+    Public ReadOnly Property ExtractionCount As UInteger
       Get
         If c_ecount > 0 Then Return c_ecount
         c_ecount = 0
         For Each item In Me
-          If item.Destination IsNot Nothing Then c_ecount += 1
+          If item.Destination IsNot Nothing Then c_ecount += 1UI
         Next
         Return c_ecount
       End Get
@@ -473,7 +473,7 @@ Namespace Extraction
           result.Append(ch)
           i += 1
         End While
-        fileName = result.ToString().Trim()
+        fileName = result.ToString().Trim
         Return fileName.Replace("/"c, "\"c)
       End Function
     End Class

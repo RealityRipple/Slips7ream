@@ -15,7 +15,7 @@ Public Class ToolTip
     b_Persistant = False
     b_HideOnHover = True
   End Sub
-  <DefaultValue(False), Browsable(True), EditorBrowsable(True), Description("Toggles persistant tooltips which will show up on disabled items."), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)>
+  <DefaultValue(False), Browsable(True), EditorBrowsable(EditorBrowsableState.Always), Description("Toggles persistant tooltips which will show up on disabled items."), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)>
   Public Property Persistant As Boolean
     Get
       Return b_Persistant
@@ -33,7 +33,7 @@ Public Class ToolTip
       End If
     End Set
   End Property
-  <DefaultValue(True), Browsable(True), EditorBrowsable(True), Description("Hide the tooltip if the mouse happens to hover over it."), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)>
+  <DefaultValue(True), Browsable(True), EditorBrowsable(EditorBrowsableState.Always), Description("Hide the tooltip if the mouse happens to hover over it."), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)>
   Public Property HideOnHover As Boolean
     Get
       Return b_HideOnHover

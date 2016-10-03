@@ -98,7 +98,7 @@
     End If
     Dim sArch As String = cmbArchitecture.Text
     If sArch.Contains(" (Not Used)") Then sArch = sArch.Substring(0, sArch.Length - 11)
-    Dim myHW As Driver_Hardware_IDLists = myDriver.DriverHardware(sArch)(cmbHardware.SelectedIndex).HardwareIDs(lstHWIDs.SelectedItem)
+    Dim myHW As Driver_Hardware_IDLists = myDriver.DriverHardware(sArch)(cmbHardware.SelectedIndex).HardwareIDs(CStr(lstHWIDs.SelectedItem))
     lstHWCompatibleIDs.Items.Clear()
     If myHW.CompatibleIDs IsNot Nothing AndAlso myHW.CompatibleIDs.Count > 0 Then
       lstHWCompatibleIDs.Items.AddRange(myHW.CompatibleIDs.ToArray)

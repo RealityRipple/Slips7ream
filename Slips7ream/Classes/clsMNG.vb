@@ -22,7 +22,8 @@ Public Class MNG
   End Class
   Private Class Utils
     Public Shared Function ReadStream(stream As Stream, count As UInteger) As Byte()
-      Dim bytes As Byte() = New Byte(count - 1) {}
+      If count > Integer.MaxValue Then Return Nothing
+      Dim bytes As Byte() = New Byte(CInt(count - 1)) {}
       Try
         stream.Read(bytes, 0, CInt(count))
       Catch generatedExceptionName As IOException
@@ -322,8 +323,8 @@ Public Class MNG
     Private Shared Sub MakeCRCTable()
       crcTable = New UInteger(255) {}
       Dim c, k As UInteger
-      For n = 0 To crcTable.Length - 1
-        c = n
+      For n As Integer = 0 To crcTable.Length - 1
+        c = CUInt(n)
         For k = 0 To 7
           If (c And 1) = 0 Then
             c = c >> 1
@@ -337,10 +338,9 @@ Public Class MNG
     Public Shared Function UpdateCRC(crc As UInteger, bytes As Byte()) As UInteger
       If bytes.Length = 0 Then Return crc
       Dim c As UInteger = crc
-      Dim n As UInteger
       If crcTable Is Nothing Then MakeCRCTable()
-      For n = 0 To bytes.Length - 1
-        c = crcTable((c Xor bytes(n)) And &HFF) Xor (c >> 8)
+      For n As Integer = 0 To bytes.Length - 1
+        c = crcTable(CByte((c Xor bytes(n)) And &HFF)) Xor (c >> 8)
       Next
       Return c
     End Function

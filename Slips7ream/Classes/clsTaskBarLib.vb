@@ -127,11 +127,11 @@ Namespace TaskbarLib
       If shellTrayWnd.Equals(IntPtr.Zero) Then
         Return False
       Else
-        Dim trayNotifyWnd As IntPtr = FindWindowEx(shellTrayWnd, 0, "TrayNotifyWnd", String.Empty)
+        Dim trayNotifyWnd As IntPtr = FindWindowEx(shellTrayWnd, IntPtr.Zero, "TrayNotifyWnd", String.Empty)
         If trayNotifyWnd.Equals(IntPtr.Zero) Then
           Return False
         Else
-          Dim sysPagerWnd As IntPtr = FindWindowEx(trayNotifyWnd, 0, "SysPager", String.Empty)
+          Dim sysPagerWnd As IntPtr = FindWindowEx(trayNotifyWnd, IntPtr.Zero, "SysPager", String.Empty)
           If sysPagerWnd.Equals(IntPtr.Zero) Then
             Return False
           Else

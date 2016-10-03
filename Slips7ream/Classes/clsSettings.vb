@@ -190,39 +190,39 @@
   Private Sub ReadRegistry()
     Dim Hive As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.OpenSubKey(IO.Path.Combine("Software", Application.CompanyName, Application.ProductName))
     If Hive.GetValueNames.Contains("Temp Directory") Then
-      c_TempDir = Hive.GetValue("Temp Directory", My.Settings.TempDir)
+      c_TempDir = CStr(Hive.GetValue("Temp Directory", My.Settings.TempDir))
     Else
       c_TempDir = My.Settings.TempDir
     End If
     If Hive.GetValueNames.Contains("Timeout") Then
-      c_Timeout = Hive.GetValue("Timeout", My.Settings.Timeout)
+      c_Timeout = CInt(Hive.GetValue("Timeout", My.Settings.Timeout))
     Else
       c_Timeout = My.Settings.Timeout
     End If
     If Hive.GetValueNames.Contains("x86 Whitelist") Then
-      c_x86WhiteList = Hive.GetValue("x86 Whitelist", Split(My.Settings.x86WhiteList, vbNewLine))
+      c_x86WhiteList = CType(Hive.GetValue("x86 Whitelist", Split(My.Settings.x86WhiteList, vbNewLine)), String())
     Else
       c_x86WhiteList = Split(My.Settings.x86WhiteList, vbNewLine)
     End If
     If Hive.GetSubKeyNames.Contains("Display") Then
       Dim disp As Microsoft.Win32.RegistryKey = Hive.OpenSubKey("Display")
       If disp.GetValueNames.Contains("Left") Then
-        c_Position.X = Hive.OpenSubKey("Display").GetValue("Left", My.Settings.Position.X)
+        c_Position.X = CInt(Hive.OpenSubKey("Display").GetValue("Left", My.Settings.Position.X))
       Else
         c_Position.X = My.Settings.Position.X
       End If
       If disp.GetValueNames.Contains("Top") Then
-        c_Position.Y = Hive.OpenSubKey("Display").GetValue("Top", My.Settings.Position.Y)
+        c_Position.Y = CInt(Hive.OpenSubKey("Display").GetValue("Top", My.Settings.Position.Y))
       Else
         c_Position.Y = My.Settings.Position.Y
       End If
       If disp.GetValueNames.Contains("Width") Then
-        c_Size.Width = Hive.OpenSubKey("Display").GetValue("Width", My.Settings.Size.Width)
+        c_Size.Width = CInt(Hive.OpenSubKey("Display").GetValue("Width", My.Settings.Size.Width))
       Else
         c_Size.Width = My.Settings.Size.Width
       End If
       If disp.GetValueNames.Contains("Height") Then
-        c_Size.Height = Hive.OpenSubKey("Display").GetValue("Height", My.Settings.Size.Height)
+        c_Size.Height = CInt(Hive.OpenSubKey("Display").GetValue("Height", My.Settings.Size.Height))
       Else
         c_Size.Height = My.Settings.Size.Height
       End If
@@ -231,50 +231,50 @@
       c_Size = My.Settings.Size
     End If
     If Hive.GetValueNames.Contains("Auto ISO Label") Then
-      c_AutoISOLabel = (Hive.GetValue("Auto ISO Label", IIf(My.Settings.AutoISOLabel, "Y", "N")) = "Y")
+      c_AutoISOLabel = (CStr(Hive.GetValue("Auto ISO Label", IIf(My.Settings.AutoISOLabel, "Y", "N"))) = "Y")
     Else
       c_AutoISOLabel = My.Settings.AutoISOLabel
     End If
     If Hive.GetValueNames.Contains("Default ISO Label") Then
-      c_DefaultISOLabel = Hive.GetValue("Default ISO Label", My.Settings.DefaultISOLabel)
+      c_DefaultISOLabel = CStr(Hive.GetValue("Default ISO Label", My.Settings.DefaultISOLabel))
     Else
       c_DefaultISOLabel = My.Settings.DefaultISOLabel
     End If
     If Hive.GetValueNames.Contains("Default File System") Then
-      c_DefaultFS = Hive.GetValue("Default File System", My.Settings.DefaultFS)
+      c_DefaultFS = CStr(Hive.GetValue("Default File System", My.Settings.DefaultFS))
     Else
       c_DefaultFS = My.Settings.DefaultFS
     End If
     If Hive.GetValueNames.Contains("Priority") Then
-      c_Priority = Hive.GetValue("Priority", My.Settings.Priority)
+      c_Priority = CStr(Hive.GetValue("Priority", My.Settings.Priority))
     Else
       c_Priority = My.Settings.Priority
     End If
     If Hive.GetValueNames.Contains("Default Split") Then
-      c_DefaultSplit = Hive.GetValue("Default Split", My.Settings.DefaultSplit)
+      c_DefaultSplit = CInt(Hive.GetValue("Default Split", My.Settings.DefaultSplit))
     Else
       c_DefaultSplit = My.Settings.DefaultSplit
     End If
     If Hive.GetValueNames.Contains("Split Value") Then
-      c_SplitVal = Hive.GetValue("Split Value", My.Settings.SplitVal)
+      c_SplitVal = CStr(Hive.GetValue("Split Value", My.Settings.SplitVal))
     Else
       c_SplitVal = My.Settings.SplitVal
     End If
     If Hive.GetValueNames.Contains("Last Update") Then
-      c_LastUpdate = Date.FromBinary(Hive.GetValue("Last Update", My.Settings.LastUpdate.ToBinary))
+      c_LastUpdate = Date.FromBinary(CLng(Hive.GetValue("Last Update", My.Settings.LastUpdate.ToBinary)))
     Else
       c_LastUpdate = My.Settings.LastUpdate
     End If
     If Hive.GetValueNames.Contains("Last Nag") Then
-      c_LastNag = Date.FromBinary(Hive.GetValue("Last Nag", New Date(1970, 1, 1)))
+      c_LastNag = Date.FromBinary(CLng(Hive.GetValue("Last Nag", New Date(1970, 1, 1))))
     Else
       c_LastNag = New Date(1970, 1, 1)
     End If
     If Hive.GetSubKeyNames.Contains("Alert") Then
       Dim alert As Microsoft.Win32.RegistryKey = Hive.OpenSubKey("Alert")
-      c_PlayAlertNoise = (alert.GetValue(String.Empty, "N") = "Y")
+      c_PlayAlertNoise = (CStr(alert.GetValue(String.Empty, "N")) = "Y")
       If alert.GetValueNames.Contains("Path") Then
-        c_AlertNoisePath = alert.GetValue("Path", String.Empty)
+        c_AlertNoisePath = CStr(alert.GetValue("Path", String.Empty))
       Else
         c_AlertNoisePath = String.Empty
       End If
@@ -285,17 +285,17 @@
     If Hive.GetSubKeyNames.Contains("Load Package Data") Then
       Dim loadPackageData As Microsoft.Win32.RegistryKey = Hive.OpenSubKey("Load Package Data")
       If loadPackageData.GetValueNames.Contains("Features") Then
-        c_LoadFeatures = (loadPackageData.GetValue("Features", "N") = "Y")
+        c_LoadFeatures = (CStr(loadPackageData.GetValue("Features", "N")) = "Y")
       Else
         c_LoadFeatures = False
       End If
       If loadPackageData.GetValueNames.Contains("Updates") Then
-        c_LoadUpdates = (loadPackageData.GetValue("Updates", "Y") = "Y")
+        c_LoadUpdates = (CStr(loadPackageData.GetValue("Updates", "Y")) = "Y")
       Else
         c_LoadUpdates = True
       End If
       If loadPackageData.GetValueNames.Contains("Drivers") Then
-        c_LoadDrivers = (loadPackageData.GetValue("Drivers", "N") = "Y")
+        c_LoadDrivers = (CStr(loadPackageData.GetValue("Drivers", "N")) = "Y")
       Else
         c_LoadDrivers = False
       End If

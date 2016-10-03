@@ -47,22 +47,22 @@ Namespace Extraction
     End Sub
     Public Function GetBool() As Boolean
       Dim o = GetObject()
-      Return If(o Is Nothing, False, CType(o, [Boolean]))
+      Return If(o Is Nothing, False, CBool(o))
     End Function
     Public Function GetString() As String
       Return TryCast(GetObject(), String)
     End Function
     Public Function GetUint() As UInteger
       Dim o = GetObject()
-      Return If(o Is Nothing, 0, Convert.ToUInt32(o))
+      Return CUInt(IIf(o Is Nothing, 0, Convert.ToUInt32(o)))
     End Function
     Public Function GetUlong() As ULong
       Dim o = GetObject()
-      Return If(o Is Nothing, 0, Convert.ToUInt64(o))
+      Return CULng(IIf(o Is Nothing, 0, Convert.ToUInt64(o)))
     End Function
     Public Function GetDate() As Date
       Dim o = GetObject()
-      Return If(o Is Nothing, New Date(1970, 1, 1), o)
+      Return CDate(IIf(o Is Nothing, New Date(1970, 1, 1), o))
     End Function
   End Class
 End Namespace

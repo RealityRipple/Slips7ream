@@ -6,13 +6,14 @@ Public Class frmConfig
     txtTemp.Text = mySettings.TempDir
     If String.IsNullOrEmpty(txtTemp.Text) Then txtTemp.Text = IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.Temp, "Slips7ream")
     txtWhitelist.Text = Join(mySettings.x86WhiteList, vbNewLine)
-    txtTimeout.Value = mySettings.Timeout / 1000 / 60
+    Dim tVal As UInt64 = CULng(mySettings.Timeout / 1000 / 60)
+    txtTimeout.Value = tVal
     If txtTimeout.Value = 0 Then
       lblTimeoutS.Text = " (Never)"
     ElseIf txtTimeout.Value = 1 Then
       lblTimeoutS.Text = " minute"
     ElseIf txtTimeout.Value > 59 Then
-      lblTimeoutS.Text = String.Format(" minutes ({0})", ConvertTime(txtTimeout.Value * 60UL * 1000UL, False))
+      lblTimeoutS.Text = String.Format(" minutes ({0})", ConvertTime(tVal * 60UL * 1000UL, False))
     Else
       lblTimeoutS.Text = " minutes"
     End If
@@ -39,7 +40,14 @@ Public Class frmConfig
       Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
       cdlBrowse.Controls.Add(cmdHelp)
       AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "2_Configuration\2.1_Temp_Directory_Path.htm")
-      cdlBrowse.InitialDirectory = IIf(String.IsNullOrEmpty(txtTemp.Text), IO.Path.GetTempPath, IO.Path.GetDirectoryName(IO.Path.GetDirectoryName(IIf(txtTemp.Text.EndsWith(IO.Path.DirectorySeparatorChar), txtTemp.Text, String.Concat(txtTemp.Text, IO.Path.DirectorySeparatorChar)))))
+      Dim sTempPath As String = txtTemp.Text
+      If String.IsNullOrEmpty(sTempPath) Then
+        sTempPath = IO.Path.GetTempPath
+      Else
+        If Not sTempPath.EndsWith(IO.Path.DirectorySeparatorChar) Then sTempPath = String.Concat(sTempPath, IO.Path.DirectorySeparatorChar)
+        sTempPath = IO.Path.GetDirectoryName(IO.Path.GetDirectoryName(sTempPath))
+      End If
+      cdlBrowse.InitialDirectory = sTempPath
       If cdlBrowse.ShowDialog(Me.Handle) = CommonFileDialogResult.Ok Then txtTemp.Text = String.Concat(IO.Path.Combine(cdlBrowse.FileName, "Slips7ream"), IO.Path.DirectorySeparatorChar)
     End Using
   End Sub
@@ -49,7 +57,7 @@ Public Class frmConfig
     ElseIf txtTimeout.Value = 1 Then
       lblTimeoutS.Text = " minute"
     ElseIf txtTimeout.Value > 59 Then
-      lblTimeoutS.Text = String.Format(" minutes ({0})", ConvertTime(txtTimeout.Value * 60UL * 1000UL, False))
+      lblTimeoutS.Text = String.Format(" minutes ({0})", ConvertTime(CULng(txtTimeout.Value) * 60UL * 1000UL, False))
     Else
       lblTimeoutS.Text = " minutes"
     End If
@@ -127,12 +135,20 @@ Public Class frmConfig
       Return
     End If
     mySettings.x86WhiteList = Split(txtWhitelist.Text, vbNewLine)
-    mySettings.Timeout = txtTimeout.Value * 1000 * 60
+    mySettings.Timeout = CInt(txtTimeout.Value) * 1000 * 60
     If Not mySettings.PlayAlertNoise = chkAlert.Checked Then
-      frmMain.cmbCompletion.SelectedIndex = IIf(chkAlert.Checked, 1, 0)
+      If chkAlert.Checked Then
+        If frmMain.cmbCompletion.SelectedIndex = 0 Then frmMain.cmbCompletion.SelectedIndex = 1
+      Else
+        If frmMain.cmbCompletion.SelectedIndex = 1 Then frmMain.cmbCompletion.SelectedIndex = 0
+      End If
     End If
     mySettings.PlayAlertNoise = chkAlert.Checked
-    mySettings.AlertNoisePath = IIf(chkDefault.Checked, String.Empty, txtAlertPath.Text)
+    If chkDefault.Checked Then
+      mySettings.AlertNoisePath = Nothing
+    Else
+      mySettings.AlertNoisePath = txtAlertPath.Text
+    End If
     mySettings.Save()
     Me.Close()
   End Sub

@@ -39,7 +39,7 @@ Public Class LinkLabel
       RedrawLabel()
     End Set
   End Property
-  <Browsable(False), EditorBrowsable(False)>
+  <Browsable(False), EditorBrowsable(EditorBrowsableState.Always)>
   Public Overrides Property ForeColor As System.Drawing.Color
     Get
       Return MyBase.ForeColor
@@ -197,7 +197,7 @@ Public Class LinkLabel
           Dim regMicrosoft = regSoftware.OpenSubKey("Microsoft")
           Dim regIE = regMicrosoft.OpenSubKey("Internet Explorer")
           Dim regMain = regIE.OpenSubKey("Main")
-          SysSetting = regMain.GetValue("Anchor Underline")
+          SysSetting = CStr(regMain.GetValue("Anchor Underline"))
         Catch ex As Exception
         End Try
         If SysSetting = "yes" Then
@@ -226,7 +226,7 @@ Public Class LinkLabel
   Protected Overrides Sub WndProc(ByRef msg As System.Windows.Forms.Message)
     If msg.Msg = 32 Then
       If MyBase.Cursor = Cursors.Hand Then
-        SetCursor(LoadCursor(0, 32649))
+        SetCursor(LoadCursor(IntPtr.Zero, 32649))
         msg.Result = IntPtr.Zero
         Return
       End If

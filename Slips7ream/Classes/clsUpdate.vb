@@ -86,9 +86,9 @@
     End If
   End Sub
   Private Sub wsVer_DownloadProgressChanged(sender As Object, e As System.Net.DownloadProgressChangedEventArgs) Handles wsVer.DownloadProgressChanged
-    If e.UserState = "INFO" Then
+    If CStr(e.UserState) = "INFO" Then
       RaiseEvent CheckProgressChanged(sender, New ProgressEventArgs(e.BytesReceived, e.TotalBytesToReceive, e.ProgressPercentage))
-    ElseIf e.UserState = "FILE" Then
+    ElseIf CStr(e.UserState) = "FILE" Then
       RaiseEvent UpdateProgressChanged(sender, New ProgressEventArgs(e.BytesReceived, e.TotalBytesToReceive, e.ProgressPercentage))
     End If
   End Sub
@@ -119,9 +119,9 @@
     Dim LocalVer(3) As String
     If sLocal.Contains(".") Then
       For I As Integer = 1 To 3
-        LocalVer(0) = sLocal.Split(".")(0)
-        If sLocal.Split(".").Count > I Then
-          Dim sTmp As String = sLocal.Split(".")(I).Trim
+        LocalVer(0) = sLocal.Split("."c)(0)
+        If sLocal.Split("."c).Count > I Then
+          Dim sTmp As String = sLocal.Split("."c)(I).Trim
           If IsNumeric(sTmp) And sTmp.Length < 4 Then sTmp = String.Concat(sTmp, StrDup(4 - sTmp.Length, "0"c))
           LocalVer(I) = sTmp
         Else
@@ -129,10 +129,10 @@
         End If
       Next
     ElseIf sLocal.Contains(",") Then
-      LocalVer(0) = sLocal.Split(".")(0)
+      LocalVer(0) = sLocal.Split("."c)(0)
       For I As Integer = 1 To 3
-        If sLocal.Split(",").Count > I Then
-          Dim sTmp As String = sLocal.Split(",")(I).Trim
+        If sLocal.Split(","c).Count > I Then
+          Dim sTmp As String = sLocal.Split(","c)(I).Trim
           If IsNumeric(sTmp) And sTmp.Length < 4 Then sTmp = String.Concat(sTmp, StrDup(4 - sTmp.Length, "0"c))
           LocalVer(I) = sTmp
         Else
@@ -142,10 +142,10 @@
     End If
     Dim RemoteVer(3) As String
     If sRemote.Contains(".") Then
-      RemoteVer(0) = sRemote.Split(".")(0)
+      RemoteVer(0) = sRemote.Split("."c)(0)
       For I As Integer = 1 To 3
-        If sRemote.Split(".").Count > I Then
-          Dim sTmp As String = sRemote.Split(".")(I).Trim
+        If sRemote.Split("."c).Count > I Then
+          Dim sTmp As String = sRemote.Split("."c)(I).Trim
           If IsNumeric(sTmp) And sTmp.Length < 4 Then sTmp = String.Concat(sTmp, StrDup(4 - sTmp.Length, "0"c))
           RemoteVer(I) = sTmp
         Else
@@ -153,10 +153,10 @@
         End If
       Next
     ElseIf sRemote.Contains(",") Then
-      RemoteVer(0) = sRemote.Split(",")(0)
+      RemoteVer(0) = sRemote.Split(","c)(0)
       For I As Integer = 1 To 3
-        If sRemote.Split(",").Count > I Then
-          Dim sTmp As String = sRemote.Split(",")(I).Trim
+        If sRemote.Split(","c).Count > I Then
+          Dim sTmp As String = sRemote.Split(","c)(I).Trim
           If IsNumeric(sTmp) And sTmp.Length < 4 Then sTmp = String.Concat(sTmp, StrDup(4 - sTmp.Length, "0"c))
           RemoteVer(I) = sTmp
         Else

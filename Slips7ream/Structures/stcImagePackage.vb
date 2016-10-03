@@ -25,7 +25,7 @@
     For I As Integer = 0 To infoLines.Length - 1
       Dim line As String = infoLines(I)
       If line.StartsWith("Index :") Then
-        Index = GetVal(line)
+        Index = CInt(GetVal(line))
       ElseIf line.StartsWith("Name :") Then
         Name = GetVal(line)
       ElseIf line.StartsWith("Description :") Then
@@ -40,9 +40,9 @@
       ElseIf line.StartsWith("Version :") Then
         Version = GetVal(line)
       ElseIf line.StartsWith("ServicePack Level :") Then
-        SPLevel = GetVal(line)
+        SPLevel = CInt(GetVal(line))
       ElseIf line.StartsWith("ServicePack Build :") Then
-        SPBuild = GetVal(line)
+        SPBuild = CInt(GetVal(line))
       ElseIf line.StartsWith("Edition :") Then
         Edition = GetVal(line)
       ElseIf line.StartsWith("Installation :") Then
@@ -54,9 +54,9 @@
       ElseIf line.StartsWith("System Root :") Then
         SystemRoot = GetVal(line)
       ElseIf line.StartsWith("Directories :") Then
-        Directories = GetVal(line)
+        Directories = CInt(GetVal(line))
       ElseIf line.StartsWith("Files :") Then
-        Files = GetVal(line)
+        Files = CInt(GetVal(line))
       ElseIf line.StartsWith("Created :") Then
         Created = GetVal(line)
       ElseIf line.StartsWith("Modified :") Then
@@ -68,7 +68,7 @@
         Do
           J += 1
           If infoLines.Length - 1 < J Then Exit Do
-          sLang = Trim(infoLines(J))
+          sLang = infoLines(J).Trim
           sLang = sLang.Replace(vbTab, "")
           If Not String.IsNullOrEmpty(sLang) Then sLangs.Add(sLang)
         Loop Until String.IsNullOrEmpty(sLang)

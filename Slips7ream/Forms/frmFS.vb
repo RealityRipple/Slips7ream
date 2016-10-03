@@ -42,7 +42,11 @@
         cmdUseCurrent.Text = "Use Nothing"
         ttFS.SetToolTip(cmdUseCurrent, "This option is not enabled because UDF is already selected.")
         cmdUseCurrent.Visible = False
-        Me.AcceptButton = IIf(SelectedFS = 5, cmdUseUDF102, cmdUseUDF)
+        If SelectedFS = 5 Then
+          Me.AcceptButton = cmdUseUDF102
+        Else
+          Me.AcceptButton = cmdUseUDF
+        End If
         lblDescription.Text = String.Concat("The UDF File System can handle files 4 GB and larger, and everything should be fine. I'm not sure why you're seeing this message. Please tell me how you got here.", vbNewLine, vbNewLine, "SLIPS7REAM suggests you use a UDF-based file system for this ISO, because the following files are greater than 4095 MB:")
     End Select
   End Sub
