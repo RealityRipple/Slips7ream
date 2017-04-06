@@ -62,11 +62,13 @@ welcome.htm
 1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.11_Package_Failure.htm
 1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.12_File_Transfer_Failure.htm
 1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.13_Busy.htm
+1_SLIPS7REAM_Interface\1.11_Output_Console.htm
 2_Configuration\2.0_Configuration.htm
 2_Configuration\2.1_Temp_Directory_Path.htm
 2_Configuration\2.2_Update_Whitelist.htm
 2_Configuration\2.3_Command_Timeout.htm
-2_Configuration\2.4_Alert_on_Complete.htm
+2_Configuration\2.4_Hide_Driver_Console_Output.htm
+2_Configuration\2.5_Alert_on_Complete.htm
 3_Slipstream_Process\3.0_Slipstream_Process.htm
 3_Slipstream_Process\3.1_Integration_Tutorial_(ISO).htm
 3_Slipstream_Process\3.2_Integration_Tutorial_(WIM).htm
@@ -136,6 +138,7 @@ icons\1.10.10.png
 icons\1.10.11.png
 icons\1.10.12.png
 icons\1.10.13.png
+icons\1.11.png
 icons\2.0.png
 icons\2.1.png
 icons\2.2.png

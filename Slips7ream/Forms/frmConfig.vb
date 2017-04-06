@@ -17,6 +17,7 @@ Public Class frmConfig
     Else
       lblTimeoutS.Text = " minutes"
     End If
+    chkHideDriverOutput.Checked = mySettings.HideDriverOutput
     chkAlert.Checked = mySettings.PlayAlertNoise
     txtAlertPath.Text = mySettings.AlertNoisePath
     chkDefault.Checked = String.IsNullOrEmpty(mySettings.AlertNoisePath)
@@ -93,7 +94,7 @@ Public Class frmConfig
       cdlBrowse.AddPlace(IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Media"), Microsoft.WindowsAPICodePack.Shell.FileDialogAddPlaceLocation.Top)
       Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
       cdlBrowse.Controls.Add(cmdHelp)
-      AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "2_Configuration\2.4_Alert_on_Complete.htm")
+      AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "2_Configuration\2.5_Alert_on_Complete.htm")
       cdlBrowse.InitialDirectory = defDir
       If cdlBrowse.ShowDialog(Me.Handle) = CommonFileDialogResult.Ok Then txtAlertPath.Text = cdlBrowse.FileName
     End Using
@@ -114,10 +115,10 @@ Public Class frmConfig
       Try
         My.Computer.Audio.Play(txtAlertPath.Text, AudioPlayMode.Background)
       Catch ex As Exception
-        MsgDlg(Me, "The Alert sound file failed to play!", "File could not be played.", "Alert File Error", MessageBoxButtons.OK, TaskDialogIcon.MusicFile, , ex.Message, "Alert File Failure")
+        MsgDlg(Me, "The Alert sound file failed to play!", "File could not be played.", "Alert File Error", MessageBoxButtons.OK, _TaskDialogIcon.MusicFile, , ex.Message, "Alert File Failure")
       End Try
     Else
-      MsgDlg(Me, "The Alert sound file does not exist!", "File could not be played.", "Alert File Error", MessageBoxButtons.OK, TaskDialogIcon.MusicFile, , , "Alert File Missing")
+      MsgDlg(Me, "The Alert sound file does not exist!", "File could not be played.", "Alert File Error", MessageBoxButtons.OK, _TaskDialogIcon.MusicFile, , , "Alert File Missing")
     End If
   End Sub
   Private Sub lblDonate_LinkClicked(sender As System.Object, e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles lblDonate.LinkClicked
@@ -131,11 +132,16 @@ Public Class frmConfig
       mySettings.TempDir = txtTemp.Text
     Else
       txtTemp.Focus()
-      MsgDlg(Me, "Please choose a directory that exists to put the Temp directory in.", "Unable to find parent directory.", "Folder Not Found", MessageBoxButtons.OK, TaskDialogIcon.SearchFolder, , String.Format("""{0}"" does not exist.", sDir), "Temp Folder Not Found")
+      MsgDlg(Me, "Please choose a directory that exists to put the Temp directory in.", "Unable to find parent directory.", "Folder Not Found", MessageBoxButtons.OK, _TaskDialogIcon.SearchFolder, , String.Format("""{0}"" does not exist.", sDir), "Temp Folder Not Found")
       Return
     End If
-    mySettings.x86WhiteList = Split(txtWhitelist.Text, vbNewLine)
+    If String.IsNullOrWhiteSpace(txtWhitelist.Text) Then
+      mySettings.x86WhiteList = Split(My.Settings.x86WhiteList, vbNewLine)
+    Else
+      mySettings.x86WhiteList = Split(txtWhitelist.Text, vbNewLine)
+    End If
     mySettings.Timeout = CInt(txtTimeout.Value) * 1000 * 60
+    mySettings.HideDriverOutput = chkHideDriverOutput.Checked
     If Not mySettings.PlayAlertNoise = chkAlert.Checked Then
       If chkAlert.Checked Then
         If frmMain.cmbCompletion.SelectedIndex = 0 Then frmMain.cmbCompletion.SelectedIndex = 1

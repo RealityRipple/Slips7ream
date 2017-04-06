@@ -221,7 +221,7 @@ Public Class frmOutput
     Dim mainBounds = frmMain.Bounds
     If Me.Bounds.Left >= mainBounds.Left - DockPad And Me.Bounds.Right <= mainBounds.Right + DockPad Then
       If Me.Bounds.Top >= mainBounds.Bottom - DockPad And Me.Bounds.Top <= mainBounds.Bottom + DockPad Then
-        frmMain.ReturnOutput()
+        frmMain.ConsoleOutput_ReturnFromWindow()
       End If
     End If
   End Sub

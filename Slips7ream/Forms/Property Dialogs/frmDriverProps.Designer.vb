@@ -3,16 +3,16 @@ Partial Class frmDriverProps
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
-    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
-        Try
-            If disposing AndAlso components IsNot Nothing Then
-                components.Dispose()
-            End If
-        Finally
-            MyBase.Dispose(disposing)
-        End Try
-    End Sub
+  <System.Diagnostics.DebuggerNonUserCode()> _
+  Protected Overrides Sub Dispose(disposing As Boolean)
+    Try
+      If disposing AndAlso components IsNot Nothing Then
+        components.Dispose()
+      End If
+    Finally
+      MyBase.Dispose(disposing)
+    End Try
+  End Sub
 
     'Required by the Windows Form Designer
     Private components As System.ComponentModel.IContainer
@@ -22,6 +22,7 @@ Partial Class frmDriverProps
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+    Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmDriverProps))
     Me.pnlDriver = New System.Windows.Forms.TableLayoutPanel()
     Me.pnlDriverData = New System.Windows.Forms.TableLayoutPanel()
     Me.lblDriverStorePath = New System.Windows.Forms.Label()
@@ -834,14 +835,12 @@ Partial Class frmDriverProps
     Me.HelpButton = True
     Me.helpS7M.SetHelpKeyword(Me, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me, System.Windows.Forms.HelpNavigator.Topic)
-    Me.Icon = Global.Slips7ream.My.Resources.Resources.icon
+    Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
     Me.MaximizeBox = False
     Me.MinimizeBox = False
     Me.MinimumSize = New System.Drawing.Size(550, 375)
     Me.Name = "frmDriverProps"
     Me.helpS7M.SetShowHelp(Me, True)
-    Me.ShowIcon = False
-    Me.ShowInTaskbar = False
     Me.Text = "Driver INF Properties"
     Me.pnlDriver.ResumeLayout(False)
     Me.pnlDriver.PerformLayout()

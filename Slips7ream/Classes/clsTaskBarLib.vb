@@ -7,77 +7,77 @@ Namespace TaskbarLib
     End Sub
     Public Overridable Sub HrInit() Implements ITaskbarList3.HrInit, ITaskbarList2.HrInit, ITaskbarList.HrInit
     End Sub
-    Public Overridable Sub ActivateTab(<[In]()> ByVal hwnd As Integer) Implements ITaskbarList3.ActivateTab, ITaskbarList2.ActivateTab, ITaskbarList.ActivateTab
+    Public Overridable Sub ActivateTab(<[In]()> hwnd As Integer) Implements ITaskbarList3.ActivateTab, ITaskbarList2.ActivateTab, ITaskbarList.ActivateTab
     End Sub
-    Public Overridable Sub AddTab(<[In]()> ByVal hwnd As Integer) Implements ITaskbarList3.AddTab, ITaskbarList2.AddTab, ITaskbarList.AddTab
+    Public Overridable Sub AddTab(<[In]()> hwnd As Integer) Implements ITaskbarList3.AddTab, ITaskbarList2.AddTab, ITaskbarList.AddTab
     End Sub
-    Public Overridable Sub DeleteTab(<[In]()> ByVal hwnd As Integer) Implements ITaskbarList3.DeleteTab, ITaskbarList2.DeleteTab, ITaskbarList.DeleteTab
+    Public Overridable Sub DeleteTab(<[In]()> hwnd As Integer) Implements ITaskbarList3.DeleteTab, ITaskbarList2.DeleteTab, ITaskbarList.DeleteTab
     End Sub
-    Public Overridable Sub MarkFullscreenWindow(<[In]()> ByVal hwnd As Integer, <[In]()> ByVal fFullscreen As Integer) Implements ITaskbarList3.MarkFullscreenWindow, ITaskbarList2.MarkFullscreenWindow
+    Public Overridable Sub MarkFullscreenWindow(<[In]()> hwnd As Integer, <[In]()> fFullscreen As Integer) Implements ITaskbarList3.MarkFullscreenWindow, ITaskbarList2.MarkFullscreenWindow
     End Sub
-    Public Overridable Sub RegisterTab(<[In]()> ByVal hwndTab As Integer, <[In](), ComAliasName("TaskbarLib.wireHWND")> ByRef hwndMDI As RemotableHandle) Implements ITaskbarList3.RegisterTab
+    Public Overridable Sub RegisterTab(<[In]()> hwndTab As Integer, <[In](), ComAliasName("TaskbarLib.wireHWND")> ByRef hwndMDI As RemotableHandle) Implements ITaskbarList3.RegisterTab
     End Sub
-    Public Overridable Sub SetActivateAlt(<[In]()> ByVal hwnd As Integer) Implements ITaskbarList3.SetActivateAlt, ITaskbarList2.SetActivateAlt, ITaskbarList.SetActivateAlt
+    Public Overridable Sub SetActivateAlt(<[In]()> hwnd As Integer) Implements ITaskbarList3.SetActivateAlt, ITaskbarList2.SetActivateAlt, ITaskbarList.SetActivateAlt
     End Sub
-    Public Overridable Sub SetOverlayIcon(<[In]()> ByVal hwnd As Integer, <[In](), MarshalAs(UnmanagedType.IUnknown)> ByVal hIcon As Object, <[In](), MarshalAs(UnmanagedType.LPWStr)> ByVal pszDescription As String) Implements ITaskbarList3.SetOverlayIcon
+    Public Overridable Sub SetOverlayIcon(<[In]()> hwnd As Integer, <[In](), MarshalAs(UnmanagedType.IUnknown)> hIcon As Object, <[In](), MarshalAs(UnmanagedType.LPWStr)> pszDescription As String) Implements ITaskbarList3.SetOverlayIcon
     End Sub
-    Public Overridable Sub SetProgressState(<[In]()> ByVal hwnd As IntPtr, <[In]()> ByVal tbpFlags As TBPFLAG) Implements ITaskbarList3.SetProgressState
+    Public Overridable Sub SetProgressState(<[In]()> hwnd As IntPtr, <[In]()> tbpFlags As TBPFLAG) Implements ITaskbarList3.SetProgressState
     End Sub
-    Public Overridable Sub SetProgressValue(<[In]()> ByVal hwnd As IntPtr, <[In]()> ByVal ullCompleted As UInt64, <[In]()> ByVal ullTotal As UInt64) Implements ITaskbarList3.SetProgressValue
+    Public Overridable Sub SetProgressValue(<[In]()> hwnd As IntPtr, <[In]()> ullCompleted As UInt64, <[In]()> ullTotal As UInt64) Implements ITaskbarList3.SetProgressValue
     End Sub
-    Public Overridable Sub SetTabActive(<[In]()> ByVal hwndTab As Integer, <[In]()> ByVal hwndMDI As Integer, <[In]()> ByVal tbatFlags As TBATFLAG) Implements ITaskbarList3.SetTabActive
+    Public Overridable Sub SetTabActive(<[In]()> hwndTab As Integer, <[In]()> hwndMDI As Integer, <[In]()> tbatFlags As TBATFLAG) Implements ITaskbarList3.SetTabActive
     End Sub
-    Public Overridable Sub SetTabOrder(<[In]()> ByVal hwndTab As Integer, <[In]()> ByVal hwndInsertBefore As Integer) Implements ITaskbarList3.SetTabOrder
+    Public Overridable Sub SetTabOrder(<[In]()> hwndTab As Integer, <[In]()> hwndInsertBefore As Integer) Implements ITaskbarList3.SetTabOrder
     End Sub
-    Public Overridable Sub SetThumbnailClip(<[In]()> ByVal hwnd As Integer, <[In]()> ByRef prcClip As tagRECT) Implements ITaskbarList3.SetThumbnailClip
+    Public Overridable Sub SetThumbnailClip(<[In]()> hwnd As Integer, <[In]()> ByRef prcClip As tagRECT) Implements ITaskbarList3.SetThumbnailClip
     End Sub
-    Public Overridable Sub SetThumbnailTooltip(<[In]()> ByVal hwnd As Integer, <[In](), MarshalAs(UnmanagedType.LPWStr)> ByVal pszTip As String) Implements ITaskbarList3.SetThumbnailTooltip
+    Public Overridable Sub SetThumbnailTooltip(<[In]()> hwnd As Integer, <[In](), MarshalAs(UnmanagedType.LPWStr)> pszTip As String) Implements ITaskbarList3.SetThumbnailTooltip
     End Sub
-    Public Overridable Sub ThumbBarAddButtons(<[In]()> ByVal hwnd As Integer, <[In]()> ByVal cButtons As UInt32, <[In]()> ByRef pButton As tagTHUMBBUTTON) Implements ITaskbarList3.ThumbBarAddButtons
+    Public Overridable Sub ThumbBarAddButtons(<[In]()> hwnd As Integer, <[In]()> cButtons As UInt32, <[In]()> ByRef pButton As tagTHUMBBUTTON) Implements ITaskbarList3.ThumbBarAddButtons
     End Sub
-    Public Overridable Sub ThumbBarSetImageList(<[In]()> ByVal hwnd As Integer, <[In](), MarshalAs(UnmanagedType.IUnknown)> ByVal himl As Object) Implements ITaskbarList3.ThumbBarSetImageList
+    Public Overridable Sub ThumbBarSetImageList(<[In]()> hwnd As Integer, <[In](), MarshalAs(UnmanagedType.IUnknown)> himl As Object) Implements ITaskbarList3.ThumbBarSetImageList
     End Sub
-    Public Overridable Sub ThumbBarUpdateButtons(<[In]()> ByVal hwnd As Integer, <[In]()> ByVal cButtons As UInt32, <[In]()> ByRef pButton As tagTHUMBBUTTON) Implements ITaskbarList3.ThumbBarUpdateButtons
+    Public Overridable Sub ThumbBarUpdateButtons(<[In]()> hwnd As Integer, <[In]()> cButtons As UInt32, <[In]()> ByRef pButton As tagTHUMBBUTTON) Implements ITaskbarList3.ThumbBarUpdateButtons
     End Sub
-    Public Overridable Sub UnregisterTab(<[In]()> ByVal hwndTab As Integer) Implements ITaskbarList3.UnregisterTab
+    Public Overridable Sub UnregisterTab(<[In]()> hwndTab As Integer) Implements ITaskbarList3.UnregisterTab
     End Sub
   End Class
   <ComImport(), InterfaceType(CShort(1)), Guid("56FDF342-FD6D-11D0-958A-006097C9A090")> Public Interface ITaskbarList
     Sub HrInit()
-    Sub AddTab(<[In]()> ByVal hwnd As Integer)
-    Sub DeleteTab(<[In]()> ByVal hwnd As Integer)
-    Sub ActivateTab(<[In]()> ByVal hwnd As Integer)
-    Sub SetActivateAlt(<[In]()> ByVal hwnd As Integer)
+    Sub AddTab(<[In]()> hwnd As Integer)
+    Sub DeleteTab(<[In]()> hwnd As Integer)
+    Sub ActivateTab(<[In]()> hwnd As Integer)
+    Sub SetActivateAlt(<[In]()> hwnd As Integer)
   End Interface
   <ComImport(), Guid("602D4995-B13A-429B-A66E-1935E44F4317"), InterfaceType(CShort(1))> Public Interface ITaskbarList2
     Inherits ITaskbarList
     Overloads Sub HrInit()
-    Overloads Sub AddTab(<[In]()> ByVal hwnd As Integer)
-    Overloads Sub DeleteTab(<[In]()> ByVal hwnd As Integer)
-    Overloads Sub ActivateTab(<[In]()> ByVal hwnd As Integer)
-    Overloads Sub SetActivateAlt(<[In]()> ByVal hwnd As Integer)
-    Sub MarkFullscreenWindow(<[In]()> ByVal hwnd As Integer, <[In]()> ByVal fFullscreen As Integer)
+    Overloads Sub AddTab(<[In]()> hwnd As Integer)
+    Overloads Sub DeleteTab(<[In]()> hwnd As Integer)
+    Overloads Sub ActivateTab(<[In]()> hwnd As Integer)
+    Overloads Sub SetActivateAlt(<[In]()> hwnd As Integer)
+    Sub MarkFullscreenWindow(<[In]()> hwnd As Integer, <[In]()> fFullscreen As Integer)
   End Interface
   <ComImport(), InterfaceType(CShort(1)), Guid("EA1AFB91-9E28-4B86-90E9-9E9F8A5EEFAF")> Public Interface ITaskbarList3
     Inherits ITaskbarList2
     Overloads Sub HrInit()
-    Overloads Sub AddTab(<[In]()> ByVal hwnd As Integer)
-    Overloads Sub DeleteTab(<[In]()> ByVal hwnd As Integer)
-    Overloads Sub ActivateTab(<[In]()> ByVal hwnd As Integer)
-    Overloads Sub SetActivateAlt(<[In]()> ByVal hwnd As Integer)
-    Overloads Sub MarkFullscreenWindow(<[In]()> ByVal hwnd As Integer, <[In]()> ByVal fFullscreen As Integer)
-    Sub SetProgressValue(<[In]()> ByVal hwnd As IntPtr, <[In]()> ByVal ullCompleted As UInt64, <[In]()> ByVal ullTotal As UInt64)
-    Sub SetProgressState(<[In]()> ByVal hwnd As IntPtr, <[In]()> ByVal tbpFlags As TBPFLAG)
-    Sub RegisterTab(<[In]()> ByVal hwndTab As Integer, <[In](), ComAliasName("TaskbarLib.wireHWND")> ByRef hwndMDI As RemotableHandle)
-    Sub UnregisterTab(<[In]()> ByVal hwndTab As Integer)
-    Sub SetTabOrder(<[In]()> ByVal hwndTab As Integer, <[In]()> ByVal hwndInsertBefore As Integer)
-    Sub SetTabActive(<[In]()> ByVal hwndTab As Integer, <[In]()> ByVal hwndMDI As Integer, <[In]()> ByVal tbatFlags As TBATFLAG)
-    Sub ThumbBarAddButtons(<[In]()> ByVal hwnd As Integer, <[In]()> ByVal cButtons As UInt32, <[In]()> ByRef pButton As tagTHUMBBUTTON)
-    Sub ThumbBarUpdateButtons(<[In]()> ByVal hwnd As Integer, <[In]()> ByVal cButtons As UInt32, <[In]()> ByRef pButton As tagTHUMBBUTTON)
-    Sub ThumbBarSetImageList(<[In]()> ByVal hwnd As Integer, <[In](), MarshalAs(UnmanagedType.IUnknown)> ByVal himl As Object)
-    Sub SetOverlayIcon(<[In]()> ByVal hwnd As Integer, <[In](), MarshalAs(UnmanagedType.IUnknown)> ByVal hIcon As Object, <[In](), MarshalAs(UnmanagedType.LPWStr)> ByVal pszDescription As String)
-    Sub SetThumbnailTooltip(<[In]()> ByVal hwnd As Integer, <[In](), MarshalAs(UnmanagedType.LPWStr)> ByVal pszTip As String)
-    Sub SetThumbnailClip(<[In]()> ByVal hwnd As Integer, <[In]()> ByRef prcClip As tagRECT)
+    Overloads Sub AddTab(<[In]()> hwnd As Integer)
+    Overloads Sub DeleteTab(<[In]()> hwnd As Integer)
+    Overloads Sub ActivateTab(<[In]()> hwnd As Integer)
+    Overloads Sub SetActivateAlt(<[In]()> hwnd As Integer)
+    Overloads Sub MarkFullscreenWindow(<[In]()> hwnd As Integer, <[In]()> fFullscreen As Integer)
+    Sub SetProgressValue(<[In]()> hwnd As IntPtr, <[In]()> ullCompleted As UInt64, <[In]()> ullTotal As UInt64)
+    Sub SetProgressState(<[In]()> hwnd As IntPtr, <[In]()> tbpFlags As TBPFLAG)
+    Sub RegisterTab(<[In]()> hwndTab As Integer, <[In](), ComAliasName("TaskbarLib.wireHWND")> ByRef hwndMDI As RemotableHandle)
+    Sub UnregisterTab(<[In]()> hwndTab As Integer)
+    Sub SetTabOrder(<[In]()> hwndTab As Integer, <[In]()> hwndInsertBefore As Integer)
+    Sub SetTabActive(<[In]()> hwndTab As Integer, <[In]()> hwndMDI As Integer, <[In]()> tbatFlags As TBATFLAG)
+    Sub ThumbBarAddButtons(<[In]()> hwnd As Integer, <[In]()> cButtons As UInt32, <[In]()> ByRef pButton As tagTHUMBBUTTON)
+    Sub ThumbBarUpdateButtons(<[In]()> hwnd As Integer, <[In]()> cButtons As UInt32, <[In]()> ByRef pButton As tagTHUMBBUTTON)
+    Sub ThumbBarSetImageList(<[In]()> hwnd As Integer, <[In](), MarshalAs(UnmanagedType.IUnknown)> himl As Object)
+    Sub SetOverlayIcon(<[In]()> hwnd As Integer, <[In](), MarshalAs(UnmanagedType.IUnknown)> hIcon As Object, <[In](), MarshalAs(UnmanagedType.LPWStr)> pszDescription As String)
+    Sub SetThumbnailTooltip(<[In]()> hwnd As Integer, <[In](), MarshalAs(UnmanagedType.LPWStr)> pszTip As String)
+    Sub SetThumbnailClip(<[In]()> hwnd As Integer, <[In]()> ByRef prcClip As tagRECT)
   End Interface
   <ComImport(), CoClass(GetType(TaskbarListClass)), Guid("EA1AFB91-9E28-4B86-90E9-9E9F8A5EEFAF")> Public Interface TaskbarList
     Inherits ITaskbarList3

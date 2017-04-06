@@ -3,16 +3,16 @@ Partial Class frmFS
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
-    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
-        Try
-            If disposing AndAlso components IsNot Nothing Then
-                components.Dispose()
-            End If
-        Finally
-            MyBase.Dispose(disposing)
-        End Try
-    End Sub
+  <System.Diagnostics.DebuggerNonUserCode()> _
+  Protected Overrides Sub Dispose(disposing As Boolean)
+    Try
+      If disposing AndAlso components IsNot Nothing Then
+        components.Dispose()
+      End If
+    Finally
+      MyBase.Dispose(disposing)
+    End Try
+  End Sub
 
     'Required by the Windows Form Designer
     Private components As System.ComponentModel.IContainer
@@ -193,12 +193,11 @@ Partial Class frmFS
     Me.HelpButton = True
     Me.helpS7M.SetHelpKeyword(Me, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.4_File_System.htm")
     Me.helpS7M.SetHelpNavigator(Me, System.Windows.Forms.HelpNavigator.Topic)
-    Me.Icon = Global.Slips7ream.My.Resources.Resources.icon
+    Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
     Me.MaximizeBox = False
     Me.MinimizeBox = False
     Me.Name = "frmFS"
     Me.helpS7M.SetShowHelp(Me, True)
-    Me.ShowInTaskbar = False
     Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
     Me.Text = "SLIPS7REAM File System Size Conflict"
     Me.pnlFS.ResumeLayout(False)

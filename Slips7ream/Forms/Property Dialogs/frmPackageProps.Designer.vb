@@ -3,16 +3,16 @@ Partial Class frmPackageProps
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
-    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
-        Try
-            If disposing AndAlso components IsNot Nothing Then
-                components.Dispose()
-            End If
-        Finally
-            MyBase.Dispose(disposing)
-        End Try
-    End Sub
+  <System.Diagnostics.DebuggerNonUserCode()> _
+  Protected Overrides Sub Dispose(disposing As Boolean)
+    Try
+      If disposing AndAlso components IsNot Nothing Then
+        components.Dispose()
+      End If
+    Finally
+      MyBase.Dispose(disposing)
+    End Try
+  End Sub
 
     'Required by the Windows Form Designer
     Private components As System.ComponentModel.IContainer
@@ -844,7 +844,7 @@ Partial Class frmPackageProps
     Me.helpS7M.SetHelpNavigator(Me.cmdLoadFeatures, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.cmdLoadFeatures, "Click this button to populate the list of Windows Features available in this Imag" & _
         "e Package.")
-    Me.cmdLoadFeatures.Image = Global.Slips7ream.My.Resources.Resources.load_feature
+    Me.cmdLoadFeatures.Image = CType(resources.GetObject("cmdLoadFeatures.Image"), System.Drawing.Image)
     Me.cmdLoadFeatures.Location = New System.Drawing.Point(68, 132)
     Me.cmdLoadFeatures.MinimumSize = New System.Drawing.Size(80, 25)
     Me.cmdLoadFeatures.Name = "cmdLoadFeatures"
@@ -866,7 +866,7 @@ Partial Class frmPackageProps
     Me.helpS7M.SetHelpNavigator(Me.cmdLoadUpdates, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.cmdLoadUpdates, "Click this button to populate the list of Integrated Windows Updates and Language" & _
         " Packs in this Image Package.")
-    Me.cmdLoadUpdates.Image = Global.Slips7ream.My.Resources.Resources.load_update
+    Me.cmdLoadUpdates.Image = CType(resources.GetObject("cmdLoadUpdates.Image"), System.Drawing.Image)
     Me.cmdLoadUpdates.Location = New System.Drawing.Point(43, 292)
     Me.cmdLoadUpdates.MinimumSize = New System.Drawing.Size(80, 25)
     Me.cmdLoadUpdates.Name = "cmdLoadUpdates"
@@ -1070,7 +1070,7 @@ Partial Class frmPackageProps
     Me.helpS7M.SetHelpNavigator(Me.cmdLoadDrivers, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.cmdLoadDrivers, "Click this button to populate the list of Integrated Drivers in this Image Packag" & _
         "e.")
-    Me.cmdLoadDrivers.Image = Global.Slips7ream.My.Resources.Resources.load_driver
+    Me.cmdLoadDrivers.Image = CType(resources.GetObject("cmdLoadDrivers.Image"), System.Drawing.Image)
     Me.cmdLoadDrivers.Location = New System.Drawing.Point(70, 452)
     Me.cmdLoadDrivers.MinimumSize = New System.Drawing.Size(80, 25)
     Me.cmdLoadDrivers.Name = "cmdLoadDrivers"
@@ -1307,13 +1307,12 @@ Partial Class frmPackageProps
     Me.helpS7M.SetHelpKeyword(Me, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
         "ge_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me, System.Windows.Forms.HelpNavigator.Topic)
-    Me.Icon = Global.Slips7ream.My.Resources.Resources.icon
+    Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
     Me.MaximizeBox = False
     Me.MinimizeBox = False
     Me.MinimumSize = New System.Drawing.Size(615, 550)
     Me.Name = "frmPackageProps"
     Me.helpS7M.SetShowHelp(Me, True)
-    Me.ShowIcon = False
     Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
     Me.Text = "Image Package Properties"
     Me.pnlProps.ResumeLayout(False)

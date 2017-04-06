@@ -1,16 +1,25 @@
 ﻿Imports Microsoft.WindowsAPICodePack.Dialogs
 Imports System.Runtime.InteropServices
 Public Module modFunctions
+  <FlagsAttribute()> _
+  Private Enum EXECUTION_STATE As UInteger
+    ES_SYSTEM_REQUIRED = &H1UI
+    ES_DISPLAY_REQUIRED = &H2UI
+    ES_USER_PRESENT = &H4UI
+    ES_AWAYMODE_REQUIRED = &H40UI
+    ES_CONTINUOUS = &H80000000UI
+  End Enum
   Public Const en As String = ChrW(&H2003)
   Public Declare Function WindowFromPoint Lib "user32" (pt As Point) As IntPtr
   Public Declare Function SendMessageA Lib "user32" (hWnd As IntPtr, msg As Integer, wParam As IntPtr, lParam As IntPtr) As IntPtr
+  Private Declare Function SetThreadExecutionState Lib "kernel32" (state As EXECUTION_STATE) As EXECUTION_STATE
   Private Declare Function SetupDiGetClassImageList Lib "setupapi" (ByRef classImageListData As SP_CLASSIMAGELIST_DATA) As Boolean
   Private Declare Function SetupDiGetClassImageIndex Lib "setupapi" (classImageListData As SP_CLASSIMAGELIST_DATA, classGUID As Guid, ByRef imageIndex As Int16) As Boolean
   Private Declare Function SetupDiDestroyClassImageList Lib "setupapi" (ByRef classImageListData As SP_CLASSIMAGELIST_DATA) As Boolean
   Private Declare Function DestroyIcon Lib "user32" (handle As IntPtr) As Boolean
   Private Declare Function ImageList_GetIcon Lib "comctl32" (hIML As IntPtr, index As Integer, flags As Integer) As IntPtr
   Private Declare Function ExtractIconEx Lib "shell32" (lpszFile As String, nIconIndex As Int16, phiconLarge() As IntPtr, phiconSmall() As IntPtr, nIcons As UInt16) As UInt16
-  Private Declare Auto Function GetShortPathName Lib "kernel32.dll" (ByVal lpszLongPath As String, ByVal lpszShortPath As String, ByVal cchBuffer As Int32) As Int32
+  Private Declare Auto Function GetShortPathName Lib "kernel32" (lpszLongPath As String, lpszShortPath As String, cchBuffer As Int32) As Int32
   Public Enum ArchitectureList
     x86
     amd64
@@ -43,29 +52,30 @@ Public Module modFunctions
           Dim fInfo As FileVersionInfo = FileVersionInfo.GetVersionInfo(sPath)
           If fInfo.OriginalFilename = "iesetup.exe" And fInfo.ProductMajorPart > 9 Then
             Dim EXEPath As String = IO.Path.Combine(Update_File.WorkDir, "UpdateEXE_Extract")
-            If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents, False)
             IO.Directory.CreateDirectory(EXEPath)
-            Dim iExtract As New Process With {.StartInfo = New ProcessStartInfo(sPath, String.Format("/x:{0}", EXEPath))}
-            If iExtract.Start Then
-              iExtract.WaitForExit()
-              Dim updateList As New List(Of Update_File)
-              For Each sFile In IO.Directory.GetFiles(EXEPath)
-                If IO.Path.GetFileName(sFile).ToLower = "ie-win7.cab" Then
-                  updateList.Add(New Update_File(sFile) With {.Path = sPath})
-                ElseIf IO.Path.GetFileName(sFile).ToLower.Contains("ie-spelling") Then
-                  updateList.Add(New Update_File(sFile) With {.Path = sPath})
-                ElseIf IO.Path.GetFileName(sFile).ToLower.Contains("ie-hyphenation") Then
-                  updateList.Add(New Update_File(sFile) With {.Path = sPath})
-                ElseIf IO.Path.GetFileName(sFile).ToLower.Contains("ielangpack") Then
-                  updateList.Add(New Update_File(sFile) With {.Path = sPath})
-                End If
-              Next
-              If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
-              Return updateList.ToArray
-            Else
-              If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
-              Return {New Update_File(sPath)}
-            End If
+            Using iExtract As New Process With {.StartInfo = New ProcessStartInfo(sPath, String.Format("/x:{0}", EXEPath))}
+              If iExtract.Start Then
+                iExtract.WaitForExit()
+                Dim updateList As New List(Of Update_File)
+                For Each sFile In IO.Directory.GetFiles(EXEPath)
+                  If IO.Path.GetFileName(sFile).ToLower = "ie-win7.cab" Then
+                    updateList.Add(New Update_File(sFile) With {.Path = sPath})
+                  ElseIf IO.Path.GetFileName(sFile).ToLower.Contains("ie-spelling") Then
+                    updateList.Add(New Update_File(sFile) With {.Path = sPath})
+                  ElseIf IO.Path.GetFileName(sFile).ToLower.Contains("ie-hyphenation") Then
+                    updateList.Add(New Update_File(sFile) With {.Path = sPath})
+                  ElseIf IO.Path.GetFileName(sFile).ToLower.Contains("ielangpack") Then
+                    updateList.Add(New Update_File(sFile) With {.Path = sPath})
+                  End If
+                Next
+                If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents, False)
+                Return updateList.ToArray
+              Else
+                If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents, False)
+                Return {New Update_File(sPath)}
+              End If
+            End Using
           Else
             Return {New Update_File(sPath)}
           End If
@@ -77,7 +87,17 @@ Public Module modFunctions
     End If
   End Function
   Public Function GetUpdateName(Ident As Update_Identity, ReleaseType As String) As String
-    Debug.Print(ReleaseType)
+    Dim pVer As String = Nothing
+    If Not String.IsNullOrEmpty(Ident.Version) Then
+      pVer = Ident.Version
+    Else
+      pVer = "Unknown"
+    End If
+    If String.IsNullOrEmpty(pVer) Then pVer = "Unknown"
+    Dim Versions() As Version = GetVersions(pVer)
+    Dim vParentProd As Version = Versions(0)
+    Dim vThisProd As Version = Versions(1)
+    Dim sParentProd As String = ConvertOSVerToID(vParentProd)
     Select Case Ident.Name
       Case "WUClient-SelfUpdate-Core-TopLevel"
         Return String.Format("Windows Update Agent {0}", Ident.Version.Substring(0, Ident.Version.IndexOf(".", Ident.Version.IndexOf(".") + 1)))
@@ -90,34 +110,20 @@ Public Module modFunctions
       Case "Microsoft-Windows-InternetExplorer-Package-TopLevel"
         Dim ieVer As String = Ident.Version.Substring(0, Ident.Version.IndexOf("."))
         Return String.Format("Internet Explorer {0}", ieVer)
-      Case "Microsoft-Windows-PlatformUpdate-Win7-SRV08R2-Package-TopLevel" : Return "Platform Update for Windows"
+      Case "Microsoft-Windows-PlatformUpdate-Win7-SRV08R2-Package-TopLevel" : Return "Platform Update for Windows 7"
       Case "Microsoft-Windows-Client-LanguagePack-Package" : Return String.Format("{0} Multilingual User Interface Pack", Ident.Language)
       Case "Microsoft-Windows-Client-Refresh-LanguagePack-Package" : Return String.Format("{0} Multilingual User Interface Pack", Ident.Language)
       Case "Microsoft-Windows-LIP-LanguagePack-Package" : Return String.Format("{0} Language Interface Pack", Ident.Language)
       Case "Microsoft-Windows-RDP-WinIP-Package-TopLevel" : Return "Remote Desktop Protocol Update"
       Case "Microsoft-Windows-RDP-BlueIP-Package-TopLevel" : Return "Remote App and Desktop Connections Update"
       Case "Microsoft-Windows-Security-WindowsActivationTechnologies-Package" : Return "Windows Activation Update"
-      Case "Package_for_RollupFix" : Return "Update Rollup for Windows"
+      Case "Package_for_RollupFix" : Return String.Format("Update Rollup for {0}", sParentProd)
       Case Else
         If Ident.Name.StartsWith("Package_for_") Then
           If String.IsNullOrEmpty(ReleaseType) Then
-            If Not String.IsNullOrEmpty(Ident.Version) Then
-              If Ident.Version.StartsWith("6.1.") Then
-                Return String.Format("Update for Windows ({0})", Ident.Name.Substring(12))
-              ElseIf Ident.Version.StartsWith("9.4") Or Ident.Version.StartsWith("10.2") Or Ident.Version.StartsWith("11.2") Then
-                Return String.Format("Update for IE ({0})", Ident.Name.Substring(12))
-              End If
-            End If
-            Return String.Format("{0} Update", Ident.Name.Substring(12))
+            Return String.Format("Update for {0} ({1})", sParentProd, Ident.Name.Substring(12))
           Else
-            If Not String.IsNullOrEmpty(Ident.Version) Then
-              If Ident.Version.StartsWith("6.1.") Then
-                Return String.Format("{1} for Windows ({0})", Ident.Name.Substring(12), ReleaseType)
-              ElseIf Ident.Version.StartsWith("9.4") Or Ident.Version.StartsWith("10.2") Or Ident.Version.StartsWith("11.2") Then
-                Return String.Format("{1} for IE ({0})", Ident.Name.Substring(12), ReleaseType)
-              End If
-            End If
-            Return String.Format("{0} {1}", Ident.Name.Substring(12), ReleaseType)
+            Return String.Format("{0} for {1} ({2})", ReleaseType, sParentProd, Ident.Name.Substring(12))
           End If
         ElseIf Ident.Name.StartsWith("Microsoft-Windows-IE-Spelling-Parent-Package") Then
           Return String.Format("IE Spelling Package for {0}", Ident.Name.Substring(Ident.Name.LastIndexOf("-") + 1))
@@ -127,6 +133,33 @@ Public Module modFunctions
           Return Ident.Name
         End If
     End Select
+  End Function
+  Public Function GetVersions(VerString As String) As Version()
+    If Not VerString.Contains(".") Then Return {New Version(0, 0), New Version(0, 0)}
+    Dim ver() As String = Split(VerString, ".", 4)
+    If ver.Length = 4 Then
+      Return {New Version(CInt(ver(0)), CInt(ver(1))), New Version(CInt(ver(2)), CInt(ver(3)))}
+    ElseIf ver.Length = 3 Then
+      Return {New Version(CInt(ver(0)), CInt(ver(1))), New Version(CInt(ver(2)), 0)}
+    ElseIf ver.Length = 2 Then
+      Return {New Version(CInt(ver(0)), CInt(ver(1))), New Version(0, 0)}
+    Else
+      Return {New Version(CInt(ver(0)), 0), New Version(0, 0)}
+    End If
+  End Function
+  Public Function ConvertOSVerToID(OSVer As Version) As String
+    If OSVer.Major = 6 Then
+      If OSVer.Minor = 1 Then Return "Windows 7"
+    ElseIf OSVer.Major = 7 Then
+      If OSVer.Minor = 1 Then
+        Return "Windows 8"
+      ElseIf OSVer.Minor = 2 Then
+        Return "Windows 8.1"
+      End If
+    ElseIf OSVer.Major > 7 And OSVer.Major < 12 Then
+      Return String.Format("Internet Explorer {0}", OSVer.Major)
+    End If
+    Return "Windows"
   End Function
   Public Function GetUpdateCompany(Provider As String, ReferenceList() As String) As String
     If String.IsNullOrEmpty(Provider) Then Return "Unknown"
@@ -306,7 +339,15 @@ Public Module modFunctions
       Return FileName
     End If
   End Function
-  Public Function GetDriverIcon(DriverINFPath As String, architecture As ArchitectureList) As Icon
+  Public Function GenerateCloneImage(fromIcon As Icon) As Image
+    Using newImage As New Bitmap(fromIcon.Width, fromIcon.Height)
+      Using g As Graphics = Graphics.FromImage(newImage)
+        g.DrawIcon(fromIcon, 0, 0)
+      End Using
+      Return CType(newImage.Clone, Image)
+    End Using
+  End Function
+  Public Function GetDriverIcon(DriverINFPath As String, architecture As ArchitectureList) As Image
     Dim sINF() As String = IO.File.ReadAllLines(DriverINFPath)
     Dim sResPath As String = Nothing
     Dim sDefPaths As New List(Of String)
@@ -355,7 +396,7 @@ Public Module modFunctions
               If ExtractIconEx(sIconPath, siNumber, Nothing, icoPtr, 1) > 0 Then
                 Dim ico As Icon = CType(Icon.FromHandle(icoPtr(0)).Clone, Icon)
                 DestroyIcon(icoPtr(0))
-                Return ico
+                Return GenerateCloneImage(ico)
               End If
             End If
           End If
@@ -375,7 +416,7 @@ Public Module modFunctions
               If ExtractIconEx(siFilePath, siNumber, Nothing, icoPtr, 1) > 0 Then
                 Dim ico As Icon = CType(Icon.FromHandle(icoPtr(0)).Clone, Icon)
                 DestroyIcon(icoPtr(0))
-                Return ico
+                Return GenerateCloneImage(ico)
               End If
             End If
           End If
@@ -395,7 +436,7 @@ Public Module modFunctions
                 If ExtractIconEx(sSetupAPI, siNumber, Nothing, icoPtr, 1) > 0 Then
                   Dim ico As Icon = CType(Icon.FromHandle(icoPtr(0)).Clone, Icon)
                   DestroyIcon(icoPtr(0))
-                  Return ico
+                  Return GenerateCloneImage(ico)
                 End If
               ElseIf Not String.IsNullOrEmpty(sResPath) Then
                 sIcon = String.Concat("-", sIcon)
@@ -405,7 +446,7 @@ Public Module modFunctions
                   If ExtractIconEx(sResPath, Int16.Parse(sIcon), Nothing, icoPtr, 1) > 0 Then
                     Dim ico As Icon = CType(Icon.FromHandle(icoPtr(0)).Clone, Icon)
                     DestroyIcon(icoPtr(0))
-                    Return ico
+                    Return GenerateCloneImage(ico)
                   End If
                 End If
               End If
@@ -416,7 +457,7 @@ Public Module modFunctions
     Next
     Return Nothing
   End Function
-  Public Function GetDriverCompanyIcon(Company As String) As Icon
+  Public Function GetDriverCompanyIcon(Company As String) As Image
     Select Case Company.ToLower
       Case "acer" : Return My.Resources.company_acer
       Case "adaptec" : Return My.Resources.company_adaptec
@@ -455,6 +496,7 @@ Public Module modFunctions
       Case "nvidia" : Return My.Resources.company_nvidia
       Case "nxp semiconductors" : Return My.Resources.company_nxp_semiconductors
       Case "oki" : Return My.Resources.company_oki
+      Case "oracle corporation" : Return My.Resources.company_oracle
       Case "panasonic" : Return My.Resources.company_panasonic
       Case "pinnacle systems" : Return My.Resources.company_pinnacle_systems
       Case "promise technology" : Return My.Resources.company_promise_technology
@@ -472,14 +514,14 @@ Public Module modFunctions
       Case "synaptics" : Return My.Resources.company_synaptics
       Case "terratec electronic" : Return My.Resources.company_terratec_electronic
       Case "toshiba" : Return My.Resources.company_toshiba
-      Case "via technologies" : Return My.Resources.company_via_technologies
+      Case "via", "via labs", "via technologies" : Return My.Resources.company_via_technologies
       Case "vidzmedia pte ltd" : Return My.Resources.company_vidzmedia_pte_ltd
       Case "vixs systems" : Return My.Resources.company_vixs_systems
       Case "xerox" : Return My.Resources.company_xerox
       Case Else : Return My.Resources.company_oem
     End Select
   End Function
-  Public Function GetDriverClassIcon(ClassGUID As String, DriverINFPath As String, architecture As ArchitectureList) As Icon
+  Public Function GetDriverClassIcon(ClassGUID As String, DriverINFPath As String, architecture As ArchitectureList) As Image
     If Not String.IsNullOrEmpty(DriverINFPath) AndAlso IO.File.Exists(DriverINFPath) Then
       Dim sINF() As String = IO.File.ReadAllLines(DriverINFPath)
       Dim sResPath As String = Nothing
@@ -529,7 +571,7 @@ Public Module modFunctions
                 If ExtractIconEx(sIconPath, siNumber, Nothing, icoPtr, 1) > 0 Then
                   Dim ico As Icon = CType(Icon.FromHandle(icoPtr(0)).Clone, Icon)
                   DestroyIcon(icoPtr(0))
-                  Return ico
+                  Return GenerateCloneImage(ico)
                 End If
               End If
             End If
@@ -549,7 +591,7 @@ Public Module modFunctions
                   If ExtractIconEx(sSetupAPI, siNumber, Nothing, icoPtr, 1) > 0 Then
                     Dim ico As Icon = CType(Icon.FromHandle(icoPtr(0)).Clone, Icon)
                     DestroyIcon(icoPtr(0))
-                    Return ico
+                    Return GenerateCloneImage(ico)
                   End If
                 ElseIf Not String.IsNullOrEmpty(sResPath) Then
                   sIcon = String.Concat("-", sIcon)
@@ -559,7 +601,7 @@ Public Module modFunctions
                     If ExtractIconEx(sResPath, Int16.Parse(sIcon), Nothing, icoPtr, 1) > 0 Then
                       Dim ico As Icon = CType(Icon.FromHandle(icoPtr(0)).Clone, Icon)
                       DestroyIcon(icoPtr(0))
-                      Return ico
+                      Return GenerateCloneImage(ico)
                     End If
                   End If
                 End If
@@ -579,7 +621,7 @@ Public Module modFunctions
         If Not ptrIcon = IntPtr.Zero Then
           Dim icoClass As Icon = CType(Icon.FromHandle(ptrIcon).Clone, Icon)
           DestroyIcon(ptrIcon)
-          If icoClass.Width > 0 Then Return icoClass
+          If icoClass.Width > 0 Then Return GenerateCloneImage(icoClass)
         End If
       End If
       Return My.Resources.inf
@@ -589,7 +631,7 @@ Public Module modFunctions
   End Function
   Public Function ByteSize(InBytes As Int64) As String
     If InBytes < 0 Then
-      Return "-" & ByteSize(CULng(Math.Abs(InBytes)))
+      Return String.Concat("-", ByteSize(CULng(Math.Abs(InBytes))))
     Else
       Return ByteSize(CULng(InBytes))
     End If
@@ -646,83 +688,204 @@ Public Module modFunctions
   Public Function NumericVal(value As String) As Long
     Dim sSize As String = value
     For J As Integer = sSize.Length - 1 To 0 Step -1
-      If Not IsNumeric(sSize(J)) Then sSize = String.Concat(sSize.Substring(0, J), sSize.Substring(J + 1))
+      If Not Char.IsDigit(sSize, J) Then sSize = String.Concat(sSize.Substring(0, J), sSize.Substring(J + 1))
     Next
     If String.IsNullOrEmpty(sSize) Then Return 0
     Dim lRet As Long
     If Long.TryParse(sSize, lRet) Then Return lRet
     Return 0
   End Function
-  Public Sub SlowDeleteDirectory(Directory As String, OnDirectoryNotEmpty As FileIO.DeleteDirectoryOption)
+  Public Function AlphanumericVal(value As String) As String
+    Dim sVal As String = value
+    For J As Integer = sVal.Length - 1 To 0 Step -1
+      If Not Char.IsLetterOrDigit(sVal, J) Then sVal = String.Concat(sVal.Substring(0, J), sVal.Substring(J + 1))
+    Next
+    If String.IsNullOrEmpty(sVal) Then Return Nothing
+    Return sVal
+  End Function
+  Private Sub IterateDirectory(Directory As String, ByRef files As List(Of String), ByRef dirs As List(Of String))
+    files.AddRange(IO.Directory.GetFiles(Directory))
+    Dim sDirs() As String = IO.Directory.GetDirectories(Directory)
+    If sDirs.Count > 0 Then
+      For Each sDir In sDirs
+        If frmMain.StopRun Then Return
+        IterateDirectory(sDir, files, dirs)
+      Next
+    End If
+    dirs.Add(Directory)
+  End Sub
+  Public Sub SlowDeleteDirectory(Directory As String, OnDirectoryNotEmpty As FileIO.DeleteDirectoryOption, ForceProgress As Boolean)
     If Not IO.Directory.Exists(Directory) Then Return
-    If OnDirectoryNotEmpty = FileIO.DeleteDirectoryOption.ThrowIfDirectoryNonEmpty Then
-      If IO.Directory.GetFileSystemEntries(Directory).Count > 0 Then Return
-      IO.Directory.Delete(Directory, False)
-    Else
-      Dim doProg As Boolean = True
-      If Not frmMain.pbTotal.Visible Then doProg = False
-      If frmMain.pbTotal.Value > 0 And frmMain.pbTotal.Maximum > 1 Then doProg = False
-      Dim sDirs() As String = IO.Directory.GetDirectories(Directory)
-      Dim sFiles() As String = IO.Directory.GetFiles(Directory)
-      If sDirs.Count > 1 And doProg Then frmMain.SetTotal(0, sDirs.Count - 1)
-      For I As Integer = 0 To sDirs.Count - 1
-        If sDirs.Count > 1 And doProg Then frmMain.SetTotal(I, sDirs.Count - 1)
-        SlowDeleteDirectory(sDirs(I), OnDirectoryNotEmpty)
+    If OnDirectoryNotEmpty = FileIO.DeleteDirectoryOption.ThrowIfDirectoryNonEmpty AndAlso IO.Directory.GetFileSystemEntries(Directory).Count > 0 Then Return
+    Dim doProg As Boolean = True
+    If Not frmMain.pbIndividual.Visible Then doProg = False
+    If frmMain.pbIndividual.Visible And frmMain.pbIndividual.Maximum > 1 Then doProg = False
+    If frmMain.pbIndividual.Visible And frmMain.pbIndividual.Value > 0 Then doProg = False
+    If doProg Then
+      frmMain.Progress_Normal(1, 3, True)
+      frmMain.Progress_Normal_Sub(0, 0, "Getting Directory List...")
+    ElseIf ForceProgress Then
+      frmMain.Progress_Normal_Sub(0, 3, "Getting Directory List...")
+    End If
+    Dim sFiles As New List(Of String)
+    Dim sDirs As New List(Of String)
+    IterateDirectory(Directory, sFiles, sDirs)
+    If doProg Then
+      frmMain.Progress_Normal(2, 3, True)
+    ElseIf ForceProgress Then
+      frmMain.Progress_Normal_Sub(1, 3, "Deleting Files...")
+    End If
+    If sFiles.Count > 0 Then
+      If sFiles.Count > 1 Then
+        If doProg Then
+          frmMain.Progress_Normal_Sub(0, sFiles.Count, "Deleting Files...")
+        ElseIf ForceProgress Then
+          frmMain.Progress_Normal_Sub((1 * sFiles.Count), (3 * sFiles.Count), "Deleting Files...")
+        End If
+      End If
+      For I As Integer = 0 To sFiles.Count - 1
+        If sFiles.Count > 1 Then
+          If doProg Then
+            frmMain.Progress_Normal_Sub(I, sFiles.Count, String.Format("Deleting ""{0}""...", Replace(sFiles(I), Directory, "...")))
+          ElseIf ForceProgress Then
+            frmMain.Progress_Normal_Sub((1 * sFiles.Count) + I, (3 * sFiles.Count), String.Format("Deleting ""{0}""...", Replace(sFiles(I), Directory, "...")))
+          End If
+        End If
+        Try
+          IO.File.Delete(sFiles(I))
+        Catch ex As Exception
+        End Try
         If I Mod 25 = 0 Then
           If frmMain.StopRun Then Return
           Application.DoEvents()
         End If
       Next
-      If sFiles.Count > 0 Then
-        If sFiles.Count > 1 And doProg Then frmMain.SetProgress(0, sFiles.Count - 1)
-        For I As Integer = 0 To sFiles.Count - 1
-          If sFiles.Count > 1 And doProg Then frmMain.SetProgress(I, sFiles.Count - 1)
-          Try
-            IO.File.Delete(sFiles(I))
-          Catch ex As Exception
-          End Try
-          If I Mod 25 = 0 Then
-            If frmMain.StopRun Then Return
-            Application.DoEvents()
-          End If
-        Next
+    End If
+    If doProg Then
+      frmMain.Progress_Normal(3, 3, True)
+    ElseIf ForceProgress Then
+      frmMain.Progress_Normal_Sub(1, 3, "Deleting Directories...")
+    End If
+    If sDirs.Count > 0 Then
+      If sFiles.Count > 1 Then
+        If doProg Then
+          frmMain.Progress_Normal_Sub(0, sDirs.Count, "Deleting Directories...")
+        ElseIf ForceProgress Then
+          frmMain.Progress_Normal_Sub((2 * sDirs.Count), (3 * sDirs.Count), "Deleting Directories...")
+        End If
       End If
-      Try
-        IO.Directory.Delete(Directory)
-      Catch ex As Exception
-      End Try
+      For I As Integer = 0 To sDirs.Count - 1
+        If sDirs.Count > 1 Then
+          If doProg Then
+            frmMain.Progress_Normal_Sub(I, sDirs.Count, String.Format("Deleting ""{0}""...", Replace(sFiles(I), Directory, "...")))
+          ElseIf ForceProgress Then
+            frmMain.Progress_Normal_Sub((2 * sDirs.Count) + I, (3 * sDirs.Count), String.Format("Deleting ""{0}""...", Replace(sFiles(I), Directory, "...")))
+          End If
+        End If
+        Try
+          IO.Directory.Delete(sDirs(I))
+        Catch ex As Exception
+        End Try
+        If I Mod 25 = 0 Then
+          If frmMain.StopRun Then Return
+          Application.DoEvents()
+        End If
+      Next
     End If
   End Sub
   Private c_SlowCopyRet As New List(Of String)
-  Public Function SlowCopyFile(File As String, Destination As String, Optional Move As Boolean = False) As Boolean
+  Private CancelCopy As Boolean = False
+  Public Function SlowCopyFile(File As String, Destination As String, Move As Boolean) As Boolean
     Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncSlowCopyFile))
     Dim cIndex As Integer = c_SlowCopyRet.Count
     c_SlowCopyRet.Add("0")
+    CancelCopy = False
     tRunWithReturn.Start(CType({File, Destination, Move, cIndex}, Object()))
     Do While IsNumeric(c_SlowCopyRet(cIndex))
-      If frmMain.pbIndividual.Value = 0 And frmMain.pbIndividual.Maximum = 1 Then
-        Dim iPercent As Integer
-        If Integer.TryParse(c_SlowCopyRet(cIndex), iPercent) Then
-          If iPercent > 990 Then
-            frmMain.SetProgress(0, 0)
-          Else
-            frmMain.SetProgress(iPercent, 1000)
-          End If
-        End If
-      End If
       Application.DoEvents()
       Threading.Thread.Sleep(1)
-      If frmMain.StopRun Then Return False
+      If frmMain.StopRun Then CancelCopy = True : Return False
     Loop
     Dim sRet As String = c_SlowCopyRet(cIndex)
     c_SlowCopyRet(cIndex) = Nothing
     If sRet = "OK" Then
       Return True
     Else
+      If sRet = "Cancelled" Then Return False
       If Move Then
-        MsgDlg(frmMain, sRet, String.Format("Unable to move {0}.", IO.Path.GetFileNameWithoutExtension(File)), "File Transfer Failure", MessageBoxButtons.OK, TaskDialogIcon.HardDrive, , , "Slow Move File Transfer Failure")
+        MsgDlg(frmMain, sRet, String.Format("Unable to move {0}.", IO.Path.GetFileNameWithoutExtension(File)), "File Transfer Failure", MessageBoxButtons.OK, _TaskDialogIcon.HardDrive, , , "Slow Move File Transfer Failure")
       Else
-        MsgDlg(frmMain, sRet, String.Format("Unable to copy {0}.", IO.Path.GetFileNameWithoutExtension(File)), "File Transfer Failure", MessageBoxButtons.OK, TaskDialogIcon.HardDrive, , , "Slow Copy File Transfer Failure")
+        MsgDlg(frmMain, sRet, String.Format("Unable to copy {0}.", IO.Path.GetFileNameWithoutExtension(File)), "File Transfer Failure", MessageBoxButtons.OK, _TaskDialogIcon.HardDrive, , , "Slow Copy File Transfer Failure")
+      End If
+      Return False
+    End If
+  End Function
+  Public Function SlowCopyFile(File As String, Destination As String, ProgressSetter As Action(Of Integer, Integer, Boolean), Move As Boolean) As Boolean
+    Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncSlowCopyFile))
+    Dim cIndex As Integer = c_SlowCopyRet.Count
+    c_SlowCopyRet.Add("0")
+    CancelCopy = False
+    tRunWithReturn.Start(CType({File, Destination, Move, cIndex}, Object()))
+    Do While IsNumeric(c_SlowCopyRet(cIndex))
+      Dim iPercent As Integer
+      If Integer.TryParse(c_SlowCopyRet(cIndex), iPercent) Then
+        Dim sAction As String = "Copying"
+        If Move Then sAction = "Moving"
+        If iPercent > 990 Then
+          ProgressSetter.Invoke(0, 0, False)
+        Else
+          ProgressSetter.Invoke(iPercent, 1000, False)
+        End If
+      End If
+      Application.DoEvents()
+      Threading.Thread.Sleep(1)
+      If frmMain.StopRun Then CancelCopy = True : Return False
+    Loop
+    Dim sRet As String = c_SlowCopyRet(cIndex)
+    c_SlowCopyRet(cIndex) = Nothing
+    If sRet = "OK" Then
+      Return True
+    Else
+      If sRet = "Cancelled" Then Return False
+      If Move Then
+        MsgDlg(frmMain, sRet, String.Format("Unable to move {0}.", IO.Path.GetFileNameWithoutExtension(File)), "File Transfer Failure", MessageBoxButtons.OK, _TaskDialogIcon.HardDrive, , , "Slow Move File Transfer Failure")
+      Else
+        MsgDlg(frmMain, sRet, String.Format("Unable to copy {0}.", IO.Path.GetFileNameWithoutExtension(File)), "File Transfer Failure", MessageBoxButtons.OK, _TaskDialogIcon.HardDrive, , , "Slow Copy File Transfer Failure")
+      End If
+      Return False
+    End If
+  End Function
+  Public Function SlowCopyFile(File As String, Destination As String, SubProgressSetter As Action(Of Integer, Integer, String), Move As Boolean) As Boolean
+    Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncSlowCopyFile))
+    Dim cIndex As Integer = c_SlowCopyRet.Count
+    c_SlowCopyRet.Add("0")
+    CancelCopy = False
+    tRunWithReturn.Start(CType({File, Destination, Move, cIndex}, Object()))
+    Do While IsNumeric(c_SlowCopyRet(cIndex))
+      Dim iPercent As Integer
+      If Integer.TryParse(c_SlowCopyRet(cIndex), iPercent) Then
+        Dim sAction As String = "Copying"
+        If Move Then sAction = "Moving"
+        If iPercent > 990 Then
+          SubProgressSetter.Invoke(0, 0, sAction)
+        Else
+          SubProgressSetter.Invoke(iPercent, 1000, sAction)
+        End If
+      End If
+      Application.DoEvents()
+      Threading.Thread.Sleep(1)
+      If frmMain.StopRun Then CancelCopy = True : Return False
+    Loop
+    Dim sRet As String = c_SlowCopyRet(cIndex)
+    c_SlowCopyRet(cIndex) = Nothing
+    If sRet = "OK" Then
+      Return True
+    Else
+      If sRet = "Cancelled" Then Return False
+      If Move Then
+        MsgDlg(frmMain, sRet, String.Format("Unable to move {0}.", IO.Path.GetFileNameWithoutExtension(File)), "File Transfer Failure", MessageBoxButtons.OK, _TaskDialogIcon.HardDrive, , , "Slow Move File Transfer Failure")
+      Else
+        MsgDlg(frmMain, sRet, String.Format("Unable to copy {0}.", IO.Path.GetFileNameWithoutExtension(File)), "File Transfer Failure", MessageBoxButtons.OK, _TaskDialogIcon.HardDrive, , , "Slow Copy File Transfer Failure")
       End If
       Return False
     End If
@@ -734,9 +897,21 @@ Public Module modFunctions
     Dim cIndex As Integer = CInt(CType(Obj, Object())(3))
     If IO.File.Exists(File) Then
       If Not IO.Directory.Exists(IO.Path.GetDirectoryName(Destination)) Then IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(Destination))
-      If IO.File.Exists(Destination) Then IO.File.Delete(Destination)
+      For I As Integer = 1 To 3
+        Try
+          If IO.File.Exists(Destination) Then IO.File.Delete(Destination) : Exit For
+        Catch ex As Exception
+          Application.DoEvents()
+          Threading.Thread.Sleep(100)
+        End Try
+      Next
       If Move AndAlso File(0) = Destination(0) Then
-        My.Computer.FileSystem.MoveFile(File, Destination, True)
+        Try
+          My.Computer.FileSystem.MoveFile(File, Destination, True)
+        Catch ex As Exception
+          c_SlowCopyRet(cIndex) = String.Format("Transfer Error: {0}", ex.Message)
+          Return
+        End Try
       Else
         Dim destDrive As New IO.DriveInfo(Destination(0))
         Dim destFreeSpace As Long = destDrive.AvailableFreeSpace
@@ -773,6 +948,10 @@ Public Module modFunctions
                       c_SlowCopyRet(cIndex) = ex.Message
                     End Try
                   End If
+                  If CancelCopy Then
+                    c_SlowCopyRet(cIndex) = "Transfer Cancelled"
+                    Return
+                  End If
                   Dim iPercent As Integer = CInt(Math.Floor((ioReader.BaseStream.Position / ioReader.BaseStream.Length) * 1000))
                   If Not iPercent = lastPercent Then
                     c_SlowCopyRet(cIndex) = CStr(iPercent)
@@ -794,6 +973,52 @@ Public Module modFunctions
       c_SlowCopyRet(cIndex) = "File Not Found"
     End If
   End Sub
+  Private c_GetDirSizeRet As New List(Of ULong)
+  Private CancelGet As Boolean = False
+  Public Function GetDirSize(Directory As String) As ULong
+    If Not IO.Directory.Exists(Directory) Then Return 0
+    Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncGetDirSize))
+    Dim cIndex As Integer = c_GetDirSizeRet.Count
+    c_GetDirSizeRet.Add(0)
+    CancelGet = False
+    tRunWithReturn.Start(CType({Directory, cIndex}, Object()))
+    Do While c_GetDirSizeRet(cIndex) = 0
+      Application.DoEvents()
+      Threading.Thread.Sleep(1)
+      If frmMain.StopRun Then CancelGet = True : Return 0
+    Loop
+    Dim uRet As ULong = CULng(c_GetDirSizeRet(cIndex))
+    c_GetDirSizeRet(cIndex) = 0
+    Return uRet
+  End Function
+  Private Sub AsyncGetDirSize(Obj As Object)
+    Dim Directory As String = CStr(CType(Obj, Object())(0))
+    Dim cIndex As Integer = CInt(CType(Obj, Object())(1))
+    c_GetDirSizeRet(cIndex) = GetSubDirSize(Directory)
+  End Sub
+  Private Function GetSubDirSize(Directory As String) As ULong
+    Dim uSize As UInt64 = 0
+    Try
+      Dim sDirs() As String = IO.Directory.GetDirectories(Directory)
+      For I As Integer = 0 To sDirs.Length - 1
+        If CancelGet Then Return 0
+        uSize += GetSubDirSize(sDirs(I))
+      Next
+    Catch ex As Exception
+    End Try
+    Try
+      Dim sFiles() As String = IO.Directory.GetFiles(Directory)
+      For I As Integer = 0 To sFiles.Length - 1
+        If CancelGet Then Return 0
+        Try
+          uSize += CULng((New IO.FileInfo(sFiles(I))).Length)
+        Catch ex As Exception
+        End Try
+      Next
+    Catch ex As Exception
+    End Try
+    Return uSize
+  End Function
   Public Enum UpdateType
     MSU
     CAB
@@ -855,10 +1080,16 @@ Public Module modFunctions
     Next
     FileList = FilesOutOfOrder
   End Sub
+  Public Sub PreventSleep()
+    SetThreadExecutionState(EXECUTION_STATE.ES_SYSTEM_REQUIRED Or EXECUTION_STATE.ES_CONTINUOUS)
+  End Sub
+  Public Sub AllowSleep()
+    SetThreadExecutionState(EXECUTION_STATE.ES_CONTINUOUS)
+  End Sub
   Public Function TickCount() As Long
-    Return CLng(Stopwatch.GetTimestamp / Stopwatch.Frequency) * 1000
+    Return CLng(Stopwatch.GetTimestamp / Stopwatch.Frequency * 1000)
   End Function
-  Public Function ConvertTime(ByVal lngMS As UInt64, Optional ByVal Abbreviated As Boolean = False, Optional ByVal Trimmed As Boolean = True) As String
+  Public Function ConvertTime(lngMS As UInt64, Optional Abbreviated As Boolean = False, Optional Trimmed As Boolean = True) As String
     Dim lngSeconds As UInt64 = lngMS \ 1000UL
     Dim lngWeeks As UInt64 = lngSeconds \ CULng(60 * 60 * 24 * 7)
     lngSeconds = lngSeconds Mod CULng(60 * 60 * 24 * 7)
@@ -945,7 +1176,7 @@ Public Module modFunctions
     ElseIf archA.ToLower = "neutral" Then
       Return neutralEqual
     Else
-      Debug.Print("Unknown A Architecture: " & archA)
+      Debug.Print(String.Format("Unknown A Architecture: {0}", archA))
       typeA = ArchitectureList.x86
     End If
     Return typeA = typeB
@@ -963,7 +1194,7 @@ Public Module modFunctions
       If archB.ToLower = "neutral" Then Return True
       Return False
     Else
-      Debug.Print("Unknown A Architecture: " & archA)
+      Debug.Print(String.Format("Unknown A Architecture: {0}", archA))
       typeA = ArchitectureList.x86
     End If
     Dim typeB As ArchitectureList
@@ -976,12 +1207,11 @@ Public Module modFunctions
     ElseIf archB.ToLower = "neutral" Then
       Return neutralEqual
     Else
-      Debug.Print("Unknown B Architecture: " & archB)
+      Debug.Print(String.Format("Unknown B Architecture: {0}", archB))
       typeB = ArchitectureList.x86
     End If
     Return typeA = typeB
   End Function
-
   Public Function CompareArchitecturesVal(archA As String, archB As String, neutralEqual As Boolean) As Integer
     Dim typeA As ArchitectureList
     If archA.ToLower = "ia64" Then
@@ -995,7 +1225,7 @@ Public Module modFunctions
       If archB.ToLower = "neutral" Then Return 0
       Return -1
     Else
-      Debug.Print("Unknown A Architecture: " & archA)
+      Debug.Print(String.Format("Unknown A Architecture: {0}", archA))
       typeA = ArchitectureList.x86
     End If
     Dim typeB As ArchitectureList
@@ -1009,7 +1239,7 @@ Public Module modFunctions
       If neutralEqual Then Return 0
       Return -1
     Else
-      Debug.Print("Unknown B Architecture: " & archB)
+      Debug.Print(String.Format("Unknown B Architecture: {0}", archB))
       typeB = ArchitectureList.x86
     End If
     If typeA = typeB Then Return 0
@@ -1017,7 +1247,7 @@ Public Module modFunctions
     If typeB = ArchitectureList.x86 Then Return 1
     If typeA = ArchitectureList.ia64 Then Return 1
     If typeB = ArchitectureList.ia64 Then Return -1
-    Debug.Print("Unknown Architecture Comparison Response: " & archA & " vs " & archB)
+    Debug.Print(String.Format("Unknown Architecture Comparison Response: {0} vs {1}", archA, archB))
     Return 0
   End Function
   Public Function CompareMSVersions(Ver1 As String, Ver2 As String) As Integer
@@ -1119,7 +1349,7 @@ Public Module modFunctions
           dlgUpdate.InstructionText = String.Format("There is already an older version of {0} in the Update List.", UpdateName)
           dlgUpdate.StandardButtons = TaskDialogStandardButtons.None
           dlgUpdate.Text = "Click the version you want to keep"
-          dlgUpdate.Icon = CType(TaskDialogIcon.WindowsUpdate, TaskDialogStandardIcon)
+          dlgUpdate.Icon = CType(_TaskDialogIcon.WindowsUpdate, TaskDialogStandardIcon)
           dlgUpdate.FooterCheckBoxChecked = False
           dlgUpdate.FooterCheckBoxText = "&Do this for all new versions"
           Dim sYes As String
@@ -1184,7 +1414,7 @@ Public Module modFunctions
           dlgUpdate.InstructionText = String.Format("There is already a newer version of {0} in the Update List.", UpdateName)
           dlgUpdate.StandardButtons = TaskDialogStandardButtons.None
           dlgUpdate.Text = "Click the version you want to keep"
-          dlgUpdate.Icon = CType(TaskDialogIcon.WindowsUpdate, TaskDialogStandardIcon)
+          dlgUpdate.Icon = CType(_TaskDialogIcon.WindowsUpdate, TaskDialogStandardIcon)
           dlgUpdate.FooterCheckBoxChecked = False
           dlgUpdate.FooterCheckBoxText = "&Do this for all old versions"
           Dim sYes As String
@@ -1307,7 +1537,7 @@ Public Module modFunctions
             dlgUpdate.InstructionText = String.Format("There are already older versions of {0} integrated into Image Packages.", UpdateName)
             dlgUpdate.StandardButtons = TaskDialogStandardButtons.Cancel
             dlgUpdate.Text = "Click the version you want to keep"
-            dlgUpdate.Icon = CType(TaskDialogIcon.WindowsUpdate, TaskDialogStandardIcon)
+            dlgUpdate.Icon = CType(_TaskDialogIcon.WindowsUpdate, TaskDialogStandardIcon)
             dlgUpdate.FooterCheckBoxChecked = False
             dlgUpdate.FooterCheckBoxText = "&Do this for all new versions"
             Dim sYes As String
@@ -1356,7 +1586,7 @@ Public Module modFunctions
             AddHandler cmdNo.Click, AddressOf SelectionDialogCommandLink_Click
             dlgUpdate.Controls.Add(cmdNo)
             If Not String.IsNullOrEmpty(sOther) Then
-              dlgUpdate.ExpansionMode = TaskDialogExpandedDetailsLocation.ExpandFooter
+              dlgUpdate.ExpansionMode = CType(_TaskDialogExpandedDetailsLocation.ExpandFooter, TaskDialogExpandedDetailsLocation)
               dlgUpdate.DetailsCollapsedLabel = "Show Unknown Versions"
               dlgUpdate.DetailsExpandedLabel = "Hide Unknown Versions"
               dlgUpdate.DetailsExpandedText = String.Concat(sOther, vbNewLine, "The list of Integrated Windows Updates for these Image Packages may not have been loaded or these Editions of Windows may not be supported by this Update.")
@@ -1380,7 +1610,7 @@ Public Module modFunctions
             dlgUpdate.InstructionText = String.Format("There are already newer versions of {0} integrated into Image Packages.", UpdateName)
             dlgUpdate.StandardButtons = TaskDialogStandardButtons.Cancel
             dlgUpdate.Text = "Click the version you want to keep"
-            dlgUpdate.Icon = CType(TaskDialogIcon.WindowsUpdate, TaskDialogStandardIcon)
+            dlgUpdate.Icon = CType(_TaskDialogIcon.WindowsUpdate, TaskDialogStandardIcon)
             dlgUpdate.FooterCheckBoxChecked = False
             dlgUpdate.FooterCheckBoxText = "&Do this for all old versions"
             Dim sYes As String
@@ -1429,7 +1659,7 @@ Public Module modFunctions
             dlgUpdate.Controls.Add(cmdNo)
             dlgUpdate.Controls.Add(cmdYes)
             If Not String.IsNullOrEmpty(sOther) Then
-              dlgUpdate.ExpansionMode = TaskDialogExpandedDetailsLocation.ExpandFooter
+              dlgUpdate.ExpansionMode = CType(_TaskDialogExpandedDetailsLocation.ExpandFooter, TaskDialogExpandedDetailsLocation)
               dlgUpdate.DetailsCollapsedLabel = "Show Unknown Versions"
               dlgUpdate.DetailsExpandedLabel = "Hide Unknown Versions"
               dlgUpdate.DetailsExpandedText = String.Concat(sOther, vbNewLine, "The list of Integrated Windows Updates for these Image Packages may not have been loaded or these Editions of Windows may not be supported by this Update.")
@@ -1453,7 +1683,7 @@ Public Module modFunctions
             dlgUpdate.InstructionText = String.Format("There are already other versions of {0} integrated into Image Packages.", UpdateName)
             dlgUpdate.StandardButtons = TaskDialogStandardButtons.Cancel
             dlgUpdate.Text = "Click the versions you want to keep"
-            dlgUpdate.Icon = CType(TaskDialogIcon.WindowsUpdate, TaskDialogStandardIcon)
+            dlgUpdate.Icon = CType(_TaskDialogIcon.WindowsUpdate, TaskDialogStandardIcon)
             Dim sAll As String
             Dim newFInfo As New IO.FileInfo(newData.Path)
             If String.IsNullOrEmpty(newData.Failure) Then
@@ -1541,7 +1771,7 @@ Public Module modFunctions
               End If
             Next
             If Not String.IsNullOrEmpty(sOther) Then
-              dlgUpdate.ExpansionMode = TaskDialogExpandedDetailsLocation.ExpandFooter
+              dlgUpdate.ExpansionMode = CType(_TaskDialogExpandedDetailsLocation.ExpandFooter, TaskDialogExpandedDetailsLocation)
               dlgUpdate.DetailsCollapsedLabel = "Show Unknown Versions"
               dlgUpdate.DetailsExpandedLabel = "Hide Unknown Versions"
               dlgUpdate.DetailsExpandedText = sOther
@@ -1646,7 +1876,7 @@ Public Module modFunctions
       Return str
     End Function
   End Class
-  Public Enum TaskDialogIcon
+  Public Enum _TaskDialogIcon
     None = 0
     Space = &H1
     File = &H2
@@ -1867,7 +2097,12 @@ Public Module modFunctions
     Error2 = &HFFFE
     Warning2 = &HFFFF
   End Enum
-  Public Function MsgDlg(owner As Form, Text As String, Optional Title As String = Nothing, Optional Caption As String = Nothing, Optional Buttons As MessageBoxButtons = MessageBoxButtons.OK, Optional Icon As TaskDialogIcon = TaskDialogIcon.None, Optional DefaultButton As MessageBoxDefaultButton = MessageBoxDefaultButton.Button1, Optional Details As String = Nothing, Optional HelpTopic As String = Nothing) As DialogResult
+  Public Enum _TaskDialogExpandedDetailsLocation
+    Hide
+    ExpandContent
+    ExpandFooter
+  End Enum
+  Public Function MsgDlg(owner As Form, Text As String, Optional Header As String = Nothing, Optional Title As String = Nothing, Optional Buttons As MessageBoxButtons = MessageBoxButtons.OK, Optional Icon As _TaskDialogIcon = _TaskDialogIcon.None, Optional DefaultButton As MessageBoxDefaultButton = MessageBoxDefaultButton.Button1, Optional Details As String = Nothing, Optional HelpTopic As String = Nothing) As DialogResult
     If owner.Name = "frmMain" Then
       Dim main As frmMain = CType(owner, frmMain)
       If main.pbTotal.Visible AndAlso main.taskBar IsNot Nothing Then main.taskBar.SetProgressState(main.Handle, TaskbarLib.TBPFLAG.TBPF_ERROR)
@@ -1876,8 +2111,8 @@ Public Module modFunctions
       If TaskDialog.IsPlatformSupported Then
         Using dlgMessage As New TaskDialog
           dlgMessage.Cancelable = True
-          dlgMessage.Caption = String.Format("SLIPS7REAM - {0}", Caption)
-          dlgMessage.InstructionText = Title
+          dlgMessage.Caption = String.Format("SLIPS7REAM - {0}", Title)
+          dlgMessage.InstructionText = Header
           dlgMessage.Text = Text
           dlgMessage.Icon = CType(Icon, TaskDialogStandardIcon)
           dlgMessage.HyperlinksEnabled = True
@@ -2001,7 +2236,7 @@ Public Module modFunctions
             dlgMessage.DetailsCollapsedLabel = "View Details"
             dlgMessage.DetailsExpandedLabel = "Hide Details"
             dlgMessage.DetailsExpandedText = Details
-            dlgMessage.ExpansionMode = TaskDialogExpandedDetailsLocation.ExpandContent
+            dlgMessage.ExpansionMode = CType(_TaskDialogExpandedDetailsLocation.ExpandContent, TaskDialogExpandedDetailsLocation)
           End If
           If owner IsNot Nothing Then dlgMessage.OwnerWindowHandle = owner.Handle
           AddHandler dlgMessage.Opened, AddressOf RefreshDlg
@@ -2009,7 +2244,7 @@ Public Module modFunctions
           Try
             ret = dlgMessage.Show()
           Catch ex As Exception
-            Return MsgDlgLegacy(owner, Text, Title, Caption, Buttons, Icon, DefaultButton, Details, HelpTopic)
+            Return MsgDlgLegacy(owner, Text, Header, Title, Buttons, Icon, DefaultButton, Details, HelpTopic)
           End Try
           Select Case ret
             Case TaskDialogResult.Yes : Return DialogResult.Yes
@@ -2024,7 +2259,7 @@ Public Module modFunctions
           Return DialogResult.None
         End Using
       Else
-        Return MsgDlgLegacy(owner, Text, Title, Caption, Buttons, Icon, DefaultButton, Details, HelpTopic)
+        Return MsgDlgLegacy(owner, Text, Header, Title, Buttons, Icon, DefaultButton, Details, HelpTopic)
       End If
     Finally
       If owner.Name = "frmMain" Then
@@ -2044,24 +2279,24 @@ Public Module modFunctions
     Catch ex As Exception
     End Try
   End Sub
-  Private Function MsgDlgLegacy(owner As Form, Text As String, Optional Title As String = Nothing, Optional Caption As String = Nothing, Optional Buttons As MessageBoxButtons = MessageBoxButtons.OK, Optional Icon As TaskDialogIcon = TaskDialogIcon.None, Optional DefaultButton As MessageBoxDefaultButton = MessageBoxDefaultButton.Button1, Optional Details As String = Nothing, Optional HelpTopic As String = Nothing) As DialogResult
+  Private Function MsgDlgLegacy(owner As Form, Text As String, Optional Header As String = Nothing, Optional Title As String = Nothing, Optional Buttons As MessageBoxButtons = MessageBoxButtons.OK, Optional Icon As _TaskDialogIcon = _TaskDialogIcon.None, Optional DefaultButton As MessageBoxDefaultButton = MessageBoxDefaultButton.Button1, Optional Details As String = Nothing, Optional HelpTopic As String = Nothing) As DialogResult
     Dim Content As String
-    If String.IsNullOrEmpty(Title) And String.IsNullOrEmpty(Text) Then
+    If String.IsNullOrEmpty(Header) And String.IsNullOrEmpty(Text) Then
       Content = String.Empty
-    ElseIf String.IsNullOrEmpty(Title) Then
+    ElseIf String.IsNullOrEmpty(Header) Then
       Content = Text
     ElseIf String.IsNullOrEmpty(Text) Then
-      Content = Title
+      Content = Header
     Else
-      Content = String.Concat(Title, vbNewLine, vbNewLine, Text)
+      Content = String.Concat(Header, vbNewLine, vbNewLine, Text)
     End If
     Dim msgIcon As MessageBoxIcon = MessageBoxIcon.None
     Select Case Icon
-      Case TaskDialogIcon.None : msgIcon = MessageBoxIcon.None
-      Case TaskDialogIcon.Error, TaskDialogIcon.Error2, TaskDialogIcon.ShieldError, TaskDialogIcon.ShieldError2 : msgIcon = MessageBoxIcon.Error
-      Case TaskDialogIcon.Question, TaskDialogIcon.ShieldQuestion : msgIcon = MessageBoxIcon.Question
-      Case TaskDialogIcon.Warning, TaskDialogIcon.Warning2, TaskDialogIcon.ShieldWarning, TaskDialogIcon.ShieldWarning2 : msgIcon = MessageBoxIcon.Warning
-      Case TaskDialogIcon.Information, TaskDialogIcon.Information2 : msgIcon = MessageBoxIcon.Information
+      Case _TaskDialogIcon.None : msgIcon = MessageBoxIcon.None
+      Case _TaskDialogIcon.Error, _TaskDialogIcon.Error2, _TaskDialogIcon.ShieldError, _TaskDialogIcon.ShieldError2 : msgIcon = MessageBoxIcon.Error
+      Case _TaskDialogIcon.Question, _TaskDialogIcon.ShieldQuestion : msgIcon = MessageBoxIcon.Question
+      Case _TaskDialogIcon.Warning, _TaskDialogIcon.Warning2, _TaskDialogIcon.ShieldWarning, _TaskDialogIcon.ShieldWarning2 : msgIcon = MessageBoxIcon.Warning
+      Case _TaskDialogIcon.Information, _TaskDialogIcon.Information2 : msgIcon = MessageBoxIcon.Information
       Case Else
         Select Case Buttons
           Case MessageBoxButtons.YesNo, MessageBoxButtons.YesNoCancel : msgIcon = MessageBoxIcon.Question
@@ -2071,9 +2306,9 @@ Public Module modFunctions
         End Select
     End Select
     If Not String.IsNullOrEmpty(HelpTopic) Then
-      Return MessageBox.Show(owner, Content, Caption, Buttons, msgIcon, DefaultButton, 0, "S7M.chm", HelpNavigator.Topic, HelpTopicPath(HelpTopic))
+      Return MessageBox.Show(owner, Content, Title, Buttons, msgIcon, DefaultButton, 0, "S7M.chm", HelpNavigator.Topic, HelpTopicPath(HelpTopic))
     Else
-      Return MessageBox.Show(owner, Content, Caption, Buttons, msgIcon, DefaultButton)
+      Return MessageBox.Show(owner, Content, Title, Buttons, msgIcon, DefaultButton)
     End If
   End Function
   Public Structure ActivityRet
@@ -2130,6 +2365,8 @@ Public Module modFunctions
       Case "Extraction Data Error" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.4_Extraction_Error.htm#data_error"
       Case "Extraction Unsupported Method" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.4_Extraction_Error.htm#unsupported_method"
       Case "Extraction File Not Found" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.4_Extraction_Error.htm#file_not_found"
+      Case "Extraction INSTALLWIM" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.4_Extraction_Error.htm#install_wim"
+      Case "Extraction INSTALLSWM" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.4_Extraction_Error.htm#install_wim_swm"
       Case "Extraction Error" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.4_Extraction_Error.htm#other_error"
       Case "Active Mount" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.5_Active_Mount.htm"
       Case "EFI File Not Found" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.6_EFI_Missing.htm#file_not_found"
@@ -2158,7 +2395,7 @@ Public Module modFunctions
       Case "Slow Copy File Transfer Failure" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.12_File_Transfer_Failure.htm"
       Case "Program Busy" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.13_Busy.htm"
       Case Else
-        Debug.Print("No Help Page for """ & helpTopic & """")
+        Debug.Print(String.Format("No Help Page for ""{0}""", helpTopic))
         Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.0_Dialogs.htm"
     End Select
   End Function

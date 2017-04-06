@@ -152,7 +152,7 @@ Low:
 CAUTION: Use extreme care when specifying High or Realtime.
 The threads of a process with RealTime priority preempt the threads of all other processes,
 including operating system processes performing important tasks,
-and can cause disk caches not to flush or cause the mouse to be unresponsive. </value>
+and can cause disk caches not to flush or cause the mouse to be unresponsive.</value>
   </data>
   <data name="cmbLimitType.ToolTip" xml:space="preserve">
     <value>If you need to split up the WIM or ISO Images into smaller files
@@ -192,7 +192,8 @@ which may be necessary for newer systems (particularly machines that came with W
 UEFI requires a 64-Bit Operating System, so please only use x64 Image Packages with UEFI.
 
 UEFI requires a custom Video Card driver which is only built for Windows 8 and above,
-so please enable your UEFI's compatibility module to allow Windows 7 access to the video card.</value>
+so please enable your UEFI's compatibility module or integrate VGA drivers into both your
+BOOT and INSTALL WIMs to allow Windows 7 access to the video card.</value>
   </data>
   <data name="cmbLimit.ToolTip" xml:space="preserve">
     <value>Enter a maximum size for the Image. All sizes will be converted to MegaBytes.
@@ -208,9 +209,6 @@ If UEFI Boot is enabled, the maximum limit of 4095 MB will be set on any WIM fil
   </data>
   <metadata name="tmrUpdateCheck.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>311, 17</value>
-  </metadata>
-  <metadata name="tmrAnimation.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>455, 17</value>
   </metadata>
   <metadata name="mnuOutput.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>582, 17</value>

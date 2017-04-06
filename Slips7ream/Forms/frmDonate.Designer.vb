@@ -3,16 +3,16 @@ Partial Class frmDonate
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
-    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
-        Try
-            If disposing AndAlso components IsNot Nothing Then
-                components.Dispose()
-            End If
-        Finally
-            MyBase.Dispose(disposing)
-        End Try
-    End Sub
+  <System.Diagnostics.DebuggerNonUserCode()> _
+  Protected Overrides Sub Dispose(disposing As Boolean)
+    Try
+      If disposing AndAlso components IsNot Nothing Then
+        components.Dispose()
+      End If
+    Finally
+      MyBase.Dispose(disposing)
+    End Try
+  End Sub
 
     'Required by the Windows Form Designer
     Private components As System.ComponentModel.IContainer
@@ -31,8 +31,8 @@ Partial Class frmDonate
     Me.cmdClose = New System.Windows.Forms.Button()
     Me.lblTitle = New System.Windows.Forms.Label()
     Me.lblPlea = New System.Windows.Forms.Label()
-    Me.ttButtons = New System.Windows.Forms.ToolTip(Me.components)
     Me.line = New Slips7ream.LineBreak()
+    Me.ttButtons = New System.Windows.Forms.ToolTip(Me.components)
     Me.pnlDonate.SuspendLayout()
     CType(Me.pctStar, System.ComponentModel.ISupportInitialize).BeginInit()
     Me.pnlButtons.SuspendLayout()
@@ -163,7 +163,7 @@ Partial Class frmDonate
     Me.ClientSize = New System.Drawing.Size(642, 258)
     Me.Controls.Add(Me.pnlDonate)
     Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
-    Me.Icon = Global.Slips7ream.My.Resources.Resources.icon
+    Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
     Me.MaximizeBox = False
     Me.Name = "frmDonate"
     Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen

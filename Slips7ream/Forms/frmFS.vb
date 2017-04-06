@@ -3,10 +3,18 @@
     InitializeComponent()
     Dim sFiles As String = Nothing
     For Each sFile In OverFiles
-      sFiles = String.Concat(sFiles, sFile.Replace(String.Concat(SourceDir, IO.Path.DirectorySeparatorChar), ""), vbNewLine)
-      sFiles = String.Concat(sFiles, sFile.Replace(SourceDir, ""), vbNewLine)
+      If String.IsNullOrEmpty(sFile) Then Continue For
+      If sFile.Contains(sFile.Replace(String.Concat(SourceDir, IO.Path.DirectorySeparatorChar), "")) Then
+        sFiles = String.Concat(sFiles, sFile.Replace(String.Concat(SourceDir, IO.Path.DirectorySeparatorChar), ""), vbNewLine)
+      Else
+        sFiles = String.Concat(sFiles, sFile.Replace(SourceDir, ""), vbNewLine)
+      End If
     Next
-    txtLargeFiles.Text = sFiles
+    If String.IsNullOrEmpty(sFiles) Then
+      txtLargeFiles.Text = String.Concat("Unable to load the file list!", vbNewLine, "You should never see this message, but if you are, a large file probably got deleted after it was detected.", vbNewLine, "You should probably stop the Slipstream process.")
+    Else
+      txtLargeFiles.Text = sFiles.Trim
+    End If
     Select Case SelectedFS
       Case 0
         cmdUseCurrent.Visible = True

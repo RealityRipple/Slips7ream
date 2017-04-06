@@ -7,15 +7,17 @@
   Public ClassName As String
   Public ClassDescription As String
   Public ClassGUID As String
-  Public ClassIcon As Icon
+  Public ClassIcon As Image
   Public ProviderName As String
-  Public ProviderIcon As Icon
+  Public ProviderIcon As Image
   Public [Date] As String
   Public Version As String
   Public BootCritical As String
-  Public DriverIcon As Icon
+  Public DriverIcon As Image
   Public Architectures As List(Of String)
   Public DriverHardware As Collections.Generic.Dictionary(Of String, List(Of Driver_Hardware))
+  Public IntegrateIntoPE As Boolean
+  Public IntegrateIntoBoot As Boolean
   Public Sub New(RowData As String)
     If Not RowData.Contains("|") Then Return
     Dim DriverData() As String = Split(RowData, "|")
@@ -136,6 +138,9 @@
     If Not info1.Version = info2.Version Then Return False
     If Not info1.Date = info2.Date Then Return False
     Dim archMatches As New List(Of String)
+    If info1.Architectures Is Nothing And info2.Architectures IsNot Nothing Then Return False
+    If info1.Architectures IsNot Nothing And info2.Architectures Is Nothing Then Return False
+    If info1.Architectures Is Nothing And info2.Architectures Is Nothing Then Return True
     For Each arch1 As String In info1.Architectures
       If CompareArchitectures(arch1, ArchitectureList.ia64, False) Then Continue For
       For Each arch2 As String In info2.Architectures

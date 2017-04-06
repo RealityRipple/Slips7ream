@@ -4,12 +4,12 @@
     InitializeComponent()
     myDriver = Driver
     Me.Text = String.Format("{0} Driver Properties", myDriver.OriginalFileName)
-    pctDriverIcon.Image = myDriver.DriverIcon.ToBitmap
+    pctDriverIcon.Image = myDriver.DriverIcon
     txtPublishedName.Text = myDriver.PublishedName
     txtOriginalFileName.Text = myDriver.OriginalFileName
     txtDriverStorePath.Text = myDriver.DriverStorePath
     txtInBox.Text = myDriver.InBox
-    pctClassIcon.Image = myDriver.ClassIcon.ToBitmap
+    pctClassIcon.Image = myDriver.ClassIcon
     txtClassName.Text = myDriver.ClassName
     txtClassDescription.Text = myDriver.ClassDescription
     txtClassGUID.Text = myDriver.ClassGUID
@@ -29,8 +29,29 @@
       Next
       cmbArchitecture.SelectedIndex = 0
     Else
+      If myDriver.DriverHardware Is Nothing Then
+        cmbArchitecture.Items.Clear()
+        cmbArchitecture.Enabled = False
+        cmbHardware.Items.Clear()
+        cmbHardware.Enabled = False
+        lstHWIDs.Items.Clear()
+        'lstHWIDs.Enabled = False
+        lstHWCompatibleIDs.Items.Clear()
+        'lstHWCompatibleIDs.Enabled = False
+        lstHWExcludeIDs.Items.Clear()
+        'lstHWExcludeIDs.Enabled = False
+        Return
+      End If
       cmbArchitecture.Items.Clear()
-      cmbArchitecture.Enabled = False
+      cmbArchitecture.Enabled = True
+      For Each arch As String In myDriver.DriverHardware.Keys
+        If CompareArchitectures(arch, ArchitectureList.ia64, False) Then
+          cmbArchitecture.Items.Add(String.Format("{0} (Not Used)", arch))
+        Else
+          cmbArchitecture.Items.Add(arch)
+        End If
+      Next
+      cmbArchitecture.SelectedIndex = 0
     End If
   End Sub
   Private Sub cmbArchitecture_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cmbArchitecture.SelectedIndexChanged

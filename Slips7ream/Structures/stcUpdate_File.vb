@@ -13,18 +13,20 @@
   Public Ident As Update_Identity
   Public DriverData As Driver
   Public ReleaseType As String
-  Private Shared c_ExtractRet As New List(Of String)
+  Public AllowedOffline As Boolean
+  Private Shared Extract_ReturnList As New List(Of String)
   Public Sub New(Location As String)
     Path = Location
     Failure = Nothing
+    AllowedOffline = True
     If IO.File.Exists(Location) Then
       Select Case GetUpdateType(Location)
         Case UpdateType.MSU
           Dim MSUPath As String = IO.Path.Combine(WorkDir, "UpdateMSU_Extract")
-          If IO.Directory.Exists(MSUPath) Then SlowDeleteDirectory(MSUPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+          If IO.Directory.Exists(MSUPath) Then SlowDeleteDirectory(MSUPath, FileIO.DeleteDirectoryOption.DeleteAllContents, False)
           IO.Directory.CreateDirectory(MSUPath)
           Try
-            Dim exRet As String = ExtractAFile(Location, MSUPath, "pkgProperties.txt")
+            Dim exRet As String = Extract_File(Location, MSUPath, "pkgProperties.txt")
             If Not exRet = "OK" Then
               If exRet = "File Not Found" Then
                 Failure = "Update Properties file not found."
@@ -62,7 +64,7 @@
               End If
             Next
             Dim XMLFile As String = IO.Path.GetFileName(sFile).Replace("-pkgProperties.txt", ".xml")
-            exRet = ExtractAFile(Location, MSUPath, XMLFile)
+            exRet = Extract_File(Location, MSUPath, XMLFile)
             If Not exRet = "OK" Then
               If exRet = "File Not Found" Then
                 Failure = "Update XML file not found."
@@ -99,7 +101,7 @@
               KBVersion = "0"
             End If
             Dim CABFile As String = IO.Path.GetFileName(sFile).Replace("-pkgProperties.txt", ".cab")
-            exRet = ExtractAFile(Location, MSUPath, CABFile)
+            exRet = Extract_File(Location, MSUPath, CABFile)
             If Not exRet = "OK" Then
               If exRet = "File Not Found" Then
                 Failure = "Update CAB file not found."
@@ -117,7 +119,7 @@
               Return
             End If
             Dim MUMFile As String = "update.mum"
-            exRet = ExtractAFile(IO.Path.Combine(MSUPath, CABFile), MSUPath, MUMFile)
+            exRet = Extract_File(IO.Path.Combine(MSUPath, CABFile), MSUPath, MUMFile)
             If Not exRet = "OK" Then
               If exRet = "File Not Found" Then
                 Failure = "Update MUM file not found."
@@ -136,19 +138,31 @@
             End If
             Dim xMUM As XElement = XElement.Load(IO.Path.Combine(MSUPath, MUMFile))
             Dim xMUMPackage As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}package")
-            ReleaseType = xMUMPackage.Attribute("releaseType").Value
-            Name = GetUpdateName(Ident, ReleaseType)
+            If xMUMPackage IsNot Nothing Then
+              Dim xReleaseType As XAttribute = xMUMPackage.Attribute("releaseType")
+              If xReleaseType IsNot Nothing Then
+                ReleaseType = xReleaseType.Value.Trim
+                Name = GetUpdateName(Ident, ReleaseType)
+              Else
+                Name = GetUpdateName(Ident, "Update")
+              End If
+              Dim xMUMPackageEx As XElement = xMUMPackage.Element("{urn:schemas-microsoft-com:asm.v3}packageExtended")
+              If xMUMPackageEx IsNot Nothing Then
+                Dim xMUMallowedOffline As XAttribute = xMUMPackageEx.Attribute("allowedOffline")
+                If xMUMallowedOffline IsNot Nothing AndAlso xMUMallowedOffline.Value.Trim.ToLower = "false" Then AllowedOffline = False
+              End If
+            End If
           Catch ex As Exception
             Failure = ex.Message
           Finally
-            If IO.Directory.Exists(MSUPath) Then SlowDeleteDirectory(MSUPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If IO.Directory.Exists(MSUPath) Then SlowDeleteDirectory(MSUPath, FileIO.DeleteDirectoryOption.DeleteAllContents, False)
           End Try
         Case UpdateType.CAB
           Dim CABPath As String = IO.Path.Combine(WorkDir, "UpdateCAB_Extract")
-          If IO.Directory.Exists(CABPath) Then SlowDeleteDirectory(CABPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+          If IO.Directory.Exists(CABPath) Then SlowDeleteDirectory(CABPath, FileIO.DeleteDirectoryOption.DeleteAllContents, False)
           IO.Directory.CreateDirectory(CABPath)
           Try
-            Dim exRet As String = ExtractAFile(Location, CABPath, "update.mum")
+            Dim exRet As String = Extract_File(Location, CABPath, "update.mum")
             If Not exRet = "OK" Then
               If exRet = "File Not Found" Then
                 Failure = "Update Description file not found."
@@ -194,14 +208,14 @@
           Catch ex As Exception
             Failure = ex.Message
           Finally
-            If IO.Directory.Exists(CABPath) Then SlowDeleteDirectory(CABPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If IO.Directory.Exists(CABPath) Then SlowDeleteDirectory(CABPath, FileIO.DeleteDirectoryOption.DeleteAllContents, False)
           End Try
         Case UpdateType.LP
           Dim LPPath As String = IO.Path.Combine(WorkDir, "UpdateLP_Extract")
-          If IO.Directory.Exists(LPPath) Then SlowDeleteDirectory(LPPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+          If IO.Directory.Exists(LPPath) Then SlowDeleteDirectory(LPPath, FileIO.DeleteDirectoryOption.DeleteAllContents, False)
           IO.Directory.CreateDirectory(LPPath)
           Try
-            Dim exRet As String = ExtractAFile(Location, LPPath, "update.mum")
+            Dim exRet As String = Extract_File(Location, LPPath, "update.mum")
             If Not exRet = "OK" Then
               If exRet = "File Not Found" Then
                 Failure = "LP Description file not found."
@@ -253,14 +267,14 @@
           Catch ex As Exception
             Failure = ex.Message
           Finally
-            If IO.Directory.Exists(LPPath) Then SlowDeleteDirectory(LPPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If IO.Directory.Exists(LPPath) Then SlowDeleteDirectory(LPPath, FileIO.DeleteDirectoryOption.DeleteAllContents, False)
           End Try
         Case UpdateType.LIP
           Dim MLCPath As String = IO.Path.Combine(WorkDir, "UpdateMLC_Extract")
-          If IO.Directory.Exists(MLCPath) Then SlowDeleteDirectory(MLCPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+          If IO.Directory.Exists(MLCPath) Then SlowDeleteDirectory(MLCPath, FileIO.DeleteDirectoryOption.DeleteAllContents, False)
           IO.Directory.CreateDirectory(MLCPath)
           Try
-            Dim exRet As String = ExtractAFile(Location, MLCPath, "update.mum")
+            Dim exRet As String = Extract_File(Location, MLCPath, "update.mum")
             If Not exRet = "OK" Then
               If exRet = "File Not Found" Then
                 Failure = "LIP Description file not found."
@@ -305,14 +319,14 @@
           Catch ex As Exception
             Failure = ex.Message
           Finally
-            If IO.Directory.Exists(MLCPath) Then SlowDeleteDirectory(MLCPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If IO.Directory.Exists(MLCPath) Then SlowDeleteDirectory(MLCPath, FileIO.DeleteDirectoryOption.DeleteAllContents, False)
           End Try
         Case UpdateType.MSI
           Dim MSIPath As String = IO.Path.Combine(WorkDir, "UpdateMSI_Extract")
-          If IO.Directory.Exists(MSIPath) Then SlowDeleteDirectory(MSIPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+          If IO.Directory.Exists(MSIPath) Then SlowDeleteDirectory(MSIPath, FileIO.DeleteDirectoryOption.DeleteAllContents, False)
           IO.Directory.CreateDirectory(MSIPath)
           Try
-            Dim exRet As String = ExtractAFile(Location, MSIPath, "LIP.cab")
+            Dim exRet As String = Extract_File(Location, MSIPath, "LIP.cab")
             If Not exRet = "OK" Then
               If exRet = "File Not Found" Then
                 Failure = "LIP MSI CAB file not found."
@@ -329,7 +343,7 @@
               Failure = "LIP MSI CAB file could not be extracted."
               Return
             End If
-            exRet = ExtractAFile(IO.Path.Combine(MSIPath, "LIP.cab"), MSIPath, "LIP.mlc")
+            exRet = Extract_File(IO.Path.Combine(MSIPath, "LIP.cab"), MSIPath, "LIP.mlc")
             If Not exRet = "OK" Then
               If exRet = "File Not Found" Then
                 Failure = "LIP MLC file not found."
@@ -346,7 +360,7 @@
               Failure = "LIP MLC file could not be extracted."
               Return
             End If
-            exRet = ExtractAFile(IO.Path.Combine(MSIPath, "LIP.mlc"), MSIPath, "update.mum")
+            exRet = Extract_File(IO.Path.Combine(MSIPath, "LIP.mlc"), MSIPath, "update.mum")
             If Not exRet = "OK" Then
               If exRet = "File Not Found" Then
                 Failure = "LIP Description file not found."
@@ -391,19 +405,19 @@
           Catch ex As Exception
             Failure = ex.Message
           Finally
-            If IO.Directory.Exists(MSIPath) Then SlowDeleteDirectory(MSIPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            If IO.Directory.Exists(MSIPath) Then SlowDeleteDirectory(MSIPath, FileIO.DeleteDirectoryOption.DeleteAllContents, False)
           End Try
         Case UpdateType.EXE
           Dim EXEPath As String = IO.Path.Combine(WorkDir, "UpdateEXE_Extract")
-          If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+          If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents, False)
           IO.Directory.CreateDirectory(EXEPath)
           Dim fInfo As FileVersionInfo = FileVersionInfo.GetVersionInfo(Location)
           If fInfo.OriginalFilename = "mergedwusetup.exe" Then
-            Dim exRet As String = ExtractAFile(Location, EXEPath, "WUA-Win7SP1.exe")
+            Dim exRet As String = Extract_File(Location, EXEPath, "WUA-Win7SP1.exe")
             If exRet = "OK" Then
-              exRet = ExtractAFile(IO.Path.Combine(EXEPath, "WUA-Win7SP1.exe"), EXEPath, "WUClient-SelfUpdate-Core-TopLevel.cab")
+              exRet = Extract_File(IO.Path.Combine(EXEPath, "WUA-Win7SP1.exe"), EXEPath, "WUClient-SelfUpdate-Core-TopLevel.cab")
               If exRet = "OK" Then
-                exRet = ExtractAFile(IO.Path.Combine(EXEPath, "WUClient-SelfUpdate-Core-TopLevel.cab"), EXEPath, "update.mum")
+                exRet = Extract_File(IO.Path.Combine(EXEPath, "WUClient-SelfUpdate-Core-TopLevel.cab"), EXEPath, "update.mum")
                 If exRet = "OK" Then
                   If IO.File.Exists(IO.Path.Combine(EXEPath, "update.mum")) Then
                     Dim xMUM As XElement = XElement.Load(IO.Path.Combine(EXEPath, "update.mum"))
@@ -438,7 +452,7 @@
               Failure = exRet
             End If
           Else
-            Dim exRet As String = ExtractAFile(Location, EXEPath, "update.mum")
+            Dim exRet As String = Extract_File(Location, EXEPath, "update.mum")
             If exRet = "OK" Then
               If IO.File.Exists(IO.Path.Combine(EXEPath, "update.mum")) Then
                 Dim xMUM As XElement = XElement.Load(IO.Path.Combine(EXEPath, "update.mum"))
@@ -479,9 +493,9 @@
               Failure = String.Format("Error extracting Description file: {0}", exRet)
             End If
           End If
-          If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents)
+          If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents, False)
         Case UpdateType.INF
-          DriverData = frmMain.GetDISMDriverItemData(Path)
+          DriverData = frmMain.DISM_DriverINF_GetData(Path)
           Name = "DRIVER"
           DisplayName = Nothing
           AppliesTo = Nothing
@@ -502,42 +516,46 @@
           KBVersion = Nothing
           BuildDate = Nothing
           ReleaseType = Nothing
-          Dim sExt As String = IO.Path.GetExtension(Path).Substring(1).ToUpper
-          Select Case sExt
-            Case "CAT" : Failure = "Security Catalogs are included when needed automatically and do not need to be added."
-            Case Else : Failure = String.Format("Unknown file type: {0}", sExt)
-          End Select
+          If String.IsNullOrEmpty(IO.Path.GetExtension(IO.Path.GetExtension(Path))) Then
+            Failure = "No File Type"
+          Else
+            Dim sExt As String = IO.Path.GetExtension(Path).Substring(1).ToUpper
+            Select Case sExt
+              Case "CAT" : Failure = "Security Catalogs are included when needed automatically and do not need to be added."
+              Case Else : Failure = String.Format("Unknown file type: {0}", sExt)
+            End Select
+          End If
       End Select
     End If
   End Sub
-  Private Function ExtractAFile(Source As String, Destination As String, File As String) As String
-    Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf AsyncExtractAFile))
-    Dim cIndex As Integer = c_ExtractRet.Count
-    c_ExtractRet.Add(Nothing)
+  Private Function Extract_File(Source As String, Destination As String, File As String) As String
+    Dim tRunWithReturn As New Threading.Thread(New Threading.ParameterizedThreadStart(AddressOf Extract_File_Task))
+    Dim cIndex As Integer = Extract_ReturnList.Count
+    Extract_ReturnList.Add(Nothing)
     tRunWithReturn.Start(CType({Source, Destination, File, cIndex}, Object()))
-    Do While String.IsNullOrEmpty(c_ExtractRet(cIndex))
+    Do While String.IsNullOrEmpty(Extract_ReturnList(cIndex))
       Application.DoEvents()
       Threading.Thread.Sleep(1)
     Loop
-    Dim sRet As String = c_ExtractRet(cIndex)
-    c_ExtractRet(cIndex) = Nothing
+    Dim sRet As String = Extract_ReturnList(cIndex)
+    Extract_ReturnList(cIndex) = Nothing
     Return sRet
   End Function
-  Private Sub AsyncExtractAFile(Obj As Object)
+  Private Sub Extract_File_Task(Obj As Object)
     Dim Source, Destination, Find As String
     Source = CStr(CType(Obj, Object())(0))
     Destination = CStr(CType(Obj, Object())(1))
     Find = CStr(CType(Obj, Object())(2))
     Dim cIndex As Integer = CInt(CType(Obj, Object())(3))
     Dim bFound As Boolean = False
-    Using Extractor As New Extraction.ArchiveFile(New IO.FileInfo(Source), GetUpdateCompression(Source))
+    Using Extract_Archive As New Extraction.ArchiveFile(New IO.FileInfo(Source), GetUpdateCompression(Source))
       Try
-        Extractor.Open()
+        Extract_Archive.Open()
       Catch ex As Exception
-        c_ExtractRet(cIndex) = String.Format("Error Opening: {0}", ex.Message)
+        Extract_ReturnList(cIndex) = String.Format("Error Opening: {0}", ex.Message)
         Return
       End Try
-      Dim eFiles() As Extraction.COM.IArchiveEntry = Extractor.ToArray
+      Dim eFiles() As Extraction.COM.IArchiveEntry = Extract_Archive.ToArray
       For Each file As Extraction.COM.IArchiveEntry In eFiles
         If file.Name.ToLower.EndsWith(Find.ToLower) Then
           file.Destination = New IO.FileInfo(IO.Path.Combine(Destination, file.Name))
@@ -547,14 +565,14 @@
       Next
       If bFound Then
         Try
-          Extractor.Extract()
+          Extract_Archive.Extract()
         Catch ex As Exception
-          c_ExtractRet(cIndex) = String.Format("Error Extracting: {0}", ex.Message)
+          Extract_ReturnList(cIndex) = String.Format("Error Extracting: {0}", ex.Message)
           Return
         End Try
-        c_ExtractRet(cIndex) = "OK"
+        Extract_ReturnList(cIndex) = "OK"
       Else
-        c_ExtractRet(cIndex) = "File Not Found"
+        Extract_ReturnList(cIndex) = "File Not Found"
       End If
     End Using
   End Sub

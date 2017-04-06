@@ -44,4 +44,15 @@
       Return Nothing
     End If
   End Function
+  Public ReadOnly Property IsEmpty As Boolean
+    Get
+      If Not String.IsNullOrEmpty(FeatureName) Then Return False
+      If Not String.IsNullOrEmpty(State) Then Return False
+      If Not String.IsNullOrEmpty(DisplayName) Then Return False
+      If Not String.IsNullOrEmpty(Desc) Then Return False
+      If Not String.IsNullOrEmpty(RestartRequired) Then Return False
+      If CustomProperties IsNot Nothing AndAlso CustomProperties.Count > 0 Then Return False
+      Return True
+    End Get
+  End Property
 End Structure

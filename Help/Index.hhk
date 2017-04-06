@@ -64,14 +64,14 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="alert">
 		<param name="Name" value="Configuration - Alert on Complete">
-		<param name="Local" value="2_Configuration\2.4_Alert_on_Complete.htm">
+		<param name="Local" value="2_Configuration\2.5_Alert_on_Complete.htm">
 		<param name="Name" value="SLIPS7REAM Interface - On Completion">
 		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Alert on Complete">
 		<param name="Name" value="Configuration - Alert on Complete">
-		<param name="Local" value="2_Configuration\2.4_Alert_on_Complete.htm">
+		<param name="Local" value="2_Configuration\2.5_Alert_on_Complete.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="already">
@@ -116,7 +116,7 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="beep">
 		<param name="Name" value="Configuration - Alert on Complete">
-		<param name="Local" value="2_Configuration\2.4_Alert_on_Complete.htm">
+		<param name="Local" value="2_Configuration\2.5_Alert_on_Complete.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="below normal">
@@ -287,16 +287,43 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="config">
+		<param name="Name" value="Included External Tools - IntlCFG">
+		<param name="Local" value="4_Included_External_Tools\4.4_IntlCFG.htm">
 		<param name="Name" value="Configuration">
 		<param name="Local" value="2_Configuration\2.0_Configuration.htm">
-		<param name="Name" value="Configuration - Alert on Complete">
-		<param name="Local" value="2_Configuration\2.4_Alert_on_Complete.htm">
-		<param name="Name" value="Configuration - Command Timeout">
-		<param name="Local" value="2_Configuration\2.3_Command_Timeout.htm">
 		<param name="Name" value="Configuration - Temp Directory Path">
 		<param name="Local" value="2_Configuration\2.1_Temp_Directory_Path.htm">
 		<param name="Name" value="Configuration - x86 Update Whitelist">
 		<param name="Local" value="2_Configuration\2.2_Update_Whitelist.htm">
+		<param name="Name" value="Configuration - Command Timeout">
+		<param name="Local" value="2_Configuration\2.3_Command_Timeout.htm">
+		<param name="Name" value="Configuration - Hide Driver Console Output">
+		<param name="Local" value="2_Configuration\2.4_Hide_Driver_Console_Output.htm">
+		<param name="Name" value="Configuration - Alert on Complete">
+		<param name="Local" value="2_Configuration\2.5_Alert_on_Complete.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="console">
+		<param name="Name" value="Configuration - Hide Driver Console Output">
+		<param name="Local" value="2_Configuration\2.4_Hide_Driver_Console_Output.htm">
+		<param name="Name" value="SLIPS7REAM Interface - Output Console">
+		<param name="Local" value="1_SLIPS7REAM_Interface\1.11_Output_Console.htm">
+		<param name="Name" value="Dialogs - Extraction Error">
+		<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.4_Extraction_Error.htm">
+		<param name="Name" value="Dialogs - Error loading packages">
+		<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.11_Package_Failure.htm">
+		<param name="Name" value="Included External Tools - 7z.dll">
+		<param name="Local" value="4_Included_External_Tools\4.5_7z.dll.htm">
+		<param name="Name" value="Included External Tools - DISM">
+		<param name="Local" value="4_Included_External_Tools\4.1_DISM.htm">
+		<param name="Name" value="Included External Tools - ImageX">
+		<param name="Local" value="4_Included_External_Tools\4.2_ImageX.htm">
+		<param name="Name" value="Included External Tools - IntlCFG">
+		<param name="Local" value="4_Included_External_Tools\4.4_IntlCFG.htm">
+		<param name="Name" value="Included External Tools - OSCDIMG">
+		<param name="Local" value="4_Included_External_Tools\4.3_OSCDIMG.htm">
+		<param name="Name" value="Glossary of Terms - DISM">
+		<param name="Local" value="5_Glossary_of_Terms\5.4_DISM.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="configuration">
@@ -304,14 +331,16 @@
 		<param name="Local" value="4_Included_External_Tools\4.4_IntlCFG.htm">
 		<param name="Name" value="Configuration">
 		<param name="Local" value="2_Configuration\2.0_Configuration.htm">
-		<param name="Name" value="Configuration - Alert on Complete">
-		<param name="Local" value="2_Configuration\2.4_Alert_on_Complete.htm">
-		<param name="Name" value="Configuration - Command Timeout">
-		<param name="Local" value="2_Configuration\2.3_Command_Timeout.htm">
 		<param name="Name" value="Configuration - Temp Directory Path">
 		<param name="Local" value="2_Configuration\2.1_Temp_Directory_Path.htm">
 		<param name="Name" value="Configuration - x86 Update Whitelist">
 		<param name="Local" value="2_Configuration\2.2_Update_Whitelist.htm">
+		<param name="Name" value="Configuration - Command Timeout">
+		<param name="Local" value="2_Configuration\2.3_Command_Timeout.htm">
+		<param name="Name" value="Configuration - Hide Driver Console Output">
+		<param name="Local" value="2_Configuration\2.4_Hide_Driver_Console_Output.htm">
+		<param name="Name" value="Configuration - Alert on Complete">
+		<param name="Local" value="2_Configuration\2.5_Alert_on_Complete.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="core">
@@ -605,7 +634,7 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="finished">
 		<param name="Name" value="Configuration - Alert on Complete">
-		<param name="Local" value="2_Configuration\2.4_Alert_on_Complete.htm">
+		<param name="Local" value="2_Configuration\2.5_Alert_on_Complete.htm">
 		<param name="Name" value="SLIPS7REAM Interface - On Completion">
 		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
 		</OBJECT>
@@ -645,7 +674,7 @@
 		<param name="Name" value="Configuration - Command Timeout">
 		<param name="Local" value="2_Configuration\2.3_Command_Timeout.htm">
 		<param name="Name" value="Configuration - Alert on Complete">
-		<param name="Local" value="2_Configuration\2.4_Alert_on_Complete.htm">
+		<param name="Local" value="2_Configuration\2.5_Alert_on_Complete.htm">
 		<param name="Name" value="SLIPS7REAM Interface">
 		<param name="Local" value="1_SLIPS7REAM_Interface\1.0_SLIPS7REAM_Interface.htm">
 		<param name="Name" value="SLIPS7REAM Interface - Image Packages">
@@ -996,8 +1025,10 @@
 		<param name="Local" value="2_Configuration\2.2_Update_Whitelist.htm">
 		<param name="Name" value="Configuration - Command Timeout">
 		<param name="Local" value="2_Configuration\2.3_Command_Timeout.htm">
+		<param name="Name" value="Configuration - Hide Driver Console Output">
+		<param name="Local" value="2_Configuration\2.4_Hide_Driver_Console_Output.htm">
 		<param name="Name" value="Configuration - Alert on Complete">
-		<param name="Local" value="2_Configuration\2.4_Alert_on_Complete.htm">
+		<param name="Local" value="2_Configuration\2.5_Alert_on_Complete.htm">
 		<param name="Name" value="SLIPS7REAM Interface">
 		<param name="Local" value="1_SLIPS7REAM_Interface\1.0_SLIPS7REAM_Interface.htm">
 		<param name="Name" value="SLIPS7REAM Interface - Image Packages">
@@ -1044,6 +1075,8 @@
 		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
 		<param name="Name" value="SLIPS7REAM Interface - Update Properties">
 		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
+		<param name="Name" value="SLIPS7REAM Interface - Output Console">
+		<param name="Local" value="1_SLIPS7REAM_Interface\1.11_Output_Console.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="international">
@@ -1353,7 +1386,7 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="noise">
 		<param name="Name" value="Configuration - Alert on Complete">
-		<param name="Local" value="2_Configuration\2.4_Alert_on_Complete.htm">
+		<param name="Local" value="2_Configuration\2.5_Alert_on_Complete.htm">
 		<param name="Name" value="SLIPS7REAM Interface - On Completion">
 		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
 		</OBJECT>
@@ -1421,7 +1454,7 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="options">
 		<param name="Name" value="Configuration - Alert on Complete">
-		<param name="Local" value="2_Configuration\2.4_Alert_on_Complete.htm">
+		<param name="Local" value="2_Configuration\2.5_Alert_on_Complete.htm">
 		<param name="Name" value="Configuration">
 		<param name="Local" value="2_Configuration\2.0_Configuration.htm">
 		<param name="Name" value="Configuration - Command Timeout">
@@ -1430,6 +1463,8 @@
 		<param name="Local" value="2_Configuration\2.1_Temp_Directory_Path.htm">
 		<param name="Name" value="Configuration - x86 Update Whitelist">
 		<param name="Local" value="2_Configuration\2.2_Update_Whitelist.htm">
+		<param name="Name" value="Configuration - Hide Driver Console Output">
+		<param name="Local" value="2_Configuration\2.4_Hide_Driver_Console_Output.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="orange">
@@ -1494,7 +1529,7 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="play">
 		<param name="Name" value="Configuration - Alert on Complete">
-		<param name="Local" value="2_Configuration\2.4_Alert_on_Complete.htm">
+		<param name="Local" value="2_Configuration\2.5_Alert_on_Complete.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="premastering">
@@ -1651,13 +1686,15 @@
 		<param name="Name" value="Configuration">
 		<param name="Local" value="2_Configuration\2.0_Configuration.htm">
 		<param name="Name" value="Configuration - Alert on Complete">
-		<param name="Local" value="2_Configuration\2.4_Alert_on_Complete.htm">
+		<param name="Local" value="2_Configuration\2.5_Alert_on_Complete.htm">
 		<param name="Name" value="Configuration - Temp Directory Path">
 		<param name="Local" value="2_Configuration\2.1_Temp_Directory_Path.htm">
 		<param name="Name" value="Configuration - x86 Update Whitelist">
 		<param name="Local" value="2_Configuration\2.2_Update_Whitelist.htm">
 		<param name="Name" value="Configuration - Command Timeout">
 		<param name="Local" value="2_Configuration\2.3_Command_Timeout.htm">
+		<param name="Name" value="Configuration - Hide Driver Console Output">
+		<param name="Local" value="2_Configuration\2.4_Hide_Driver_Console_Output.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="settings">
@@ -1819,12 +1856,12 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="tada">
 		<param name="Name" value="Configuration - Alert on Complete">
-		<param name="Local" value="2_Configuration\2.4_Alert_on_Complete.htm">
+		<param name="Local" value="2_Configuration\2.5_Alert_on_Complete.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="task">
 		<param name="Name" value="Configuration - Alert on Complete">
-		<param name="Local" value="2_Configuration\2.4_Alert_on_Complete.htm">
+		<param name="Local" value="2_Configuration\2.5_Alert_on_Complete.htm">
 		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
 		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
 		<param name="Name" value="SLIPS7REAM Interface - On Completion">

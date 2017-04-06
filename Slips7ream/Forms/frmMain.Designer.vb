@@ -4,7 +4,7 @@ Partial Class frmMain
 
   'Form overrides dispose to clean up the component list.
   <System.Diagnostics.DebuggerNonUserCode()> _
-  Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+  Protected Overrides Sub Dispose(disposing As Boolean)
     Try
       If disposing AndAlso components IsNot Nothing Then
         components.Dispose()
@@ -25,6 +25,38 @@ Partial Class frmMain
     Me.components = New System.ComponentModel.Container()
     Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmMain))
     Me.pnlSlips7ream = New System.Windows.Forms.TableLayoutPanel()
+    Me.spltSlips7ream = New Slips7ream.SplitContainerEx()
+    Me.pnlPackages = New System.Windows.Forms.TableLayoutPanel()
+    Me.lblImages = New System.Windows.Forms.Label()
+    Me.lvImages = New Slips7ream.ListViewEx()
+    Me.colIndex = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+    Me.colName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+    Me.colArch = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+    Me.colSize = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+    Me.pnlServicePacks = New System.Windows.Forms.TableLayoutPanel()
+    Me.pnlSP64 = New System.Windows.Forms.TableLayoutPanel()
+    Me.txtSP64 = New System.Windows.Forms.TextBox()
+    Me.cmdSP64 = New System.Windows.Forms.Button()
+    Me.chkSP = New System.Windows.Forms.CheckBox()
+    Me.pnlSP = New System.Windows.Forms.TableLayoutPanel()
+    Me.txtSP = New System.Windows.Forms.TextBox()
+    Me.cmdSP = New System.Windows.Forms.Button()
+    Me.lblSP64 = New System.Windows.Forms.Label()
+    Me.brPackages = New Slips7ream.LineBreak()
+    Me.pnlLoadPackageData = New System.Windows.Forms.TableLayoutPanel()
+    Me.chkLoadDrivers = New System.Windows.Forms.CheckBox()
+    Me.chkLoadUpdates = New System.Windows.Forms.CheckBox()
+    Me.cmdLoadPackages = New System.Windows.Forms.Button()
+    Me.chkLoadFeatures = New System.Windows.Forms.CheckBox()
+    Me.pnlUpdates = New System.Windows.Forms.TableLayoutPanel()
+    Me.pnlMSU = New System.Windows.Forms.TableLayoutPanel()
+    Me.cmdAddMSU = New System.Windows.Forms.Button()
+    Me.cmdClearMSU = New System.Windows.Forms.Button()
+    Me.cmdRemMSU = New System.Windows.Forms.Button()
+    Me.lblMSU = New System.Windows.Forms.Label()
+    Me.lvMSU = New Slips7ream.ListViewEx()
+    Me.colUpdate = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+    Me.colType = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
     Me.imlUpdates = New System.Windows.Forms.ImageList(Me.components)
     Me.lblWIM = New System.Windows.Forms.Label()
     Me.pnlWIM = New System.Windows.Forms.TableLayoutPanel()
@@ -35,6 +67,7 @@ Partial Class frmMain
     Me.cmdClose = New System.Windows.Forms.Button()
     Me.lblActivity = New System.Windows.Forms.Label()
     Me.cmdConfig = New System.Windows.Forms.Button()
+    Me.expOutput = New Slips7ream.Expander()
     Me.cmdOpenFolder = New System.Windows.Forms.Button()
     Me.chkISO = New System.Windows.Forms.CheckBox()
     Me.pnlISO = New System.Windows.Forms.TableLayoutPanel()
@@ -64,11 +97,12 @@ Partial Class frmMain
     Me.cmdMerge = New System.Windows.Forms.Button()
     Me.pctTitle = New System.Windows.Forms.PictureBox()
     Me.lblISOFeatures = New System.Windows.Forms.Label()
+    Me.brUpdates = New Slips7ream.LineBreak()
+    Me.brISO = New Slips7ream.LineBreak()
     Me.pnlISOLabel = New System.Windows.Forms.TableLayoutPanel()
     Me.txtISOLabel = New System.Windows.Forms.TextBox()
     Me.chkAutoLabel = New System.Windows.Forms.CheckBox()
     Me.tmrUpdateCheck = New System.Windows.Forms.Timer(Me.components)
-    Me.tmrAnimation = New System.Windows.Forms.Timer(Me.components)
     Me.mnuOutput = New System.Windows.Forms.ContextMenu()
     Me.mnuCopy = New System.Windows.Forms.MenuItem()
     Me.mnuCopyCommands = New System.Windows.Forms.MenuItem()
@@ -89,10 +123,13 @@ Partial Class frmMain
     Me.mnuUpdateSpacer = New System.Windows.Forms.MenuItem()
     Me.mnuUpdateRemove = New System.Windows.Forms.MenuItem()
     Me.mnuUpdateSpacer2 = New System.Windows.Forms.MenuItem()
+    Me.mnuUpdatePEDriver = New System.Windows.Forms.MenuItem()
+    Me.mnuUpdateBootDriver = New System.Windows.Forms.MenuItem()
     Me.mnuUpdateLocation = New System.Windows.Forms.MenuItem()
     Me.mnuUpdateProperties = New System.Windows.Forms.MenuItem()
     Me.mnuISOLabel = New System.Windows.Forms.ContextMenu()
     Me.mnuLabel7x86 = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGRMC = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCST = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCSTFRE = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCSTFRER = New System.Windows.Forms.MenuItem()
@@ -126,7 +163,7 @@ Partial Class frmMain
     Me.mnuLabelGRMCEN = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCENVOL = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCENCHE = New System.Windows.Forms.MenuItem()
-    Me.mnuLabel7x86Space = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGRMCSpace = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCMU = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCMUFRE = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCMUFRER = New System.Windows.Forms.MenuItem()
@@ -139,7 +176,55 @@ Partial Class frmMain
     Me.mnuLabelGRMCALFREO = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCALVOL = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCALCHE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMC = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCST = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCSTFRE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCSTFRER = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCSTFREO = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCSTVOL = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCSTCHE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCHB = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCHBFRE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCHBFRER = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCHBFREO = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCHBVOL = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCHBCHE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCHP = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCHPFRE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCHPFRER = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCHPFREO = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCHPVOL = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCHPCHE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCPR = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCPRFRE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCPRFRER = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCPRFREO = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCPRVOL = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCPRCHE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCUL = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCULFRE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCULFRER = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCULFREO = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCULVOL = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCULCHE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCEN = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCENVOL = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCENCHE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCSpace = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCMU = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCMUFRE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCMUFRER = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCMUFREO = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCMUVOL = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCMUCHE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCAL = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCALFRE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCALFRER = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCALFREO = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCALVOL = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCALCHE = New System.Windows.Forms.MenuItem()
     Me.mnuLabel7x64 = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGRMCX = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCHBX = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCHBXFRE = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCHBXFRER = New System.Windows.Forms.MenuItem()
@@ -167,7 +252,7 @@ Partial Class frmMain
     Me.mnuLabelGRMCENX = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCENXVOL = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCENXCHE = New System.Windows.Forms.MenuItem()
-    Me.mnuLabel7x64Space = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGRMCXSpace = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCMUX = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCMUXFRE = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCMUXFRER = New System.Windows.Forms.MenuItem()
@@ -180,70 +265,80 @@ Partial Class frmMain
     Me.mnuLabelGRMCALXFREO = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCALXVOL = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCALXCHE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCX = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCHBX = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCHBXFRE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCHBXFRER = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCHBXFREO = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCHBXVOL = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCHBXCHE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCHPX = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCHPXFRE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCHPXFRER = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCHPXFREO = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCHPXVOL = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCHPXCHE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCPRX = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCPRXFRE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCPRXFRER = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCPRXFREO = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCPRXVOL = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCPRXCHE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCULX = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCULXFRE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCULXFRER = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCULXFREO = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCULXVOL = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCULXCHE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCENX = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCENXVOL = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCENXCHE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCXSpace = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCMUX = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCMUXFRE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCMUXFRER = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCMUXFREO = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCMUXVOL = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCMUXCHE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCALX = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCALXFRE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCALXFRER = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCALXFREO = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCALXVOL = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCALXCHE = New System.Windows.Forms.MenuItem()
     Me.mnuLabel7AIO = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGRMCU = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCMUU = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCMUUFRE = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCMUUFRER = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCMUUFREO = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCMUUVOL = New System.Windows.Forms.MenuItem()
     Me.mnuLabelGRMCMUUCHE = New System.Windows.Forms.MenuItem()
-    Me.mnuLabelGRMCSTA = New System.Windows.Forms.MenuItem()
-    Me.mnuLabelGRMCSTAFRE = New System.Windows.Forms.MenuItem()
-    Me.mnuLabelGRMCSTAFRER = New System.Windows.Forms.MenuItem()
-    Me.mnuLabelGRMCSTAFREO = New System.Windows.Forms.MenuItem()
-    Me.mnuLabelGRMCSTAVOL = New System.Windows.Forms.MenuItem()
-    Me.mnuLabelGRMCSTACHE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGRMCALU = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGRMCALUFRE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGRMCALUFRER = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGRMCALUFREO = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGRMCALUVOL = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGRMCALUCHE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCU = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCMUU = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCMUUFRE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCMUUFRER = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCMUUFREO = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCMUUVOL = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCMUUCHE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCALU = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCALUFRE = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCALUFRER = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCALUFREO = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCALUVOL = New System.Windows.Forms.MenuItem()
+    Me.mnuLabelGSP1RMCALUCHE = New System.Windows.Forms.MenuItem()
     Me.mnuLabelSpace = New System.Windows.Forms.MenuItem()
     Me.mnuLabelAuto = New System.Windows.Forms.MenuItem()
     Me.helpS7M = New System.Windows.Forms.HelpProvider()
-    Me.spltSlips7ream = New Slips7ream.SplitContainerEx()
-    Me.pnlPackages = New System.Windows.Forms.TableLayoutPanel()
-    Me.lblImages = New System.Windows.Forms.Label()
-    Me.lvImages = New Slips7ream.ListViewEx()
-    Me.colIndex = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-    Me.colName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-    Me.colArch = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-    Me.colSize = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-    Me.pnlServicePacks = New System.Windows.Forms.TableLayoutPanel()
-    Me.pnlSP64 = New System.Windows.Forms.TableLayoutPanel()
-    Me.txtSP64 = New System.Windows.Forms.TextBox()
-    Me.cmdSP64 = New System.Windows.Forms.Button()
-    Me.chkSP = New System.Windows.Forms.CheckBox()
-    Me.pnlSP = New System.Windows.Forms.TableLayoutPanel()
-    Me.txtSP = New System.Windows.Forms.TextBox()
-    Me.cmdSP = New System.Windows.Forms.Button()
-    Me.lblSP64 = New System.Windows.Forms.Label()
-    Me.brPackages = New Slips7ream.LineBreak()
-    Me.pnlLoadPackageData = New System.Windows.Forms.TableLayoutPanel()
-    Me.chkLoadDrivers = New System.Windows.Forms.CheckBox()
-    Me.chkLoadUpdates = New System.Windows.Forms.CheckBox()
-    Me.cmdLoadPackages = New System.Windows.Forms.Button()
-    Me.chkLoadFeatures = New System.Windows.Forms.CheckBox()
-    Me.pnlUpdates = New System.Windows.Forms.TableLayoutPanel()
-    Me.pnlMSU = New System.Windows.Forms.TableLayoutPanel()
-    Me.cmdAddMSU = New System.Windows.Forms.Button()
-    Me.cmdClearMSU = New System.Windows.Forms.Button()
-    Me.cmdRemMSU = New System.Windows.Forms.Button()
-    Me.lblMSU = New System.Windows.Forms.Label()
-    Me.lvMSU = New Slips7ream.ListViewEx()
-    Me.colUpdate = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-    Me.colType = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-    Me.expOutput = New Slips7ream.Expander()
-    Me.brUpdates = New Slips7ream.LineBreak()
-    Me.brISO = New Slips7ream.LineBreak()
     Me.ttInfo = New Slips7ream.ToolTip(Me.components)
     Me.ttActivity = New Slips7ream.ToolTip(Me.components)
     Me.pnlSlips7ream.SuspendLayout()
-    Me.pnlWIM.SuspendLayout()
-    Me.pnlBottom.SuspendLayout()
-    Me.pnlISO.SuspendLayout()
-    Me.pnlProgress.SuspendLayout()
-    CType(Me.pctOutputTear, System.ComponentModel.ISupportInitialize).BeginInit()
-    Me.pnlControl.SuspendLayout()
-    Me.pnlISOOptions.SuspendLayout()
-    Me.pnlMerge.SuspendLayout()
-    CType(Me.pctTitle, System.ComponentModel.ISupportInitialize).BeginInit()
-    Me.pnlISOLabel.SuspendLayout()
     CType(Me.spltSlips7ream, System.ComponentModel.ISupportInitialize).BeginInit()
     Me.spltSlips7ream.Panel1.SuspendLayout()
     Me.spltSlips7ream.Panel2.SuspendLayout()
@@ -255,6 +350,16 @@ Partial Class frmMain
     Me.pnlLoadPackageData.SuspendLayout()
     Me.pnlUpdates.SuspendLayout()
     Me.pnlMSU.SuspendLayout()
+    Me.pnlWIM.SuspendLayout()
+    Me.pnlBottom.SuspendLayout()
+    Me.pnlISO.SuspendLayout()
+    Me.pnlProgress.SuspendLayout()
+    CType(Me.pctOutputTear, System.ComponentModel.ISupportInitialize).BeginInit()
+    Me.pnlControl.SuspendLayout()
+    Me.pnlISOOptions.SuspendLayout()
+    Me.pnlMerge.SuspendLayout()
+    CType(Me.pctTitle, System.ComponentModel.ISupportInitialize).BeginInit()
+    Me.pnlISOLabel.SuspendLayout()
     Me.SuspendLayout()
     '
     'pnlSlips7ream
@@ -298,1340 +403,6 @@ Partial Class frmMain
     Me.pnlSlips7ream.RowStyles.Add(New System.Windows.Forms.RowStyle())
     Me.pnlSlips7ream.Size = New System.Drawing.Size(424, 754)
     Me.pnlSlips7ream.TabIndex = 0
-    '
-    'imlUpdates
-    '
-    Me.imlUpdates.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit
-    Me.imlUpdates.ImageSize = New System.Drawing.Size(16, 16)
-    Me.imlUpdates.TransparentColor = System.Drawing.Color.Transparent
-    '
-    'lblWIM
-    '
-    Me.lblWIM.Anchor = System.Windows.Forms.AnchorStyles.Left
-    Me.lblWIM.AutoSize = True
-    Me.lblWIM.Location = New System.Drawing.Point(3, 48)
-    Me.lblWIM.Name = "lblWIM"
-    Me.lblWIM.Size = New System.Drawing.Size(83, 13)
-    Me.lblWIM.TabIndex = 0
-    Me.lblWIM.Text = "INSTALL.&WIM: "
-    '
-    'pnlWIM
-    '
-    Me.pnlWIM.AutoSize = True
-    Me.pnlWIM.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.pnlWIM.ColumnCount = 2
-    Me.pnlWIM.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-    Me.pnlWIM.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-    Me.pnlWIM.Controls.Add(Me.txtWIM, 0, 0)
-    Me.pnlWIM.Controls.Add(Me.cmdWIM, 1, 0)
-    Me.pnlWIM.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.pnlWIM.Location = New System.Drawing.Point(100, 40)
-    Me.pnlWIM.Margin = New System.Windows.Forms.Padding(0)
-    Me.pnlWIM.Name = "pnlWIM"
-    Me.pnlWIM.RowCount = 1
-    Me.pnlWIM.RowStyles.Add(New System.Windows.Forms.RowStyle())
-    Me.pnlWIM.Size = New System.Drawing.Size(324, 30)
-    Me.pnlWIM.TabIndex = 1
-    '
-    'txtWIM
-    '
-    Me.txtWIM.AllowDrop = True
-    Me.txtWIM.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtWIM, "/1_SLIPS7REAM_Interface/1.1_INSTALL.WIM.htm")
-    Me.helpS7M.SetHelpNavigator(Me.txtWIM, System.Windows.Forms.HelpNavigator.Topic)
-    Me.txtWIM.Location = New System.Drawing.Point(3, 5)
-    Me.txtWIM.Name = "txtWIM"
-    Me.helpS7M.SetShowHelp(Me.txtWIM, True)
-    Me.txtWIM.Size = New System.Drawing.Size(237, 20)
-    Me.txtWIM.TabIndex = 0
-    Me.ttInfo.SetToolTip(Me.txtWIM, "Source WIM or ISO to create image from.")
-    '
-    'cmdWIM
-    '
-    Me.cmdWIM.Anchor = System.Windows.Forms.AnchorStyles.Right
-    Me.cmdWIM.AutoSize = True
-    Me.cmdWIM.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.cmdWIM.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.helpS7M.SetHelpKeyword(Me.cmdWIM, "/1_SLIPS7REAM_Interface/1.1_INSTALL.WIM.htm")
-    Me.helpS7M.SetHelpNavigator(Me.cmdWIM, System.Windows.Forms.HelpNavigator.Topic)
-    Me.cmdWIM.Location = New System.Drawing.Point(246, 3)
-    Me.cmdWIM.MinimumSize = New System.Drawing.Size(75, 24)
-    Me.cmdWIM.Name = "cmdWIM"
-    Me.cmdWIM.Padding = New System.Windows.Forms.Padding(0, 1, 0, 1)
-    Me.helpS7M.SetShowHelp(Me.cmdWIM, True)
-    Me.cmdWIM.Size = New System.Drawing.Size(75, 24)
-    Me.cmdWIM.TabIndex = 1
-    Me.cmdWIM.Text = "Browse..."
-    Me.ttInfo.SetToolTip(Me.cmdWIM, "Choose a WIM or ISO file.")
-    Me.cmdWIM.UseVisualStyleBackColor = True
-    '
-    'pnlBottom
-    '
-    Me.pnlBottom.AutoSize = True
-    Me.pnlBottom.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.pnlBottom.ColumnCount = 6
-    Me.pnlSlips7ream.SetColumnSpan(Me.pnlBottom, 2)
-    Me.pnlBottom.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-    Me.pnlBottom.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-    Me.pnlBottom.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-    Me.pnlBottom.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-    Me.pnlBottom.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-    Me.pnlBottom.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-    Me.pnlBottom.Controls.Add(Me.cmdBegin, 4, 0)
-    Me.pnlBottom.Controls.Add(Me.cmdClose, 5, 0)
-    Me.pnlBottom.Controls.Add(Me.lblActivity, 1, 0)
-    Me.pnlBottom.Controls.Add(Me.cmdConfig, 3, 0)
-    Me.pnlBottom.Controls.Add(Me.expOutput, 0, 0)
-    Me.pnlBottom.Controls.Add(Me.cmdOpenFolder, 2, 0)
-    Me.pnlBottom.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.pnlBottom.Location = New System.Drawing.Point(0, 576)
-    Me.pnlBottom.Margin = New System.Windows.Forms.Padding(0)
-    Me.pnlBottom.Name = "pnlBottom"
-    Me.pnlBottom.RowCount = 1
-    Me.pnlBottom.RowStyles.Add(New System.Windows.Forms.RowStyle())
-    Me.pnlBottom.Size = New System.Drawing.Size(424, 30)
-    Me.pnlBottom.TabIndex = 11
-    '
-    'cmdBegin
-    '
-    Me.cmdBegin.Anchor = System.Windows.Forms.AnchorStyles.Right
-    Me.cmdBegin.AutoSize = True
-    Me.cmdBegin.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.cmdBegin.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmdBegin.Location = New System.Drawing.Point(265, 3)
-    Me.cmdBegin.MinimumSize = New System.Drawing.Size(75, 24)
-    Me.cmdBegin.Name = "cmdBegin"
-    Me.cmdBegin.Padding = New System.Windows.Forms.Padding(0, 1, 0, 1)
-    Me.cmdBegin.Size = New System.Drawing.Size(75, 24)
-    Me.cmdBegin.TabIndex = 1
-    Me.cmdBegin.Text = "&Begin"
-    Me.ttInfo.SetToolTip(Me.cmdBegin, "Start the Slipstream procedure.")
-    Me.cmdBegin.UseVisualStyleBackColor = True
-    '
-    'cmdClose
-    '
-    Me.cmdClose.Anchor = System.Windows.Forms.AnchorStyles.Right
-    Me.cmdClose.AutoSize = True
-    Me.cmdClose.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.cmdClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
-    Me.cmdClose.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmdClose.Location = New System.Drawing.Point(346, 3)
-    Me.cmdClose.MinimumSize = New System.Drawing.Size(75, 24)
-    Me.cmdClose.Name = "cmdClose"
-    Me.cmdClose.Padding = New System.Windows.Forms.Padding(0, 1, 0, 1)
-    Me.cmdClose.Size = New System.Drawing.Size(75, 24)
-    Me.cmdClose.TabIndex = 3
-    Me.cmdClose.Text = "&Close"
-    Me.cmdClose.UseVisualStyleBackColor = True
-    '
-    'lblActivity
-    '
-    Me.lblActivity.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.lblActivity.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-    Me.lblActivity.Location = New System.Drawing.Point(28, 7)
-    Me.lblActivity.Margin = New System.Windows.Forms.Padding(3)
-    Me.lblActivity.Name = "lblActivity"
-    Me.lblActivity.Size = New System.Drawing.Size(57, 15)
-    Me.lblActivity.TabIndex = 0
-    Me.lblActivity.Text = "Idle"
-    Me.lblActivity.UseMnemonic = False
-    '
-    'cmdConfig
-    '
-    Me.cmdConfig.AutoSize = True
-    Me.cmdConfig.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.cmdConfig.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmdConfig.Location = New System.Drawing.Point(176, 3)
-    Me.cmdConfig.MinimumSize = New System.Drawing.Size(75, 24)
-    Me.cmdConfig.Name = "cmdConfig"
-    Me.cmdConfig.Padding = New System.Windows.Forms.Padding(0, 1, 0, 1)
-    Me.cmdConfig.Size = New System.Drawing.Size(83, 24)
-    Me.cmdConfig.TabIndex = 2
-    Me.cmdConfig.Text = "Confi&guration"
-    Me.ttInfo.SetToolTip(Me.cmdConfig, "Change SLIPS7REAM settings.")
-    Me.cmdConfig.UseVisualStyleBackColor = True
-    '
-    'cmdOpenFolder
-    '
-    Me.cmdOpenFolder.AutoSize = True
-    Me.cmdOpenFolder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.cmdOpenFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmdOpenFolder.Location = New System.Drawing.Point(91, 3)
-    Me.cmdOpenFolder.MinimumSize = New System.Drawing.Size(75, 24)
-    Me.cmdOpenFolder.Name = "cmdOpenFolder"
-    Me.cmdOpenFolder.Padding = New System.Windows.Forms.Padding(0, 1, 0, 1)
-    Me.cmdOpenFolder.Size = New System.Drawing.Size(79, 24)
-    Me.cmdOpenFolder.TabIndex = 5
-    Me.cmdOpenFolder.Text = "Open &Folder"
-    Me.ttInfo.SetToolTip(Me.cmdOpenFolder, "Open the folder containing the complete ISO or WIM file.")
-    Me.cmdOpenFolder.UseVisualStyleBackColor = True
-    Me.cmdOpenFolder.Visible = False
-    '
-    'chkISO
-    '
-    Me.chkISO.Anchor = System.Windows.Forms.AnchorStyles.Left
-    Me.chkISO.AutoSize = True
-    Me.chkISO.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.helpS7M.SetHelpKeyword(Me.chkISO, "/1_SLIPS7REAM_Interface/1.6_Save_to_ISO.htm")
-    Me.helpS7M.SetHelpNavigator(Me.chkISO, System.Windows.Forms.HelpNavigator.Topic)
-    Me.chkISO.Location = New System.Drawing.Point(3, 430)
-    Me.chkISO.Name = "chkISO"
-    Me.helpS7M.SetShowHelp(Me.chkISO, True)
-    Me.chkISO.Size = New System.Drawing.Size(93, 18)
-    Me.chkISO.TabIndex = 5
-    Me.chkISO.Text = "Save to &ISO:"
-    Me.ttInfo.SetToolTip(Me.chkISO, "Insert the Image into a Windows 7 ISO.")
-    Me.chkISO.UseVisualStyleBackColor = True
-    '
-    'pnlISO
-    '
-    Me.pnlISO.AutoSize = True
-    Me.pnlISO.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.pnlISO.ColumnCount = 2
-    Me.pnlISO.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-    Me.pnlISO.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-    Me.pnlISO.Controls.Add(Me.txtISO, 0, 0)
-    Me.pnlISO.Controls.Add(Me.cmdISO, 1, 0)
-    Me.pnlISO.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.pnlISO.Location = New System.Drawing.Point(100, 424)
-    Me.pnlISO.Margin = New System.Windows.Forms.Padding(0)
-    Me.pnlISO.Name = "pnlISO"
-    Me.pnlISO.RowCount = 1
-    Me.pnlISO.RowStyles.Add(New System.Windows.Forms.RowStyle())
-    Me.pnlISO.Size = New System.Drawing.Size(324, 30)
-    Me.pnlISO.TabIndex = 6
-    '
-    'txtISO
-    '
-    Me.txtISO.AllowDrop = True
-    Me.txtISO.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtISO.Enabled = False
-    Me.helpS7M.SetHelpKeyword(Me.txtISO, "/1_SLIPS7REAM_Interface/1.6_Save_to_ISO.htm")
-    Me.helpS7M.SetHelpNavigator(Me.txtISO, System.Windows.Forms.HelpNavigator.Topic)
-    Me.txtISO.Location = New System.Drawing.Point(3, 5)
-    Me.txtISO.Name = "txtISO"
-    Me.helpS7M.SetShowHelp(Me.txtISO, True)
-    Me.txtISO.Size = New System.Drawing.Size(237, 20)
-    Me.txtISO.TabIndex = 0
-    Me.ttInfo.SetToolTip(Me.txtISO, "ISO to update with the new image.")
-    '
-    'cmdISO
-    '
-    Me.cmdISO.Anchor = System.Windows.Forms.AnchorStyles.Right
-    Me.cmdISO.AutoSize = True
-    Me.cmdISO.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.cmdISO.Enabled = False
-    Me.cmdISO.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.helpS7M.SetHelpKeyword(Me.cmdISO, "/1_SLIPS7REAM_Interface/1.6_Save_to_ISO.htm")
-    Me.helpS7M.SetHelpNavigator(Me.cmdISO, System.Windows.Forms.HelpNavigator.Topic)
-    Me.cmdISO.Location = New System.Drawing.Point(246, 3)
-    Me.cmdISO.MinimumSize = New System.Drawing.Size(75, 24)
-    Me.cmdISO.Name = "cmdISO"
-    Me.cmdISO.Padding = New System.Windows.Forms.Padding(0, 1, 0, 1)
-    Me.helpS7M.SetShowHelp(Me.cmdISO, True)
-    Me.cmdISO.Size = New System.Drawing.Size(75, 24)
-    Me.cmdISO.TabIndex = 1
-    Me.cmdISO.Text = "Browse..."
-    Me.ttInfo.SetToolTip(Me.cmdISO, "Choose a Windows 7 ISO." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(Use an x86 ISO if you're merging x86 and x64.)")
-    Me.cmdISO.UseVisualStyleBackColor = True
-    '
-    'pnlProgress
-    '
-    Me.pnlProgress.AutoSize = True
-    Me.pnlProgress.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.pnlProgress.ColumnCount = 2
-    Me.pnlSlips7ream.SetColumnSpan(Me.pnlProgress, 2)
-    Me.pnlProgress.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-    Me.pnlProgress.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-    Me.pnlProgress.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
-    Me.pnlProgress.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
-    Me.pnlProgress.Controls.Add(Me.pbTotal, 0, 0)
-    Me.pnlProgress.Controls.Add(Me.pbIndividual, 1, 0)
-    Me.pnlProgress.Controls.Add(Me.txtOutput, 0, 2)
-    Me.pnlProgress.Controls.Add(Me.pctOutputTear, 0, 1)
-    Me.pnlProgress.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.pnlProgress.Location = New System.Drawing.Point(0, 606)
-    Me.pnlProgress.Margin = New System.Windows.Forms.Padding(0)
-    Me.pnlProgress.Name = "pnlProgress"
-    Me.pnlProgress.RowCount = 3
-    Me.pnlProgress.RowStyles.Add(New System.Windows.Forms.RowStyle())
-    Me.pnlProgress.RowStyles.Add(New System.Windows.Forms.RowStyle())
-    Me.pnlProgress.RowStyles.Add(New System.Windows.Forms.RowStyle())
-    Me.pnlProgress.Size = New System.Drawing.Size(424, 148)
-    Me.pnlProgress.TabIndex = 12
-    '
-    'pbTotal
-    '
-    Me.pbTotal.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.pbTotal.Location = New System.Drawing.Point(3, 3)
-    Me.pbTotal.Name = "pbTotal"
-    Me.pbTotal.Size = New System.Drawing.Size(206, 16)
-    Me.pbTotal.Style = System.Windows.Forms.ProgressBarStyle.Continuous
-    Me.pbTotal.TabIndex = 0
-    Me.pbTotal.Visible = False
-    '
-    'pbIndividual
-    '
-    Me.pbIndividual.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.pbIndividual.Location = New System.Drawing.Point(215, 3)
-    Me.pbIndividual.Name = "pbIndividual"
-    Me.pbIndividual.Size = New System.Drawing.Size(206, 16)
-    Me.pbIndividual.Style = System.Windows.Forms.ProgressBarStyle.Continuous
-    Me.pbIndividual.TabIndex = 1
-    Me.pbIndividual.Visible = False
-    '
-    'txtOutput
-    '
-    Me.pnlProgress.SetColumnSpan(Me.txtOutput, 2)
-    Me.txtOutput.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.txtOutput.Location = New System.Drawing.Point(3, 45)
-    Me.txtOutput.Multiline = True
-    Me.txtOutput.Name = "txtOutput"
-    Me.txtOutput.ReadOnly = True
-    Me.txtOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-    Me.txtOutput.Size = New System.Drawing.Size(418, 100)
-    Me.txtOutput.TabIndex = 2
-    Me.txtOutput.Visible = False
-    '
-    'pctOutputTear
-    '
-    Me.pctOutputTear.BackColor = System.Drawing.SystemColors.InactiveCaption
-    Me.pnlProgress.SetColumnSpan(Me.pctOutputTear, 2)
-    Me.pctOutputTear.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.pctOutputTear.Location = New System.Drawing.Point(0, 22)
-    Me.pctOutputTear.Margin = New System.Windows.Forms.Padding(0)
-    Me.pctOutputTear.Name = "pctOutputTear"
-    Me.pctOutputTear.Size = New System.Drawing.Size(424, 20)
-    Me.pctOutputTear.TabIndex = 6
-    Me.pctOutputTear.TabStop = False
-    Me.ttInfo.SetToolTip(Me.pctOutputTear, "Click and Drag to tear the Output Console into its own window.")
-    Me.pctOutputTear.Visible = False
-    '
-    'lblISOLabel
-    '
-    Me.lblISOLabel.Anchor = System.Windows.Forms.AnchorStyles.Left
-    Me.lblISOLabel.AutoSize = True
-    Me.lblISOLabel.Enabled = False
-    Me.lblISOLabel.Location = New System.Drawing.Point(3, 460)
-    Me.lblISOLabel.Name = "lblISOLabel"
-    Me.lblISOLabel.Size = New System.Drawing.Size(57, 13)
-    Me.lblISOLabel.TabIndex = 7
-    Me.lblISOLabel.Text = "ISO &Label:"
-    '
-    'pnlControl
-    '
-    Me.pnlControl.AutoSize = True
-    Me.pnlControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.pnlControl.ColumnCount = 4
-    Me.pnlSlips7ream.SetColumnSpan(Me.pnlControl, 2)
-    Me.pnlControl.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100.0!))
-    Me.pnlControl.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-    Me.pnlControl.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-    Me.pnlControl.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-    Me.pnlControl.Controls.Add(Me.lblPriority, 0, 0)
-    Me.pnlControl.Controls.Add(Me.cmbPriority, 1, 0)
-    Me.pnlControl.Controls.Add(Me.lblCompletion, 2, 0)
-    Me.pnlControl.Controls.Add(Me.cmbCompletion, 3, 0)
-    Me.pnlControl.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.pnlControl.Location = New System.Drawing.Point(0, 549)
-    Me.pnlControl.Margin = New System.Windows.Forms.Padding(0)
-    Me.pnlControl.Name = "pnlControl"
-    Me.pnlControl.RowCount = 1
-    Me.pnlControl.RowStyles.Add(New System.Windows.Forms.RowStyle())
-    Me.pnlControl.Size = New System.Drawing.Size(424, 27)
-    Me.pnlControl.TabIndex = 10
-    '
-    'lblPriority
-    '
-    Me.lblPriority.Anchor = System.Windows.Forms.AnchorStyles.Left
-    Me.lblPriority.AutoSize = True
-    Me.lblPriority.Location = New System.Drawing.Point(3, 7)
-    Me.lblPriority.Name = "lblPriority"
-    Me.lblPriority.Size = New System.Drawing.Size(82, 13)
-    Me.lblPriority.TabIndex = 0
-    Me.lblPriority.Text = "Process P&riority:"
-    '
-    'cmbPriority
-    '
-    Me.cmbPriority.Anchor = System.Windows.Forms.AnchorStyles.Left
-    Me.cmbPriority.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-    Me.cmbPriority.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmbPriority.FormattingEnabled = True
-    Me.helpS7M.SetHelpKeyword(Me.cmbPriority, "/1_SLIPS7REAM_Interface/1.8_Process_Priority.htm")
-    Me.helpS7M.SetHelpNavigator(Me.cmbPriority, System.Windows.Forms.HelpNavigator.Topic)
-    Me.cmbPriority.Items.AddRange(New Object() {"Realtime", "High", "Above Normal", "Normal", "Below Normal", "Low"})
-    Me.cmbPriority.Location = New System.Drawing.Point(103, 3)
-    Me.cmbPriority.MaximumSize = New System.Drawing.Size(115, 0)
-    Me.cmbPriority.MinimumSize = New System.Drawing.Size(115, 0)
-    Me.cmbPriority.Name = "cmbPriority"
-    Me.helpS7M.SetShowHelp(Me.cmbPriority, True)
-    Me.cmbPriority.Size = New System.Drawing.Size(115, 21)
-    Me.cmbPriority.TabIndex = 1
-    Me.ttInfo.SetToolTip(Me.cmbPriority, resources.GetString("cmbPriority.ToolTip"))
-    '
-    'lblCompletion
-    '
-    Me.lblCompletion.Anchor = System.Windows.Forms.AnchorStyles.Left
-    Me.lblCompletion.AutoSize = True
-    Me.lblCompletion.Location = New System.Drawing.Point(222, 7)
-    Me.lblCompletion.Name = "lblCompletion"
-    Me.lblCompletion.Size = New System.Drawing.Size(79, 13)
-    Me.lblCompletion.TabIndex = 2
-    Me.lblCompletion.Text = "O&n Completion:"
-    '
-    'cmbCompletion
-    '
-    Me.cmbCompletion.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.cmbCompletion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-    Me.cmbCompletion.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmbCompletion.FormattingEnabled = True
-    Me.helpS7M.SetHelpKeyword(Me.cmbCompletion, "/1_SLIPS7REAM_Interface/1.9_On_Completion.htm")
-    Me.helpS7M.SetHelpNavigator(Me.cmbCompletion, System.Windows.Forms.HelpNavigator.Topic)
-    Me.cmbCompletion.Items.AddRange(New Object() {"Do Nothing", "Play Alert Noise", "Close Program", "Shut Down", "Restart", "Sleep"})
-    Me.cmbCompletion.Location = New System.Drawing.Point(307, 3)
-    Me.cmbCompletion.MaximumSize = New System.Drawing.Size(115, 0)
-    Me.cmbCompletion.MinimumSize = New System.Drawing.Size(115, 0)
-    Me.cmbCompletion.Name = "cmbCompletion"
-    Me.helpS7M.SetShowHelp(Me.cmbCompletion, True)
-    Me.cmbCompletion.Size = New System.Drawing.Size(115, 21)
-    Me.cmbCompletion.TabIndex = 4
-    Me.ttInfo.SetToolTip(Me.cmbCompletion, "Event to run after Slipstream is complete.")
-    '
-    'pnlISOOptions
-    '
-    Me.pnlISOOptions.AutoSize = True
-    Me.pnlISOOptions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.pnlISOOptions.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center
-    Me.pnlISOOptions.ColumnCount = 3
-    Me.pnlISOOptions.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-    Me.pnlISOOptions.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-    Me.pnlISOOptions.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-    Me.pnlISOOptions.Controls.Add(Me.cmbLimitType, 1, 1)
-    Me.pnlISOOptions.Controls.Add(Me.cmbISOFormat, 2, 0)
-    Me.pnlISOOptions.Controls.Add(Me.chkUnlock, 0, 0)
-    Me.pnlISOOptions.Controls.Add(Me.lblISOFS, 1, 0)
-    Me.pnlISOOptions.Controls.Add(Me.chkUEFI, 0, 1)
-    Me.pnlISOOptions.Controls.Add(Me.cmbLimit, 2, 1)
-    Me.pnlISOOptions.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.helpS7M.SetHelpKeyword(Me.pnlISOOptions, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.0_ISO_Features.htm")
-    Me.helpS7M.SetHelpNavigator(Me.pnlISOOptions, System.Windows.Forms.HelpNavigator.Topic)
-    Me.pnlISOOptions.Location = New System.Drawing.Point(100, 480)
-    Me.pnlISOOptions.Margin = New System.Windows.Forms.Padding(0)
-    Me.pnlISOOptions.Name = "pnlISOOptions"
-    Me.pnlISOOptions.RowCount = 2
-    Me.pnlISOOptions.RowStyles.Add(New System.Windows.Forms.RowStyle())
-    Me.pnlISOOptions.RowStyles.Add(New System.Windows.Forms.RowStyle())
-    Me.helpS7M.SetShowHelp(Me.pnlISOOptions, True)
-    Me.pnlISOOptions.Size = New System.Drawing.Size(324, 54)
-    Me.pnlISOOptions.TabIndex = 9
-    '
-    'cmbLimitType
-    '
-    Me.cmbLimitType.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.cmbLimitType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-    Me.cmbLimitType.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmbLimitType.FormattingEnabled = True
-    Me.helpS7M.SetHelpKeyword(Me.cmbLimitType, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.5_Split_Method.htm")
-    Me.helpS7M.SetHelpNavigator(Me.cmbLimitType, System.Windows.Forms.HelpNavigator.Topic)
-    Me.cmbLimitType.Items.AddRange(New Object() {"Single File", "Split WIM", "Split ISO"})
-    Me.cmbLimitType.Location = New System.Drawing.Point(124, 30)
-    Me.cmbLimitType.Name = "cmbLimitType"
-    Me.helpS7M.SetShowHelp(Me.cmbLimitType, True)
-    Me.cmbLimitType.Size = New System.Drawing.Size(75, 21)
-    Me.cmbLimitType.TabIndex = 4
-    Me.ttInfo.SetToolTip(Me.cmbLimitType, resources.GetString("cmbLimitType.ToolTip"))
-    '
-    'cmbISOFormat
-    '
-    Me.cmbISOFormat.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.cmbISOFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-    Me.cmbISOFormat.Enabled = False
-    Me.cmbISOFormat.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmbISOFormat.FormattingEnabled = True
-    Me.helpS7M.SetHelpKeyword(Me.cmbISOFormat, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.4_File_System.htm")
-    Me.helpS7M.SetHelpNavigator(Me.cmbISOFormat, System.Windows.Forms.HelpNavigator.Topic)
-    Me.cmbISOFormat.Items.AddRange(New Object() {"ISO 9960", "Joliet", "Joliet / ISO 9960", "UDF", "UDF / ISO 9960", "UDF 1.02", "UDF 1.02 / ISO 9960"})
-    Me.cmbISOFormat.Location = New System.Drawing.Point(205, 3)
-    Me.cmbISOFormat.Name = "cmbISOFormat"
-    Me.helpS7M.SetShowHelp(Me.cmbISOFormat, True)
-    Me.cmbISOFormat.Size = New System.Drawing.Size(116, 21)
-    Me.cmbISOFormat.TabIndex = 2
-    Me.ttInfo.SetToolTip(Me.cmbISOFormat, resources.GetString("cmbISOFormat.ToolTip"))
-    '
-    'chkUnlock
-    '
-    Me.chkUnlock.Anchor = System.Windows.Forms.AnchorStyles.Left
-    Me.chkUnlock.AutoSize = True
-    Me.chkUnlock.Enabled = False
-    Me.chkUnlock.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.helpS7M.SetHelpKeyword(Me.chkUnlock, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.2_Unlock_All_Editions.htm")
-    Me.helpS7M.SetHelpNavigator(Me.chkUnlock, System.Windows.Forms.HelpNavigator.Topic)
-    Me.chkUnlock.Location = New System.Drawing.Point(3, 4)
-    Me.chkUnlock.Name = "chkUnlock"
-    Me.helpS7M.SetShowHelp(Me.chkUnlock, True)
-    Me.chkUnlock.Size = New System.Drawing.Size(115, 18)
-    Me.chkUnlock.TabIndex = 0
-    Me.chkUnlock.Text = "Unlock All &Editions"
-    Me.ttInfo.SetToolTip(Me.chkUnlock, "Remove ""ei.cfg"" and the install catalogs from the ISO to allow installation of al" & _
-        "l editions.")
-    Me.chkUnlock.UseVisualStyleBackColor = True
-    '
-    'lblISOFS
-    '
-    Me.lblISOFS.Anchor = System.Windows.Forms.AnchorStyles.Left
-    Me.lblISOFS.AutoSize = True
-    Me.lblISOFS.Enabled = False
-    Me.lblISOFS.Location = New System.Drawing.Point(124, 7)
-    Me.lblISOFS.Name = "lblISOFS"
-    Me.lblISOFS.Size = New System.Drawing.Size(63, 13)
-    Me.lblISOFS.TabIndex = 1
-    Me.lblISOFS.Text = "File Sys&tem:"
-    '
-    'chkUEFI
-    '
-    Me.chkUEFI.Anchor = System.Windows.Forms.AnchorStyles.Left
-    Me.chkUEFI.AutoSize = True
-    Me.chkUEFI.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.helpS7M.SetHelpKeyword(Me.chkUEFI, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.3_UEFI_Boot.htm")
-    Me.helpS7M.SetHelpNavigator(Me.chkUEFI, System.Windows.Forms.HelpNavigator.Topic)
-    Me.chkUEFI.Location = New System.Drawing.Point(3, 31)
-    Me.chkUEFI.Name = "chkUEFI"
-    Me.helpS7M.SetShowHelp(Me.chkUEFI, True)
-    Me.chkUEFI.Size = New System.Drawing.Size(81, 18)
-    Me.chkUEFI.TabIndex = 3
-    Me.chkUEFI.Text = "UEFI B&oot"
-    Me.ttInfo.SetToolTip(Me.chkUEFI, resources.GetString("chkUEFI.ToolTip"))
-    Me.chkUEFI.UseVisualStyleBackColor = True
-    '
-    'cmbLimit
-    '
-    Me.cmbLimit.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.cmbLimit.DropDownWidth = 140
-    Me.cmbLimit.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.cmbLimit.FormattingEnabled = True
-    Me.helpS7M.SetHelpKeyword(Me.cmbLimit, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.5_Split_Method.htm")
-    Me.helpS7M.SetHelpNavigator(Me.cmbLimit, System.Windows.Forms.HelpNavigator.Topic)
-    Me.cmbLimit.Location = New System.Drawing.Point(205, 30)
-    Me.cmbLimit.Name = "cmbLimit"
-    Me.helpS7M.SetShowHelp(Me.cmbLimit, True)
-    Me.cmbLimit.Size = New System.Drawing.Size(116, 21)
-    Me.cmbLimit.TabIndex = 5
-    Me.ttInfo.SetToolTip(Me.cmbLimit, resources.GetString("cmbLimit.ToolTip"))
-    '
-    'chkMerge
-    '
-    Me.chkMerge.Anchor = System.Windows.Forms.AnchorStyles.Left
-    Me.chkMerge.AutoSize = True
-    Me.chkMerge.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.helpS7M.SetHelpKeyword(Me.chkMerge, "/1_SLIPS7REAM_Interface/1.2_Merge_WIM.htm")
-    Me.helpS7M.SetHelpNavigator(Me.chkMerge, System.Windows.Forms.HelpNavigator.Topic)
-    Me.chkMerge.Location = New System.Drawing.Point(3, 76)
-    Me.chkMerge.Name = "chkMerge"
-    Me.helpS7M.SetShowHelp(Me.chkMerge, True)
-    Me.chkMerge.Size = New System.Drawing.Size(91, 18)
-    Me.chkMerge.TabIndex = 2
-    Me.chkMerge.Text = "&Merge WIM:"
-    Me.ttInfo.SetToolTip(Me.chkMerge, "Merge the Packages of another Image with this one.")
-    Me.chkMerge.UseVisualStyleBackColor = True
-    '
-    'pnlMerge
-    '
-    Me.pnlMerge.AutoSize = True
-    Me.pnlMerge.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.pnlMerge.ColumnCount = 2
-    Me.pnlMerge.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-    Me.pnlMerge.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-    Me.pnlMerge.Controls.Add(Me.txtMerge, 0, 0)
-    Me.pnlMerge.Controls.Add(Me.cmdMerge, 1, 0)
-    Me.pnlMerge.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.pnlMerge.Location = New System.Drawing.Point(100, 70)
-    Me.pnlMerge.Margin = New System.Windows.Forms.Padding(0)
-    Me.pnlMerge.Name = "pnlMerge"
-    Me.pnlMerge.RowCount = 1
-    Me.pnlMerge.RowStyles.Add(New System.Windows.Forms.RowStyle())
-    Me.pnlMerge.Size = New System.Drawing.Size(324, 30)
-    Me.pnlMerge.TabIndex = 3
-    '
-    'txtMerge
-    '
-    Me.txtMerge.AllowDrop = True
-    Me.txtMerge.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtMerge.Enabled = False
-    Me.helpS7M.SetHelpKeyword(Me.txtMerge, "/1_SLIPS7REAM_Interface/1.2_Merge_WIM.htm")
-    Me.helpS7M.SetHelpNavigator(Me.txtMerge, System.Windows.Forms.HelpNavigator.Topic)
-    Me.txtMerge.Location = New System.Drawing.Point(3, 5)
-    Me.txtMerge.Name = "txtMerge"
-    Me.helpS7M.SetShowHelp(Me.txtMerge, True)
-    Me.txtMerge.Size = New System.Drawing.Size(237, 20)
-    Me.txtMerge.TabIndex = 0
-    Me.ttInfo.SetToolTip(Me.txtMerge, "WIM or ISO to Merge with.")
-    '
-    'cmdMerge
-    '
-    Me.cmdMerge.Anchor = System.Windows.Forms.AnchorStyles.Right
-    Me.cmdMerge.AutoSize = True
-    Me.cmdMerge.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.cmdMerge.Enabled = False
-    Me.cmdMerge.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.helpS7M.SetHelpKeyword(Me.cmdMerge, "/1_SLIPS7REAM_Interface/1.2_Merge_WIM.htm")
-    Me.helpS7M.SetHelpNavigator(Me.cmdMerge, System.Windows.Forms.HelpNavigator.Topic)
-    Me.cmdMerge.Location = New System.Drawing.Point(246, 3)
-    Me.cmdMerge.MinimumSize = New System.Drawing.Size(75, 24)
-    Me.cmdMerge.Name = "cmdMerge"
-    Me.cmdMerge.Padding = New System.Windows.Forms.Padding(0, 1, 0, 1)
-    Me.helpS7M.SetShowHelp(Me.cmdMerge, True)
-    Me.cmdMerge.Size = New System.Drawing.Size(75, 24)
-    Me.cmdMerge.TabIndex = 1
-    Me.cmdMerge.Text = "Browse..."
-    Me.ttInfo.SetToolTip(Me.cmdMerge, "Choose a WIM or ISO file.")
-    Me.cmdMerge.UseVisualStyleBackColor = True
-    '
-    'pctTitle
-    '
-    Me.pnlSlips7ream.SetColumnSpan(Me.pctTitle, 2)
-    Me.pctTitle.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.pctTitle.Location = New System.Drawing.Point(0, 0)
-    Me.pctTitle.Margin = New System.Windows.Forms.Padding(0)
-    Me.pctTitle.Name = "pctTitle"
-    Me.pctTitle.Size = New System.Drawing.Size(424, 40)
-    Me.pctTitle.TabIndex = 22
-    Me.pctTitle.TabStop = False
-    '
-    'lblISOFeatures
-    '
-    Me.lblISOFeatures.AutoSize = True
-    Me.lblISOFeatures.Enabled = False
-    Me.lblISOFeatures.Location = New System.Drawing.Point(3, 486)
-    Me.lblISOFeatures.Margin = New System.Windows.Forms.Padding(3, 6, 3, 0)
-    Me.lblISOFeatures.Name = "lblISOFeatures"
-    Me.lblISOFeatures.Size = New System.Drawing.Size(72, 13)
-    Me.lblISOFeatures.TabIndex = 23
-    Me.lblISOFeatures.Text = "ISO Features:"
-    '
-    'pnlISOLabel
-    '
-    Me.pnlISOLabel.AutoSize = True
-    Me.pnlISOLabel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.pnlISOLabel.ColumnCount = 2
-    Me.pnlISOLabel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-    Me.pnlISOLabel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-    Me.pnlISOLabel.Controls.Add(Me.txtISOLabel, 1, 0)
-    Me.pnlISOLabel.Controls.Add(Me.chkAutoLabel, 0, 0)
-    Me.pnlISOLabel.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.pnlISOLabel.Location = New System.Drawing.Point(100, 454)
-    Me.pnlISOLabel.Margin = New System.Windows.Forms.Padding(0)
-    Me.pnlISOLabel.Name = "pnlISOLabel"
-    Me.pnlISOLabel.RowCount = 1
-    Me.pnlISOLabel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-    Me.pnlISOLabel.Size = New System.Drawing.Size(324, 26)
-    Me.pnlISOLabel.TabIndex = 8
-    '
-    'txtISOLabel
-    '
-    Me.txtISOLabel.AllowDrop = True
-    Me.txtISOLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.txtISOLabel.Enabled = False
-    Me.helpS7M.SetHelpKeyword(Me.txtISOLabel, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.1_ISO_Label.htm")
-    Me.helpS7M.SetHelpNavigator(Me.txtISOLabel, System.Windows.Forms.HelpNavigator.Topic)
-    Me.txtISOLabel.Location = New System.Drawing.Point(88, 3)
-    Me.txtISOLabel.MaxLength = 32
-    Me.txtISOLabel.Name = "txtISOLabel"
-    Me.helpS7M.SetShowHelp(Me.txtISOLabel, True)
-    Me.txtISOLabel.Size = New System.Drawing.Size(233, 20)
-    Me.txtISOLabel.TabIndex = 1
-    Me.ttInfo.SetToolTip(Me.txtISOLabel, "Disc Label for ISO.")
-    '
-    'chkAutoLabel
-    '
-    Me.chkAutoLabel.Anchor = System.Windows.Forms.AnchorStyles.Left
-    Me.chkAutoLabel.AutoSize = True
-    Me.chkAutoLabel.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.helpS7M.SetHelpKeyword(Me.chkAutoLabel, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.1_ISO_Label.htm")
-    Me.helpS7M.SetHelpNavigator(Me.chkAutoLabel, System.Windows.Forms.HelpNavigator.Topic)
-    Me.chkAutoLabel.Location = New System.Drawing.Point(3, 4)
-    Me.chkAutoLabel.Name = "chkAutoLabel"
-    Me.helpS7M.SetShowHelp(Me.chkAutoLabel, True)
-    Me.chkAutoLabel.Size = New System.Drawing.Size(79, 18)
-    Me.chkAutoLabel.TabIndex = 0
-    Me.chkAutoLabel.Text = "Read ISO"
-    Me.ttInfo.SetToolTip(Me.chkAutoLabel, "Automatically load the Label of the ISO selected in the Save to ISO field above.")
-    Me.chkAutoLabel.UseVisualStyleBackColor = True
-    '
-    'tmrUpdateCheck
-    '
-    Me.tmrUpdateCheck.Enabled = True
-    Me.tmrUpdateCheck.Interval = 2000
-    '
-    'tmrAnimation
-    '
-    Me.tmrAnimation.Interval = 10
-    '
-    'mnuOutput
-    '
-    Me.mnuOutput.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuCopy, Me.mnuCopyCommands, Me.mnuClear, Me.mnuSpacer, Me.mnuSelectAll})
-    '
-    'mnuCopy
-    '
-    Me.mnuCopy.Index = 0
-    Me.mnuCopy.Text = "&Copy"
-    '
-    'mnuCopyCommands
-    '
-    Me.mnuCopyCommands.Index = 1
-    Me.mnuCopyCommands.Text = "Copy Co&mmands"
-    '
-    'mnuClear
-    '
-    Me.mnuClear.Index = 2
-    Me.mnuClear.Text = "C&lear"
-    '
-    'mnuSpacer
-    '
-    Me.mnuSpacer.Index = 3
-    Me.mnuSpacer.Text = "-"
-    '
-    'mnuSelectAll
-    '
-    Me.mnuSelectAll.Index = 4
-    Me.mnuSelectAll.Text = "Select &All"
-    '
-    'mnuImages
-    '
-    Me.mnuImages.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuPackageInclude, Me.mnuPackageRename, Me.mnuPackageSpacer, Me.mnuPackageLocation, Me.mnuPackageProperties})
-    '
-    'mnuPackageInclude
-    '
-    Me.mnuPackageInclude.Index = 0
-    Me.mnuPackageInclude.Text = "Include in Image"
-    '
-    'mnuPackageRename
-    '
-    Me.mnuPackageRename.Index = 1
-    Me.mnuPackageRename.Text = "Rename Package"
-    '
-    'mnuPackageSpacer
-    '
-    Me.mnuPackageSpacer.Index = 2
-    Me.mnuPackageSpacer.Text = "-"
-    '
-    'mnuPackageLocation
-    '
-    Me.mnuPackageLocation.Index = 3
-    Me.mnuPackageLocation.Text = "Open Image Location"
-    '
-    'mnuPackageProperties
-    '
-    Me.mnuPackageProperties.DefaultItem = True
-    Me.mnuPackageProperties.Index = 4
-    Me.mnuPackageProperties.Text = "Properties"
-    '
-    'mnuMSU
-    '
-    Me.mnuMSU.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuUpdateTop, Me.mnuUpdateUp, Me.mnuUpdateDown, Me.mnuUpdateBottom, Me.mnuUpdateSpacer, Me.mnuUpdateRemove, Me.mnuUpdateSpacer2, Me.mnuUpdateLocation, Me.mnuUpdateProperties})
-    '
-    'mnuUpdateTop
-    '
-    Me.mnuUpdateTop.Index = 0
-    Me.mnuUpdateTop.Text = "Move Updates to Top"
-    '
-    'mnuUpdateUp
-    '
-    Me.mnuUpdateUp.Index = 1
-    Me.mnuUpdateUp.Text = "Move Updates Up"
-    '
-    'mnuUpdateDown
-    '
-    Me.mnuUpdateDown.Index = 2
-    Me.mnuUpdateDown.Text = "Move Updates Down"
-    '
-    'mnuUpdateBottom
-    '
-    Me.mnuUpdateBottom.Index = 3
-    Me.mnuUpdateBottom.Text = "Move Updates to Bottom"
-    '
-    'mnuUpdateSpacer
-    '
-    Me.mnuUpdateSpacer.Index = 4
-    Me.mnuUpdateSpacer.Text = "-"
-    '
-    'mnuUpdateRemove
-    '
-    Me.mnuUpdateRemove.Index = 5
-    Me.mnuUpdateRemove.Text = "Remove Updates"
-    '
-    'mnuUpdateSpacer2
-    '
-    Me.mnuUpdateSpacer2.Index = 6
-    Me.mnuUpdateSpacer2.Text = "-"
-    '
-    'mnuUpdateLocation
-    '
-    Me.mnuUpdateLocation.Index = 7
-    Me.mnuUpdateLocation.Text = "Open Updates Location"
-    '
-    'mnuUpdateProperties
-    '
-    Me.mnuUpdateProperties.DefaultItem = True
-    Me.mnuUpdateProperties.Index = 8
-    Me.mnuUpdateProperties.Text = "Properties"
-    '
-    'mnuISOLabel
-    '
-    Me.mnuISOLabel.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabel7x86, Me.mnuLabel7x64, Me.mnuLabel7AIO, Me.mnuLabelSpace, Me.mnuLabelAuto})
-    '
-    'mnuLabel7x86
-    '
-    Me.mnuLabel7x86.Index = 0
-    Me.mnuLabel7x86.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCST, Me.mnuLabelGRMCHB, Me.mnuLabelGRMCHP, Me.mnuLabelGRMCPR, Me.mnuLabelGRMCUL, Me.mnuLabelGRMCEN, Me.mnuLabel7x86Space, Me.mnuLabelGRMCMU, Me.mnuLabelGRMCAL})
-    Me.mnuLabel7x86.Text = "Windows 7 x86"
-    '
-    'mnuLabelGRMCST
-    '
-    Me.mnuLabelGRMCST.Index = 0
-    Me.mnuLabelGRMCST.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCSTFRE, Me.mnuLabelGRMCSTCHE})
-    Me.mnuLabelGRMCST.Text = "Starter"
-    '
-    'mnuLabelGRMCSTFRE
-    '
-    Me.mnuLabelGRMCSTFRE.Index = 0
-    Me.mnuLabelGRMCSTFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCSTFRER, Me.mnuLabelGRMCSTFREO, Me.mnuLabelGRMCSTVOL})
-    Me.mnuLabelGRMCSTFRE.Text = "Release"
-    '
-    'mnuLabelGRMCSTFRER
-    '
-    Me.mnuLabelGRMCSTFRER.Index = 0
-    Me.mnuLabelGRMCSTFRER.Text = "Retail"
-    '
-    'mnuLabelGRMCSTFREO
-    '
-    Me.mnuLabelGRMCSTFREO.Index = 1
-    Me.mnuLabelGRMCSTFREO.Text = "OEM"
-    '
-    'mnuLabelGRMCSTVOL
-    '
-    Me.mnuLabelGRMCSTVOL.Index = 2
-    Me.mnuLabelGRMCSTVOL.Text = "Volume License"
-    '
-    'mnuLabelGRMCSTCHE
-    '
-    Me.mnuLabelGRMCSTCHE.Index = 1
-    Me.mnuLabelGRMCSTCHE.Text = "Debug"
-    '
-    'mnuLabelGRMCHB
-    '
-    Me.mnuLabelGRMCHB.Index = 1
-    Me.mnuLabelGRMCHB.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCHBFRE, Me.mnuLabelGRMCHBCHE})
-    Me.mnuLabelGRMCHB.Text = "Home Basic"
-    '
-    'mnuLabelGRMCHBFRE
-    '
-    Me.mnuLabelGRMCHBFRE.Index = 0
-    Me.mnuLabelGRMCHBFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCHBFRER, Me.mnuLabelGRMCHBFREO, Me.mnuLabelGRMCHBVOL})
-    Me.mnuLabelGRMCHBFRE.Text = "Release"
-    '
-    'mnuLabelGRMCHBFRER
-    '
-    Me.mnuLabelGRMCHBFRER.Index = 0
-    Me.mnuLabelGRMCHBFRER.Text = "Retail"
-    '
-    'mnuLabelGRMCHBFREO
-    '
-    Me.mnuLabelGRMCHBFREO.Index = 1
-    Me.mnuLabelGRMCHBFREO.Text = "OEM"
-    '
-    'mnuLabelGRMCHBVOL
-    '
-    Me.mnuLabelGRMCHBVOL.Index = 2
-    Me.mnuLabelGRMCHBVOL.Text = "Volume License"
-    '
-    'mnuLabelGRMCHBCHE
-    '
-    Me.mnuLabelGRMCHBCHE.Index = 1
-    Me.mnuLabelGRMCHBCHE.Text = "Debug"
-    '
-    'mnuLabelGRMCHP
-    '
-    Me.mnuLabelGRMCHP.Index = 2
-    Me.mnuLabelGRMCHP.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCHPFRE, Me.mnuLabelGRMCHPCHE})
-    Me.mnuLabelGRMCHP.Text = "Home Premium"
-    '
-    'mnuLabelGRMCHPFRE
-    '
-    Me.mnuLabelGRMCHPFRE.Index = 0
-    Me.mnuLabelGRMCHPFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCHPFRER, Me.mnuLabelGRMCHPFREO, Me.mnuLabelGRMCHPVOL})
-    Me.mnuLabelGRMCHPFRE.Text = "Release"
-    '
-    'mnuLabelGRMCHPFRER
-    '
-    Me.mnuLabelGRMCHPFRER.Index = 0
-    Me.mnuLabelGRMCHPFRER.Text = "Retail"
-    '
-    'mnuLabelGRMCHPFREO
-    '
-    Me.mnuLabelGRMCHPFREO.Index = 1
-    Me.mnuLabelGRMCHPFREO.Text = "OEM"
-    '
-    'mnuLabelGRMCHPVOL
-    '
-    Me.mnuLabelGRMCHPVOL.Index = 2
-    Me.mnuLabelGRMCHPVOL.Text = "Volume License"
-    '
-    'mnuLabelGRMCHPCHE
-    '
-    Me.mnuLabelGRMCHPCHE.Index = 1
-    Me.mnuLabelGRMCHPCHE.Text = "Debug"
-    '
-    'mnuLabelGRMCPR
-    '
-    Me.mnuLabelGRMCPR.Index = 3
-    Me.mnuLabelGRMCPR.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCPRFRE, Me.mnuLabelGRMCPRCHE})
-    Me.mnuLabelGRMCPR.Text = "Professional"
-    '
-    'mnuLabelGRMCPRFRE
-    '
-    Me.mnuLabelGRMCPRFRE.Index = 0
-    Me.mnuLabelGRMCPRFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCPRFRER, Me.mnuLabelGRMCPRFREO, Me.mnuLabelGRMCPRVOL})
-    Me.mnuLabelGRMCPRFRE.Text = "Release"
-    '
-    'mnuLabelGRMCPRFRER
-    '
-    Me.mnuLabelGRMCPRFRER.Index = 0
-    Me.mnuLabelGRMCPRFRER.Text = "Retail"
-    '
-    'mnuLabelGRMCPRFREO
-    '
-    Me.mnuLabelGRMCPRFREO.Index = 1
-    Me.mnuLabelGRMCPRFREO.Text = "OEM"
-    '
-    'mnuLabelGRMCPRVOL
-    '
-    Me.mnuLabelGRMCPRVOL.Index = 2
-    Me.mnuLabelGRMCPRVOL.Text = "Volume License"
-    '
-    'mnuLabelGRMCPRCHE
-    '
-    Me.mnuLabelGRMCPRCHE.Index = 1
-    Me.mnuLabelGRMCPRCHE.Text = "Debug"
-    '
-    'mnuLabelGRMCUL
-    '
-    Me.mnuLabelGRMCUL.Index = 4
-    Me.mnuLabelGRMCUL.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCULFRE, Me.mnuLabelGRMCULCHE})
-    Me.mnuLabelGRMCUL.Text = "Ultimate"
-    '
-    'mnuLabelGRMCULFRE
-    '
-    Me.mnuLabelGRMCULFRE.Index = 0
-    Me.mnuLabelGRMCULFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCULFRER, Me.mnuLabelGRMCULFREO, Me.mnuLabelGRMCULVOL})
-    Me.mnuLabelGRMCULFRE.Text = "Release"
-    '
-    'mnuLabelGRMCULFRER
-    '
-    Me.mnuLabelGRMCULFRER.Index = 0
-    Me.mnuLabelGRMCULFRER.Text = "Retail"
-    '
-    'mnuLabelGRMCULFREO
-    '
-    Me.mnuLabelGRMCULFREO.Index = 1
-    Me.mnuLabelGRMCULFREO.Text = "OEM"
-    '
-    'mnuLabelGRMCULVOL
-    '
-    Me.mnuLabelGRMCULVOL.Index = 2
-    Me.mnuLabelGRMCULVOL.Text = "Volume License"
-    '
-    'mnuLabelGRMCULCHE
-    '
-    Me.mnuLabelGRMCULCHE.Index = 1
-    Me.mnuLabelGRMCULCHE.Text = "Debug"
-    '
-    'mnuLabelGRMCEN
-    '
-    Me.mnuLabelGRMCEN.Index = 5
-    Me.mnuLabelGRMCEN.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCENVOL, Me.mnuLabelGRMCENCHE})
-    Me.mnuLabelGRMCEN.Text = "Enterprise"
-    '
-    'mnuLabelGRMCENVOL
-    '
-    Me.mnuLabelGRMCENVOL.Index = 0
-    Me.mnuLabelGRMCENVOL.Text = "Volume License"
-    '
-    'mnuLabelGRMCENCHE
-    '
-    Me.mnuLabelGRMCENCHE.Index = 1
-    Me.mnuLabelGRMCENCHE.Text = "Debug"
-    '
-    'mnuLabel7x86Space
-    '
-    Me.mnuLabel7x86Space.Index = 6
-    Me.mnuLabel7x86Space.Text = "-"
-    '
-    'mnuLabelGRMCMU
-    '
-    Me.mnuLabelGRMCMU.Index = 7
-    Me.mnuLabelGRMCMU.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCMUFRE, Me.mnuLabelGRMCMUCHE})
-    Me.mnuLabelGRMCMU.Text = "Multiple"
-    '
-    'mnuLabelGRMCMUFRE
-    '
-    Me.mnuLabelGRMCMUFRE.Index = 0
-    Me.mnuLabelGRMCMUFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCMUFRER, Me.mnuLabelGRMCMUFREO, Me.mnuLabelGRMCMUVOL})
-    Me.mnuLabelGRMCMUFRE.Text = "Release"
-    '
-    'mnuLabelGRMCMUFRER
-    '
-    Me.mnuLabelGRMCMUFRER.Index = 0
-    Me.mnuLabelGRMCMUFRER.Text = "Retail"
-    '
-    'mnuLabelGRMCMUFREO
-    '
-    Me.mnuLabelGRMCMUFREO.Index = 1
-    Me.mnuLabelGRMCMUFREO.Text = "OEM"
-    '
-    'mnuLabelGRMCMUVOL
-    '
-    Me.mnuLabelGRMCMUVOL.Index = 2
-    Me.mnuLabelGRMCMUVOL.Text = "Volume License"
-    '
-    'mnuLabelGRMCMUCHE
-    '
-    Me.mnuLabelGRMCMUCHE.Index = 1
-    Me.mnuLabelGRMCMUCHE.Text = "Debug"
-    '
-    'mnuLabelGRMCAL
-    '
-    Me.mnuLabelGRMCAL.Index = 8
-    Me.mnuLabelGRMCAL.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCALFRE, Me.mnuLabelGRMCALCHE})
-    Me.mnuLabelGRMCAL.Text = "All-in-One"
-    '
-    'mnuLabelGRMCALFRE
-    '
-    Me.mnuLabelGRMCALFRE.Index = 0
-    Me.mnuLabelGRMCALFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCALFRER, Me.mnuLabelGRMCALFREO, Me.mnuLabelGRMCALVOL})
-    Me.mnuLabelGRMCALFRE.Text = "Release"
-    '
-    'mnuLabelGRMCALFRER
-    '
-    Me.mnuLabelGRMCALFRER.Index = 0
-    Me.mnuLabelGRMCALFRER.Text = "Retail"
-    '
-    'mnuLabelGRMCALFREO
-    '
-    Me.mnuLabelGRMCALFREO.Index = 1
-    Me.mnuLabelGRMCALFREO.Text = "OEM"
-    '
-    'mnuLabelGRMCALVOL
-    '
-    Me.mnuLabelGRMCALVOL.Index = 2
-    Me.mnuLabelGRMCALVOL.Text = "Volume License"
-    '
-    'mnuLabelGRMCALCHE
-    '
-    Me.mnuLabelGRMCALCHE.Index = 1
-    Me.mnuLabelGRMCALCHE.Text = "Debug"
-    '
-    'mnuLabel7x64
-    '
-    Me.mnuLabel7x64.Index = 1
-    Me.mnuLabel7x64.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCHBX, Me.mnuLabelGRMCHPX, Me.mnuLabelGRMCPRX, Me.mnuLabelGRMCULX, Me.mnuLabelGRMCENX, Me.mnuLabel7x64Space, Me.mnuLabelGRMCMUX, Me.mnuLabelGRMCALX})
-    Me.mnuLabel7x64.Text = "Windows 7 x64"
-    '
-    'mnuLabelGRMCHBX
-    '
-    Me.mnuLabelGRMCHBX.Index = 0
-    Me.mnuLabelGRMCHBX.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCHBXFRE, Me.mnuLabelGRMCHBXCHE})
-    Me.mnuLabelGRMCHBX.Text = "Home Basic"
-    '
-    'mnuLabelGRMCHBXFRE
-    '
-    Me.mnuLabelGRMCHBXFRE.Index = 0
-    Me.mnuLabelGRMCHBXFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCHBXFRER, Me.mnuLabelGRMCHBXFREO, Me.mnuLabelGRMCHBXVOL})
-    Me.mnuLabelGRMCHBXFRE.Text = "Release"
-    '
-    'mnuLabelGRMCHBXFRER
-    '
-    Me.mnuLabelGRMCHBXFRER.Index = 0
-    Me.mnuLabelGRMCHBXFRER.Text = "Retail"
-    '
-    'mnuLabelGRMCHBXFREO
-    '
-    Me.mnuLabelGRMCHBXFREO.Index = 1
-    Me.mnuLabelGRMCHBXFREO.Text = "OEM"
-    '
-    'mnuLabelGRMCHBXVOL
-    '
-    Me.mnuLabelGRMCHBXVOL.Index = 2
-    Me.mnuLabelGRMCHBXVOL.Text = "Volume License"
-    '
-    'mnuLabelGRMCHBXCHE
-    '
-    Me.mnuLabelGRMCHBXCHE.Index = 1
-    Me.mnuLabelGRMCHBXCHE.Text = "Debug"
-    '
-    'mnuLabelGRMCHPX
-    '
-    Me.mnuLabelGRMCHPX.Index = 1
-    Me.mnuLabelGRMCHPX.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCHPXFRE, Me.mnuLabelGRMCHPXCHE})
-    Me.mnuLabelGRMCHPX.Text = "Home Premium"
-    '
-    'mnuLabelGRMCHPXFRE
-    '
-    Me.mnuLabelGRMCHPXFRE.Index = 0
-    Me.mnuLabelGRMCHPXFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCHPXFRER, Me.mnuLabelGRMCHPXFREO, Me.mnuLabelGRMCHPXVOL})
-    Me.mnuLabelGRMCHPXFRE.Text = "Release"
-    '
-    'mnuLabelGRMCHPXFRER
-    '
-    Me.mnuLabelGRMCHPXFRER.Index = 0
-    Me.mnuLabelGRMCHPXFRER.Text = "Retail"
-    '
-    'mnuLabelGRMCHPXFREO
-    '
-    Me.mnuLabelGRMCHPXFREO.Index = 1
-    Me.mnuLabelGRMCHPXFREO.Text = "OEM"
-    '
-    'mnuLabelGRMCHPXVOL
-    '
-    Me.mnuLabelGRMCHPXVOL.Index = 2
-    Me.mnuLabelGRMCHPXVOL.Text = "Volume License"
-    '
-    'mnuLabelGRMCHPXCHE
-    '
-    Me.mnuLabelGRMCHPXCHE.Index = 1
-    Me.mnuLabelGRMCHPXCHE.Text = "Debug"
-    '
-    'mnuLabelGRMCPRX
-    '
-    Me.mnuLabelGRMCPRX.Index = 2
-    Me.mnuLabelGRMCPRX.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCPRXFRE, Me.mnuLabelGRMCPRXCHE})
-    Me.mnuLabelGRMCPRX.Text = "Professional"
-    '
-    'mnuLabelGRMCPRXFRE
-    '
-    Me.mnuLabelGRMCPRXFRE.Index = 0
-    Me.mnuLabelGRMCPRXFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCPRXFRER, Me.mnuLabelGRMCPRXFREO, Me.mnuLabelGRMCPRXVOL})
-    Me.mnuLabelGRMCPRXFRE.Text = "Release"
-    '
-    'mnuLabelGRMCPRXFRER
-    '
-    Me.mnuLabelGRMCPRXFRER.Index = 0
-    Me.mnuLabelGRMCPRXFRER.Text = "Retail"
-    '
-    'mnuLabelGRMCPRXFREO
-    '
-    Me.mnuLabelGRMCPRXFREO.Index = 1
-    Me.mnuLabelGRMCPRXFREO.Text = "OEM"
-    '
-    'mnuLabelGRMCPRXVOL
-    '
-    Me.mnuLabelGRMCPRXVOL.Index = 2
-    Me.mnuLabelGRMCPRXVOL.Text = "Volume License"
-    '
-    'mnuLabelGRMCPRXCHE
-    '
-    Me.mnuLabelGRMCPRXCHE.Index = 1
-    Me.mnuLabelGRMCPRXCHE.Text = "Debug"
-    '
-    'mnuLabelGRMCULX
-    '
-    Me.mnuLabelGRMCULX.Index = 3
-    Me.mnuLabelGRMCULX.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCULXFRE, Me.mnuLabelGRMCULXCHE})
-    Me.mnuLabelGRMCULX.Text = "Ultimate"
-    '
-    'mnuLabelGRMCULXFRE
-    '
-    Me.mnuLabelGRMCULXFRE.Index = 0
-    Me.mnuLabelGRMCULXFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCULXFRER, Me.mnuLabelGRMCULXFREO, Me.mnuLabelGRMCULXVOL})
-    Me.mnuLabelGRMCULXFRE.Text = "Release"
-    '
-    'mnuLabelGRMCULXFRER
-    '
-    Me.mnuLabelGRMCULXFRER.Index = 0
-    Me.mnuLabelGRMCULXFRER.Text = "Retail"
-    '
-    'mnuLabelGRMCULXFREO
-    '
-    Me.mnuLabelGRMCULXFREO.Index = 1
-    Me.mnuLabelGRMCULXFREO.Text = "OEM"
-    '
-    'mnuLabelGRMCULXVOL
-    '
-    Me.mnuLabelGRMCULXVOL.Index = 2
-    Me.mnuLabelGRMCULXVOL.Text = "Volume License"
-    '
-    'mnuLabelGRMCULXCHE
-    '
-    Me.mnuLabelGRMCULXCHE.Index = 1
-    Me.mnuLabelGRMCULXCHE.Text = "Debug"
-    '
-    'mnuLabelGRMCENX
-    '
-    Me.mnuLabelGRMCENX.Index = 4
-    Me.mnuLabelGRMCENX.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCENXVOL, Me.mnuLabelGRMCENXCHE})
-    Me.mnuLabelGRMCENX.Text = "Enterprise"
-    '
-    'mnuLabelGRMCENXVOL
-    '
-    Me.mnuLabelGRMCENXVOL.Index = 0
-    Me.mnuLabelGRMCENXVOL.Text = "Volume License"
-    '
-    'mnuLabelGRMCENXCHE
-    '
-    Me.mnuLabelGRMCENXCHE.Index = 1
-    Me.mnuLabelGRMCENXCHE.Text = "Debug"
-    '
-    'mnuLabel7x64Space
-    '
-    Me.mnuLabel7x64Space.Index = 5
-    Me.mnuLabel7x64Space.Text = "-"
-    '
-    'mnuLabelGRMCMUX
-    '
-    Me.mnuLabelGRMCMUX.Index = 6
-    Me.mnuLabelGRMCMUX.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCMUXFRE, Me.mnuLabelGRMCMUXCHE})
-    Me.mnuLabelGRMCMUX.Text = "Multiple"
-    '
-    'mnuLabelGRMCMUXFRE
-    '
-    Me.mnuLabelGRMCMUXFRE.Index = 0
-    Me.mnuLabelGRMCMUXFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCMUXFRER, Me.mnuLabelGRMCMUXFREO, Me.mnuLabelGRMCMUXVOL})
-    Me.mnuLabelGRMCMUXFRE.Text = "Release"
-    '
-    'mnuLabelGRMCMUXFRER
-    '
-    Me.mnuLabelGRMCMUXFRER.Index = 0
-    Me.mnuLabelGRMCMUXFRER.Text = "Retail"
-    '
-    'mnuLabelGRMCMUXFREO
-    '
-    Me.mnuLabelGRMCMUXFREO.Index = 1
-    Me.mnuLabelGRMCMUXFREO.Text = "OEM"
-    '
-    'mnuLabelGRMCMUXVOL
-    '
-    Me.mnuLabelGRMCMUXVOL.Index = 2
-    Me.mnuLabelGRMCMUXVOL.Text = "Volume License"
-    '
-    'mnuLabelGRMCMUXCHE
-    '
-    Me.mnuLabelGRMCMUXCHE.Index = 1
-    Me.mnuLabelGRMCMUXCHE.Text = "Debug"
-    '
-    'mnuLabelGRMCALX
-    '
-    Me.mnuLabelGRMCALX.Index = 7
-    Me.mnuLabelGRMCALX.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCALXFRE, Me.mnuLabelGRMCALXCHE})
-    Me.mnuLabelGRMCALX.Text = "All-in-One"
-    '
-    'mnuLabelGRMCALXFRE
-    '
-    Me.mnuLabelGRMCALXFRE.Index = 0
-    Me.mnuLabelGRMCALXFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCALXFRER, Me.mnuLabelGRMCALXFREO, Me.mnuLabelGRMCALXVOL})
-    Me.mnuLabelGRMCALXFRE.Text = "Release"
-    '
-    'mnuLabelGRMCALXFRER
-    '
-    Me.mnuLabelGRMCALXFRER.Index = 0
-    Me.mnuLabelGRMCALXFRER.Text = "Retail"
-    '
-    'mnuLabelGRMCALXFREO
-    '
-    Me.mnuLabelGRMCALXFREO.Index = 1
-    Me.mnuLabelGRMCALXFREO.Text = "OEM"
-    '
-    'mnuLabelGRMCALXVOL
-    '
-    Me.mnuLabelGRMCALXVOL.Index = 2
-    Me.mnuLabelGRMCALXVOL.Text = "Volume License"
-    '
-    'mnuLabelGRMCALXCHE
-    '
-    Me.mnuLabelGRMCALXCHE.Index = 1
-    Me.mnuLabelGRMCALXCHE.Text = "Debug"
-    '
-    'mnuLabel7AIO
-    '
-    Me.mnuLabel7AIO.Index = 2
-    Me.mnuLabel7AIO.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCMUU, Me.mnuLabelGRMCSTA})
-    Me.mnuLabel7AIO.Text = "Windows 7 AIO"
-    '
-    'mnuLabelGRMCMUU
-    '
-    Me.mnuLabelGRMCMUU.Index = 0
-    Me.mnuLabelGRMCMUU.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCMUUFRE, Me.mnuLabelGRMCMUUCHE})
-    Me.mnuLabelGRMCMUU.Text = "Mutiple"
-    '
-    'mnuLabelGRMCMUUFRE
-    '
-    Me.mnuLabelGRMCMUUFRE.Index = 0
-    Me.mnuLabelGRMCMUUFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCMUUFRER, Me.mnuLabelGRMCMUUFREO, Me.mnuLabelGRMCMUUVOL})
-    Me.mnuLabelGRMCMUUFRE.Text = "Release"
-    '
-    'mnuLabelGRMCMUUFRER
-    '
-    Me.mnuLabelGRMCMUUFRER.Index = 0
-    Me.mnuLabelGRMCMUUFRER.Text = "Retail"
-    '
-    'mnuLabelGRMCMUUFREO
-    '
-    Me.mnuLabelGRMCMUUFREO.Index = 1
-    Me.mnuLabelGRMCMUUFREO.Text = "OEM"
-    '
-    'mnuLabelGRMCMUUVOL
-    '
-    Me.mnuLabelGRMCMUUVOL.Index = 2
-    Me.mnuLabelGRMCMUUVOL.Text = "Volume License"
-    '
-    'mnuLabelGRMCMUUCHE
-    '
-    Me.mnuLabelGRMCMUUCHE.Index = 1
-    Me.mnuLabelGRMCMUUCHE.Text = "Debug"
-    '
-    'mnuLabelGRMCSTA
-    '
-    Me.mnuLabelGRMCSTA.Index = 1
-    Me.mnuLabelGRMCSTA.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCSTAFRE, Me.mnuLabelGRMCSTACHE})
-    Me.mnuLabelGRMCSTA.Text = "All-in-One"
-    '
-    'mnuLabelGRMCSTAFRE
-    '
-    Me.mnuLabelGRMCSTAFRE.Index = 0
-    Me.mnuLabelGRMCSTAFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCSTAFRER, Me.mnuLabelGRMCSTAFREO, Me.mnuLabelGRMCSTAVOL})
-    Me.mnuLabelGRMCSTAFRE.Text = "Release"
-    '
-    'mnuLabelGRMCSTAFRER
-    '
-    Me.mnuLabelGRMCSTAFRER.Index = 0
-    Me.mnuLabelGRMCSTAFRER.Text = "Retail"
-    '
-    'mnuLabelGRMCSTAFREO
-    '
-    Me.mnuLabelGRMCSTAFREO.Index = 1
-    Me.mnuLabelGRMCSTAFREO.Text = "OEM"
-    '
-    'mnuLabelGRMCSTAVOL
-    '
-    Me.mnuLabelGRMCSTAVOL.Index = 2
-    Me.mnuLabelGRMCSTAVOL.Text = "Volume License"
-    '
-    'mnuLabelGRMCSTACHE
-    '
-    Me.mnuLabelGRMCSTACHE.Index = 1
-    Me.mnuLabelGRMCSTACHE.Text = "Debug"
-    '
-    'mnuLabelSpace
-    '
-    Me.mnuLabelSpace.Index = 3
-    Me.mnuLabelSpace.Text = "-"
-    '
-    'mnuLabelAuto
-    '
-    Me.mnuLabelAuto.Index = 4
-    Me.mnuLabelAuto.Text = "Auto-Detect"
-    '
-    'helpS7M
-    '
-    Me.helpS7M.HelpNamespace = "S7M.chm"
     '
     'spltSlips7ream
     '
@@ -2097,6 +868,7 @@ Partial Class frmMain
     Me.lvMSU.BackColor = System.Drawing.SystemColors.Window
     Me.lvMSU.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.colUpdate, Me.colType})
     Me.lvMSU.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.lvMSU.FullRowTooltip = True
     Me.lvMSU.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
     Me.helpS7M.SetHelpKeyword(Me.lvMSU, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.0_Updates.htm")
     Me.helpS7M.SetHelpNavigator(Me.lvMSU, System.Windows.Forms.HelpNavigator.Topic)
@@ -2124,6 +896,158 @@ Partial Class frmMain
     Me.colType.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
     Me.colType.Width = 75
     '
+    'imlUpdates
+    '
+    Me.imlUpdates.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit
+    Me.imlUpdates.ImageSize = New System.Drawing.Size(16, 16)
+    Me.imlUpdates.TransparentColor = System.Drawing.Color.Transparent
+    '
+    'lblWIM
+    '
+    Me.lblWIM.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.lblWIM.AutoSize = True
+    Me.lblWIM.Location = New System.Drawing.Point(3, 48)
+    Me.lblWIM.Name = "lblWIM"
+    Me.lblWIM.Size = New System.Drawing.Size(83, 13)
+    Me.lblWIM.TabIndex = 0
+    Me.lblWIM.Text = "INSTALL.&WIM: "
+    '
+    'pnlWIM
+    '
+    Me.pnlWIM.AutoSize = True
+    Me.pnlWIM.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.pnlWIM.ColumnCount = 2
+    Me.pnlWIM.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+    Me.pnlWIM.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlWIM.Controls.Add(Me.txtWIM, 0, 0)
+    Me.pnlWIM.Controls.Add(Me.cmdWIM, 1, 0)
+    Me.pnlWIM.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.pnlWIM.Location = New System.Drawing.Point(100, 40)
+    Me.pnlWIM.Margin = New System.Windows.Forms.Padding(0)
+    Me.pnlWIM.Name = "pnlWIM"
+    Me.pnlWIM.RowCount = 1
+    Me.pnlWIM.RowStyles.Add(New System.Windows.Forms.RowStyle())
+    Me.pnlWIM.Size = New System.Drawing.Size(324, 30)
+    Me.pnlWIM.TabIndex = 1
+    '
+    'txtWIM
+    '
+    Me.txtWIM.AllowDrop = True
+    Me.txtWIM.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.helpS7M.SetHelpKeyword(Me.txtWIM, "/1_SLIPS7REAM_Interface/1.1_INSTALL.WIM.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtWIM, System.Windows.Forms.HelpNavigator.Topic)
+    Me.txtWIM.Location = New System.Drawing.Point(3, 5)
+    Me.txtWIM.Name = "txtWIM"
+    Me.helpS7M.SetShowHelp(Me.txtWIM, True)
+    Me.txtWIM.Size = New System.Drawing.Size(237, 20)
+    Me.txtWIM.TabIndex = 0
+    Me.ttInfo.SetToolTip(Me.txtWIM, "Source WIM or ISO to create image from.")
+    '
+    'cmdWIM
+    '
+    Me.cmdWIM.Anchor = System.Windows.Forms.AnchorStyles.Right
+    Me.cmdWIM.AutoSize = True
+    Me.cmdWIM.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.cmdWIM.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.helpS7M.SetHelpKeyword(Me.cmdWIM, "/1_SLIPS7REAM_Interface/1.1_INSTALL.WIM.htm")
+    Me.helpS7M.SetHelpNavigator(Me.cmdWIM, System.Windows.Forms.HelpNavigator.Topic)
+    Me.cmdWIM.Location = New System.Drawing.Point(246, 3)
+    Me.cmdWIM.MinimumSize = New System.Drawing.Size(75, 24)
+    Me.cmdWIM.Name = "cmdWIM"
+    Me.cmdWIM.Padding = New System.Windows.Forms.Padding(0, 1, 0, 1)
+    Me.helpS7M.SetShowHelp(Me.cmdWIM, True)
+    Me.cmdWIM.Size = New System.Drawing.Size(75, 24)
+    Me.cmdWIM.TabIndex = 1
+    Me.cmdWIM.Text = "Browse..."
+    Me.ttInfo.SetToolTip(Me.cmdWIM, "Choose a WIM or ISO file.")
+    Me.cmdWIM.UseVisualStyleBackColor = True
+    '
+    'pnlBottom
+    '
+    Me.pnlBottom.AutoSize = True
+    Me.pnlBottom.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.pnlBottom.ColumnCount = 6
+    Me.pnlSlips7ream.SetColumnSpan(Me.pnlBottom, 2)
+    Me.pnlBottom.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlBottom.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+    Me.pnlBottom.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlBottom.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlBottom.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlBottom.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlBottom.Controls.Add(Me.cmdBegin, 4, 0)
+    Me.pnlBottom.Controls.Add(Me.cmdClose, 5, 0)
+    Me.pnlBottom.Controls.Add(Me.lblActivity, 1, 0)
+    Me.pnlBottom.Controls.Add(Me.cmdConfig, 3, 0)
+    Me.pnlBottom.Controls.Add(Me.expOutput, 0, 0)
+    Me.pnlBottom.Controls.Add(Me.cmdOpenFolder, 2, 0)
+    Me.pnlBottom.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.pnlBottom.Location = New System.Drawing.Point(0, 576)
+    Me.pnlBottom.Margin = New System.Windows.Forms.Padding(0)
+    Me.pnlBottom.Name = "pnlBottom"
+    Me.pnlBottom.RowCount = 1
+    Me.pnlBottom.RowStyles.Add(New System.Windows.Forms.RowStyle())
+    Me.pnlBottom.Size = New System.Drawing.Size(424, 30)
+    Me.pnlBottom.TabIndex = 11
+    '
+    'cmdBegin
+    '
+    Me.cmdBegin.Anchor = System.Windows.Forms.AnchorStyles.Right
+    Me.cmdBegin.AutoSize = True
+    Me.cmdBegin.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.cmdBegin.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.cmdBegin.Location = New System.Drawing.Point(265, 3)
+    Me.cmdBegin.MinimumSize = New System.Drawing.Size(75, 24)
+    Me.cmdBegin.Name = "cmdBegin"
+    Me.cmdBegin.Padding = New System.Windows.Forms.Padding(0, 1, 0, 1)
+    Me.cmdBegin.Size = New System.Drawing.Size(75, 24)
+    Me.cmdBegin.TabIndex = 1
+    Me.cmdBegin.Text = "&Begin"
+    Me.ttInfo.SetToolTip(Me.cmdBegin, "Start the Slipstream procedure.")
+    Me.cmdBegin.UseVisualStyleBackColor = True
+    '
+    'cmdClose
+    '
+    Me.cmdClose.Anchor = System.Windows.Forms.AnchorStyles.Right
+    Me.cmdClose.AutoSize = True
+    Me.cmdClose.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.cmdClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
+    Me.cmdClose.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.cmdClose.Location = New System.Drawing.Point(346, 3)
+    Me.cmdClose.MinimumSize = New System.Drawing.Size(75, 24)
+    Me.cmdClose.Name = "cmdClose"
+    Me.cmdClose.Padding = New System.Windows.Forms.Padding(0, 1, 0, 1)
+    Me.cmdClose.Size = New System.Drawing.Size(75, 24)
+    Me.cmdClose.TabIndex = 3
+    Me.cmdClose.Text = "&Close"
+    Me.cmdClose.UseVisualStyleBackColor = True
+    '
+    'lblActivity
+    '
+    Me.lblActivity.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.lblActivity.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+    Me.lblActivity.Location = New System.Drawing.Point(28, 7)
+    Me.lblActivity.Margin = New System.Windows.Forms.Padding(3)
+    Me.lblActivity.Name = "lblActivity"
+    Me.lblActivity.Size = New System.Drawing.Size(57, 15)
+    Me.lblActivity.TabIndex = 0
+    Me.lblActivity.Text = "Idle"
+    Me.lblActivity.UseMnemonic = False
+    '
+    'cmdConfig
+    '
+    Me.cmdConfig.AutoSize = True
+    Me.cmdConfig.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.cmdConfig.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.cmdConfig.Location = New System.Drawing.Point(176, 3)
+    Me.cmdConfig.MinimumSize = New System.Drawing.Size(75, 24)
+    Me.cmdConfig.Name = "cmdConfig"
+    Me.cmdConfig.Padding = New System.Windows.Forms.Padding(0, 1, 0, 1)
+    Me.cmdConfig.Size = New System.Drawing.Size(83, 24)
+    Me.cmdConfig.TabIndex = 2
+    Me.cmdConfig.Text = "Confi&guration"
+    Me.ttInfo.SetToolTip(Me.cmdConfig, "Change SLIPS7REAM settings.")
+    Me.cmdConfig.UseVisualStyleBackColor = True
+    '
     'expOutput
     '
     Me.expOutput.Anchor = System.Windows.Forms.AnchorStyles.Left
@@ -2135,6 +1059,463 @@ Partial Class frmMain
     Me.expOutput.TabIndex = 4
     Me.expOutput.Text = Nothing
     Me.ttInfo.SetToolTip(Me.expOutput, "Show Output console.")
+    '
+    'cmdOpenFolder
+    '
+    Me.cmdOpenFolder.AutoSize = True
+    Me.cmdOpenFolder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.cmdOpenFolder.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.cmdOpenFolder.Location = New System.Drawing.Point(91, 3)
+    Me.cmdOpenFolder.MinimumSize = New System.Drawing.Size(75, 24)
+    Me.cmdOpenFolder.Name = "cmdOpenFolder"
+    Me.cmdOpenFolder.Padding = New System.Windows.Forms.Padding(0, 1, 0, 1)
+    Me.cmdOpenFolder.Size = New System.Drawing.Size(79, 24)
+    Me.cmdOpenFolder.TabIndex = 5
+    Me.cmdOpenFolder.Text = "Open &Folder"
+    Me.ttInfo.SetToolTip(Me.cmdOpenFolder, "Open the folder containing the complete ISO or WIM file.")
+    Me.cmdOpenFolder.UseVisualStyleBackColor = True
+    Me.cmdOpenFolder.Visible = False
+    '
+    'chkISO
+    '
+    Me.chkISO.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.chkISO.AutoSize = True
+    Me.chkISO.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.helpS7M.SetHelpKeyword(Me.chkISO, "/1_SLIPS7REAM_Interface/1.6_Save_to_ISO.htm")
+    Me.helpS7M.SetHelpNavigator(Me.chkISO, System.Windows.Forms.HelpNavigator.Topic)
+    Me.chkISO.Location = New System.Drawing.Point(3, 430)
+    Me.chkISO.Name = "chkISO"
+    Me.helpS7M.SetShowHelp(Me.chkISO, True)
+    Me.chkISO.Size = New System.Drawing.Size(93, 18)
+    Me.chkISO.TabIndex = 5
+    Me.chkISO.Text = "Save to &ISO:"
+    Me.ttInfo.SetToolTip(Me.chkISO, "Insert the Image into a Windows 7 ISO.")
+    Me.chkISO.UseVisualStyleBackColor = True
+    '
+    'pnlISO
+    '
+    Me.pnlISO.AutoSize = True
+    Me.pnlISO.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.pnlISO.ColumnCount = 2
+    Me.pnlISO.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+    Me.pnlISO.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlISO.Controls.Add(Me.txtISO, 0, 0)
+    Me.pnlISO.Controls.Add(Me.cmdISO, 1, 0)
+    Me.pnlISO.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.pnlISO.Location = New System.Drawing.Point(100, 424)
+    Me.pnlISO.Margin = New System.Windows.Forms.Padding(0)
+    Me.pnlISO.Name = "pnlISO"
+    Me.pnlISO.RowCount = 1
+    Me.pnlISO.RowStyles.Add(New System.Windows.Forms.RowStyle())
+    Me.pnlISO.Size = New System.Drawing.Size(324, 30)
+    Me.pnlISO.TabIndex = 6
+    '
+    'txtISO
+    '
+    Me.txtISO.AllowDrop = True
+    Me.txtISO.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.txtISO.Enabled = False
+    Me.helpS7M.SetHelpKeyword(Me.txtISO, "/1_SLIPS7REAM_Interface/1.6_Save_to_ISO.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtISO, System.Windows.Forms.HelpNavigator.Topic)
+    Me.txtISO.Location = New System.Drawing.Point(3, 5)
+    Me.txtISO.Name = "txtISO"
+    Me.helpS7M.SetShowHelp(Me.txtISO, True)
+    Me.txtISO.Size = New System.Drawing.Size(237, 20)
+    Me.txtISO.TabIndex = 0
+    Me.ttInfo.SetToolTip(Me.txtISO, "ISO to update with the new image.")
+    '
+    'cmdISO
+    '
+    Me.cmdISO.Anchor = System.Windows.Forms.AnchorStyles.Right
+    Me.cmdISO.AutoSize = True
+    Me.cmdISO.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.cmdISO.Enabled = False
+    Me.cmdISO.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.helpS7M.SetHelpKeyword(Me.cmdISO, "/1_SLIPS7REAM_Interface/1.6_Save_to_ISO.htm")
+    Me.helpS7M.SetHelpNavigator(Me.cmdISO, System.Windows.Forms.HelpNavigator.Topic)
+    Me.cmdISO.Location = New System.Drawing.Point(246, 3)
+    Me.cmdISO.MinimumSize = New System.Drawing.Size(75, 24)
+    Me.cmdISO.Name = "cmdISO"
+    Me.cmdISO.Padding = New System.Windows.Forms.Padding(0, 1, 0, 1)
+    Me.helpS7M.SetShowHelp(Me.cmdISO, True)
+    Me.cmdISO.Size = New System.Drawing.Size(75, 24)
+    Me.cmdISO.TabIndex = 1
+    Me.cmdISO.Text = "Browse..."
+    Me.ttInfo.SetToolTip(Me.cmdISO, "Choose a Windows 7 ISO." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(Use an x86 ISO if you're merging x86 and x64.)")
+    Me.cmdISO.UseVisualStyleBackColor = True
+    '
+    'pnlProgress
+    '
+    Me.pnlProgress.AutoSize = True
+    Me.pnlProgress.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.pnlProgress.ColumnCount = 2
+    Me.pnlSlips7ream.SetColumnSpan(Me.pnlProgress, 2)
+    Me.pnlProgress.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+    Me.pnlProgress.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+    Me.pnlProgress.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
+    Me.pnlProgress.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
+    Me.pnlProgress.Controls.Add(Me.pbTotal, 0, 0)
+    Me.pnlProgress.Controls.Add(Me.pbIndividual, 1, 0)
+    Me.pnlProgress.Controls.Add(Me.txtOutput, 0, 2)
+    Me.pnlProgress.Controls.Add(Me.pctOutputTear, 0, 1)
+    Me.pnlProgress.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.pnlProgress.Location = New System.Drawing.Point(0, 606)
+    Me.pnlProgress.Margin = New System.Windows.Forms.Padding(0)
+    Me.pnlProgress.Name = "pnlProgress"
+    Me.pnlProgress.RowCount = 3
+    Me.pnlProgress.RowStyles.Add(New System.Windows.Forms.RowStyle())
+    Me.pnlProgress.RowStyles.Add(New System.Windows.Forms.RowStyle())
+    Me.pnlProgress.RowStyles.Add(New System.Windows.Forms.RowStyle())
+    Me.pnlProgress.Size = New System.Drawing.Size(424, 148)
+    Me.pnlProgress.TabIndex = 12
+    '
+    'pbTotal
+    '
+    Me.pbTotal.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.pbTotal.Location = New System.Drawing.Point(3, 3)
+    Me.pbTotal.Name = "pbTotal"
+    Me.pbTotal.Size = New System.Drawing.Size(206, 16)
+    Me.pbTotal.Style = System.Windows.Forms.ProgressBarStyle.Continuous
+    Me.pbTotal.TabIndex = 0
+    Me.pbTotal.Visible = False
+    '
+    'pbIndividual
+    '
+    Me.pbIndividual.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.pbIndividual.Location = New System.Drawing.Point(215, 3)
+    Me.pbIndividual.Name = "pbIndividual"
+    Me.pbIndividual.Size = New System.Drawing.Size(206, 16)
+    Me.pbIndividual.Style = System.Windows.Forms.ProgressBarStyle.Continuous
+    Me.pbIndividual.TabIndex = 1
+    Me.pbIndividual.Visible = False
+    '
+    'txtOutput
+    '
+    Me.pnlProgress.SetColumnSpan(Me.txtOutput, 2)
+    Me.txtOutput.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.txtOutput.Location = New System.Drawing.Point(3, 45)
+    Me.txtOutput.Multiline = True
+    Me.txtOutput.Name = "txtOutput"
+    Me.txtOutput.ReadOnly = True
+    Me.txtOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+    Me.txtOutput.Size = New System.Drawing.Size(418, 100)
+    Me.txtOutput.TabIndex = 2
+    Me.txtOutput.Visible = False
+    '
+    'pctOutputTear
+    '
+    Me.pctOutputTear.BackColor = System.Drawing.SystemColors.InactiveCaption
+    Me.pnlProgress.SetColumnSpan(Me.pctOutputTear, 2)
+    Me.pctOutputTear.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.pctOutputTear.Location = New System.Drawing.Point(0, 22)
+    Me.pctOutputTear.Margin = New System.Windows.Forms.Padding(0)
+    Me.pctOutputTear.Name = "pctOutputTear"
+    Me.pctOutputTear.Size = New System.Drawing.Size(424, 20)
+    Me.pctOutputTear.TabIndex = 6
+    Me.pctOutputTear.TabStop = False
+    Me.ttInfo.SetToolTip(Me.pctOutputTear, "Click and Drag to tear the Output Console into its own window.")
+    Me.pctOutputTear.Visible = False
+    '
+    'lblISOLabel
+    '
+    Me.lblISOLabel.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.lblISOLabel.AutoSize = True
+    Me.lblISOLabel.Enabled = False
+    Me.lblISOLabel.Location = New System.Drawing.Point(3, 460)
+    Me.lblISOLabel.Name = "lblISOLabel"
+    Me.lblISOLabel.Size = New System.Drawing.Size(57, 13)
+    Me.lblISOLabel.TabIndex = 7
+    Me.lblISOLabel.Text = "ISO &Label:"
+    '
+    'pnlControl
+    '
+    Me.pnlControl.AutoSize = True
+    Me.pnlControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.pnlControl.ColumnCount = 4
+    Me.pnlSlips7ream.SetColumnSpan(Me.pnlControl, 2)
+    Me.pnlControl.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100.0!))
+    Me.pnlControl.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+    Me.pnlControl.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlControl.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+    Me.pnlControl.Controls.Add(Me.lblPriority, 0, 0)
+    Me.pnlControl.Controls.Add(Me.cmbPriority, 1, 0)
+    Me.pnlControl.Controls.Add(Me.lblCompletion, 2, 0)
+    Me.pnlControl.Controls.Add(Me.cmbCompletion, 3, 0)
+    Me.pnlControl.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.pnlControl.Location = New System.Drawing.Point(0, 549)
+    Me.pnlControl.Margin = New System.Windows.Forms.Padding(0)
+    Me.pnlControl.Name = "pnlControl"
+    Me.pnlControl.RowCount = 1
+    Me.pnlControl.RowStyles.Add(New System.Windows.Forms.RowStyle())
+    Me.pnlControl.Size = New System.Drawing.Size(424, 27)
+    Me.pnlControl.TabIndex = 10
+    '
+    'lblPriority
+    '
+    Me.lblPriority.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.lblPriority.AutoSize = True
+    Me.lblPriority.Location = New System.Drawing.Point(3, 7)
+    Me.lblPriority.Name = "lblPriority"
+    Me.lblPriority.Size = New System.Drawing.Size(82, 13)
+    Me.lblPriority.TabIndex = 0
+    Me.lblPriority.Text = "Process P&riority:"
+    '
+    'cmbPriority
+    '
+    Me.cmbPriority.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.cmbPriority.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+    Me.cmbPriority.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.cmbPriority.FormattingEnabled = True
+    Me.helpS7M.SetHelpKeyword(Me.cmbPriority, "/1_SLIPS7REAM_Interface/1.8_Process_Priority.htm")
+    Me.helpS7M.SetHelpNavigator(Me.cmbPriority, System.Windows.Forms.HelpNavigator.Topic)
+    Me.cmbPriority.Items.AddRange(New Object() {"Realtime", "High", "Above Normal", "Normal", "Below Normal", "Low"})
+    Me.cmbPriority.Location = New System.Drawing.Point(103, 3)
+    Me.cmbPriority.MaximumSize = New System.Drawing.Size(115, 0)
+    Me.cmbPriority.MinimumSize = New System.Drawing.Size(115, 0)
+    Me.cmbPriority.Name = "cmbPriority"
+    Me.helpS7M.SetShowHelp(Me.cmbPriority, True)
+    Me.cmbPriority.Size = New System.Drawing.Size(115, 21)
+    Me.cmbPriority.TabIndex = 1
+    Me.ttInfo.SetToolTip(Me.cmbPriority, resources.GetString("cmbPriority.ToolTip"))
+    '
+    'lblCompletion
+    '
+    Me.lblCompletion.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.lblCompletion.AutoSize = True
+    Me.lblCompletion.Location = New System.Drawing.Point(222, 7)
+    Me.lblCompletion.Name = "lblCompletion"
+    Me.lblCompletion.Size = New System.Drawing.Size(79, 13)
+    Me.lblCompletion.TabIndex = 2
+    Me.lblCompletion.Text = "O&n Completion:"
+    '
+    'cmbCompletion
+    '
+    Me.cmbCompletion.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.cmbCompletion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+    Me.cmbCompletion.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.cmbCompletion.FormattingEnabled = True
+    Me.helpS7M.SetHelpKeyword(Me.cmbCompletion, "/1_SLIPS7REAM_Interface/1.9_On_Completion.htm")
+    Me.helpS7M.SetHelpNavigator(Me.cmbCompletion, System.Windows.Forms.HelpNavigator.Topic)
+    Me.cmbCompletion.Items.AddRange(New Object() {"Do Nothing", "Play Alert Noise", "Close Program", "Shut Down", "Restart", "Sleep"})
+    Me.cmbCompletion.Location = New System.Drawing.Point(307, 3)
+    Me.cmbCompletion.MaximumSize = New System.Drawing.Size(115, 0)
+    Me.cmbCompletion.MinimumSize = New System.Drawing.Size(115, 0)
+    Me.cmbCompletion.Name = "cmbCompletion"
+    Me.helpS7M.SetShowHelp(Me.cmbCompletion, True)
+    Me.cmbCompletion.Size = New System.Drawing.Size(115, 21)
+    Me.cmbCompletion.TabIndex = 4
+    Me.ttInfo.SetToolTip(Me.cmbCompletion, "Event to run after Slipstream is complete.")
+    '
+    'pnlISOOptions
+    '
+    Me.pnlISOOptions.AutoSize = True
+    Me.pnlISOOptions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.pnlISOOptions.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center
+    Me.pnlISOOptions.ColumnCount = 3
+    Me.pnlISOOptions.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+    Me.pnlISOOptions.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlISOOptions.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+    Me.pnlISOOptions.Controls.Add(Me.cmbLimitType, 1, 1)
+    Me.pnlISOOptions.Controls.Add(Me.cmbISOFormat, 2, 0)
+    Me.pnlISOOptions.Controls.Add(Me.chkUnlock, 0, 0)
+    Me.pnlISOOptions.Controls.Add(Me.lblISOFS, 1, 0)
+    Me.pnlISOOptions.Controls.Add(Me.chkUEFI, 0, 1)
+    Me.pnlISOOptions.Controls.Add(Me.cmbLimit, 2, 1)
+    Me.pnlISOOptions.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.helpS7M.SetHelpKeyword(Me.pnlISOOptions, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.0_ISO_Features.htm")
+    Me.helpS7M.SetHelpNavigator(Me.pnlISOOptions, System.Windows.Forms.HelpNavigator.Topic)
+    Me.pnlISOOptions.Location = New System.Drawing.Point(100, 480)
+    Me.pnlISOOptions.Margin = New System.Windows.Forms.Padding(0)
+    Me.pnlISOOptions.Name = "pnlISOOptions"
+    Me.pnlISOOptions.RowCount = 2
+    Me.pnlISOOptions.RowStyles.Add(New System.Windows.Forms.RowStyle())
+    Me.pnlISOOptions.RowStyles.Add(New System.Windows.Forms.RowStyle())
+    Me.helpS7M.SetShowHelp(Me.pnlISOOptions, True)
+    Me.pnlISOOptions.Size = New System.Drawing.Size(324, 54)
+    Me.pnlISOOptions.TabIndex = 9
+    '
+    'cmbLimitType
+    '
+    Me.cmbLimitType.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.cmbLimitType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+    Me.cmbLimitType.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.cmbLimitType.FormattingEnabled = True
+    Me.helpS7M.SetHelpKeyword(Me.cmbLimitType, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.5_Split_Method.htm")
+    Me.helpS7M.SetHelpNavigator(Me.cmbLimitType, System.Windows.Forms.HelpNavigator.Topic)
+    Me.cmbLimitType.Items.AddRange(New Object() {"Single File", "Split WIM", "Split ISO"})
+    Me.cmbLimitType.Location = New System.Drawing.Point(124, 30)
+    Me.cmbLimitType.Name = "cmbLimitType"
+    Me.helpS7M.SetShowHelp(Me.cmbLimitType, True)
+    Me.cmbLimitType.Size = New System.Drawing.Size(75, 21)
+    Me.cmbLimitType.TabIndex = 4
+    Me.ttInfo.SetToolTip(Me.cmbLimitType, resources.GetString("cmbLimitType.ToolTip"))
+    '
+    'cmbISOFormat
+    '
+    Me.cmbISOFormat.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.cmbISOFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+    Me.cmbISOFormat.Enabled = False
+    Me.cmbISOFormat.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.cmbISOFormat.FormattingEnabled = True
+    Me.helpS7M.SetHelpKeyword(Me.cmbISOFormat, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.4_File_System.htm")
+    Me.helpS7M.SetHelpNavigator(Me.cmbISOFormat, System.Windows.Forms.HelpNavigator.Topic)
+    Me.cmbISOFormat.Items.AddRange(New Object() {"ISO 9960", "Joliet", "Joliet / ISO 9960", "UDF", "UDF / ISO 9960", "UDF 1.02", "UDF 1.02 / ISO 9960"})
+    Me.cmbISOFormat.Location = New System.Drawing.Point(205, 3)
+    Me.cmbISOFormat.Name = "cmbISOFormat"
+    Me.helpS7M.SetShowHelp(Me.cmbISOFormat, True)
+    Me.cmbISOFormat.Size = New System.Drawing.Size(116, 21)
+    Me.cmbISOFormat.TabIndex = 2
+    Me.ttInfo.SetToolTip(Me.cmbISOFormat, resources.GetString("cmbISOFormat.ToolTip"))
+    '
+    'chkUnlock
+    '
+    Me.chkUnlock.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.chkUnlock.AutoSize = True
+    Me.chkUnlock.Enabled = False
+    Me.chkUnlock.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.helpS7M.SetHelpKeyword(Me.chkUnlock, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.2_Unlock_All_Editions.htm")
+    Me.helpS7M.SetHelpNavigator(Me.chkUnlock, System.Windows.Forms.HelpNavigator.Topic)
+    Me.chkUnlock.Location = New System.Drawing.Point(3, 4)
+    Me.chkUnlock.Name = "chkUnlock"
+    Me.helpS7M.SetShowHelp(Me.chkUnlock, True)
+    Me.chkUnlock.Size = New System.Drawing.Size(115, 18)
+    Me.chkUnlock.TabIndex = 0
+    Me.chkUnlock.Text = "Unlock All &Editions"
+    Me.ttInfo.SetToolTip(Me.chkUnlock, "Remove ""ei.cfg"" and the install catalogs from the ISO to allow installation of al" & _
+        "l editions.")
+    Me.chkUnlock.UseVisualStyleBackColor = True
+    '
+    'lblISOFS
+    '
+    Me.lblISOFS.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.lblISOFS.AutoSize = True
+    Me.lblISOFS.Enabled = False
+    Me.lblISOFS.Location = New System.Drawing.Point(124, 7)
+    Me.lblISOFS.Name = "lblISOFS"
+    Me.lblISOFS.Size = New System.Drawing.Size(63, 13)
+    Me.lblISOFS.TabIndex = 1
+    Me.lblISOFS.Text = "File Sys&tem:"
+    '
+    'chkUEFI
+    '
+    Me.chkUEFI.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.chkUEFI.AutoSize = True
+    Me.chkUEFI.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.helpS7M.SetHelpKeyword(Me.chkUEFI, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.3_UEFI_Boot.htm")
+    Me.helpS7M.SetHelpNavigator(Me.chkUEFI, System.Windows.Forms.HelpNavigator.Topic)
+    Me.chkUEFI.Location = New System.Drawing.Point(3, 31)
+    Me.chkUEFI.Name = "chkUEFI"
+    Me.helpS7M.SetShowHelp(Me.chkUEFI, True)
+    Me.chkUEFI.Size = New System.Drawing.Size(81, 18)
+    Me.chkUEFI.TabIndex = 3
+    Me.chkUEFI.Text = "UEFI B&oot"
+    Me.ttInfo.SetToolTip(Me.chkUEFI, resources.GetString("chkUEFI.ToolTip"))
+    Me.chkUEFI.UseVisualStyleBackColor = True
+    '
+    'cmbLimit
+    '
+    Me.cmbLimit.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.cmbLimit.DropDownWidth = 140
+    Me.cmbLimit.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.cmbLimit.FormattingEnabled = True
+    Me.helpS7M.SetHelpKeyword(Me.cmbLimit, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.5_Split_Method.htm")
+    Me.helpS7M.SetHelpNavigator(Me.cmbLimit, System.Windows.Forms.HelpNavigator.Topic)
+    Me.cmbLimit.Location = New System.Drawing.Point(205, 30)
+    Me.cmbLimit.Name = "cmbLimit"
+    Me.helpS7M.SetShowHelp(Me.cmbLimit, True)
+    Me.cmbLimit.Size = New System.Drawing.Size(116, 21)
+    Me.cmbLimit.TabIndex = 5
+    Me.ttInfo.SetToolTip(Me.cmbLimit, resources.GetString("cmbLimit.ToolTip"))
+    '
+    'chkMerge
+    '
+    Me.chkMerge.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.chkMerge.AutoSize = True
+    Me.chkMerge.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.helpS7M.SetHelpKeyword(Me.chkMerge, "/1_SLIPS7REAM_Interface/1.2_Merge_WIM.htm")
+    Me.helpS7M.SetHelpNavigator(Me.chkMerge, System.Windows.Forms.HelpNavigator.Topic)
+    Me.chkMerge.Location = New System.Drawing.Point(3, 76)
+    Me.chkMerge.Name = "chkMerge"
+    Me.helpS7M.SetShowHelp(Me.chkMerge, True)
+    Me.chkMerge.Size = New System.Drawing.Size(91, 18)
+    Me.chkMerge.TabIndex = 2
+    Me.chkMerge.Text = "&Merge WIM:"
+    Me.ttInfo.SetToolTip(Me.chkMerge, "Merge the Packages of another Image with this one.")
+    Me.chkMerge.UseVisualStyleBackColor = True
+    '
+    'pnlMerge
+    '
+    Me.pnlMerge.AutoSize = True
+    Me.pnlMerge.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.pnlMerge.ColumnCount = 2
+    Me.pnlMerge.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+    Me.pnlMerge.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlMerge.Controls.Add(Me.txtMerge, 0, 0)
+    Me.pnlMerge.Controls.Add(Me.cmdMerge, 1, 0)
+    Me.pnlMerge.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.pnlMerge.Location = New System.Drawing.Point(100, 70)
+    Me.pnlMerge.Margin = New System.Windows.Forms.Padding(0)
+    Me.pnlMerge.Name = "pnlMerge"
+    Me.pnlMerge.RowCount = 1
+    Me.pnlMerge.RowStyles.Add(New System.Windows.Forms.RowStyle())
+    Me.pnlMerge.Size = New System.Drawing.Size(324, 30)
+    Me.pnlMerge.TabIndex = 3
+    '
+    'txtMerge
+    '
+    Me.txtMerge.AllowDrop = True
+    Me.txtMerge.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.txtMerge.Enabled = False
+    Me.helpS7M.SetHelpKeyword(Me.txtMerge, "/1_SLIPS7REAM_Interface/1.2_Merge_WIM.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtMerge, System.Windows.Forms.HelpNavigator.Topic)
+    Me.txtMerge.Location = New System.Drawing.Point(3, 5)
+    Me.txtMerge.Name = "txtMerge"
+    Me.helpS7M.SetShowHelp(Me.txtMerge, True)
+    Me.txtMerge.Size = New System.Drawing.Size(237, 20)
+    Me.txtMerge.TabIndex = 0
+    Me.ttInfo.SetToolTip(Me.txtMerge, "WIM or ISO to Merge with.")
+    '
+    'cmdMerge
+    '
+    Me.cmdMerge.Anchor = System.Windows.Forms.AnchorStyles.Right
+    Me.cmdMerge.AutoSize = True
+    Me.cmdMerge.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.cmdMerge.Enabled = False
+    Me.cmdMerge.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.helpS7M.SetHelpKeyword(Me.cmdMerge, "/1_SLIPS7REAM_Interface/1.2_Merge_WIM.htm")
+    Me.helpS7M.SetHelpNavigator(Me.cmdMerge, System.Windows.Forms.HelpNavigator.Topic)
+    Me.cmdMerge.Location = New System.Drawing.Point(246, 3)
+    Me.cmdMerge.MinimumSize = New System.Drawing.Size(75, 24)
+    Me.cmdMerge.Name = "cmdMerge"
+    Me.cmdMerge.Padding = New System.Windows.Forms.Padding(0, 1, 0, 1)
+    Me.helpS7M.SetShowHelp(Me.cmdMerge, True)
+    Me.cmdMerge.Size = New System.Drawing.Size(75, 24)
+    Me.cmdMerge.TabIndex = 1
+    Me.cmdMerge.Text = "Browse..."
+    Me.ttInfo.SetToolTip(Me.cmdMerge, "Choose a WIM or ISO file.")
+    Me.cmdMerge.UseVisualStyleBackColor = True
+    '
+    'pctTitle
+    '
+    Me.pnlSlips7ream.SetColumnSpan(Me.pctTitle, 2)
+    Me.pctTitle.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.pctTitle.Location = New System.Drawing.Point(0, 0)
+    Me.pctTitle.Margin = New System.Windows.Forms.Padding(0)
+    Me.pctTitle.Name = "pctTitle"
+    Me.pctTitle.Size = New System.Drawing.Size(424, 40)
+    Me.pctTitle.TabIndex = 22
+    Me.pctTitle.TabStop = False
+    '
+    'lblISOFeatures
+    '
+    Me.lblISOFeatures.AutoSize = True
+    Me.lblISOFeatures.Enabled = False
+    Me.lblISOFeatures.Location = New System.Drawing.Point(3, 486)
+    Me.lblISOFeatures.Margin = New System.Windows.Forms.Padding(3, 6, 3, 0)
+    Me.lblISOFeatures.Name = "lblISOFeatures"
+    Me.lblISOFeatures.Size = New System.Drawing.Size(72, 13)
+    Me.lblISOFeatures.TabIndex = 23
+    Me.lblISOFeatures.Text = "ISO Features:"
     '
     'brUpdates
     '
@@ -2164,6 +1545,1295 @@ Partial Class frmMain
     Me.brISO.TabIndex = 25
     Me.brISO.TabStop = False
     '
+    'pnlISOLabel
+    '
+    Me.pnlISOLabel.AutoSize = True
+    Me.pnlISOLabel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+    Me.pnlISOLabel.ColumnCount = 2
+    Me.pnlISOLabel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlISOLabel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+    Me.pnlISOLabel.Controls.Add(Me.txtISOLabel, 1, 0)
+    Me.pnlISOLabel.Controls.Add(Me.chkAutoLabel, 0, 0)
+    Me.pnlISOLabel.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.pnlISOLabel.Location = New System.Drawing.Point(100, 454)
+    Me.pnlISOLabel.Margin = New System.Windows.Forms.Padding(0)
+    Me.pnlISOLabel.Name = "pnlISOLabel"
+    Me.pnlISOLabel.RowCount = 1
+    Me.pnlISOLabel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+    Me.pnlISOLabel.Size = New System.Drawing.Size(324, 26)
+    Me.pnlISOLabel.TabIndex = 8
+    '
+    'txtISOLabel
+    '
+    Me.txtISOLabel.AllowDrop = True
+    Me.txtISOLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.txtISOLabel.Enabled = False
+    Me.helpS7M.SetHelpKeyword(Me.txtISOLabel, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.1_ISO_Label.htm")
+    Me.helpS7M.SetHelpNavigator(Me.txtISOLabel, System.Windows.Forms.HelpNavigator.Topic)
+    Me.txtISOLabel.Location = New System.Drawing.Point(88, 3)
+    Me.txtISOLabel.MaxLength = 32
+    Me.txtISOLabel.Name = "txtISOLabel"
+    Me.helpS7M.SetShowHelp(Me.txtISOLabel, True)
+    Me.txtISOLabel.Size = New System.Drawing.Size(233, 20)
+    Me.txtISOLabel.TabIndex = 1
+    Me.ttInfo.SetToolTip(Me.txtISOLabel, "Disc Label for ISO.")
+    '
+    'chkAutoLabel
+    '
+    Me.chkAutoLabel.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.chkAutoLabel.AutoSize = True
+    Me.chkAutoLabel.FlatStyle = System.Windows.Forms.FlatStyle.System
+    Me.helpS7M.SetHelpKeyword(Me.chkAutoLabel, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.1_ISO_Label.htm")
+    Me.helpS7M.SetHelpNavigator(Me.chkAutoLabel, System.Windows.Forms.HelpNavigator.Topic)
+    Me.chkAutoLabel.Location = New System.Drawing.Point(3, 4)
+    Me.chkAutoLabel.Name = "chkAutoLabel"
+    Me.helpS7M.SetShowHelp(Me.chkAutoLabel, True)
+    Me.chkAutoLabel.Size = New System.Drawing.Size(79, 18)
+    Me.chkAutoLabel.TabIndex = 0
+    Me.chkAutoLabel.Text = "Read ISO"
+    Me.ttInfo.SetToolTip(Me.chkAutoLabel, "Automatically load the Label of the ISO selected in the Save to ISO field above.")
+    Me.chkAutoLabel.UseVisualStyleBackColor = True
+    '
+    'tmrUpdateCheck
+    '
+    Me.tmrUpdateCheck.Enabled = True
+    Me.tmrUpdateCheck.Interval = 2000
+    '
+    'mnuOutput
+    '
+    Me.mnuOutput.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuCopy, Me.mnuCopyCommands, Me.mnuClear, Me.mnuSpacer, Me.mnuSelectAll})
+    '
+    'mnuCopy
+    '
+    Me.mnuCopy.Index = 0
+    Me.mnuCopy.Text = "&Copy"
+    '
+    'mnuCopyCommands
+    '
+    Me.mnuCopyCommands.Index = 1
+    Me.mnuCopyCommands.Text = "Copy Co&mmands"
+    '
+    'mnuClear
+    '
+    Me.mnuClear.Index = 2
+    Me.mnuClear.Text = "C&lear"
+    '
+    'mnuSpacer
+    '
+    Me.mnuSpacer.Index = 3
+    Me.mnuSpacer.Text = "-"
+    '
+    'mnuSelectAll
+    '
+    Me.mnuSelectAll.Index = 4
+    Me.mnuSelectAll.Text = "Select &All"
+    '
+    'mnuImages
+    '
+    Me.mnuImages.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuPackageInclude, Me.mnuPackageRename, Me.mnuPackageSpacer, Me.mnuPackageLocation, Me.mnuPackageProperties})
+    '
+    'mnuPackageInclude
+    '
+    Me.mnuPackageInclude.Index = 0
+    Me.mnuPackageInclude.Text = "Include in Image"
+    '
+    'mnuPackageRename
+    '
+    Me.mnuPackageRename.Index = 1
+    Me.mnuPackageRename.Text = "Rename Package"
+    '
+    'mnuPackageSpacer
+    '
+    Me.mnuPackageSpacer.Index = 2
+    Me.mnuPackageSpacer.Text = "-"
+    '
+    'mnuPackageLocation
+    '
+    Me.mnuPackageLocation.Index = 3
+    Me.mnuPackageLocation.Text = "Open Image Location"
+    '
+    'mnuPackageProperties
+    '
+    Me.mnuPackageProperties.DefaultItem = True
+    Me.mnuPackageProperties.Index = 4
+    Me.mnuPackageProperties.Text = "Properties"
+    '
+    'mnuMSU
+    '
+    Me.mnuMSU.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuUpdateTop, Me.mnuUpdateUp, Me.mnuUpdateDown, Me.mnuUpdateBottom, Me.mnuUpdateSpacer, Me.mnuUpdateRemove, Me.mnuUpdateSpacer2, Me.mnuUpdatePEDriver, Me.mnuUpdateBootDriver, Me.mnuUpdateLocation, Me.mnuUpdateProperties})
+    '
+    'mnuUpdateTop
+    '
+    Me.mnuUpdateTop.Index = 0
+    Me.mnuUpdateTop.Text = "Move Updates to Top"
+    '
+    'mnuUpdateUp
+    '
+    Me.mnuUpdateUp.Index = 1
+    Me.mnuUpdateUp.Text = "Move Updates Up"
+    '
+    'mnuUpdateDown
+    '
+    Me.mnuUpdateDown.Index = 2
+    Me.mnuUpdateDown.Text = "Move Updates Down"
+    '
+    'mnuUpdateBottom
+    '
+    Me.mnuUpdateBottom.Index = 3
+    Me.mnuUpdateBottom.Text = "Move Updates to Bottom"
+    '
+    'mnuUpdateSpacer
+    '
+    Me.mnuUpdateSpacer.Index = 4
+    Me.mnuUpdateSpacer.Text = "-"
+    '
+    'mnuUpdateRemove
+    '
+    Me.mnuUpdateRemove.Index = 5
+    Me.mnuUpdateRemove.Text = "Remove Updates"
+    '
+    'mnuUpdateSpacer2
+    '
+    Me.mnuUpdateSpacer2.Index = 6
+    Me.mnuUpdateSpacer2.Text = "-"
+    '
+    'mnuUpdatePEDriver
+    '
+    Me.mnuUpdatePEDriver.Index = 7
+    Me.mnuUpdatePEDriver.Text = "Include Driver in PE"
+    '
+    'mnuUpdateBootDriver
+    '
+    Me.mnuUpdateBootDriver.Index = 8
+    Me.mnuUpdateBootDriver.Text = "Include Driver in Setup"
+    '
+    'mnuUpdateLocation
+    '
+    Me.mnuUpdateLocation.Index = 9
+    Me.mnuUpdateLocation.Text = "Open Updates Location"
+    '
+    'mnuUpdateProperties
+    '
+    Me.mnuUpdateProperties.DefaultItem = True
+    Me.mnuUpdateProperties.Index = 10
+    Me.mnuUpdateProperties.Text = "Properties"
+    '
+    'mnuISOLabel
+    '
+    Me.mnuISOLabel.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabel7x86, Me.mnuLabel7x64, Me.mnuLabel7AIO, Me.mnuLabelSpace, Me.mnuLabelAuto})
+    '
+    'mnuLabel7x86
+    '
+    Me.mnuLabel7x86.Index = 0
+    Me.mnuLabel7x86.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMC, Me.mnuLabelGSP1RMC})
+    Me.mnuLabel7x86.Text = "Windows 7 x86"
+    '
+    'mnuLabelGRMC
+    '
+    Me.mnuLabelGRMC.Index = 0
+    Me.mnuLabelGRMC.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCST, Me.mnuLabelGRMCHB, Me.mnuLabelGRMCHP, Me.mnuLabelGRMCPR, Me.mnuLabelGRMCUL, Me.mnuLabelGRMCEN, Me.mnuLabelGRMCSpace, Me.mnuLabelGRMCMU, Me.mnuLabelGRMCAL})
+    Me.mnuLabelGRMC.Text = "Release to Manufacturing"
+    '
+    'mnuLabelGRMCST
+    '
+    Me.mnuLabelGRMCST.Index = 0
+    Me.mnuLabelGRMCST.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCSTFRE, Me.mnuLabelGRMCSTCHE})
+    Me.mnuLabelGRMCST.Text = "Starter"
+    '
+    'mnuLabelGRMCSTFRE
+    '
+    Me.mnuLabelGRMCSTFRE.Index = 0
+    Me.mnuLabelGRMCSTFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCSTFRER, Me.mnuLabelGRMCSTFREO, Me.mnuLabelGRMCSTVOL})
+    Me.mnuLabelGRMCSTFRE.Text = "Release"
+    '
+    'mnuLabelGRMCSTFRER
+    '
+    Me.mnuLabelGRMCSTFRER.Index = 0
+    Me.mnuLabelGRMCSTFRER.Text = "Retail"
+    '
+    'mnuLabelGRMCSTFREO
+    '
+    Me.mnuLabelGRMCSTFREO.Index = 1
+    Me.mnuLabelGRMCSTFREO.Text = "OEM"
+    '
+    'mnuLabelGRMCSTVOL
+    '
+    Me.mnuLabelGRMCSTVOL.Index = 2
+    Me.mnuLabelGRMCSTVOL.Text = "Volume License"
+    '
+    'mnuLabelGRMCSTCHE
+    '
+    Me.mnuLabelGRMCSTCHE.Index = 1
+    Me.mnuLabelGRMCSTCHE.Text = "Debug"
+    '
+    'mnuLabelGRMCHB
+    '
+    Me.mnuLabelGRMCHB.Index = 1
+    Me.mnuLabelGRMCHB.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCHBFRE, Me.mnuLabelGRMCHBCHE})
+    Me.mnuLabelGRMCHB.Text = "Home Basic"
+    '
+    'mnuLabelGRMCHBFRE
+    '
+    Me.mnuLabelGRMCHBFRE.Index = 0
+    Me.mnuLabelGRMCHBFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCHBFRER, Me.mnuLabelGRMCHBFREO, Me.mnuLabelGRMCHBVOL})
+    Me.mnuLabelGRMCHBFRE.Text = "Release"
+    '
+    'mnuLabelGRMCHBFRER
+    '
+    Me.mnuLabelGRMCHBFRER.Index = 0
+    Me.mnuLabelGRMCHBFRER.Text = "Retail"
+    '
+    'mnuLabelGRMCHBFREO
+    '
+    Me.mnuLabelGRMCHBFREO.Index = 1
+    Me.mnuLabelGRMCHBFREO.Text = "OEM"
+    '
+    'mnuLabelGRMCHBVOL
+    '
+    Me.mnuLabelGRMCHBVOL.Index = 2
+    Me.mnuLabelGRMCHBVOL.Text = "Volume License"
+    '
+    'mnuLabelGRMCHBCHE
+    '
+    Me.mnuLabelGRMCHBCHE.Index = 1
+    Me.mnuLabelGRMCHBCHE.Text = "Debug"
+    '
+    'mnuLabelGRMCHP
+    '
+    Me.mnuLabelGRMCHP.Index = 2
+    Me.mnuLabelGRMCHP.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCHPFRE, Me.mnuLabelGRMCHPCHE})
+    Me.mnuLabelGRMCHP.Text = "Home Premium"
+    '
+    'mnuLabelGRMCHPFRE
+    '
+    Me.mnuLabelGRMCHPFRE.Index = 0
+    Me.mnuLabelGRMCHPFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCHPFRER, Me.mnuLabelGRMCHPFREO, Me.mnuLabelGRMCHPVOL})
+    Me.mnuLabelGRMCHPFRE.Text = "Release"
+    '
+    'mnuLabelGRMCHPFRER
+    '
+    Me.mnuLabelGRMCHPFRER.Index = 0
+    Me.mnuLabelGRMCHPFRER.Text = "Retail"
+    '
+    'mnuLabelGRMCHPFREO
+    '
+    Me.mnuLabelGRMCHPFREO.Index = 1
+    Me.mnuLabelGRMCHPFREO.Text = "OEM"
+    '
+    'mnuLabelGRMCHPVOL
+    '
+    Me.mnuLabelGRMCHPVOL.Index = 2
+    Me.mnuLabelGRMCHPVOL.Text = "Volume License"
+    '
+    'mnuLabelGRMCHPCHE
+    '
+    Me.mnuLabelGRMCHPCHE.Index = 1
+    Me.mnuLabelGRMCHPCHE.Text = "Debug"
+    '
+    'mnuLabelGRMCPR
+    '
+    Me.mnuLabelGRMCPR.Index = 3
+    Me.mnuLabelGRMCPR.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCPRFRE, Me.mnuLabelGRMCPRCHE})
+    Me.mnuLabelGRMCPR.Text = "Professional"
+    '
+    'mnuLabelGRMCPRFRE
+    '
+    Me.mnuLabelGRMCPRFRE.Index = 0
+    Me.mnuLabelGRMCPRFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCPRFRER, Me.mnuLabelGRMCPRFREO, Me.mnuLabelGRMCPRVOL})
+    Me.mnuLabelGRMCPRFRE.Text = "Release"
+    '
+    'mnuLabelGRMCPRFRER
+    '
+    Me.mnuLabelGRMCPRFRER.Index = 0
+    Me.mnuLabelGRMCPRFRER.Text = "Retail"
+    '
+    'mnuLabelGRMCPRFREO
+    '
+    Me.mnuLabelGRMCPRFREO.Index = 1
+    Me.mnuLabelGRMCPRFREO.Text = "OEM"
+    '
+    'mnuLabelGRMCPRVOL
+    '
+    Me.mnuLabelGRMCPRVOL.Index = 2
+    Me.mnuLabelGRMCPRVOL.Text = "Volume License"
+    '
+    'mnuLabelGRMCPRCHE
+    '
+    Me.mnuLabelGRMCPRCHE.Index = 1
+    Me.mnuLabelGRMCPRCHE.Text = "Debug"
+    '
+    'mnuLabelGRMCUL
+    '
+    Me.mnuLabelGRMCUL.Index = 4
+    Me.mnuLabelGRMCUL.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCULFRE, Me.mnuLabelGRMCULCHE})
+    Me.mnuLabelGRMCUL.Text = "Ultimate"
+    '
+    'mnuLabelGRMCULFRE
+    '
+    Me.mnuLabelGRMCULFRE.Index = 0
+    Me.mnuLabelGRMCULFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCULFRER, Me.mnuLabelGRMCULFREO, Me.mnuLabelGRMCULVOL})
+    Me.mnuLabelGRMCULFRE.Text = "Release"
+    '
+    'mnuLabelGRMCULFRER
+    '
+    Me.mnuLabelGRMCULFRER.Index = 0
+    Me.mnuLabelGRMCULFRER.Text = "Retail"
+    '
+    'mnuLabelGRMCULFREO
+    '
+    Me.mnuLabelGRMCULFREO.Index = 1
+    Me.mnuLabelGRMCULFREO.Text = "OEM"
+    '
+    'mnuLabelGRMCULVOL
+    '
+    Me.mnuLabelGRMCULVOL.Index = 2
+    Me.mnuLabelGRMCULVOL.Text = "Volume License"
+    '
+    'mnuLabelGRMCULCHE
+    '
+    Me.mnuLabelGRMCULCHE.Index = 1
+    Me.mnuLabelGRMCULCHE.Text = "Debug"
+    '
+    'mnuLabelGRMCEN
+    '
+    Me.mnuLabelGRMCEN.Index = 5
+    Me.mnuLabelGRMCEN.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCENVOL, Me.mnuLabelGRMCENCHE})
+    Me.mnuLabelGRMCEN.Text = "Enterprise"
+    '
+    'mnuLabelGRMCENVOL
+    '
+    Me.mnuLabelGRMCENVOL.Index = 0
+    Me.mnuLabelGRMCENVOL.Text = "Volume License"
+    '
+    'mnuLabelGRMCENCHE
+    '
+    Me.mnuLabelGRMCENCHE.Index = 1
+    Me.mnuLabelGRMCENCHE.Text = "Debug"
+    '
+    'mnuLabelGRMCSpace
+    '
+    Me.mnuLabelGRMCSpace.Index = 6
+    Me.mnuLabelGRMCSpace.Text = "-"
+    '
+    'mnuLabelGRMCMU
+    '
+    Me.mnuLabelGRMCMU.Index = 7
+    Me.mnuLabelGRMCMU.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCMUFRE, Me.mnuLabelGRMCMUCHE})
+    Me.mnuLabelGRMCMU.Text = "Multiple"
+    '
+    'mnuLabelGRMCMUFRE
+    '
+    Me.mnuLabelGRMCMUFRE.Index = 0
+    Me.mnuLabelGRMCMUFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCMUFRER, Me.mnuLabelGRMCMUFREO, Me.mnuLabelGRMCMUVOL})
+    Me.mnuLabelGRMCMUFRE.Text = "Release"
+    '
+    'mnuLabelGRMCMUFRER
+    '
+    Me.mnuLabelGRMCMUFRER.Index = 0
+    Me.mnuLabelGRMCMUFRER.Text = "Retail"
+    '
+    'mnuLabelGRMCMUFREO
+    '
+    Me.mnuLabelGRMCMUFREO.Index = 1
+    Me.mnuLabelGRMCMUFREO.Text = "OEM"
+    '
+    'mnuLabelGRMCMUVOL
+    '
+    Me.mnuLabelGRMCMUVOL.Index = 2
+    Me.mnuLabelGRMCMUVOL.Text = "Volume License"
+    '
+    'mnuLabelGRMCMUCHE
+    '
+    Me.mnuLabelGRMCMUCHE.Index = 1
+    Me.mnuLabelGRMCMUCHE.Text = "Debug"
+    '
+    'mnuLabelGRMCAL
+    '
+    Me.mnuLabelGRMCAL.Index = 8
+    Me.mnuLabelGRMCAL.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCALFRE, Me.mnuLabelGRMCALCHE})
+    Me.mnuLabelGRMCAL.Text = "All-in-One"
+    '
+    'mnuLabelGRMCALFRE
+    '
+    Me.mnuLabelGRMCALFRE.Index = 0
+    Me.mnuLabelGRMCALFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCALFRER, Me.mnuLabelGRMCALFREO, Me.mnuLabelGRMCALVOL})
+    Me.mnuLabelGRMCALFRE.Text = "Release"
+    '
+    'mnuLabelGRMCALFRER
+    '
+    Me.mnuLabelGRMCALFRER.Index = 0
+    Me.mnuLabelGRMCALFRER.Text = "Retail"
+    '
+    'mnuLabelGRMCALFREO
+    '
+    Me.mnuLabelGRMCALFREO.Index = 1
+    Me.mnuLabelGRMCALFREO.Text = "OEM"
+    '
+    'mnuLabelGRMCALVOL
+    '
+    Me.mnuLabelGRMCALVOL.Index = 2
+    Me.mnuLabelGRMCALVOL.Text = "Volume License"
+    '
+    'mnuLabelGRMCALCHE
+    '
+    Me.mnuLabelGRMCALCHE.Index = 1
+    Me.mnuLabelGRMCALCHE.Text = "Debug"
+    '
+    'mnuLabelGSP1RMC
+    '
+    Me.mnuLabelGSP1RMC.Index = 1
+    Me.mnuLabelGSP1RMC.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCST, Me.mnuLabelGSP1RMCHB, Me.mnuLabelGSP1RMCHP, Me.mnuLabelGSP1RMCPR, Me.mnuLabelGSP1RMCUL, Me.mnuLabelGSP1RMCEN, Me.mnuLabelGSP1RMCSpace, Me.mnuLabelGSP1RMCMU, Me.mnuLabelGSP1RMCAL})
+    Me.mnuLabelGSP1RMC.Text = "Service Pack 1"
+    '
+    'mnuLabelGSP1RMCST
+    '
+    Me.mnuLabelGSP1RMCST.Index = 0
+    Me.mnuLabelGSP1RMCST.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCSTFRE, Me.mnuLabelGSP1RMCSTCHE})
+    Me.mnuLabelGSP1RMCST.Text = "Starter"
+    '
+    'mnuLabelGSP1RMCSTFRE
+    '
+    Me.mnuLabelGSP1RMCSTFRE.Index = 0
+    Me.mnuLabelGSP1RMCSTFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCSTFRER, Me.mnuLabelGSP1RMCSTFREO, Me.mnuLabelGSP1RMCSTVOL})
+    Me.mnuLabelGSP1RMCSTFRE.Text = "Release"
+    '
+    'mnuLabelGSP1RMCSTFRER
+    '
+    Me.mnuLabelGSP1RMCSTFRER.Index = 0
+    Me.mnuLabelGSP1RMCSTFRER.Text = "Retail"
+    '
+    'mnuLabelGSP1RMCSTFREO
+    '
+    Me.mnuLabelGSP1RMCSTFREO.Index = 1
+    Me.mnuLabelGSP1RMCSTFREO.Text = "OEM"
+    '
+    'mnuLabelGSP1RMCSTVOL
+    '
+    Me.mnuLabelGSP1RMCSTVOL.Index = 2
+    Me.mnuLabelGSP1RMCSTVOL.Text = "Volume License"
+    '
+    'mnuLabelGSP1RMCSTCHE
+    '
+    Me.mnuLabelGSP1RMCSTCHE.Index = 1
+    Me.mnuLabelGSP1RMCSTCHE.Text = "Debug"
+    '
+    'mnuLabelGSP1RMCHB
+    '
+    Me.mnuLabelGSP1RMCHB.Index = 1
+    Me.mnuLabelGSP1RMCHB.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCHBFRE, Me.mnuLabelGSP1RMCHBCHE})
+    Me.mnuLabelGSP1RMCHB.Text = "Home Basic"
+    '
+    'mnuLabelGSP1RMCHBFRE
+    '
+    Me.mnuLabelGSP1RMCHBFRE.Index = 0
+    Me.mnuLabelGSP1RMCHBFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCHBFRER, Me.mnuLabelGSP1RMCHBFREO, Me.mnuLabelGSP1RMCHBVOL})
+    Me.mnuLabelGSP1RMCHBFRE.Text = "Release"
+    '
+    'mnuLabelGSP1RMCHBFRER
+    '
+    Me.mnuLabelGSP1RMCHBFRER.Index = 0
+    Me.mnuLabelGSP1RMCHBFRER.Text = "Retail"
+    '
+    'mnuLabelGSP1RMCHBFREO
+    '
+    Me.mnuLabelGSP1RMCHBFREO.Index = 1
+    Me.mnuLabelGSP1RMCHBFREO.Text = "OEM"
+    '
+    'mnuLabelGSP1RMCHBVOL
+    '
+    Me.mnuLabelGSP1RMCHBVOL.Index = 2
+    Me.mnuLabelGSP1RMCHBVOL.Text = "Volume License"
+    '
+    'mnuLabelGSP1RMCHBCHE
+    '
+    Me.mnuLabelGSP1RMCHBCHE.Index = 1
+    Me.mnuLabelGSP1RMCHBCHE.Text = "Debug"
+    '
+    'mnuLabelGSP1RMCHP
+    '
+    Me.mnuLabelGSP1RMCHP.Index = 2
+    Me.mnuLabelGSP1RMCHP.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCHPFRE, Me.mnuLabelGSP1RMCHPCHE})
+    Me.mnuLabelGSP1RMCHP.Text = "Home Premium"
+    '
+    'mnuLabelGSP1RMCHPFRE
+    '
+    Me.mnuLabelGSP1RMCHPFRE.Index = 0
+    Me.mnuLabelGSP1RMCHPFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCHPFRER, Me.mnuLabelGSP1RMCHPFREO, Me.mnuLabelGSP1RMCHPVOL})
+    Me.mnuLabelGSP1RMCHPFRE.Text = "Release"
+    '
+    'mnuLabelGSP1RMCHPFRER
+    '
+    Me.mnuLabelGSP1RMCHPFRER.Index = 0
+    Me.mnuLabelGSP1RMCHPFRER.Text = "Retail"
+    '
+    'mnuLabelGSP1RMCHPFREO
+    '
+    Me.mnuLabelGSP1RMCHPFREO.Index = 1
+    Me.mnuLabelGSP1RMCHPFREO.Text = "OEM"
+    '
+    'mnuLabelGSP1RMCHPVOL
+    '
+    Me.mnuLabelGSP1RMCHPVOL.Index = 2
+    Me.mnuLabelGSP1RMCHPVOL.Text = "Volume License"
+    '
+    'mnuLabelGSP1RMCHPCHE
+    '
+    Me.mnuLabelGSP1RMCHPCHE.Index = 1
+    Me.mnuLabelGSP1RMCHPCHE.Text = "Debug"
+    '
+    'mnuLabelGSP1RMCPR
+    '
+    Me.mnuLabelGSP1RMCPR.Index = 3
+    Me.mnuLabelGSP1RMCPR.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCPRFRE, Me.mnuLabelGSP1RMCPRCHE})
+    Me.mnuLabelGSP1RMCPR.Text = "Professional"
+    '
+    'mnuLabelGSP1RMCPRFRE
+    '
+    Me.mnuLabelGSP1RMCPRFRE.Index = 0
+    Me.mnuLabelGSP1RMCPRFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCPRFRER, Me.mnuLabelGSP1RMCPRFREO, Me.mnuLabelGSP1RMCPRVOL})
+    Me.mnuLabelGSP1RMCPRFRE.Text = "Release"
+    '
+    'mnuLabelGSP1RMCPRFRER
+    '
+    Me.mnuLabelGSP1RMCPRFRER.Index = 0
+    Me.mnuLabelGSP1RMCPRFRER.Text = "Retail"
+    '
+    'mnuLabelGSP1RMCPRFREO
+    '
+    Me.mnuLabelGSP1RMCPRFREO.Index = 1
+    Me.mnuLabelGSP1RMCPRFREO.Text = "OEM"
+    '
+    'mnuLabelGSP1RMCPRVOL
+    '
+    Me.mnuLabelGSP1RMCPRVOL.Index = 2
+    Me.mnuLabelGSP1RMCPRVOL.Text = "Volume License"
+    '
+    'mnuLabelGSP1RMCPRCHE
+    '
+    Me.mnuLabelGSP1RMCPRCHE.Index = 1
+    Me.mnuLabelGSP1RMCPRCHE.Text = "Debug"
+    '
+    'mnuLabelGSP1RMCUL
+    '
+    Me.mnuLabelGSP1RMCUL.Index = 4
+    Me.mnuLabelGSP1RMCUL.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCULFRE, Me.mnuLabelGSP1RMCULCHE})
+    Me.mnuLabelGSP1RMCUL.Text = "Ultimate"
+    '
+    'mnuLabelGSP1RMCULFRE
+    '
+    Me.mnuLabelGSP1RMCULFRE.Index = 0
+    Me.mnuLabelGSP1RMCULFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCULFRER, Me.mnuLabelGSP1RMCULFREO, Me.mnuLabelGSP1RMCULVOL})
+    Me.mnuLabelGSP1RMCULFRE.Text = "Release"
+    '
+    'mnuLabelGSP1RMCULFRER
+    '
+    Me.mnuLabelGSP1RMCULFRER.Index = 0
+    Me.mnuLabelGSP1RMCULFRER.Text = "Retail"
+    '
+    'mnuLabelGSP1RMCULFREO
+    '
+    Me.mnuLabelGSP1RMCULFREO.Index = 1
+    Me.mnuLabelGSP1RMCULFREO.Text = "OEM"
+    '
+    'mnuLabelGSP1RMCULVOL
+    '
+    Me.mnuLabelGSP1RMCULVOL.Index = 2
+    Me.mnuLabelGSP1RMCULVOL.Text = "Volume License"
+    '
+    'mnuLabelGSP1RMCULCHE
+    '
+    Me.mnuLabelGSP1RMCULCHE.Index = 1
+    Me.mnuLabelGSP1RMCULCHE.Text = "Debug"
+    '
+    'mnuLabelGSP1RMCEN
+    '
+    Me.mnuLabelGSP1RMCEN.Index = 5
+    Me.mnuLabelGSP1RMCEN.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCENVOL, Me.mnuLabelGSP1RMCENCHE})
+    Me.mnuLabelGSP1RMCEN.Text = "Enterprise"
+    '
+    'mnuLabelGSP1RMCENVOL
+    '
+    Me.mnuLabelGSP1RMCENVOL.Index = 0
+    Me.mnuLabelGSP1RMCENVOL.Text = "Volume License"
+    '
+    'mnuLabelGSP1RMCENCHE
+    '
+    Me.mnuLabelGSP1RMCENCHE.Index = 1
+    Me.mnuLabelGSP1RMCENCHE.Text = "Debug"
+    '
+    'mnuLabelGSP1RMCSpace
+    '
+    Me.mnuLabelGSP1RMCSpace.Index = 6
+    Me.mnuLabelGSP1RMCSpace.Text = "-"
+    '
+    'mnuLabelGSP1RMCMU
+    '
+    Me.mnuLabelGSP1RMCMU.Index = 7
+    Me.mnuLabelGSP1RMCMU.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCMUFRE, Me.mnuLabelGSP1RMCMUCHE})
+    Me.mnuLabelGSP1RMCMU.Text = "Multiple"
+    '
+    'mnuLabelGSP1RMCMUFRE
+    '
+    Me.mnuLabelGSP1RMCMUFRE.Index = 0
+    Me.mnuLabelGSP1RMCMUFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCMUFRER, Me.mnuLabelGSP1RMCMUFREO, Me.mnuLabelGSP1RMCMUVOL})
+    Me.mnuLabelGSP1RMCMUFRE.Text = "Release"
+    '
+    'mnuLabelGSP1RMCMUFRER
+    '
+    Me.mnuLabelGSP1RMCMUFRER.Index = 0
+    Me.mnuLabelGSP1RMCMUFRER.Text = "Retail"
+    '
+    'mnuLabelGSP1RMCMUFREO
+    '
+    Me.mnuLabelGSP1RMCMUFREO.Index = 1
+    Me.mnuLabelGSP1RMCMUFREO.Text = "OEM"
+    '
+    'mnuLabelGSP1RMCMUVOL
+    '
+    Me.mnuLabelGSP1RMCMUVOL.Index = 2
+    Me.mnuLabelGSP1RMCMUVOL.Text = "Volume License"
+    '
+    'mnuLabelGSP1RMCMUCHE
+    '
+    Me.mnuLabelGSP1RMCMUCHE.Index = 1
+    Me.mnuLabelGSP1RMCMUCHE.Text = "Debug"
+    '
+    'mnuLabelGSP1RMCAL
+    '
+    Me.mnuLabelGSP1RMCAL.Index = 8
+    Me.mnuLabelGSP1RMCAL.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCALFRE, Me.mnuLabelGSP1RMCALCHE})
+    Me.mnuLabelGSP1RMCAL.Text = "All-in-One"
+    '
+    'mnuLabelGSP1RMCALFRE
+    '
+    Me.mnuLabelGSP1RMCALFRE.Index = 0
+    Me.mnuLabelGSP1RMCALFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCALFRER, Me.mnuLabelGSP1RMCALFREO, Me.mnuLabelGSP1RMCALVOL})
+    Me.mnuLabelGSP1RMCALFRE.Text = "Release"
+    '
+    'mnuLabelGSP1RMCALFRER
+    '
+    Me.mnuLabelGSP1RMCALFRER.Index = 0
+    Me.mnuLabelGSP1RMCALFRER.Text = "Retail"
+    '
+    'mnuLabelGSP1RMCALFREO
+    '
+    Me.mnuLabelGSP1RMCALFREO.Index = 1
+    Me.mnuLabelGSP1RMCALFREO.Text = "OEM"
+    '
+    'mnuLabelGSP1RMCALVOL
+    '
+    Me.mnuLabelGSP1RMCALVOL.Index = 2
+    Me.mnuLabelGSP1RMCALVOL.Text = "Volume License"
+    '
+    'mnuLabelGSP1RMCALCHE
+    '
+    Me.mnuLabelGSP1RMCALCHE.Index = 1
+    Me.mnuLabelGSP1RMCALCHE.Text = "Debug"
+    '
+    'mnuLabel7x64
+    '
+    Me.mnuLabel7x64.Index = 1
+    Me.mnuLabel7x64.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCX, Me.mnuLabelGSP1RMCX})
+    Me.mnuLabel7x64.Text = "Windows 7 x64"
+    '
+    'mnuLabelGRMCX
+    '
+    Me.mnuLabelGRMCX.Index = 0
+    Me.mnuLabelGRMCX.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCHBX, Me.mnuLabelGRMCHPX, Me.mnuLabelGRMCPRX, Me.mnuLabelGRMCULX, Me.mnuLabelGRMCENX, Me.mnuLabelGRMCXSpace, Me.mnuLabelGRMCMUX, Me.mnuLabelGRMCALX})
+    Me.mnuLabelGRMCX.Text = "Release to Manufacturing"
+    '
+    'mnuLabelGRMCHBX
+    '
+    Me.mnuLabelGRMCHBX.Index = 0
+    Me.mnuLabelGRMCHBX.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCHBXFRE, Me.mnuLabelGRMCHBXCHE})
+    Me.mnuLabelGRMCHBX.Text = "Home Basic"
+    '
+    'mnuLabelGRMCHBXFRE
+    '
+    Me.mnuLabelGRMCHBXFRE.Index = 0
+    Me.mnuLabelGRMCHBXFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCHBXFRER, Me.mnuLabelGRMCHBXFREO, Me.mnuLabelGRMCHBXVOL})
+    Me.mnuLabelGRMCHBXFRE.Text = "Release"
+    '
+    'mnuLabelGRMCHBXFRER
+    '
+    Me.mnuLabelGRMCHBXFRER.Index = 0
+    Me.mnuLabelGRMCHBXFRER.Text = "Retail"
+    '
+    'mnuLabelGRMCHBXFREO
+    '
+    Me.mnuLabelGRMCHBXFREO.Index = 1
+    Me.mnuLabelGRMCHBXFREO.Text = "OEM"
+    '
+    'mnuLabelGRMCHBXVOL
+    '
+    Me.mnuLabelGRMCHBXVOL.Index = 2
+    Me.mnuLabelGRMCHBXVOL.Text = "Volume License"
+    '
+    'mnuLabelGRMCHBXCHE
+    '
+    Me.mnuLabelGRMCHBXCHE.Index = 1
+    Me.mnuLabelGRMCHBXCHE.Text = "Debug"
+    '
+    'mnuLabelGRMCHPX
+    '
+    Me.mnuLabelGRMCHPX.Index = 1
+    Me.mnuLabelGRMCHPX.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCHPXFRE, Me.mnuLabelGRMCHPXCHE})
+    Me.mnuLabelGRMCHPX.Text = "Home Premium"
+    '
+    'mnuLabelGRMCHPXFRE
+    '
+    Me.mnuLabelGRMCHPXFRE.Index = 0
+    Me.mnuLabelGRMCHPXFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCHPXFRER, Me.mnuLabelGRMCHPXFREO, Me.mnuLabelGRMCHPXVOL})
+    Me.mnuLabelGRMCHPXFRE.Text = "Release"
+    '
+    'mnuLabelGRMCHPXFRER
+    '
+    Me.mnuLabelGRMCHPXFRER.Index = 0
+    Me.mnuLabelGRMCHPXFRER.Text = "Retail"
+    '
+    'mnuLabelGRMCHPXFREO
+    '
+    Me.mnuLabelGRMCHPXFREO.Index = 1
+    Me.mnuLabelGRMCHPXFREO.Text = "OEM"
+    '
+    'mnuLabelGRMCHPXVOL
+    '
+    Me.mnuLabelGRMCHPXVOL.Index = 2
+    Me.mnuLabelGRMCHPXVOL.Text = "Volume License"
+    '
+    'mnuLabelGRMCHPXCHE
+    '
+    Me.mnuLabelGRMCHPXCHE.Index = 1
+    Me.mnuLabelGRMCHPXCHE.Text = "Debug"
+    '
+    'mnuLabelGRMCPRX
+    '
+    Me.mnuLabelGRMCPRX.Index = 2
+    Me.mnuLabelGRMCPRX.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCPRXFRE, Me.mnuLabelGRMCPRXCHE})
+    Me.mnuLabelGRMCPRX.Text = "Professional"
+    '
+    'mnuLabelGRMCPRXFRE
+    '
+    Me.mnuLabelGRMCPRXFRE.Index = 0
+    Me.mnuLabelGRMCPRXFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCPRXFRER, Me.mnuLabelGRMCPRXFREO, Me.mnuLabelGRMCPRXVOL})
+    Me.mnuLabelGRMCPRXFRE.Text = "Release"
+    '
+    'mnuLabelGRMCPRXFRER
+    '
+    Me.mnuLabelGRMCPRXFRER.Index = 0
+    Me.mnuLabelGRMCPRXFRER.Text = "Retail"
+    '
+    'mnuLabelGRMCPRXFREO
+    '
+    Me.mnuLabelGRMCPRXFREO.Index = 1
+    Me.mnuLabelGRMCPRXFREO.Text = "OEM"
+    '
+    'mnuLabelGRMCPRXVOL
+    '
+    Me.mnuLabelGRMCPRXVOL.Index = 2
+    Me.mnuLabelGRMCPRXVOL.Text = "Volume License"
+    '
+    'mnuLabelGRMCPRXCHE
+    '
+    Me.mnuLabelGRMCPRXCHE.Index = 1
+    Me.mnuLabelGRMCPRXCHE.Text = "Debug"
+    '
+    'mnuLabelGRMCULX
+    '
+    Me.mnuLabelGRMCULX.Index = 3
+    Me.mnuLabelGRMCULX.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCULXFRE, Me.mnuLabelGRMCULXCHE})
+    Me.mnuLabelGRMCULX.Text = "Ultimate"
+    '
+    'mnuLabelGRMCULXFRE
+    '
+    Me.mnuLabelGRMCULXFRE.Index = 0
+    Me.mnuLabelGRMCULXFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCULXFRER, Me.mnuLabelGRMCULXFREO, Me.mnuLabelGRMCULXVOL})
+    Me.mnuLabelGRMCULXFRE.Text = "Release"
+    '
+    'mnuLabelGRMCULXFRER
+    '
+    Me.mnuLabelGRMCULXFRER.Index = 0
+    Me.mnuLabelGRMCULXFRER.Text = "Retail"
+    '
+    'mnuLabelGRMCULXFREO
+    '
+    Me.mnuLabelGRMCULXFREO.Index = 1
+    Me.mnuLabelGRMCULXFREO.Text = "OEM"
+    '
+    'mnuLabelGRMCULXVOL
+    '
+    Me.mnuLabelGRMCULXVOL.Index = 2
+    Me.mnuLabelGRMCULXVOL.Text = "Volume License"
+    '
+    'mnuLabelGRMCULXCHE
+    '
+    Me.mnuLabelGRMCULXCHE.Index = 1
+    Me.mnuLabelGRMCULXCHE.Text = "Debug"
+    '
+    'mnuLabelGRMCENX
+    '
+    Me.mnuLabelGRMCENX.Index = 4
+    Me.mnuLabelGRMCENX.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCENXVOL, Me.mnuLabelGRMCENXCHE})
+    Me.mnuLabelGRMCENX.Text = "Enterprise"
+    '
+    'mnuLabelGRMCENXVOL
+    '
+    Me.mnuLabelGRMCENXVOL.Index = 0
+    Me.mnuLabelGRMCENXVOL.Text = "Volume License"
+    '
+    'mnuLabelGRMCENXCHE
+    '
+    Me.mnuLabelGRMCENXCHE.Index = 1
+    Me.mnuLabelGRMCENXCHE.Text = "Debug"
+    '
+    'mnuLabelGRMCXSpace
+    '
+    Me.mnuLabelGRMCXSpace.Index = 5
+    Me.mnuLabelGRMCXSpace.Text = "-"
+    '
+    'mnuLabelGRMCMUX
+    '
+    Me.mnuLabelGRMCMUX.Index = 6
+    Me.mnuLabelGRMCMUX.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCMUXFRE, Me.mnuLabelGRMCMUXCHE})
+    Me.mnuLabelGRMCMUX.Text = "Multiple"
+    '
+    'mnuLabelGRMCMUXFRE
+    '
+    Me.mnuLabelGRMCMUXFRE.Index = 0
+    Me.mnuLabelGRMCMUXFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCMUXFRER, Me.mnuLabelGRMCMUXFREO, Me.mnuLabelGRMCMUXVOL})
+    Me.mnuLabelGRMCMUXFRE.Text = "Release"
+    '
+    'mnuLabelGRMCMUXFRER
+    '
+    Me.mnuLabelGRMCMUXFRER.Index = 0
+    Me.mnuLabelGRMCMUXFRER.Text = "Retail"
+    '
+    'mnuLabelGRMCMUXFREO
+    '
+    Me.mnuLabelGRMCMUXFREO.Index = 1
+    Me.mnuLabelGRMCMUXFREO.Text = "OEM"
+    '
+    'mnuLabelGRMCMUXVOL
+    '
+    Me.mnuLabelGRMCMUXVOL.Index = 2
+    Me.mnuLabelGRMCMUXVOL.Text = "Volume License"
+    '
+    'mnuLabelGRMCMUXCHE
+    '
+    Me.mnuLabelGRMCMUXCHE.Index = 1
+    Me.mnuLabelGRMCMUXCHE.Text = "Debug"
+    '
+    'mnuLabelGRMCALX
+    '
+    Me.mnuLabelGRMCALX.Index = 7
+    Me.mnuLabelGRMCALX.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCALXFRE, Me.mnuLabelGRMCALXCHE})
+    Me.mnuLabelGRMCALX.Text = "All-in-One"
+    '
+    'mnuLabelGRMCALXFRE
+    '
+    Me.mnuLabelGRMCALXFRE.Index = 0
+    Me.mnuLabelGRMCALXFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCALXFRER, Me.mnuLabelGRMCALXFREO, Me.mnuLabelGRMCALXVOL})
+    Me.mnuLabelGRMCALXFRE.Text = "Release"
+    '
+    'mnuLabelGRMCALXFRER
+    '
+    Me.mnuLabelGRMCALXFRER.Index = 0
+    Me.mnuLabelGRMCALXFRER.Text = "Retail"
+    '
+    'mnuLabelGRMCALXFREO
+    '
+    Me.mnuLabelGRMCALXFREO.Index = 1
+    Me.mnuLabelGRMCALXFREO.Text = "OEM"
+    '
+    'mnuLabelGRMCALXVOL
+    '
+    Me.mnuLabelGRMCALXVOL.Index = 2
+    Me.mnuLabelGRMCALXVOL.Text = "Volume License"
+    '
+    'mnuLabelGRMCALXCHE
+    '
+    Me.mnuLabelGRMCALXCHE.Index = 1
+    Me.mnuLabelGRMCALXCHE.Text = "Debug"
+    '
+    'mnuLabelGSP1RMCX
+    '
+    Me.mnuLabelGSP1RMCX.Index = 1
+    Me.mnuLabelGSP1RMCX.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCHBX, Me.mnuLabelGSP1RMCHPX, Me.mnuLabelGSP1RMCPRX, Me.mnuLabelGSP1RMCULX, Me.mnuLabelGSP1RMCENX, Me.mnuLabelGSP1RMCXSpace, Me.mnuLabelGSP1RMCMUX, Me.mnuLabelGSP1RMCALX})
+    Me.mnuLabelGSP1RMCX.Text = "Service Pack 1"
+    '
+    'mnuLabelGSP1RMCHBX
+    '
+    Me.mnuLabelGSP1RMCHBX.Index = 0
+    Me.mnuLabelGSP1RMCHBX.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCHBXFRE, Me.mnuLabelGSP1RMCHBXCHE})
+    Me.mnuLabelGSP1RMCHBX.Text = "Home Basic"
+    '
+    'mnuLabelGSP1RMCHBXFRE
+    '
+    Me.mnuLabelGSP1RMCHBXFRE.Index = 0
+    Me.mnuLabelGSP1RMCHBXFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCHBXFRER, Me.mnuLabelGSP1RMCHBXFREO, Me.mnuLabelGSP1RMCHBXVOL})
+    Me.mnuLabelGSP1RMCHBXFRE.Text = "Release"
+    '
+    'mnuLabelGSP1RMCHBXFRER
+    '
+    Me.mnuLabelGSP1RMCHBXFRER.Index = 0
+    Me.mnuLabelGSP1RMCHBXFRER.Text = "Retail"
+    '
+    'mnuLabelGSP1RMCHBXFREO
+    '
+    Me.mnuLabelGSP1RMCHBXFREO.Index = 1
+    Me.mnuLabelGSP1RMCHBXFREO.Text = "OEM"
+    '
+    'mnuLabelGSP1RMCHBXVOL
+    '
+    Me.mnuLabelGSP1RMCHBXVOL.Index = 2
+    Me.mnuLabelGSP1RMCHBXVOL.Text = "Volume License"
+    '
+    'mnuLabelGSP1RMCHBXCHE
+    '
+    Me.mnuLabelGSP1RMCHBXCHE.Index = 1
+    Me.mnuLabelGSP1RMCHBXCHE.Text = "Debug"
+    '
+    'mnuLabelGSP1RMCHPX
+    '
+    Me.mnuLabelGSP1RMCHPX.Index = 1
+    Me.mnuLabelGSP1RMCHPX.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCHPXFRE, Me.mnuLabelGSP1RMCHPXCHE})
+    Me.mnuLabelGSP1RMCHPX.Text = "Home Premium"
+    '
+    'mnuLabelGSP1RMCHPXFRE
+    '
+    Me.mnuLabelGSP1RMCHPXFRE.Index = 0
+    Me.mnuLabelGSP1RMCHPXFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCHPXFRER, Me.mnuLabelGSP1RMCHPXFREO, Me.mnuLabelGSP1RMCHPXVOL})
+    Me.mnuLabelGSP1RMCHPXFRE.Text = "Release"
+    '
+    'mnuLabelGSP1RMCHPXFRER
+    '
+    Me.mnuLabelGSP1RMCHPXFRER.Index = 0
+    Me.mnuLabelGSP1RMCHPXFRER.Text = "Retail"
+    '
+    'mnuLabelGSP1RMCHPXFREO
+    '
+    Me.mnuLabelGSP1RMCHPXFREO.Index = 1
+    Me.mnuLabelGSP1RMCHPXFREO.Text = "OEM"
+    '
+    'mnuLabelGSP1RMCHPXVOL
+    '
+    Me.mnuLabelGSP1RMCHPXVOL.Index = 2
+    Me.mnuLabelGSP1RMCHPXVOL.Text = "Volume License"
+    '
+    'mnuLabelGSP1RMCHPXCHE
+    '
+    Me.mnuLabelGSP1RMCHPXCHE.Index = 1
+    Me.mnuLabelGSP1RMCHPXCHE.Text = "Debug"
+    '
+    'mnuLabelGSP1RMCPRX
+    '
+    Me.mnuLabelGSP1RMCPRX.Index = 2
+    Me.mnuLabelGSP1RMCPRX.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCPRXFRE, Me.mnuLabelGSP1RMCPRXCHE})
+    Me.mnuLabelGSP1RMCPRX.Text = "Professional"
+    '
+    'mnuLabelGSP1RMCPRXFRE
+    '
+    Me.mnuLabelGSP1RMCPRXFRE.Index = 0
+    Me.mnuLabelGSP1RMCPRXFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCPRXFRER, Me.mnuLabelGSP1RMCPRXFREO, Me.mnuLabelGSP1RMCPRXVOL})
+    Me.mnuLabelGSP1RMCPRXFRE.Text = "Release"
+    '
+    'mnuLabelGSP1RMCPRXFRER
+    '
+    Me.mnuLabelGSP1RMCPRXFRER.Index = 0
+    Me.mnuLabelGSP1RMCPRXFRER.Text = "Retail"
+    '
+    'mnuLabelGSP1RMCPRXFREO
+    '
+    Me.mnuLabelGSP1RMCPRXFREO.Index = 1
+    Me.mnuLabelGSP1RMCPRXFREO.Text = "OEM"
+    '
+    'mnuLabelGSP1RMCPRXVOL
+    '
+    Me.mnuLabelGSP1RMCPRXVOL.Index = 2
+    Me.mnuLabelGSP1RMCPRXVOL.Text = "Volume License"
+    '
+    'mnuLabelGSP1RMCPRXCHE
+    '
+    Me.mnuLabelGSP1RMCPRXCHE.Index = 1
+    Me.mnuLabelGSP1RMCPRXCHE.Text = "Debug"
+    '
+    'mnuLabelGSP1RMCULX
+    '
+    Me.mnuLabelGSP1RMCULX.Index = 3
+    Me.mnuLabelGSP1RMCULX.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCULXFRE, Me.mnuLabelGSP1RMCULXCHE})
+    Me.mnuLabelGSP1RMCULX.Text = "Ultimate"
+    '
+    'mnuLabelGSP1RMCULXFRE
+    '
+    Me.mnuLabelGSP1RMCULXFRE.Index = 0
+    Me.mnuLabelGSP1RMCULXFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCULXFRER, Me.mnuLabelGSP1RMCULXFREO, Me.mnuLabelGSP1RMCULXVOL})
+    Me.mnuLabelGSP1RMCULXFRE.Text = "Release"
+    '
+    'mnuLabelGSP1RMCULXFRER
+    '
+    Me.mnuLabelGSP1RMCULXFRER.Index = 0
+    Me.mnuLabelGSP1RMCULXFRER.Text = "Retail"
+    '
+    'mnuLabelGSP1RMCULXFREO
+    '
+    Me.mnuLabelGSP1RMCULXFREO.Index = 1
+    Me.mnuLabelGSP1RMCULXFREO.Text = "OEM"
+    '
+    'mnuLabelGSP1RMCULXVOL
+    '
+    Me.mnuLabelGSP1RMCULXVOL.Index = 2
+    Me.mnuLabelGSP1RMCULXVOL.Text = "Volume License"
+    '
+    'mnuLabelGSP1RMCULXCHE
+    '
+    Me.mnuLabelGSP1RMCULXCHE.Index = 1
+    Me.mnuLabelGSP1RMCULXCHE.Text = "Debug"
+    '
+    'mnuLabelGSP1RMCENX
+    '
+    Me.mnuLabelGSP1RMCENX.Index = 4
+    Me.mnuLabelGSP1RMCENX.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCENXVOL, Me.mnuLabelGSP1RMCENXCHE})
+    Me.mnuLabelGSP1RMCENX.Text = "Enterprise"
+    '
+    'mnuLabelGSP1RMCENXVOL
+    '
+    Me.mnuLabelGSP1RMCENXVOL.Index = 0
+    Me.mnuLabelGSP1RMCENXVOL.Text = "Volume License"
+    '
+    'mnuLabelGSP1RMCENXCHE
+    '
+    Me.mnuLabelGSP1RMCENXCHE.Index = 1
+    Me.mnuLabelGSP1RMCENXCHE.Text = "Debug"
+    '
+    'mnuLabelGSP1RMCXSpace
+    '
+    Me.mnuLabelGSP1RMCXSpace.Index = 5
+    Me.mnuLabelGSP1RMCXSpace.Text = "-"
+    '
+    'mnuLabelGSP1RMCMUX
+    '
+    Me.mnuLabelGSP1RMCMUX.Index = 6
+    Me.mnuLabelGSP1RMCMUX.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCMUXFRE, Me.mnuLabelGSP1RMCMUXCHE})
+    Me.mnuLabelGSP1RMCMUX.Text = "Multiple"
+    '
+    'mnuLabelGSP1RMCMUXFRE
+    '
+    Me.mnuLabelGSP1RMCMUXFRE.Index = 0
+    Me.mnuLabelGSP1RMCMUXFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCMUXFRER, Me.mnuLabelGSP1RMCMUXFREO, Me.mnuLabelGSP1RMCMUXVOL})
+    Me.mnuLabelGSP1RMCMUXFRE.Text = "Release"
+    '
+    'mnuLabelGSP1RMCMUXFRER
+    '
+    Me.mnuLabelGSP1RMCMUXFRER.Index = 0
+    Me.mnuLabelGSP1RMCMUXFRER.Text = "Retail"
+    '
+    'mnuLabelGSP1RMCMUXFREO
+    '
+    Me.mnuLabelGSP1RMCMUXFREO.Index = 1
+    Me.mnuLabelGSP1RMCMUXFREO.Text = "OEM"
+    '
+    'mnuLabelGSP1RMCMUXVOL
+    '
+    Me.mnuLabelGSP1RMCMUXVOL.Index = 2
+    Me.mnuLabelGSP1RMCMUXVOL.Text = "Volume License"
+    '
+    'mnuLabelGSP1RMCMUXCHE
+    '
+    Me.mnuLabelGSP1RMCMUXCHE.Index = 1
+    Me.mnuLabelGSP1RMCMUXCHE.Text = "Debug"
+    '
+    'mnuLabelGSP1RMCALX
+    '
+    Me.mnuLabelGSP1RMCALX.Index = 7
+    Me.mnuLabelGSP1RMCALX.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCALXFRE, Me.mnuLabelGSP1RMCALXCHE})
+    Me.mnuLabelGSP1RMCALX.Text = "All-in-One"
+    '
+    'mnuLabelGSP1RMCALXFRE
+    '
+    Me.mnuLabelGSP1RMCALXFRE.Index = 0
+    Me.mnuLabelGSP1RMCALXFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCALXFRER, Me.mnuLabelGSP1RMCALXFREO, Me.mnuLabelGSP1RMCALXVOL})
+    Me.mnuLabelGSP1RMCALXFRE.Text = "Release"
+    '
+    'mnuLabelGSP1RMCALXFRER
+    '
+    Me.mnuLabelGSP1RMCALXFRER.Index = 0
+    Me.mnuLabelGSP1RMCALXFRER.Text = "Retail"
+    '
+    'mnuLabelGSP1RMCALXFREO
+    '
+    Me.mnuLabelGSP1RMCALXFREO.Index = 1
+    Me.mnuLabelGSP1RMCALXFREO.Text = "OEM"
+    '
+    'mnuLabelGSP1RMCALXVOL
+    '
+    Me.mnuLabelGSP1RMCALXVOL.Index = 2
+    Me.mnuLabelGSP1RMCALXVOL.Text = "Volume License"
+    '
+    'mnuLabelGSP1RMCALXCHE
+    '
+    Me.mnuLabelGSP1RMCALXCHE.Index = 1
+    Me.mnuLabelGSP1RMCALXCHE.Text = "Debug"
+    '
+    'mnuLabel7AIO
+    '
+    Me.mnuLabel7AIO.Index = 2
+    Me.mnuLabel7AIO.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCU, Me.mnuLabelGSP1RMCU})
+    Me.mnuLabel7AIO.Text = "Windows 7 AIO"
+    '
+    'mnuLabelGRMCU
+    '
+    Me.mnuLabelGRMCU.Index = 0
+    Me.mnuLabelGRMCU.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCMUU, Me.mnuLabelGRMCALU})
+    Me.mnuLabelGRMCU.Text = "Release to Manufacturing"
+    '
+    'mnuLabelGRMCMUU
+    '
+    Me.mnuLabelGRMCMUU.Index = 0
+    Me.mnuLabelGRMCMUU.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCMUUFRE, Me.mnuLabelGRMCMUUCHE})
+    Me.mnuLabelGRMCMUU.Text = "Mutiple"
+    '
+    'mnuLabelGRMCMUUFRE
+    '
+    Me.mnuLabelGRMCMUUFRE.Index = 0
+    Me.mnuLabelGRMCMUUFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCMUUFRER, Me.mnuLabelGRMCMUUFREO, Me.mnuLabelGRMCMUUVOL})
+    Me.mnuLabelGRMCMUUFRE.Text = "Release"
+    '
+    'mnuLabelGRMCMUUFRER
+    '
+    Me.mnuLabelGRMCMUUFRER.Index = 0
+    Me.mnuLabelGRMCMUUFRER.Text = "Retail"
+    '
+    'mnuLabelGRMCMUUFREO
+    '
+    Me.mnuLabelGRMCMUUFREO.Index = 1
+    Me.mnuLabelGRMCMUUFREO.Text = "OEM"
+    '
+    'mnuLabelGRMCMUUVOL
+    '
+    Me.mnuLabelGRMCMUUVOL.Index = 2
+    Me.mnuLabelGRMCMUUVOL.Text = "Volume License"
+    '
+    'mnuLabelGRMCMUUCHE
+    '
+    Me.mnuLabelGRMCMUUCHE.Index = 1
+    Me.mnuLabelGRMCMUUCHE.Text = "Debug"
+    '
+    'mnuLabelGRMCALU
+    '
+    Me.mnuLabelGRMCALU.Index = 1
+    Me.mnuLabelGRMCALU.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCALUFRE, Me.mnuLabelGRMCALUCHE})
+    Me.mnuLabelGRMCALU.Text = "All-in-One"
+    '
+    'mnuLabelGRMCALUFRE
+    '
+    Me.mnuLabelGRMCALUFRE.Index = 0
+    Me.mnuLabelGRMCALUFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGRMCALUFRER, Me.mnuLabelGRMCALUFREO, Me.mnuLabelGRMCALUVOL})
+    Me.mnuLabelGRMCALUFRE.Text = "Release"
+    '
+    'mnuLabelGRMCALUFRER
+    '
+    Me.mnuLabelGRMCALUFRER.Index = 0
+    Me.mnuLabelGRMCALUFRER.Text = "Retail"
+    '
+    'mnuLabelGRMCALUFREO
+    '
+    Me.mnuLabelGRMCALUFREO.Index = 1
+    Me.mnuLabelGRMCALUFREO.Text = "OEM"
+    '
+    'mnuLabelGRMCALUVOL
+    '
+    Me.mnuLabelGRMCALUVOL.Index = 2
+    Me.mnuLabelGRMCALUVOL.Text = "Volume License"
+    '
+    'mnuLabelGRMCALUCHE
+    '
+    Me.mnuLabelGRMCALUCHE.Index = 1
+    Me.mnuLabelGRMCALUCHE.Text = "Debug"
+    '
+    'mnuLabelGSP1RMCU
+    '
+    Me.mnuLabelGSP1RMCU.Index = 1
+    Me.mnuLabelGSP1RMCU.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCMUU, Me.mnuLabelGSP1RMCALU})
+    Me.mnuLabelGSP1RMCU.Text = "Service Pack 1"
+    '
+    'mnuLabelGSP1RMCMUU
+    '
+    Me.mnuLabelGSP1RMCMUU.Index = 0
+    Me.mnuLabelGSP1RMCMUU.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCMUUFRE, Me.mnuLabelGSP1RMCMUUCHE})
+    Me.mnuLabelGSP1RMCMUU.Text = "Mutiple"
+    '
+    'mnuLabelGSP1RMCMUUFRE
+    '
+    Me.mnuLabelGSP1RMCMUUFRE.Index = 0
+    Me.mnuLabelGSP1RMCMUUFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCMUUFRER, Me.mnuLabelGSP1RMCMUUFREO, Me.mnuLabelGSP1RMCMUUVOL})
+    Me.mnuLabelGSP1RMCMUUFRE.Text = "Release"
+    '
+    'mnuLabelGSP1RMCMUUFRER
+    '
+    Me.mnuLabelGSP1RMCMUUFRER.Index = 0
+    Me.mnuLabelGSP1RMCMUUFRER.Text = "Retail"
+    '
+    'mnuLabelGSP1RMCMUUFREO
+    '
+    Me.mnuLabelGSP1RMCMUUFREO.Index = 1
+    Me.mnuLabelGSP1RMCMUUFREO.Text = "OEM"
+    '
+    'mnuLabelGSP1RMCMUUVOL
+    '
+    Me.mnuLabelGSP1RMCMUUVOL.Index = 2
+    Me.mnuLabelGSP1RMCMUUVOL.Text = "Volume License"
+    '
+    'mnuLabelGSP1RMCMUUCHE
+    '
+    Me.mnuLabelGSP1RMCMUUCHE.Index = 1
+    Me.mnuLabelGSP1RMCMUUCHE.Text = "Debug"
+    '
+    'mnuLabelGSP1RMCALU
+    '
+    Me.mnuLabelGSP1RMCALU.Index = 1
+    Me.mnuLabelGSP1RMCALU.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCALUFRE, Me.mnuLabelGSP1RMCALUCHE})
+    Me.mnuLabelGSP1RMCALU.Text = "All-in-One"
+    '
+    'mnuLabelGSP1RMCALUFRE
+    '
+    Me.mnuLabelGSP1RMCALUFRE.Index = 0
+    Me.mnuLabelGSP1RMCALUFRE.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuLabelGSP1RMCALUFRER, Me.mnuLabelGSP1RMCALUFREO, Me.mnuLabelGSP1RMCALUVOL})
+    Me.mnuLabelGSP1RMCALUFRE.Text = "Release"
+    '
+    'mnuLabelGSP1RMCALUFRER
+    '
+    Me.mnuLabelGSP1RMCALUFRER.Index = 0
+    Me.mnuLabelGSP1RMCALUFRER.Text = "Retail"
+    '
+    'mnuLabelGSP1RMCALUFREO
+    '
+    Me.mnuLabelGSP1RMCALUFREO.Index = 1
+    Me.mnuLabelGSP1RMCALUFREO.Text = "OEM"
+    '
+    'mnuLabelGSP1RMCALUVOL
+    '
+    Me.mnuLabelGSP1RMCALUVOL.Index = 2
+    Me.mnuLabelGSP1RMCALUVOL.Text = "Volume License"
+    '
+    'mnuLabelGSP1RMCALUCHE
+    '
+    Me.mnuLabelGSP1RMCALUCHE.Index = 1
+    Me.mnuLabelGSP1RMCALUCHE.Text = "Debug"
+    '
+    'mnuLabelSpace
+    '
+    Me.mnuLabelSpace.Index = 3
+    Me.mnuLabelSpace.Text = "-"
+    '
+    'mnuLabelAuto
+    '
+    Me.mnuLabelAuto.Index = 4
+    Me.mnuLabelAuto.Text = "Auto-Detect"
+    '
+    'helpS7M
+    '
+    Me.helpS7M.HelpNamespace = "S7M.chm"
+    '
     'ttInfo
     '
     Me.ttInfo.Active = False
@@ -2184,31 +2854,13 @@ Partial Class frmMain
     Me.Controls.Add(Me.pnlSlips7ream)
     Me.helpS7M.SetHelpKeyword(Me, "/1_SLIPS7REAM_Interface/1.0_SLIPS7REAM_Interface.htm")
     Me.helpS7M.SetHelpNavigator(Me, System.Windows.Forms.HelpNavigator.Topic)
-    Me.Icon = Global.Slips7ream.My.Resources.Resources.icon
+    Me.Icon = CType(Global.Slips7ream.My.Resources.Resources.icon.Clone, System.Drawing.Icon)
     Me.MinimumSize = New System.Drawing.Size(440, 556)
     Me.Name = "frmMain"
     Me.helpS7M.SetShowHelp(Me, True)
     Me.Text = "SLIPS7REAM - Windows 7 Image Slipstream Utility"
     Me.pnlSlips7ream.ResumeLayout(False)
     Me.pnlSlips7ream.PerformLayout()
-    Me.pnlWIM.ResumeLayout(False)
-    Me.pnlWIM.PerformLayout()
-    Me.pnlBottom.ResumeLayout(False)
-    Me.pnlBottom.PerformLayout()
-    Me.pnlISO.ResumeLayout(False)
-    Me.pnlISO.PerformLayout()
-    Me.pnlProgress.ResumeLayout(False)
-    Me.pnlProgress.PerformLayout()
-    CType(Me.pctOutputTear, System.ComponentModel.ISupportInitialize).EndInit()
-    Me.pnlControl.ResumeLayout(False)
-    Me.pnlControl.PerformLayout()
-    Me.pnlISOOptions.ResumeLayout(False)
-    Me.pnlISOOptions.PerformLayout()
-    Me.pnlMerge.ResumeLayout(False)
-    Me.pnlMerge.PerformLayout()
-    CType(Me.pctTitle, System.ComponentModel.ISupportInitialize).EndInit()
-    Me.pnlISOLabel.ResumeLayout(False)
-    Me.pnlISOLabel.PerformLayout()
     Me.spltSlips7ream.Panel1.ResumeLayout(False)
     Me.spltSlips7ream.Panel2.ResumeLayout(False)
     CType(Me.spltSlips7ream, System.ComponentModel.ISupportInitialize).EndInit()
@@ -2227,6 +2879,24 @@ Partial Class frmMain
     Me.pnlUpdates.PerformLayout()
     Me.pnlMSU.ResumeLayout(False)
     Me.pnlMSU.PerformLayout()
+    Me.pnlWIM.ResumeLayout(False)
+    Me.pnlWIM.PerformLayout()
+    Me.pnlBottom.ResumeLayout(False)
+    Me.pnlBottom.PerformLayout()
+    Me.pnlISO.ResumeLayout(False)
+    Me.pnlISO.PerformLayout()
+    Me.pnlProgress.ResumeLayout(False)
+    Me.pnlProgress.PerformLayout()
+    CType(Me.pctOutputTear, System.ComponentModel.ISupportInitialize).EndInit()
+    Me.pnlControl.ResumeLayout(False)
+    Me.pnlControl.PerformLayout()
+    Me.pnlISOOptions.ResumeLayout(False)
+    Me.pnlISOOptions.PerformLayout()
+    Me.pnlMerge.ResumeLayout(False)
+    Me.pnlMerge.PerformLayout()
+    CType(Me.pctTitle, System.ComponentModel.ISupportInitialize).EndInit()
+    Me.pnlISOLabel.ResumeLayout(False)
+    Me.pnlISOLabel.PerformLayout()
     Me.ResumeLayout(False)
 
   End Sub
@@ -2289,7 +2959,6 @@ Partial Class frmMain
   Friend WithEvents cmbLimit As System.Windows.Forms.ComboBox
   Friend WithEvents cmbLimitType As System.Windows.Forms.ComboBox
   Friend WithEvents expOutput As Slips7ream.Expander
-  Friend WithEvents tmrAnimation As System.Windows.Forms.Timer
   Friend WithEvents pctTitle As System.Windows.Forms.PictureBox
   Friend WithEvents mnuOutput As System.Windows.Forms.ContextMenu
   Friend WithEvents mnuCopy As System.Windows.Forms.MenuItem
@@ -2369,13 +3038,13 @@ Partial Class frmMain
   Friend WithEvents mnuLabelGRMCHPVOL As System.Windows.Forms.MenuItem
   Friend WithEvents mnuLabel7AIO As System.Windows.Forms.MenuItem
   Friend WithEvents mnuLabelGRMCMUU As System.Windows.Forms.MenuItem
-  Friend WithEvents mnuLabelGRMCSTA As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGRMCALU As System.Windows.Forms.MenuItem
   Friend WithEvents mnuLabelGRMCMUUFRE As System.Windows.Forms.MenuItem
   Friend WithEvents mnuLabelGRMCMUUFRER As System.Windows.Forms.MenuItem
   Friend WithEvents mnuLabelGRMCMUUFREO As System.Windows.Forms.MenuItem
   Friend WithEvents mnuLabelGRMCMUUVOL As System.Windows.Forms.MenuItem
   Friend WithEvents mnuLabelGRMCMUUCHE As System.Windows.Forms.MenuItem
-  Friend WithEvents mnuLabel7x86Space As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGRMCSpace As System.Windows.Forms.MenuItem
   Friend WithEvents mnuLabelSpace As System.Windows.Forms.MenuItem
   Friend WithEvents mnuLabelAuto As System.Windows.Forms.MenuItem
   Friend WithEvents mnuLabelGRMCHBX As System.Windows.Forms.MenuItem
@@ -2384,11 +3053,11 @@ Partial Class frmMain
   Friend WithEvents mnuLabelGRMCHBXFREO As System.Windows.Forms.MenuItem
   Friend WithEvents mnuLabelGRMCHBXVOL As System.Windows.Forms.MenuItem
   Friend WithEvents mnuLabelGRMCHBXCHE As System.Windows.Forms.MenuItem
-  Friend WithEvents mnuLabelGRMCSTAFRE As System.Windows.Forms.MenuItem
-  Friend WithEvents mnuLabelGRMCSTAFRER As System.Windows.Forms.MenuItem
-  Friend WithEvents mnuLabelGRMCSTAFREO As System.Windows.Forms.MenuItem
-  Friend WithEvents mnuLabelGRMCSTAVOL As System.Windows.Forms.MenuItem
-  Friend WithEvents mnuLabelGRMCSTACHE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGRMCALUFRE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGRMCALUFRER As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGRMCALUFREO As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGRMCALUVOL As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGRMCALUCHE As System.Windows.Forms.MenuItem
   Friend WithEvents mnuLabelGRMCHPX As System.Windows.Forms.MenuItem
   Friend WithEvents mnuLabelGRMCHPXFRE As System.Windows.Forms.MenuItem
   Friend WithEvents mnuLabelGRMCHPXFRER As System.Windows.Forms.MenuItem
@@ -2409,7 +3078,7 @@ Partial Class frmMain
   Friend WithEvents mnuLabelGRMCENX As System.Windows.Forms.MenuItem
   Friend WithEvents mnuLabelGRMCENXVOL As System.Windows.Forms.MenuItem
   Friend WithEvents mnuLabelGRMCENXCHE As System.Windows.Forms.MenuItem
-  Friend WithEvents mnuLabel7x64Space As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGRMCXSpace As System.Windows.Forms.MenuItem
   Friend WithEvents mnuLabelGRMCMUX As System.Windows.Forms.MenuItem
   Friend WithEvents mnuLabelGRMCMUXFRE As System.Windows.Forms.MenuItem
   Friend WithEvents mnuLabelGRMCMUXFRER As System.Windows.Forms.MenuItem
@@ -2439,5 +3108,111 @@ Partial Class frmMain
   Friend WithEvents chkAutoLabel As System.Windows.Forms.CheckBox
   Friend WithEvents mnuCopyCommands As System.Windows.Forms.MenuItem
   Friend WithEvents colArch As System.Windows.Forms.ColumnHeader
+  Friend WithEvents mnuLabelGRMC As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMC As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCST As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCSTFRE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCSTFRER As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCSTFREO As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCSTVOL As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCSTCHE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCHB As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCHBFRE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCHBFRER As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCHBFREO As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCHBVOL As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCHBCHE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCHP As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCHPFRE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCHPFRER As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCHPFREO As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCHPVOL As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCHPCHE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCPR As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCPRFRE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCPRFRER As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCPRFREO As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCPRVOL As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCPRCHE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCUL As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCULFRE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCULFRER As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCULFREO As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCULVOL As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCULCHE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCEN As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCENVOL As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCENCHE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCSpace As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCMU As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCMUFRE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCMUFRER As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCMUFREO As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCMUVOL As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCMUCHE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCAL As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCALFRE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCALFRER As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCALFREO As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCALVOL As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCALCHE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGRMCX As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCX As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCHBX As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCHBXFRE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCHBXFRER As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCHBXFREO As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCHBXVOL As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCHBXCHE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCHPX As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCHPXFRE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCHPXFRER As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCHPXFREO As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCHPXVOL As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCHPXCHE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCPRX As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCPRXFRE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCPRXFRER As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCPRXFREO As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCPRXVOL As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCPRXCHE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCULX As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCULXFRE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCULXFRER As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCULXFREO As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCULXVOL As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCULXCHE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCENX As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCENXVOL As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCENXCHE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCXSpace As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCMUX As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCMUXFRE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCMUXFRER As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCMUXFREO As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCMUXVOL As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCMUXCHE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCALX As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCALXFRE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCALXFRER As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCALXFREO As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCALXVOL As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCALXCHE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGRMCU As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCU As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCMUU As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCMUUFRE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCMUUFRER As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCMUUFREO As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCMUUVOL As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCMUUCHE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCALU As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCALUFRE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCALUFRER As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCALUFREO As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCALUVOL As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuLabelGSP1RMCALUCHE As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuUpdateBootDriver As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuUpdatePEDriver As System.Windows.Forms.MenuItem
 
 End Class

@@ -7,6 +7,7 @@ Public Class ListViewEx
   Private c_FullRowTooltip As Boolean
   Private c_TooltipTitles As Boolean
   Private c_HeaderStyle As ColumnHeaderStyle = ColumnHeaderStyle.None
+  Private c_HideSelection As Boolean
   Private components As System.ComponentModel.IContainer
   Private WithEvents ttLV As New Slips7ream.ToolTip
   Public Property [ReadOnly] As Boolean
@@ -16,22 +17,25 @@ Public Class ListViewEx
     Set(value As Boolean)
       If Not c_ReadOnly = value Then
         c_ReadOnly = value
-        MyBase.HideSelection = value
         If value Then
+          c_HideSelection = MyBase.HideSelection
+          MyBase.HideSelection = True
           If Not MyBase.HeaderStyle = ColumnHeaderStyle.None And c_HeaderStyle = ColumnHeaderStyle.None Then c_HeaderStyle = MyBase.HeaderStyle
           MyBase.HeaderStyle = ColumnHeaderStyle.Nonclickable
           MyBase.SelectedItems.Clear()
           MyBase.BackColor = SystemColors.ButtonFace
+          MyBase.HideSelection = True
         Else
+          MyBase.HideSelection = c_HideSelection
           If Not MyBase.HeaderStyle = ColumnHeaderStyle.None And Not c_HeaderStyle = ColumnHeaderStyle.None Then
             MyBase.HeaderStyle = c_HeaderStyle
             c_HeaderStyle = ColumnHeaderStyle.None
           End If
           MyBase.BackColor = SystemColors.Window
-          End If
-          For Each lvItem As ListViewItem In Me.Items
-            lvItem.BackColor = MyBase.BackColor
-          Next
+        End If
+        For Each lvItem As ListViewItem In Me.Items
+          lvItem.BackColor = MyBase.BackColor
+        Next
       End If
     End Set
   End Property

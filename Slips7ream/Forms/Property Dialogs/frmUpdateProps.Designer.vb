@@ -3,16 +3,16 @@ Partial Class frmUpdateProps
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
-    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
-        Try
-            If disposing AndAlso components IsNot Nothing Then
-                components.Dispose()
-            End If
-        Finally
-            MyBase.Dispose(disposing)
-        End Try
-    End Sub
+  <System.Diagnostics.DebuggerNonUserCode()> _
+  Protected Overrides Sub Dispose(disposing As Boolean)
+    Try
+      If disposing AndAlso components IsNot Nothing Then
+        components.Dispose()
+      End If
+    Finally
+      MyBase.Dispose(disposing)
+    End Try
+  End Sub
 
     'Required by the Windows Form Designer
     Private components As System.ComponentModel.IContainer
@@ -338,7 +338,8 @@ Partial Class frmUpdateProps
     '
     Me.lblReleaseType.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblReleaseType.AutoSize = True
-    Me.helpS7M.SetHelpString(Me.lblReleaseType, "The type of Update this is, such as Feature Pack, Language Pack, Hotfix, Security Update, or normal Update.")
+    Me.helpS7M.SetHelpString(Me.lblReleaseType, "The type of Update this is, such as Feature Pack, Language Pack, Hotfix, Security" & _
+        " Update, or normal Update.")
     Me.lblReleaseType.Location = New System.Drawing.Point(3, 84)
     Me.lblReleaseType.Name = "lblReleaseType"
     Me.helpS7M.SetShowHelp(Me.lblReleaseType, True)
@@ -351,7 +352,8 @@ Partial Class frmUpdateProps
     Me.txtReleaseType.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
     Me.helpS7M.SetHelpKeyword(Me.txtReleaseType, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.2_Update_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtReleaseType, System.Windows.Forms.HelpNavigator.Topic)
-    Me.helpS7M.SetHelpString(Me.txtReleaseType, "The type of Update this is, such as Feature Pack, Language Pack, Hotfix, Security Update, or normal Update.")
+    Me.helpS7M.SetHelpString(Me.txtReleaseType, "The type of Update this is, such as Feature Pack, Language Pack, Hotfix, Security" & _
+        " Update, or normal Update.")
     Me.txtReleaseType.Location = New System.Drawing.Point(99, 81)
     Me.txtReleaseType.Name = "txtReleaseType"
     Me.txtReleaseType.ReadOnly = True
@@ -376,14 +378,12 @@ Partial Class frmUpdateProps
     Me.HelpButton = True
     Me.helpS7M.SetHelpKeyword(Me, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.2_Update_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me, System.Windows.Forms.HelpNavigator.Topic)
-    Me.Icon = Global.Slips7ream.My.Resources.Resources.icon
+    Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
     Me.MaximizeBox = False
     Me.MinimizeBox = False
     Me.MinimumSize = New System.Drawing.Size(320, 275)
     Me.Name = "frmUpdateProps"
     Me.helpS7M.SetShowHelp(Me, True)
-    Me.ShowIcon = False
-    Me.ShowInTaskbar = False
     Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
     Me.Text = "Windows Update Properties"
     Me.pnlUpdateData.ResumeLayout(False)

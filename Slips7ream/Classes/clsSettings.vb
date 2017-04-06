@@ -14,9 +14,16 @@
   Private c_LastNag As Date = New Date(1970, 1, 1)
   Private c_PlayAlertNoise As Boolean
   Private c_AlertNoisePath As String
+  Private c_HideDriverOutput As Boolean
   Private c_LoadFeatures As Boolean
   Private c_LoadUpdates As Boolean
   Private c_LoadDrivers As Boolean
+  Private c_UpdateColorSuperseded As Color
+  Private c_UpdateColorUpgrade As Color
+  Private c_UpdateColorRequirement As Color
+  Private c_DriverColorPE As Color
+  Private c_DriverColorBoot As Color
+  Private c_DriverColorBootAndPE As Color
   Public Property TempDir As String
     Get
       Return c_TempDir
@@ -151,6 +158,15 @@
       Save()
     End Set
   End Property
+  Public Property HideDriverOutput As Boolean
+    Get
+      Return c_HideDriverOutput
+    End Get
+    Set(value As Boolean)
+      c_HideDriverOutput = value
+      Save()
+    End Set
+  End Property
   Public Property LoadFeatures As Boolean
     Get
       Return c_LoadFeatures
@@ -175,6 +191,60 @@
     End Get
     Set(value As Boolean)
       c_LoadDrivers = value
+      Save()
+    End Set
+  End Property
+  Public Property UpdateColorSuperseded As Color
+    Get
+      Return c_UpdateColorSuperseded
+    End Get
+    Set(value As Color)
+      c_UpdateColorSuperseded = value
+      Save()
+    End Set
+  End Property
+  Public Property UpdateColorUpgrade As Color
+    Get
+      Return c_UpdateColorUpgrade
+    End Get
+    Set(value As Color)
+      c_UpdateColorUpgrade = value
+      Save()
+    End Set
+  End Property
+  Public Property UpdateColorRequirement As Color
+    Get
+      Return c_UpdateColorRequirement
+    End Get
+    Set(value As Color)
+      c_UpdateColorRequirement = value
+      Save()
+    End Set
+  End Property
+  Public Property DriverColorPE As Color
+    Get
+      Return c_DriverColorPE
+    End Get
+    Set(value As Color)
+      c_DriverColorPE = value
+      Save()
+    End Set
+  End Property
+  Public Property DriverColorBoot As Color
+    Get
+      Return c_DriverColorBoot
+    End Get
+    Set(value As Color)
+      c_DriverColorBoot = value
+      Save()
+    End Set
+  End Property
+  Public Property DriverColorBootAndPE As Color
+    Get
+      Return c_DriverColorBootAndPE
+    End Get
+    Set(value As Color)
+      c_DriverColorBootAndPE = value
       Save()
     End Set
   End Property
@@ -270,6 +340,11 @@
     Else
       c_LastNag = New Date(1970, 1, 1)
     End If
+    If Hive.GetValueNames.Contains("Hide Driver Output") Then
+      c_HideDriverOutput = (CStr(Hive.GetValue("Hide Driver Output", "Y")) = "Y")
+    Else
+      c_HideDriverOutput = True
+    End If
     If Hive.GetSubKeyNames.Contains("Alert") Then
       Dim alert As Microsoft.Win32.RegistryKey = Hive.OpenSubKey("Alert")
       c_PlayAlertNoise = (CStr(alert.GetValue(String.Empty, "N")) = "Y")
@@ -304,6 +379,50 @@
       c_LoadUpdates = True
       c_LoadDrivers = False
     End If
+    If Hive.GetSubKeyNames.Contains("Update Colors") Then
+      Dim updateColors As Microsoft.Win32.RegistryKey = Hive.OpenSubKey("Update Colors")
+      If updateColors.GetValueNames.Contains("Requirement") Then
+        c_UpdateColorRequirement = Color.FromArgb(CInt(updateColors.GetValue("Requirement", Color.Red.ToArgb)))
+      Else
+        c_UpdateColorRequirement = Color.Red
+      End If
+      If updateColors.GetValueNames.Contains("Upgrade") Then
+        c_UpdateColorUpgrade = Color.FromArgb(CInt(updateColors.GetValue("Upgrade", Color.RoyalBlue.ToArgb)))
+      Else
+        c_UpdateColorUpgrade = Color.RoyalBlue
+      End If
+      If updateColors.GetValueNames.Contains("Superseded") Then
+        c_UpdateColorSuperseded = Color.FromArgb(CInt(updateColors.GetValue("Superseded", Color.DarkOrange.ToArgb)))
+      Else
+        c_UpdateColorSuperseded = Color.DarkOrange
+      End If
+    Else
+      c_UpdateColorRequirement = Color.Red
+      c_UpdateColorUpgrade = Color.RoyalBlue
+      c_UpdateColorSuperseded = Color.DarkOrange
+    End If
+    If Hive.GetSubKeyNames.Contains("Driver Colors") Then
+      Dim driverColors As Microsoft.Win32.RegistryKey = Hive.OpenSubKey("Driver Colors")
+      If driverColors.GetValueNames.Contains("PE") Then
+        c_DriverColorPE = Color.FromArgb(CInt(driverColors.GetValue("PE", Color.Blue.ToArgb)))
+      Else
+        c_DriverColorPE = Color.Blue
+      End If
+      If driverColors.GetValueNames.Contains("Boot") Then
+        c_DriverColorBoot = Color.FromArgb(CInt(driverColors.GetValue("Boot", Color.ForestGreen.ToArgb)))
+      Else
+        c_DriverColorBoot = Color.ForestGreen
+      End If
+      If driverColors.GetValueNames.Contains("BootAndPE") Then
+        c_DriverColorBootAndPE = Color.FromArgb(CInt(driverColors.GetValue("BootAndPE", Color.Purple.ToArgb)))
+      Else
+        c_DriverColorBootAndPE = Color.Purple
+      End If
+    Else
+      c_DriverColorPE = Color.Blue
+      c_DriverColorBoot = Color.ForestGreen
+      c_DriverColorBootAndPE = Color.Purple
+    End If
   End Sub
   Private Sub ReadLegacy()
     c_TempDir = My.Settings.TempDir
@@ -321,9 +440,16 @@
     c_LastNag = New Date(1970, 1, 1)
     c_PlayAlertNoise = False
     c_AlertNoisePath = String.Empty
+    c_HideDriverOutput = True
     c_LoadFeatures = False
     c_LoadUpdates = True
     c_LoadDrivers = False
+    c_UpdateColorRequirement = Color.Red
+    c_UpdateColorUpgrade = Color.RoyalBlue
+    c_UpdateColorSuperseded = Color.DarkOrange
+    c_DriverColorPE = Color.Blue
+    c_DriverColorBoot = Color.ForestGreen
+    c_DriverColorBootAndPE = Color.Purple
     Save()
   End Sub
   Public Sub Save()
@@ -346,12 +472,25 @@
     ActiveHive.SetValue("Split Value", c_SplitVal, Microsoft.Win32.RegistryValueKind.String)
     ActiveHive.SetValue("Last Update", c_LastUpdate.ToBinary, Microsoft.Win32.RegistryValueKind.QWord)
     ActiveHive.SetValue("Last Nag", c_LastNag.ToBinary, Microsoft.Win32.RegistryValueKind.QWord)
+    ActiveHive.SetValue("Hide Driver Output", IIf(c_HideDriverOutput, "Y", "N"), Microsoft.Win32.RegistryValueKind.String)
     If Not ActiveHive.GetSubKeyNames.Contains("Alert") Then ActiveHive.CreateSubKey("Alert")
     ActiveHive.OpenSubKey("Alert", True).SetValue(String.Empty, IIf(c_PlayAlertNoise, "Y", "N"), Microsoft.Win32.RegistryValueKind.String)
-    ActiveHive.OpenSubKey("Alert", True).SetValue("Path", c_AlertNoisePath, Microsoft.Win32.RegistryValueKind.String)
+    If String.IsNullOrEmpty(c_AlertNoisePath) Then
+      If ActiveHive.OpenSubKey("Alert", True).GetValueNames.Contains("Path") Then ActiveHive.OpenSubKey("Alert", True).DeleteValue("Path")
+    Else
+      ActiveHive.OpenSubKey("Alert", True).SetValue("Path", c_AlertNoisePath, Microsoft.Win32.RegistryValueKind.String)
+    End If
     If Not ActiveHive.GetSubKeyNames.Contains("Load Package Data") Then ActiveHive.CreateSubKey("Load Package Data")
     ActiveHive.OpenSubKey("Load Package Data", True).SetValue("Features", IIf(c_LoadFeatures, "Y", "N"), Microsoft.Win32.RegistryValueKind.String)
     ActiveHive.OpenSubKey("Load Package Data", True).SetValue("Updates", IIf(c_LoadUpdates, "Y", "N"), Microsoft.Win32.RegistryValueKind.String)
     ActiveHive.OpenSubKey("Load Package Data", True).SetValue("Drivers", IIf(c_LoadDrivers, "Y", "N"), Microsoft.Win32.RegistryValueKind.String)
+    If Not ActiveHive.GetSubKeyNames.Contains("Update Colors") Then ActiveHive.CreateSubKey("Update Colors")
+    ActiveHive.OpenSubKey("Update Colors", True).SetValue("Requirement", c_UpdateColorRequirement.ToArgb, Microsoft.Win32.RegistryValueKind.DWord)
+    ActiveHive.OpenSubKey("Update Colors", True).SetValue("Upgrade", c_UpdateColorUpgrade.ToArgb, Microsoft.Win32.RegistryValueKind.DWord)
+    ActiveHive.OpenSubKey("Update Colors", True).SetValue("Superseded", c_UpdateColorSuperseded.ToArgb, Microsoft.Win32.RegistryValueKind.DWord)
+    If Not ActiveHive.GetSubKeyNames.Contains("Driver Colors") Then ActiveHive.CreateSubKey("Driver Colors")
+    ActiveHive.OpenSubKey("Driver Colors", True).SetValue("PE", c_DriverColorPE.ToArgb, Microsoft.Win32.RegistryValueKind.DWord)
+    ActiveHive.OpenSubKey("Driver Colors", True).SetValue("Boot", c_DriverColorBoot.ToArgb, Microsoft.Win32.RegistryValueKind.DWord)
+    ActiveHive.OpenSubKey("Driver Colors", True).SetValue("BootAndPE", c_DriverColorBootAndPE.ToArgb, Microsoft.Win32.RegistryValueKind.DWord)
   End Sub
 End Class

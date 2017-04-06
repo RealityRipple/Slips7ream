@@ -171,6 +171,10 @@
 				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.13_Busy.htm">
 				</OBJECT>
 		</UL>
+  <LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Output Console">
+			<param name="Local" value="1_SLIPS7REAM_Interface\1.11_Output_Console.htm">
+			</OBJECT>
 	</UL>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Configuration">
@@ -190,8 +194,12 @@
 			<param name="Local" value="2_Configuration\2.3_Command_Timeout.htm">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Hide Driver Console Output">
+			<param name="Local" value="2_Configuration\2.4_Hide_Driver_Console_Output.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Alert on Complete">
-			<param name="Local" value="2_Configuration\2.4_Alert_on_Complete.htm">
+			<param name="Local" value="2_Configuration\2.5_Alert_on_Complete.htm">
 			</OBJECT>
 	</UL>
 	<LI> <OBJECT type="text/sitemap">
