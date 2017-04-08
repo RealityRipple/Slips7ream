@@ -696,6 +696,7 @@ Public Class frmMain
 #End Region
 #End Region
 #Region "Updates"
+  Private Updates_ListBusy As Boolean
   Private Shared Updates_ListData As New SortedList(Of Integer, Updates_Data)
   Private Updates_ReplaceAllOld As TriState = TriState.UseDefault
   Private Updates_ReplaceAllNew As TriState = TriState.UseDefault
@@ -714,9 +715,8 @@ Public Class frmMain
                                                         New Updates_Prerequisite("3125574:3020369"),
                                                         New Updates_Prerequisite("3126446:2830477")}
   Private Sub lvMSU_ColumnWidthChanged(sender As Object, e As System.Windows.Forms.ColumnWidthChangedEventArgs) Handles lvMSU.ColumnWidthChanged
-    Static busy As Boolean
-    If busy Then Return
-    busy = True
+    If Updates_ListBusy Then Return
+    Updates_ListBusy = True
     GUI_ListView_ResizeColumns(GUI_ListView_Columns.MSU)
     lvMSU.BeginUpdate()
     If e.ColumnIndex = 0 Then
@@ -728,7 +728,7 @@ Public Class frmMain
       If lvMSU.Columns(1).Width < 55 Then lvMSU.Columns(1).Width = 55
     End If
     lvMSU.EndUpdate()
-    busy = False
+    Updates_ListBusy = False
   End Sub
   Private Sub lvMSU_ColumnWidthChanging(sender As Object, e As System.Windows.Forms.ColumnWidthChangingEventArgs) Handles lvMSU.ColumnWidthChanging
     e.Cancel = True
@@ -5117,18 +5117,18 @@ Public Class frmMain
     Dim sTT As String = String.Format("Total Progress: {0}", FormatPercent(Value / Maximum, 1, TriState.True, TriState.False, TriState.False))
     If Not ttInfo.GetToolTip(pbTotal) = sTT Then
       ' TODO: Remove from here to Debug.Print
-      Dim myTrace As New System.Diagnostics.StackTrace
-      Dim sTrace As String = Nothing
-      For I As Integer = 1 To myTrace.FrameCount - 1
-        If myTrace.GetFrame(I).GetMethod.Module.Name.ToLower = IO.Path.ChangeExtension(My.Application.Info.AssemblyName, "exe").ToLower Then
-          If String.IsNullOrEmpty(sTrace) Then
-            sTrace = myTrace.GetFrame(I).GetMethod.Name
-          Else
-            sTrace = String.Concat(myTrace.GetFrame(I).GetMethod.Name, ">", sTrace)
-          End If
-        End If
-      Next
-      Debug.Print(sTT & " called from " & sTrace)
+      'Dim myTrace As New System.Diagnostics.StackTrace
+      'Dim sTrace As String = Nothing
+      'For I As Integer = 1 To myTrace.FrameCount - 1
+      '  If myTrace.GetFrame(I).GetMethod.Module.Name.ToLower = IO.Path.ChangeExtension(My.Application.Info.AssemblyName, "exe").ToLower Then
+      '    If String.IsNullOrEmpty(sTrace) Then
+      '      sTrace = myTrace.GetFrame(I).GetMethod.Name
+      '    Else
+      '      sTrace = String.Concat(myTrace.GetFrame(I).GetMethod.Name, ">", sTrace)
+      '    End If
+      '  End If
+      'Next
+      'Debug.Print(sTT & " called from " & sTrace)
       ttInfo.SetToolTip(pbTotal, sTT)
     End If
     Try
@@ -5241,18 +5241,18 @@ Public Class frmMain
     If Not String.IsNullOrEmpty(SubTitle) And Not String.IsNullOrEmpty(SubPercent) Then sTT = String.Concat(sTT, vbNewLine, String.Format("{0}: {1}", SubTitle, SubPercent))
     If Not ttInfo.GetToolTip(pbIndividual) = sTT Then
       ' TODO: Remove from here to Debug.Print
-      Dim myTrace As New System.Diagnostics.StackTrace
-      Dim sTrace As String = Nothing
-      For I As Integer = 1 To myTrace.FrameCount - 1
-        If myTrace.GetFrame(I).GetMethod.Module.Name.ToLower = IO.Path.ChangeExtension(My.Application.Info.AssemblyName, "exe").ToLower Then
-          If String.IsNullOrEmpty(sTrace) Then
-            sTrace = myTrace.GetFrame(I).GetMethod.Name
-          Else
-            sTrace = String.Concat(myTrace.GetFrame(I).GetMethod.Name, ">", sTrace)
-          End If
-        End If
-      Next
-      Debug.Print("      " & sTT.Replace(vbNewLine, " - ") & " called from " & sTrace)
+      'Dim myTrace As New System.Diagnostics.StackTrace
+      'Dim sTrace As String = Nothing
+      'For I As Integer = 1 To myTrace.FrameCount - 1
+      '  If myTrace.GetFrame(I).GetMethod.Module.Name.ToLower = IO.Path.ChangeExtension(My.Application.Info.AssemblyName, "exe").ToLower Then
+      '    If String.IsNullOrEmpty(sTrace) Then
+      '      sTrace = myTrace.GetFrame(I).GetMethod.Name
+      '    Else
+      '      sTrace = String.Concat(myTrace.GetFrame(I).GetMethod.Name, ">", sTrace)
+      '    End If
+      '  End If
+      'Next
+      'Debug.Print("      " & sTT.Replace(vbNewLine, " - ") & " called from " & sTrace)
       ttInfo.SetToolTip(pbIndividual, sTT)
     End If
   End Sub
@@ -5869,10 +5869,12 @@ Public Class frmMain
     Dim sRet As String = Run_WithReturn(DismPath, String.Format("{0} /English", Args))
     DISM_Return_Clean()
     If sRet.ToLower.Contains("0x800f082f") And TryExclusiveFix Then
-      Run_Hidden("reg", "load HKLM\SLIPS7REAM " & IO.Path.Combine(MountPath, "windows", "system32", "config", "software"))
-      My.Computer.Registry.LocalMachine.OpenSubKey("SLIPS7REAM", True).OpenSubKey("SOFTWARE", True).OpenSubKey("Microsoft", True).OpenSubKey("Windows", True).OpenSubKey("CurrentVersion", True).OpenSubKey("Component Based Servicing", True).OpenSubKey("SessionsPending", True).SetValue("Exclusive", "0", Microsoft.Win32.RegistryValueKind.DWord)
-      My.Computer.Registry.LocalMachine.OpenSubKey("SLIPS7REAM", True).OpenSubKey("SOFTWARE", True).OpenSubKey("Microsoft", True).OpenSubKey("Windows", True).OpenSubKey("CurrentVersion", True).OpenSubKey("Component Based Servicing", True).OpenSubKey("SessionsPending", True).SetValue("TotalSessionPhases", "0", Microsoft.Win32.RegistryValueKind.DWord)
-      Run_Hidden("reg", "unload HKLM\SLIPS7REAM")
+      Dim sLoad As String = Run_WithReturn("reg", "load HKLM\SLIPS7REAM " & IO.Path.Combine(MountPath, "windows", "system32", "config", "software"))
+      Stop
+      Dim bMod As Boolean = clsRegistry.ModifySessionsPending()
+      Dim sUnload As String = Run_WithReturn("reg", "unload HKLM\SLIPS7REAM")
+      Stop
+      If Not bMod Then Return False
       Return DISM_Update_Add(MountPath, AddPath, False)
     End If
     Return sRet.Contains("The operation completed successfully.")
@@ -10010,6 +10012,7 @@ Public Class frmMain
     End Function
   End Class
   Private Sub SortMSUsByRequirement(ByRef updateList As ListViewEx, Index As Integer)
+    Dim iLoc As Integer = Index
     For I As Integer = 0 To PrerequisiteList.Length - 1
       Dim iData As Updates_Data = Updates_ListData(CInt(updateList.Items(Index).Tag))
       If iData.Update.KBArticle = PrerequisiteList(I).KBWithRequirement Then
@@ -10020,12 +10023,18 @@ Public Class frmMain
             If PrerequisiteList(I).Requirement(R).Contains(jData.Update.KBArticle) Then
               Dim moveItem As ListViewItem = updateList.Items(J)
               updateList.Items.RemoveAt(J)
-              updateList.Items.Insert(Index, moveItem)
+              updateList.Items.Insert(iLoc, moveItem)
+              iLoc+=1
               didMove = True
+              Exit For
             End If
           Next
         Next
-        If didMove Then SortMSUsByRequirement(updateList, Index)
+        If didMove Then
+          For L As Integer = Index To iLoc
+            SortMSUsByRequirement(updateList, L)
+          Next L
+        End If
         Exit For
       End If
     Next

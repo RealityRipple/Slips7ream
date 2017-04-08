@@ -108,6 +108,7 @@
   <ItemGroup>
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Classes\clsExplorer.vb" />
+    <Compile Include="Classes\clsRegistry.vb" />
     <Compile Include="Classes\clsThreadedTimer.vb" />
     <Compile Include="Controls\ctlLineBreak.Designer.vb">
       <DependentUpon>ctlLineBreak.vb</DependentUpon>

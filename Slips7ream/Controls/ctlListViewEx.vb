@@ -65,7 +65,7 @@ Public Class ListViewEx
   End Sub
   Protected Overrides Sub OnSelectedIndexChanged(e As System.EventArgs)
     If c_ReadOnly Then
-      MyBase.SelectedItems.Clear()
+      If MyBase.SelectedItems.Count > 0 Then MyBase.SelectedItems.Clear()
     Else
       MyBase.OnSelectedIndexChanged(e)
     End If
