@@ -4344,9 +4344,6 @@ Public Class frmMain
     End If
     Progress_Normal(0, 1)
     Progress_Total(0, 1)
-    'CleanMounts(True)
-    'Progress_Normal(0, 1)
-    'Progress_Total(0, 1)
     GUI_ToggleEnabled(True, oldStatus)
   End Sub
 #Region "Package Feature List"
@@ -5613,6 +5610,11 @@ Public Class frmMain
       Else
         Progress_Normal(pbVal, pbMax, True)
       End If
+      If My.Computer.Registry.LocalMachine.GetSubKeyNames.Contains(My.Application.Info.ProductName) Then
+        Dim hkPath As String = IO.Path.Combine("HKLM", My.Application.Info.ProductName)
+        ConsoleOutput_Write(String.Concat("REG unload ", hkPath))
+        Run_WithReturn("reg", String.Concat("unload ", hkPath), True)
+      End If
       Status_SetText("Getting DISM Mount List...")
       Dim Args As String = "/Get-MountedWimInfo"
       ConsoleOutput_Write(String.Format("DISM {0}", Args))
@@ -5869,12 +5871,22 @@ Public Class frmMain
     Dim sRet As String = Run_WithReturn(DismPath, String.Format("{0} /English", Args))
     DISM_Return_Clean()
     If sRet.ToLower.Contains("0x800f082f") And TryExclusiveFix Then
-      Dim sLoad As String = Run_WithReturn("reg", "load HKLM\SLIPS7REAM " & IO.Path.Combine(MountPath, "windows", "system32", "config", "software"))
-      Stop
-      Dim bMod As Boolean = clsRegistry.ModifySessionsPending()
-      Dim sUnload As String = Run_WithReturn("reg", "unload HKLM\SLIPS7REAM")
-      Stop
-      If Not bMod Then Return False
+      Dim hkPath As String = IO.Path.Combine("HKLM", My.Application.Info.ProductName)
+      Dim msPath As String = IO.Path.Combine(MountPath, "windows", "system32", "config", "software")
+      ConsoleOutput_Write(String.Format("REG load {0} {1} ", hkPath, msPath))
+      Dim sLoad As String = Run_WithReturn("reg", String.Format("load {0} {1} ", hkPath, msPath))
+      If Not sLoad.Contains("The operation completed successfully.") Then Return False
+      ConsoleOutput_Write("Making modifications to virtual registry...")
+      Dim sMod As String = clsRegistry.ModifySessionsPending(hkPath)
+      If String.IsNullOrEmpty(sMod) Then
+        ConsoleOutput_Write("Complete!", ConsoleOutput_MessageType.Output)
+      Else
+        ConsoleOutput_Write(sMod, ConsoleOutput_MessageType.Output)
+      End If
+      ConsoleOutput_Write(String.Concat("REG unload ", hkPath))
+      Dim sUnload As String = Run_WithReturn("reg", String.Concat("unload ", hkPath))
+      If Not sUnload.Contains("The operation completed successfully.") Then Return False
+      If Not String.IsNullOrEmpty(sMod) Then Return False
       Return DISM_Update_Add(MountPath, AddPath, False)
     End If
     Return sRet.Contains("The operation completed successfully.")

@@ -224,7 +224,7 @@ Public Class clsRegistry
     Dim success As Boolean = False
     Dim pSidAdmin As IntPtr = IntPtr.Zero
     Dim pAcl As IntPtr = IntPtr.Zero
-    Dim name As String = ObjectName
+    Dim name As String = ObjectName.Replace("HKLM", "MACHINE")
 
     Dim sidNTAuthority As SID_IDENTIFIER_AUTHORITY
     If SYSTEM Then
@@ -233,16 +233,6 @@ Public Class clsRegistry
     Else
       sidNTAuthority = New SID_IDENTIFIER_AUTHORITY With {.Value = New Byte() {0, 0, 0, 0, 0, 5}}
       success = AllocateAndInitializeSid(sidNTAuthority, CByte(2), SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, pSidAdmin)
-    End If
-
-    If ObjectName.StartsWith("HKEY_CLASSES_ROOT") Then
-      name = ObjectName.Replace("HKEY_CLASSES_ROOT", "CLASSES_ROOT")
-    ElseIf ObjectName.StartsWith("HKEY_CURRENT_USER") Then
-      name = ObjectName.Replace("HKEY_CURRENT_USER", "CURRENT_USER")
-    ElseIf ObjectName.StartsWith("HKEY_LOCAL_MACHINE") Then
-      name = ObjectName.Replace("HKEY_LOCAL_MACHINE", "MACHINE")
-    ElseIf ObjectName.StartsWith("HKEY_USERS") Then
-      name = ObjectName.Replace("HKEY_USERS", "USERS")
     End If
 
     If success Then
@@ -300,11 +290,12 @@ Public Class clsRegistry
     Return success
   End Function
 
-  Public Shared Function ModifySessionsPending() As Boolean
+  Public Shared Function ModifySessionsPending(hkPath As String) As String
     Try
-      Dim subkey As String = "SLIPS7REAM\Microsoft\Windows\CurrentVersion\Component Based Servicing\SessionsPending"
-      If Not ChangeObjectOwnership("MACHINE\" & subkey, SE_OBJECT_TYPE.SE_REGISTRY_KEY, False) Then Return False
-      Using wk As RegistryKey = Registry.LocalMachine.OpenSubKey(subkey, RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.WriteKey)
+      Dim fullPath As String = IO.Path.Combine(hkPath, "Microsoft", "Windows", "currentVersion", "Component Based Servicing", "SessionsPending")
+      Dim lmPath As String = fullPath.Substring(fullPath.IndexOf(IO.Path.DirectorySeparatorChar) + 1)
+      If Not ChangeObjectOwnership(fullPath, SE_OBJECT_TYPE.SE_REGISTRY_KEY, False) Then Return "Unable to take ownership of Registry Key!"
+      Using wk As RegistryKey = Registry.LocalMachine.OpenSubKey(lmPath, RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.WriteKey)
         Dim rs As RegistrySecurity = wk.GetAccessControl()
         rs.SetAccessRuleProtection(False, False)
         Dim cvrn As Security.AccessControl.AuthorizationRuleCollection = rs.GetAccessRules(True, True, GetType(System.Security.Principal.NTAccount))
@@ -318,10 +309,10 @@ Public Class clsRegistry
         wk.SetValue("TotalSessionPhases", 0, Microsoft.Win32.RegistryValueKind.DWord)
         wk.Close()
       End Using
-      If Not ChangeObjectOwnership("MACHINE\" & subkey, SE_OBJECT_TYPE.SE_REGISTRY_KEY, True) Then Return False
-      Return True
+      If Not ChangeObjectOwnership(fullPath, SE_OBJECT_TYPE.SE_REGISTRY_KEY, True) Then Return "Unable to revert ownership of Registry Key to SYSTEM!"
+      Return Nothing
     Catch ex As Exception
-      Return False
+      Return "Unable to modify Registry Key or Values! " & ex.Message
     End Try
   End Function
 End Class
