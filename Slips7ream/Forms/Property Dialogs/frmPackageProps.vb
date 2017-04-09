@@ -1218,7 +1218,7 @@
         pName = String.Format("{0} for {1} ({2})", sReleaseName, sParentProd, sArticle)
       End If
     ElseIf pUpdate.UpdateInfo.ProductName = "Package_for_RollupFix" Then
-      pName = "Update Rollup for Windows"
+      pName = String.Format("{0} Rollup for {1}", pUpdate.ReleaseType, sParentProd)
     ElseIf pUpdate.UpdateInfo.ProductName.StartsWith("Package_for_") Then
       Dim sArticle As String = pUpdate.Ident.Name.Substring(pUpdate.Ident.Name.IndexOf("for_") + 4)
       pName = String.Format("{0} for {1} ({2})", sReleaseName, sParentProd, sArticle)

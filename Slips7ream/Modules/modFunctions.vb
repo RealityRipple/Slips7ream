@@ -117,7 +117,7 @@ Public Module modFunctions
       Case "Microsoft-Windows-RDP-WinIP-Package-TopLevel" : Return "Remote Desktop Protocol Update"
       Case "Microsoft-Windows-RDP-BlueIP-Package-TopLevel" : Return "Remote App and Desktop Connections Update"
       Case "Microsoft-Windows-Security-WindowsActivationTechnologies-Package" : Return "Windows Activation Update"
-      Case "Package_for_RollupFix" : Return String.Format("Update Rollup for {0}", sParentProd)
+      Case "Package_for_RollupFix" : Return String.Format("{0} Rollup for {1}", ReleaseType, sParentProd)
       Case Else
         If Ident.Name.StartsWith("Package_for_") Then
           If String.IsNullOrEmpty(ReleaseType) Then
