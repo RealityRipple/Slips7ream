@@ -824,13 +824,13 @@ Partial Class frmPackageProps
     '
     'imlUpdates
     '
-    Me.imlUpdates.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit
+    Me.imlUpdates.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
     Me.imlUpdates.ImageSize = New System.Drawing.Size(16, 16)
     Me.imlUpdates.TransparentColor = System.Drawing.Color.Transparent
     '
     'imlFeatures
     '
-    Me.imlFeatures.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit
+    Me.imlFeatures.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
     Me.imlFeatures.ImageSize = New System.Drawing.Size(16, 16)
     Me.imlFeatures.TransparentColor = System.Drawing.Color.Transparent
     '

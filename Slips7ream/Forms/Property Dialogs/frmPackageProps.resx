@@ -130,7 +130,7 @@
     <value>This list displays all the Windows Features available in this Image Package. A checked box means the feature will be enabled on installation, an unchecked box means the feature will be disabled by default. Some features require other features or may be necessary for functionality in Windows. Please note that you must run the Slipstream Process before any settings will be changed.</value>
   </data>
   <metadata name="imlFeatures.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>130, 17</value>
+    <value>22, 19</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="cmdLoadFeatures.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -156,7 +156,7 @@
     <value>This list displays the Windows Updates and Language Packs that have already been integrated into the Image Package. If you want to remove an Update or Language, uncheck the box next to it. Please note that you must run the Slipstream Process before any settings will be changed.</value>
   </data>
   <metadata name="imlUpdates.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
+    <value>136, 19</value>
   </metadata>
   <data name="cmdLoadUpdates.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -198,22 +198,22 @@
     <value>This is the list of driver classes in the Image Package, which generally define the type of hardware the driver is used for. Select one of the items in this list to populate the Provider list which will let you find a Driver INF by the company that provided the driver.</value>
   </data>
   <metadata name="imlDriverClass.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>487, 17</value>
+    <value>244, 17</value>
   </metadata>
   <metadata name="imlDriverCompany.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>734, 17</value>
+    <value>491, 17</value>
   </metadata>
   <data name="lvDriverINF.HelpString" xml:space="preserve">
     <value>These INF files are all the drivers which were released by the selected Provider for the selected type of hardware. You can uncheck an INF File to remove it from the Image Package. Please make sure the driver is not Boot Critical or you may end up with an installation of Windows that does not boot or has other major problems. Please note that you must run the Slipstream Process before any settings will be changed.</value>
   </data>
   <metadata name="imlDriverINF.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>615, 17</value>
+    <value>372, 17</value>
   </metadata>
   <metadata name="mnuFeatures.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>244, 17</value>
+    <value>644, 17</value>
   </metadata>
   <metadata name="mnuUpdates.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>366, 17</value>
+    <value>766, 17</value>
   </metadata>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
