@@ -10052,16 +10052,9 @@ Public Class frmMain
     Next
   End Sub
   Private Sub SortUpdatesForIntegration(ByRef updateList As List(Of KeyValuePair(Of Update_File, Dictionary(Of String, Boolean))))
-    SortUpdatesByKBArticle(updateList)
     For I As Integer = 0 To updateList.Count - 1
       SortUpdatesByRequirement(updateList, I)
     Next
-  End Sub
-  Private Sub SortUpdatesByKBArticle(ByRef updateList As List(Of KeyValuePair(Of Update_File, Dictionary(Of String, Boolean))))
-    Dim newList() As KeyValuePair(Of Update_File, Dictionary(Of String, Boolean)) = updateList.ToArray
-    Dim kSort As New UpdateKBSorter
-    Array.Sort(Of KeyValuePair(Of Update_File, Dictionary(Of String, Boolean)))(newList, kSort)
-    updateList = newList.ToList
   End Sub
   Private Class UpdateKBSorter
     Implements IComparer(Of KeyValuePair(Of Update_File, Dictionary(Of String, Boolean)))
