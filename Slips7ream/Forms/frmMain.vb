@@ -3926,7 +3926,7 @@ Public Class frmMain
         Return
       End If
       If MountPath.Name = "SKIP" Then
-        pbVal += 1
+        pbVal += 5
         If doFeatures Then pbValSub += 1
         If doUpdates Then pbValSub += 1
         If doDrivers Then pbValSub += 1
@@ -4004,7 +4004,7 @@ Public Class frmMain
       chkLoadUpdates.Checked = False
       chkLoadDrivers.Checked = False
       ImagePackage_Discard(MountPath)
-      pbVal += 1
+      pbVal += 5
     Next
     If doMerge Then
       Progress_Normal(0, 1)
@@ -4033,7 +4033,7 @@ Public Class frmMain
         chkLoadFeatures.Checked = False
         chkLoadUpdates.Checked = False
         chkLoadDrivers.Checked = False
-        Dim MountPath As ImagePackage_ImageData = ImagePackage_Mount(MergeData.Key, WIMGroup.WIM, I)
+        Dim MountPath As ImagePackage_ImageData = ImagePackage_Mount(MergeData.Key, WIMGroup.Merge, I)
         If MountPath.IsEmpty Then
           ImagePackage_Complete(True)
           chkLoadFeatures.Checked = doFeatures
@@ -4043,7 +4043,7 @@ Public Class frmMain
           Return
         End If
         If MountPath.Name = "SKIP" Then
-          pbVal += 1
+          pbVal += 5
           If doFeatures Then pbValSub += 1
           If doUpdates Then pbValSub += 1
           If doDrivers Then pbValSub += 1
@@ -4121,7 +4121,7 @@ Public Class frmMain
         chkLoadUpdates.Checked = False
         chkLoadDrivers.Checked = False
         ImagePackage_Discard(MountPath)
-        pbVal += 1
+        pbVal += 5
       Next
     End If
     ImagePackage_Complete(False)
