@@ -328,9 +328,5 @@
 		<param name="Name" value="Important Links">
 		<param name="Local" value="6.0_Important_Links.htm">
 		</OBJECT>
-	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="Helpful Hints">
-		<param name="Local" value="7.0_Helpful_Hints.htm">
-		</OBJECT>
 </UL>
 </BODY></HTML>
