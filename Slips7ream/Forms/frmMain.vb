@@ -6927,10 +6927,12 @@ Public Class frmMain
     End If
     Dim IdenticalNames As New List(Of String)
     For I As Integer = 0 To lvImages.Items.Count - 1
+      If Not lvImages.Items(I).Checked Then Continue For
       Dim lvIndex As Integer = CInt(lvImages.Items(I).Tag)
       Dim selName As String = ImagePackage_ListData(lvIndex).NewName
       For J As Integer = 0 To lvImages.Items.Count - 1
         If J = I Then Continue For
+        If Not lvImages.Items(J).Checked Then Continue For
         Dim lvIndex2 As Integer = CInt(lvImages.Items(J).Tag)
         If ImagePackage_ListData(lvIndex2).NewName = selName Then
           If Not IdenticalNames.Contains(selName) Then IdenticalNames.Add(selName)
