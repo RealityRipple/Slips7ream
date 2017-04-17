@@ -2433,7 +2433,6 @@ Public Class frmMain
     cmdBegin.Text = "&Begin"
     cmdOpenFolder.Visible = False
     Dim foundEI As Boolean = False
-    Dim foundCLG As Boolean = False
     Dim foundUEFI As Boolean = False
     If String.IsNullOrEmpty(txtISO.Text) OrElse Not IO.File.Exists(txtISO.Text) Then
       ISO_UnlockEditionsCheckbox = TriState.UseDefault
@@ -2445,12 +2444,11 @@ Public Class frmMain
     If sFiles IsNot Nothing Then
       For Each sFile In sFiles
         If sFile.ToLower.Contains("ei.cfg") Then foundEI = True
-        If sFile.ToLower.Contains(".clg") Then foundCLG = True
         If sFile.ToLower = "efi\boot\bootx64.efi" Then foundUEFI = True
-        If foundEI And foundCLG And foundUEFI Then Exit For
+        If foundEI And foundUEFI Then Exit For
       Next
     End If
-    If foundEI Or foundCLG Then
+    If foundEI Then
       If Not ISO_UnlockEditionsCheckbox = TriState.UseDefault Then
         If ISO_UnlockEditionsCheckbox = TriState.True Then
           chkUnlock.Checked = True
@@ -7727,19 +7725,31 @@ Public Class frmMain
       Progress_Normal(0, 1)
       Status_SetText("Extracting ISO contents...")
       Extract_AllFiles_Except(ISOFile, ISODir, "install.wim", "Setup Disc")
+      Status_SetText("Erasing Catalog Files...")
+      Try
+        For Each sourceFileName As String In IO.Directory.EnumerateFiles(IO.Path.Combine(ISODir, "sources"))
+          If Not IO.Path.GetExtension(sourceFileName).ToLower = ".clg" Then Continue For
+          ConsoleOutput_Write(String.Format("Deleting ""{0}""...", IO.Path.Combine(ISODir, "sources", sourceFileName)))
+          Try
+            IO.File.Delete(IO.Path.Combine(ISODir, "sources", sourceFileName))
+          Catch dex As Exception
+            ConsoleOutput_Write(String.Format("Error deleting ""{0}""!", IO.Path.Combine(ISODir, "sources")))
+          End Try
+        Next
+      Catch ex As Exception
+        ConsoleOutput_Write(String.Format("Error iterating through ""{0}""!", IO.Path.Combine(ISODir, "sources")))
+      End Try
       If chkUnlock.Checked Then
         Status_SetText("Unlocking All Editions...")
-        Dim sourceFiles() As String = {"ei.cfg",
-                                       "install_Windows 7 STARTER.clg",
-                                       "install_Windows 7 HOMEBASIC.clg", "install_Windows 7 HOMEPREMIUM.clg",
-                                       "install_Windows 7 PROFESSIONAL.clg", "install_Windows 7 ULTIMATE.clg",
-                                       "install_Windows 7 ENTERPRISE.clg"}
-        For Each SourceFileName As String In sourceFiles
-          If IO.File.Exists(IO.Path.Combine(ISODir, "sources", SourceFileName)) Then
-            ConsoleOutput_Write(String.Format("Deleting ""{0}""...", IO.Path.Combine(ISODir, "sources", SourceFileName)))
-            IO.File.Delete(IO.Path.Combine(ISODir, "sources", SourceFileName))
-          End If
-        Next
+        If IO.File.Exists(IO.Path.Combine(ISODir, "sources", "ei.cfg")) Then
+          ConsoleOutput_Write(String.Format("Deleting ""{0}""...", IO.Path.Combine(ISODir, "sources", "ei.cfg")))
+          Try
+            IO.File.Delete(IO.Path.Combine(ISODir, "sources", "ei.cfg"))
+          Catch ex As Exception
+            ConsoleOutput_Write(String.Format("Error deleting ""{0}""!", IO.Path.Combine(ISODir, "sources", "ei.cfg")))
+            chkUnlock.Checked = False
+          End Try
+        End If
       End If
       If IO.Directory.Exists(IO.Path.Combine(ISODir, "[BOOT]")) Then
         ConsoleOutput_Write(String.Format("Deleting ""{0}""...", IO.Path.Combine(ISODir, "[BOOT]")))

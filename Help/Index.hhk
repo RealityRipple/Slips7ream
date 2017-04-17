@@ -158,6 +158,11 @@
 		<param name="Local" value="4_Included_External_Tools\4.5_7z.dll.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="catalog">
+		<param name="Name" value="Slipstream Process">
+		<param name="Local" value="3_Slipstream_Process\3.0_Slipstream_Process.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="CD">
 		<param name="Name" value="Included External Tools - OSCDIMG">
 		<param name="Local" value="4_Included_External_Tools\4.3_OSCDIMG.htm">
@@ -209,8 +214,8 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="CLG">
-		<param name="Name" value="ISO Features - Unlock All Editions">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+		<param name="Name" value="Slipstream Process">
+		<param name="Local" value="3_Slipstream_Process\3.0_Slipstream_Process.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="close">
