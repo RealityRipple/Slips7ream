@@ -1381,8 +1381,7 @@ Partial Class frmMain
     Me.chkUnlock.Size = New System.Drawing.Size(115, 18)
     Me.chkUnlock.TabIndex = 0
     Me.chkUnlock.Text = "Unlock All &Editions"
-    Me.ttInfo.SetToolTip(Me.chkUnlock, "Remove ""ei.cfg"" and the install catalogs from the ISO to allow installation of al" & _
-        "l editions.")
+    Me.ttInfo.SetToolTip(Me.chkUnlock, "Remove ""ei.cfg"" from the ISO to allow installation of all Image Packages.")
     Me.chkUnlock.UseVisualStyleBackColor = True
     '
     'lblISOFS
