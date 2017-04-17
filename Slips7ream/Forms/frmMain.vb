@@ -9313,7 +9313,7 @@ Public Class frmMain
       Return False
     End If
     Dim pbVal As Integer = 0
-    Dim pbMax As Integer = (PackageCount * 3) + 15 + PackageCount
+    Dim pbMax As Integer = (PackageCount * 5) + 15
     Progress_Normal(pbVal, pbMax)
     Dim ActivePackages As Integer = 0
     Dim activeArch As String = Architecture
@@ -9334,7 +9334,7 @@ Public Class frmMain
     End If
     If ActivePackages = 0 Then Return True
     pbVal += 1
-    pbMax = (ActivePackages * 4) + 15 + PackageCount
+    pbMax = (ActivePackages * 3) + 15 + (PackageCount * 2)
     Progress_Normal(pbVal, pbMax)
     Status_SetText("Extracting Service Pack...")
     Run_Hidden(SPPath, String.Format("/x:""{0}""", IO.Path.Combine(Work, "SP1")))
