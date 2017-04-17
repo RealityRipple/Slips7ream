@@ -142,10 +142,9 @@ By default, the Command Timeout feature is disabled (with a value of 0), which m
 (This feature is useful for integrating Spelling and Hyphenation packages
 for Internet Explorer 10 and 11, and should be used carefully.)</value>
   </data>
-  <data name="chkHideDriverOutput.HelpString" xml:space="preserve">
-    <value>This checkbox controls whether or not SLIPS7REAM's console will display output when parsing details about drivers, both integrated and from INF files. Drivers can often have a large number of compatible hardware IDs, and iterating through them all can take quite a bit of time. It can also fill up the console window in a matter of seconds.
-By default, Driver outputs are hidden to keep the console window a little cleaner and prevent excessive loading times when reading major driver packages. You can turn this feature off if you want to see everything in the console, or if you're looking for a problem with a driver file.</value>
-  </data>
+  <metadata name="ttInfo.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="cmdPlay.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -165,9 +164,10 @@ By default, Driver outputs are hidden to keep the console window a little cleane
         rkJggg==
 </value>
   </data>
-  <metadata name="ttInfo.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
+  <data name="chkHideDriverOutput.HelpString" xml:space="preserve">
+    <value>This checkbox controls whether or not SLIPS7REAM's console will display output when parsing details about drivers, both integrated and from INF files. Drivers can often have a large number of compatible hardware IDs, and iterating through them all can take quite a bit of time. It can also fill up the console window in a matter of seconds.
+By default, Driver outputs are hidden to keep the console window a little cleaner and prevent excessive loading times when reading major driver packages. You can turn this feature off if you want to see everything in the console, or if you're looking for a problem with a driver file.</value>
+  </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAA0AQEAQAAEABABoCgAA1gAAADAwEAABAAQAaAYAAD4LAAAgIBAAAQAEAOgCAACmEQAAEBAQAAEA

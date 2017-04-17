@@ -1052,13 +1052,13 @@ Public Class frmMain
     If lvMSU.SelectedItems.Count > 0 Then
       cmdRemMSU.Enabled = True
       If lvMSU.SelectedItems.Count > 1 Then
-        cmdRemMSU.Text = "Remove Updates"
+        cmdRemMSU.Text = "Remove Up&dates"
       Else
-        cmdRemMSU.Text = "Remove Update"
+        cmdRemMSU.Text = "Remove Up&date"
       End If
     Else
       cmdRemMSU.Enabled = False
-      cmdRemMSU.Text = "Remove Updates"
+      cmdRemMSU.Text = "Remove Up&dates"
     End If
   End Sub
 #End Region
@@ -2429,6 +2429,7 @@ Public Class frmMain
     TextBoxDragOverEvent(CType(sender, TextBox), e, {".iso"})
   End Sub
   Private Sub txtISO_TextChanged(sender As System.Object, e As System.EventArgs) Handles txtISO.TextChanged
+    StopRun = False
     RunComplete = False
     cmdBegin.Text = "&Begin"
     cmdOpenFolder.Visible = False
@@ -3873,6 +3874,7 @@ Public Class frmMain
       MsgDlg(Me, "You must select which data you wish to load from the Image Packages before beginning the procedure.", "No Data Selected", "Parse Image Packages", MessageBoxButtons.OK, _TaskDialogIcon.ControlPanel, , , "No Parse Data Selected")
       Return
     End If
+    StopRun = False
     cmdLoadPackages.Image = My.Resources.u_i
     Dim doFeatures As Boolean = chkLoadFeatures.Checked
     Dim doUpdates As Boolean = chkLoadUpdates.Checked
@@ -6806,7 +6808,6 @@ Public Class frmMain
             If DISM_Return_ProgressValue > DISM_Return_ProgressTotal Then DISM_Return_ProgressValue = DISM_Return_ProgressTotal
             If DISM_Return_ProgressValue < 0 Then DISM_Return_ProgressValue = 0
             Progress_Normal_Sub(DISM_Return_ProgressValue, DISM_Return_ProgressTotal, DISM_Return_ProgressStatus)
-            Debug.Print("Passed Output :    " & Output)
           End If
         End If
       End If

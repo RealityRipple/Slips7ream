@@ -42,9 +42,9 @@ Partial Class frmConfig
     Me.cmdAlertBrowse = New System.Windows.Forms.Button()
     Me.cmdPlay = New System.Windows.Forms.Button()
     Me.chkDefault = New System.Windows.Forms.CheckBox()
+    Me.chkHideDriverOutput = New System.Windows.Forms.CheckBox()
     Me.helpS7M = New System.Windows.Forms.HelpProvider()
     Me.ttInfo = New Slips7ream.ToolTip(Me.components)
-    Me.chkHideDriverOutput = New System.Windows.Forms.CheckBox()
     Me.pnlConfig.SuspendLayout()
     CType(Me.txtTimeout, System.ComponentModel.ISupportInitialize).BeginInit()
     Me.pnlAlert.SuspendLayout()
@@ -109,7 +109,7 @@ Partial Class frmConfig
     Me.cmdCancel.Name = "cmdCancel"
     Me.helpS7M.SetShowHelp(Me.cmdCancel, True)
     Me.cmdCancel.Size = New System.Drawing.Size(75, 23)
-    Me.cmdCancel.TabIndex = 11
+    Me.cmdCancel.TabIndex = 12
     Me.cmdCancel.Text = "Cancel"
     Me.cmdCancel.UseVisualStyleBackColor = True
     '
@@ -124,7 +124,7 @@ Partial Class frmConfig
     Me.cmdOK.Name = "cmdOK"
     Me.helpS7M.SetShowHelp(Me.cmdOK, True)
     Me.cmdOK.Size = New System.Drawing.Size(75, 23)
-    Me.cmdOK.TabIndex = 10
+    Me.cmdOK.TabIndex = 11
     Me.cmdOK.Text = "OK"
     Me.cmdOK.UseVisualStyleBackColor = True
     '
@@ -225,8 +225,8 @@ Partial Class frmConfig
     Me.lblDonate.Name = "lblDonate"
     Me.helpS7M.SetShowHelp(Me.lblDonate, True)
     Me.lblDonate.Size = New System.Drawing.Size(89, 13)
-    Me.lblDonate.TabIndex = 12
-    Me.lblDonate.Text = "Make a &Donation"
+    Me.lblDonate.TabIndex = 13
+    Me.lblDonate.Text = "Make a Donation"
     '
     'lblTimeoutS
     '
@@ -255,7 +255,7 @@ Partial Class frmConfig
     Me.chkAlert.Name = "chkAlert"
     Me.helpS7M.SetShowHelp(Me.chkAlert, True)
     Me.chkAlert.Size = New System.Drawing.Size(118, 18)
-    Me.chkAlert.TabIndex = 8
+    Me.chkAlert.TabIndex = 9
     Me.chkAlert.Text = "&Alert on Complete:"
     Me.ttInfo.SetToolTip(Me.chkAlert, "Play an auditory alert when the Slipstream process has completed.")
     Me.chkAlert.UseVisualStyleBackColor = True
@@ -282,7 +282,7 @@ Partial Class frmConfig
     Me.pnlAlert.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
     Me.helpS7M.SetShowHelp(Me.pnlAlert, True)
     Me.pnlAlert.Size = New System.Drawing.Size(337, 30)
-    Me.pnlAlert.TabIndex = 9
+    Me.pnlAlert.TabIndex = 10
     '
     'txtAlertPath
     '
@@ -351,10 +351,6 @@ Partial Class frmConfig
     Me.ttInfo.SetToolTip(Me.chkDefault, "Use the System Default Alert sound.")
     Me.chkDefault.UseVisualStyleBackColor = True
     '
-    'helpS7M
-    '
-    Me.helpS7M.HelpNamespace = "S7M.chm"
-    '
     'chkHideDriverOutput
     '
     Me.chkHideDriverOutput.AutoSize = True
@@ -366,9 +362,13 @@ Partial Class frmConfig
     Me.chkHideDriverOutput.Name = "chkHideDriverOutput"
     Me.helpS7M.SetShowHelp(Me.chkHideDriverOutput, True)
     Me.chkHideDriverOutput.Size = New System.Drawing.Size(161, 18)
-    Me.chkHideDriverOutput.TabIndex = 13
-    Me.chkHideDriverOutput.Text = "Hide Driver Console Output"
+    Me.chkHideDriverOutput.TabIndex = 8
+    Me.chkHideDriverOutput.Text = "Hide &Driver Console Output"
     Me.chkHideDriverOutput.UseVisualStyleBackColor = True
+    '
+    'helpS7M
+    '
+    Me.helpS7M.HelpNamespace = "S7M.chm"
     '
     'frmConfig
     '

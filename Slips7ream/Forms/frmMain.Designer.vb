@@ -847,7 +847,7 @@ Partial Class frmMain
     Me.cmdRemMSU.Padding = New System.Windows.Forms.Padding(0, 1, 0, 1)
     Me.cmdRemMSU.Size = New System.Drawing.Size(104, 24)
     Me.cmdRemMSU.TabIndex = 2
-    Me.cmdRemMSU.Text = "Remove Updates"
+    Me.cmdRemMSU.Text = "Remove Up&dates"
     Me.ttInfo.SetToolTip(Me.cmdRemMSU, "Remove the selected items from the list of Windows Updates." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(Shortcut: Delete)" & _
         "")
     Me.cmdRemMSU.UseVisualStyleBackColor = True
@@ -2853,7 +2853,7 @@ Partial Class frmMain
     Me.Controls.Add(Me.pnlSlips7ream)
     Me.helpS7M.SetHelpKeyword(Me, "/1_SLIPS7REAM_Interface/1.0_SLIPS7REAM_Interface.htm")
     Me.helpS7M.SetHelpNavigator(Me, System.Windows.Forms.HelpNavigator.Topic)
-    Me.Icon = CType(Global.Slips7ream.My.Resources.Resources.icon.Clone, System.Drawing.Icon)
+    Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
     Me.MinimumSize = New System.Drawing.Size(440, 556)
     Me.Name = "frmMain"
     Me.helpS7M.SetShowHelp(Me, True)
