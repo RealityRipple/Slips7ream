@@ -3899,7 +3899,7 @@ Public Class frmMain
     chkLoadDrivers.Checked = False
     Dim WIMData As KeyValuePair(Of String, Integer) = ImagePackage_Prepare(WIMGroup.WIM)
     If String.IsNullOrEmpty(WIMData.Key) Then
-      ImagePackage_Complete(True)
+      ImagePackage_Complete(Not StopRun)
       chkLoadFeatures.Checked = doFeatures
       chkLoadUpdates.Checked = doUpdates
       chkLoadDrivers.Checked = doDrivers
@@ -3918,7 +3918,7 @@ Public Class frmMain
       chkLoadDrivers.Checked = False
       Dim MountPath As ImagePackage_ImageData = ImagePackage_Mount(WIMData.Key, WIMGroup.WIM, I)
       If MountPath.IsEmpty Then
-        ImagePackage_Complete(True)
+        ImagePackage_Complete(Not StopRun)
         chkLoadFeatures.Checked = doFeatures
         chkLoadUpdates.Checked = doUpdates
         chkLoadDrivers.Checked = doDrivers
@@ -4016,7 +4016,7 @@ Public Class frmMain
       chkLoadDrivers.Checked = False
       Dim MergeData As KeyValuePair(Of String, Integer) = ImagePackage_Prepare(WIMGroup.Merge)
       If String.IsNullOrEmpty(MergeData.Key) Then
-        ImagePackage_Complete(True)
+        ImagePackage_Complete(Not StopRun)
         chkLoadFeatures.Checked = doFeatures
         chkLoadUpdates.Checked = doUpdates
         chkLoadDrivers.Checked = doDrivers
@@ -4035,7 +4035,7 @@ Public Class frmMain
         chkLoadDrivers.Checked = False
         Dim MountPath As ImagePackage_ImageData = ImagePackage_Mount(MergeData.Key, WIMGroup.Merge, I)
         If MountPath.IsEmpty Then
-          ImagePackage_Complete(True)
+          ImagePackage_Complete(Not StopRun)
           chkLoadFeatures.Checked = doFeatures
           chkLoadUpdates.Checked = doUpdates
           chkLoadDrivers.Checked = doDrivers
