@@ -29,7 +29,7 @@
     {
      case 0: return "Save to ISO must be an existing ISO. This ISO's file system is used, not the one in INSTALL.WIM.";
      case 1: return "The list of Languages in Setup is determined by the last Image Package in the list's Languages. Don't try to include different languages in different packages or you'll end up with a headache.";
-     case 2: return "If you're including drivers in the Setup (BOOT.WIM file), remember that SLIPS7REAM will also add them to all the INSTALL.WIM packages automatically. If a package already has a driver, things might go strangely, so integrate drivers all at once instead here and there.";
+     case 2: return "If you're including drivers in the Setup (BOOT.WIM file), remember that SLIPS7REAM will also add them to all the INSTALL.WIM packages automatically. If a package already has a driver, things might go strangely, so integrate drivers all at once instead of here and there.";
      case 3: return "You can only merge two WIMs at once, but you can repeat the process with merged WIMs to include packages from as many WIMs as you want. Just make sure to give each package a unique Name within the final WIM!";
      case 4: return "Some updates add or change Windows Features. Integrate all your updates before you make Feature modifications to ensure you're working with the final list.";
      case 5: return "Even on Low priority, SLIPS7REAM makes heavy use of your hard drive(s). Try not to run SLIPS7REAM on an active server, or overtax your computer while you're Slipstreaming. Mounting Image Packages is particularly hard on a drive, and also always tends to be an early step, so keep that in mind if you absolutely need to do other things.";
