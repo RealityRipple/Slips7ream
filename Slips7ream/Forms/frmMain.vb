@@ -3084,6 +3084,13 @@ Public Class frmMain
         End If
       Next
     End If
+    If lvMSU.Items.Count > 0 Then
+      For Each Update As ListViewItem In lvMSU.Items
+        Dim lvIndex As Integer = CInt(Update.Tag)
+        Dim updateInfo As Update_File = Updates_ListData(lvIndex).Update
+        If updateInfo.KBArticle = "3125574" And rSP = 1 Then rSP = 2
+      Next
+    End If
     If stCount > 0 Then hasST = 1
     If hbCount > 0 Then hasHB = 1
     If hpCount > 0 Then hasHP = 1
