@@ -15,11 +15,17 @@
    <li><b>Original Name</b>: Only included in Integrated Drivers. This was the name of the INF before it was integrated.</li>
    <li><b>Published Name</b>: In Integrated Drivers, this is the new name of the INF after integration. In the Updates list, this is the path where the driver INF file is located.</li>
    <li><b>Driver Store Path</b>: In Integrated Drivers, this is the location where the INF and any other Driver files are stored. In the Updates list, this is the same as the Published Name.</li>
-   <li><b>In-Box</b>: Only included in Integrated Drivers. Determines if the driver is In-Box or Out-of-Box (whether or not it came with Windows, basically).</li>
+   <li><b>In-Box</b>: Only included in Integrated Drivers. If the value is Yes, then this driver was included with the original Operating System release. If No, the driver was integrated later. In-Box drivers can not be removed.</li>
    <li><b>Provider Name</b>: The company that wrote the Driver. Not necessarily the same as the Hardware Manufacturer.</li>
    <li><b>Date</b>: This is the date the driver was written.</li>
    <li><b>Version</b>: This is the version of the driver. The driver version is usually the same as the OS version for drivers that came with Windows.</li>
-   <li><b>Boot Critical</b>: If Yes, then this driver is critical for booting Windows when in use.</li>
+   <li>
+    <b>Boot Critical</b>: If Yes, then this driver is critical for booting Windows when in use.
+    <ul>
+     <li><b>Boot-critical drivers</b> are reflected. In other words, the files are copied into the image according to what's specified in the .inf file. The PC completes installation tasks during the initial boot, including updating the Critical Devices Database (CDDB) and the registry.</li>
+     <li><b>Drivers that aren't boot critical</b> are staged. In other words, they're added to the driver store. After Windows starts, PnP detects the device and installs the matching driver from the driver store.</li>
+    </ul>
+   </li>
    <li><b>Driver Class</b>
     <ul>
      <li><b>Name</b>: The Class Name, identifying what kind of hardware this driver describes.</li>

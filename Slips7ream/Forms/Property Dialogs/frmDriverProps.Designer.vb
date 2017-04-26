@@ -207,8 +207,7 @@ Partial Class frmDriverProps
     Me.lblInBox.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblInBox.AutoSize = True
     Me.pnlDriverData.SetColumnSpan(Me.lblInBox, 2)
-    Me.helpS7M.SetHelpString(Me.lblInBox, "Only included in Integrated Drivers. Determines if the driver is In-Box or Out-of" & _
-        "-Box (whether or not it came with Windows, basically).")
+    Me.helpS7M.SetHelpString(Me.lblInBox, resources.GetString("lblInBox.HelpString"))
     Me.lblInBox.Location = New System.Drawing.Point(3, 84)
     Me.lblInBox.Name = "lblInBox"
     Me.helpS7M.SetShowHelp(Me.lblInBox, True)
@@ -221,8 +220,7 @@ Partial Class frmDriverProps
     Me.txtInBox.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
     Me.helpS7M.SetHelpKeyword(Me.txtInBox, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtInBox, System.Windows.Forms.HelpNavigator.Topic)
-    Me.helpS7M.SetHelpString(Me.txtInBox, "Only included in Integrated Drivers. Determines if the driver is In-Box or Out-of" & _
-        "-Box (whether or not it came with Windows, basically).")
+    Me.helpS7M.SetHelpString(Me.txtInBox, resources.GetString("txtInBox.HelpString"))
     Me.txtInBox.Location = New System.Drawing.Point(101, 81)
     Me.txtInBox.Name = "txtInBox"
     Me.txtInBox.ReadOnly = True
@@ -249,8 +247,11 @@ Partial Class frmDriverProps
     '
     Me.lblOriginalFileName.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblOriginalFileName.AutoSize = True
+    Me.helpS7M.SetHelpString(Me.lblOriginalFileName, "Only included in Integrated Drivers. This was the name of the INF before it was i" & _
+        "ntegrated.")
     Me.lblOriginalFileName.Location = New System.Drawing.Point(3, 6)
     Me.lblOriginalFileName.Name = "lblOriginalFileName"
+    Me.helpS7M.SetShowHelp(Me.lblOriginalFileName, True)
     Me.lblOriginalFileName.Size = New System.Drawing.Size(76, 13)
     Me.lblOriginalFileName.TabIndex = 0
     Me.lblOriginalFileName.Text = "Original Name:"

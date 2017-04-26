@@ -689,13 +689,17 @@
       If Not CompanyList.ContainsKey(sProviderKey) Then CompanyList.Add(sProviderKey, pDriver.ProviderName)
     Next
     Dim sDriverCompanyName As String = lvDriverProvider.SelectedItems(0).Text
-    Dim sDriverINFName As String = e.Item.Text ' lvDriverINF.SelectedItems(0).Text
+    Dim sDriverINFName As String = e.Item.Text
     For I As Integer = 0 To DriverData.Count - 1
       If Not GetDriverClassName(DriverData(I).ClassGUID) = sDriverClassName Then Continue For
       If Not GetUpdateCompany(DriverData(I).ProviderName, CompanyList.Values.ToArray) = sDriverCompanyName Then Continue For
       If Not DriverData(I).PublishedName = sDriverINFName Then Continue For
       Dim newData As Driver = DriverData(I)
-      newData.Remove = Not e.Item.Checked ' lvDriverINF.SelectedItems(0).Checked
+      If newData.InBox = "Yes" Then
+        e.Item.Checked = True
+        Exit For
+      End If
+      newData.Remove = Not e.Item.Checked
       DriverData(I) = newData
       Exit For
     Next
