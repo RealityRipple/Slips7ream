@@ -449,6 +449,7 @@
     <None Include="Resources\companies\vidzmedia_pte_ltd.png" />
     <None Include="Resources\companies\vixs_systems.png" />
     <None Include="Resources\companies\xerox.png" />
+    <None Include="Resources\companies\asmedia.png" />
     <Content Include="Resources\config\play.png" />
     <Content Include="Resources\config\win.png" />
     <None Include="Resources\animations\copy.mng" />
