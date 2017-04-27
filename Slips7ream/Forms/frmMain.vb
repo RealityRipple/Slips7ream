@@ -8851,7 +8851,7 @@ Public Class frmMain
             DoSave = False
           End If
         End If
-        If DoSave Then
+        If DoSave Or BootWIM Then
           Status_SetText(String.Format("Saving Image Package ""{0}""...", tmpDISM.Name))
           If Not DISM_Image_Save(Mount(BootWIM)) Then
             TitleMNG_SetTitle("Discarding Changes", String.Format("Failed to Save Image Package ""{0}""!", tmpDISM.Name))
