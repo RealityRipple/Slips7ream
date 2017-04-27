@@ -161,6 +161,101 @@
   Public Shared Operator <>(info1 As Driver, info2 As Driver) As Boolean
     Return Not info1 = info2
   End Operator
+  Public Overrides Function ToString() As String
+    Dim ttPublishedName As String = Nothing
+    If Not String.IsNullOrEmpty(PublishedName) Then
+      Dim sDispName As String = PublishedName
+      If sDispName.Contains(IO.Path.DirectorySeparatorChar) Or sDispName.Contains(IO.Path.AltDirectorySeparatorChar) Then sDispName = IO.Path.GetFileName(sDispName)
+      If String.IsNullOrEmpty(Version) Then
+        ttPublishedName = sDispName
+      Else
+        ttPublishedName = String.Format("{0} v{1}", sDispName, Version)
+      End If
+    End If
+    Dim ttOriginalFileName As String = Nothing
+    If Not String.IsNullOrEmpty(OriginalFileName) Then ttOriginalFileName = String.Concat(en, String.Format("Originally Named {0}", OriginalFileName))
+    Dim ttInBox As String = Nothing
+    If Not String.IsNullOrEmpty(InBox) Then
+      If InBox = "Yes" Then
+        ttInBox = "Pre-Installed"
+      ElseIf InBox = "No" Then
+        ttInBox = "Integrated"
+      Else
+        ttInBox = String.Format("In-Box value of {0}", InBox)
+      End If
+    End If
+    Dim ttBootCritical As String = Nothing
+    If Not String.IsNullOrEmpty(BootCritical) Then
+      If BootCritical = "Yes" Then
+        ttBootCritical = "Boot-Critical"
+      ElseIf BootCritical = "No" Then
+        ttBootCritical = "Non-Boot-Critical"
+      Else
+        ttBootCritical = String.Format("Boot Critical value of {0}", BootCritical)
+      End If
+    End If
+    Dim ttClassName As String = Nothing
+    If Not String.IsNullOrEmpty(ClassName) Then
+      If String.IsNullOrEmpty(ClassDescription) Then
+        ttClassName = String.Concat(en, String.Format("For {0}", ClassName))
+      ElseIf ClassDescription.Contains(ClassName) Then
+        ttClassName = String.Concat(en, String.Format("For {0}", ClassDescription))
+      Else
+        ttClassName = String.Concat(en, String.Format("For {0} - {1}", ClassName, ClassDescription))
+      End If
+    ElseIf Not String.IsNullOrEmpty(ClassDescription) Then
+      ttClassName = String.Concat(en, String.Format("For {0}", ClassDescription))
+    End If
+    If Architectures IsNot Nothing AndAlso Architectures.Count > 0 Then
+      If String.IsNullOrEmpty(ttClassName) Then
+        ttClassName = String.Format("For {0}", Join(Architectures.ToArray, ", "))
+      Else
+        ttClassName = String.Concat(ttClassName, String.Format(" ({0})", Join(Architectures.ToArray, ", ")))
+      End If
+    End If
+    Dim ttProviderName As String = Nothing
+    If Not String.IsNullOrEmpty(ProviderName) Then ttProviderName = String.Concat(en, String.Format("Provided by {0}", ProviderName))
+    Dim ttDate As String = Nothing
+    If Not String.IsNullOrEmpty([Date]) Then ttDate = String.Concat(en, String.Format("Built on {0}", [Date]))
+    Dim ttDriverStorePath As String = Nothing
+    If Not String.IsNullOrEmpty(DriverStorePath) Then ttDriverStorePath = String.Concat(en, String.Format("Stored at {0}", DriverStorePath))
+    Dim sDeviceTT As String = Nothing
+    If Not String.IsNullOrEmpty(ttPublishedName) Then sDeviceTT = String.Concat(sDeviceTT, ttPublishedName, vbNewLine)
+    If Not String.IsNullOrEmpty(ttOriginalFileName) Then sDeviceTT = String.Concat(sDeviceTT, ttOriginalFileName, vbNewLine)
+    If Not String.IsNullOrEmpty(ttInBox) Then
+      If Not String.IsNullOrEmpty(ttBootCritical) Then
+        If ttInBox.StartsWith("In-Box value of") Then
+          If ttBootCritical.StartsWith("Boot Critical value of") Then
+            sDeviceTT = String.Concat(sDeviceTT, en, String.Format("Driver with an {0} and a {1}", ttInBox, ttBootCritical), vbNewLine)
+          Else
+            sDeviceTT = String.Concat(sDeviceTT, en, String.Format("{1} Driver with an {0}", ttInBox, ttBootCritical), vbNewLine)
+          End If
+        ElseIf ttBootCritical.StartsWith("Boot Critical value of") Then
+          sDeviceTT = String.Concat(sDeviceTT, en, String.Format("{0} Driver with a {1}", ttInBox, ttBootCritical), vbNewLine)
+        Else
+          sDeviceTT = String.Concat(sDeviceTT, en, String.Format("{0} {1} Driver", ttInBox, ttBootCritical), vbNewLine)
+        End If
+      Else
+        If ttInBox.StartsWith("In-Box value of") Then
+          sDeviceTT = String.Concat(sDeviceTT, en, ttInBox, vbNewLine)
+        Else
+          sDeviceTT = String.Concat(sDeviceTT, en, String.Format("{0} Driver", ttInBox), vbNewLine)
+        End If
+      End If
+    ElseIf Not String.IsNullOrEmpty(ttBootCritical) Then
+      If ttBootCritical.StartsWith("Boot Critical value of") Then
+        sDeviceTT = String.Concat(sDeviceTT, en, ttBootCritical, vbNewLine)
+      Else
+        sDeviceTT = String.Concat(sDeviceTT, en, String.Format("{0} Driver", ttBootCritical), vbNewLine)
+      End If
+    End If
+    If Not String.IsNullOrEmpty(ttClassName) Then sDeviceTT = String.Concat(sDeviceTT, ttClassName, vbNewLine)
+    If Not String.IsNullOrEmpty(ttProviderName) Then sDeviceTT = String.Concat(sDeviceTT, ttProviderName, vbNewLine)
+    If Not String.IsNullOrEmpty(ttDate) Then sDeviceTT = String.Concat(sDeviceTT, ttDate, vbNewLine)
+    If Not String.IsNullOrEmpty(ttDriverStorePath) Then sDeviceTT = String.Concat(sDeviceTT, ttDriverStorePath, vbNewLine)
+    sDeviceTT = sDeviceTT.TrimEnd
+    Return sDeviceTT
+  End Function
 End Structure
 
 Public Structure Driver_Hardware

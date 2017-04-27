@@ -603,54 +603,7 @@
         imlDriverINF.Images.Add(sDeviceKey, pDriver.DriverIcon)
         Dim lvDeviceItem As ListViewItem = lvDriverINF.Items.Add(sDeviceKey, sDeviceTitle, sDeviceKey)
         lvDeviceItem.SubItems.Add(pDriver.Version)
-        Dim ttPublishedName As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.PublishedName) Then
-          If String.IsNullOrEmpty(pDriver.Version) Then
-            ttPublishedName = pDriver.PublishedName
-          Else
-            ttPublishedName = String.Format("{0} v{1}", pDriver.PublishedName, pDriver.Version)
-          End If
-        End If
-        Dim ttOriginalFileName As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.OriginalFileName) Then ttOriginalFileName = String.Concat(en, String.Format("Original File Name: {0}", pDriver.OriginalFileName))
-        Dim ttDriverStorePath As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.DriverStorePath) Then ttDriverStorePath = String.Concat(en, String.Format("Driver Store Path: {0}", pDriver.DriverStorePath))
-        Dim ttInBox As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.InBox) Then ttInBox = String.Concat(en, String.Format("In-Box: {0}", pDriver.InBox))
-        Dim ttClassName As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.ClassName) Then
-          If String.IsNullOrEmpty(pDriver.ClassDescription) Then
-            ttClassName = String.Concat(en, String.Format("Class: {0}", pDriver.ClassName))
-          ElseIf pDriver.ClassDescription.Contains(pDriver.ClassName) Then
-            ttClassName = String.Concat(en, String.Format("Class: {0}", pDriver.ClassDescription))
-          Else
-            ttClassName = String.Concat(en, String.Format("Class: {0} - {1}", pDriver.ClassName, pDriver.ClassDescription))
-          End If
-        ElseIf Not String.IsNullOrEmpty(pDriver.ClassDescription) Then
-          ttClassName = String.Concat(en, String.Format("Class: {0}", pDriver.ClassDescription))
-        End If
-        Dim ttClassGUID As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.ClassGUID) Then ttClassGUID = String.Concat(en, String.Format("Class GUID: {0}", pDriver.ClassGUID))
-        Dim ttProviderName As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.ProviderName) Then ttProviderName = String.Concat(en, String.Format("Provider: {0}", pDriver.ProviderName))
-        Dim ttDate As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.Date) Then ttDate = String.Concat(en, String.Format("Date: {0}", pDriver.Date))
-        Dim ttArch As String = Nothing
-        If pDriver.Architectures IsNot Nothing AndAlso pDriver.Architectures.Count > 0 Then ttArch = String.Concat(en, String.Format("Supported Architectures: {0}", Join(pDriver.Architectures.ToArray, ", ")))
-        Dim ttBootCritical As String = Nothing
-        If Not String.IsNullOrEmpty(pDriver.BootCritical) Then ttBootCritical = String.Concat(en, String.Format("Boot Critical: {0}", pDriver.BootCritical))
-        Dim sDeviceTT As String = Nothing
-        If Not String.IsNullOrEmpty(ttPublishedName) Then sDeviceTT = String.Concat(sDeviceTT, ttPublishedName, vbNewLine)
-        If Not String.IsNullOrEmpty(ttOriginalFileName) Then sDeviceTT = String.Concat(sDeviceTT, ttOriginalFileName, vbNewLine)
-        If Not String.IsNullOrEmpty(ttDriverStorePath) Then sDeviceTT = String.Concat(sDeviceTT, ttDriverStorePath, vbNewLine)
-        If Not String.IsNullOrEmpty(ttInBox) Then sDeviceTT = String.Concat(sDeviceTT, ttInBox, vbNewLine)
-        If Not String.IsNullOrEmpty(ttClassName) Then sDeviceTT = String.Concat(sDeviceTT, ttClassName, vbNewLine)
-        If Not String.IsNullOrEmpty(ttClassGUID) Then sDeviceTT = String.Concat(sDeviceTT, ttClassGUID, vbNewLine)
-        If Not String.IsNullOrEmpty(ttProviderName) Then sDeviceTT = String.Concat(sDeviceTT, ttProviderName, vbNewLine)
-        If Not String.IsNullOrEmpty(ttDate) Then sDeviceTT = String.Concat(sDeviceTT, ttDate, vbNewLine)
-        If Not String.IsNullOrEmpty(ttArch) Then sDeviceTT = String.Concat(sDeviceTT, ttArch, vbNewLine)
-        If Not String.IsNullOrEmpty(ttBootCritical) Then sDeviceTT = String.Concat(sDeviceTT, ttBootCritical, vbNewLine)
-        lvDeviceItem.ToolTipText = sDeviceTT.TrimEnd
+        lvDeviceItem.ToolTipText = pDriver.ToString
         lvDeviceItem.Checked = Not pDriver.Remove
       End If
     Next

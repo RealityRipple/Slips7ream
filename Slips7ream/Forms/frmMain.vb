@@ -1911,53 +1911,7 @@ Public Class frmMain
       End If
       Dim lvItem As New ListViewItem(sDriverDisplayName)
       lvItem.Name = String.Format("lviDriver{0}", AlphanumericVal(msuData.DriverData.PublishedName))
-      Dim ttPublishedName As String = Nothing
-      If Not String.IsNullOrEmpty(msuData.DriverData.PublishedName) Then
-        If String.IsNullOrEmpty(msuData.DriverData.Version) Then
-          ttPublishedName = IO.Path.GetFileName(msuData.DriverData.PublishedName)
-        Else
-          ttPublishedName = String.Format("{0} v{1}", IO.Path.GetFileName(msuData.DriverData.PublishedName), msuData.DriverData.Version)
-        End If
-      End If
-      Dim ttOriginalFileName As String = Nothing
-      If Not String.IsNullOrEmpty(msuData.DriverData.OriginalFileName) Then ttOriginalFileName = String.Concat(en, String.Format("Original File Name: {0}", msuData.DriverData.OriginalFileName))
-      Dim ttDriverStorePath As String = Nothing
-      If Not String.IsNullOrEmpty(msuData.DriverData.DriverStorePath) Then ttDriverStorePath = String.Concat(en, String.Format("Driver Store Path: {0}", msuData.DriverData.DriverStorePath))
-      Dim ttInBox As String = Nothing
-      If Not String.IsNullOrEmpty(msuData.DriverData.InBox) Then ttInBox = String.Concat(en, String.Format("In-Box: {0}", msuData.DriverData.InBox))
-      Dim ttClassName As String = Nothing
-      If Not String.IsNullOrEmpty(msuData.DriverData.ClassName) Then
-        If String.IsNullOrEmpty(msuData.DriverData.ClassDescription) Then
-          ttClassName = String.Concat(en, String.Format("Class: {0}", msuData.DriverData.ClassName))
-        ElseIf msuData.DriverData.ClassDescription.Contains(msuData.DriverData.ClassName) Then
-          ttClassName = String.Concat(en, String.Format("Class: {0}", msuData.DriverData.ClassDescription))
-        Else
-          ttClassName = String.Concat(en, String.Format("Class: {0} - {1}", msuData.DriverData.ClassName, msuData.DriverData.ClassDescription))
-        End If
-      ElseIf Not String.IsNullOrEmpty(msuData.DriverData.ClassDescription) Then
-        ttClassName = String.Concat(en, String.Format("Class: {0}", msuData.DriverData.ClassDescription))
-      End If
-      Dim ttClassGUID As String = Nothing
-      If Not String.IsNullOrEmpty(msuData.DriverData.ClassGUID) Then ttClassGUID = String.Concat(en, String.Format("Class GUID: {0}", msuData.DriverData.ClassGUID))
-      Dim ttProviderName As String = Nothing
-      If Not String.IsNullOrEmpty(msuData.DriverData.ProviderName) Then ttProviderName = String.Concat(en, String.Format("Provider: {0}", msuData.DriverData.ProviderName))
-      Dim ttDate As String = Nothing
-      If Not String.IsNullOrEmpty(msuData.DriverData.Date) Then ttDate = String.Concat(en, String.Format("Date: {0}", msuData.DriverData.Date))
-      Dim ttArch As String = Nothing
-      If msuData.DriverData.Architectures IsNot Nothing AndAlso msuData.DriverData.Architectures.Count > 0 Then ttArch = String.Concat(en, String.Format("Supported Architectures: {0}", Join(msuData.DriverData.Architectures.ToArray, ", ")))
-      Dim ttBootCritical As String = Nothing
-      If Not String.IsNullOrEmpty(msuData.DriverData.BootCritical) Then ttBootCritical = String.Concat(en, String.Format("Boot Critical: {0}", msuData.DriverData.BootCritical))
-      lvItem.ToolTipText = Nothing
-      If Not String.IsNullOrEmpty(ttPublishedName) Then lvItem.ToolTipText = String.Concat(lvItem.ToolTipText, ttPublishedName, vbNewLine)
-      If Not String.IsNullOrEmpty(ttOriginalFileName) Then lvItem.ToolTipText = String.Concat(lvItem.ToolTipText, ttOriginalFileName, vbNewLine)
-      If Not String.IsNullOrEmpty(ttDriverStorePath) Then lvItem.ToolTipText = String.Concat(lvItem.ToolTipText, ttDriverStorePath, vbNewLine)
-      If Not String.IsNullOrEmpty(ttInBox) Then lvItem.ToolTipText = String.Concat(lvItem.ToolTipText, ttInBox, vbNewLine)
-      If Not String.IsNullOrEmpty(ttClassName) Then lvItem.ToolTipText = String.Concat(lvItem.ToolTipText, ttClassName, vbNewLine)
-      If Not String.IsNullOrEmpty(ttClassGUID) Then lvItem.ToolTipText = String.Concat(lvItem.ToolTipText, ttClassGUID, vbNewLine)
-      If Not String.IsNullOrEmpty(ttProviderName) Then lvItem.ToolTipText = String.Concat(lvItem.ToolTipText, ttProviderName, vbNewLine)
-      If Not String.IsNullOrEmpty(ttDate) Then lvItem.ToolTipText = String.Concat(lvItem.ToolTipText, ttDate, vbNewLine)
-      If Not String.IsNullOrEmpty(ttArch) Then lvItem.ToolTipText = String.Concat(lvItem.ToolTipText, ttArch, vbNewLine)
-      If Not String.IsNullOrEmpty(ttBootCritical) Then lvItem.ToolTipText = String.Concat(lvItem.ToolTipText, ttBootCritical, vbNewLine)
+      lvItem.ToolTipText = msuData.DriverData.ToString
       Dim lTag As Integer = 0
       Do
         lTag += 1
@@ -2216,10 +2170,15 @@ Public Class frmMain
       lvItem.Tag = lTag
       Dim bWhitelist As Boolean = CompareArchitectures(msuData.Architecture, ArchitectureList.x86, True) AndAlso CheckWhitelist(msuData.DisplayName)
       Dim ttItem As String = msuData.Name
-      If Not String.IsNullOrEmpty(msuData.KBArticle) Then ttItem = String.Format("KB{0}", msuData.KBArticle)
-      ttItem = String.Concat(ttItem, vbNewLine, en, String.Format("{0} {1}{2}", msuData.AppliesTo, msuData.Architecture, IIf(bWhitelist, " [Whitelisted for 64-Bit]", "")))
-      If Not String.IsNullOrEmpty(msuData.BuildDate) Then ttItem = String.Concat(ttItem, vbNewLine, en, String.Format("Built: {0}", msuData.BuildDate))
-      ttItem = String.Concat(ttItem, vbNewLine, en, ShortenPath(msuData.Path))
+      If Not String.IsNullOrEmpty(msuData.KBArticle) Then
+        ttItem = String.Format("KB{0}", msuData.KBArticle)
+      ElseIf Not msuData.Ident.IsEmpty Then
+        ttItem = msuData.Ident.Name
+      End If
+      If Not String.IsNullOrEmpty(msuData.KBVersion) Then ttItem = String.Concat(ttItem, String.Format(" v{0}", msuData.KBVersion))
+      ttItem = String.Concat(ttItem, vbNewLine, en, String.Format("For {0} {1}{2}", msuData.AppliesTo, msuData.Architecture, IIf(bWhitelist, " [Whitelisted for 64-Bit]", "")))
+      If Not String.IsNullOrEmpty(msuData.BuildDate) Then ttItem = String.Concat(ttItem, vbNewLine, en, String.Format("Built on {0}", msuData.BuildDate))
+      ttItem = String.Concat(ttItem, vbNewLine, en, String.Format("Stored at {0}", ShortenPath(msuData.Path)))
       lvItem.BackColor = SystemColors.Window
       If bWhitelist Then lvItem.BackColor = SystemColors.GradientInactiveCaption
       If lvMSU.ReadOnly Then
