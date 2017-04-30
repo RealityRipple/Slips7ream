@@ -464,7 +464,7 @@ Public Module modFunctions
       Case "ads technologies" : Return My.Resources.company_ads_technologies
       Case "advanced micro devices" : Return My.Resources.company_advanced_micro_devices
       Case "afatech" : Return My.Resources.company_afatech
-      Case "asmedia" : Return My.Resources.company_asmedia
+      Case "asmedia technology" : Return My.Resources.company_asmedia
       Case "asustek computer" : Return My.Resources.company_asustek_computer
       Case "avermedia technologies" : Return My.Resources.company_avermedia_technologies
       Case "bitland" : Return My.Resources.company_bitland
