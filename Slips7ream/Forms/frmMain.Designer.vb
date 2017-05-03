@@ -123,8 +123,8 @@ Partial Class frmMain
     Me.mnuUpdateSpacer = New System.Windows.Forms.MenuItem()
     Me.mnuUpdateRemove = New System.Windows.Forms.MenuItem()
     Me.mnuUpdateSpacer2 = New System.Windows.Forms.MenuItem()
-    Me.mnuUpdatePEDriver = New System.Windows.Forms.MenuItem()
-    Me.mnuUpdateBootDriver = New System.Windows.Forms.MenuItem()
+    Me.mnuUpdateBootPEDriver = New System.Windows.Forms.MenuItem()
+    Me.mnuUpdateBootSetupDriver = New System.Windows.Forms.MenuItem()
     Me.mnuUpdateLocation = New System.Windows.Forms.MenuItem()
     Me.mnuUpdateProperties = New System.Windows.Forms.MenuItem()
     Me.mnuISOLabel = New System.Windows.Forms.ContextMenu()
@@ -1659,27 +1659,27 @@ Partial Class frmMain
     '
     'mnuMSU
     '
-    Me.mnuMSU.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuUpdateTop, Me.mnuUpdateUp, Me.mnuUpdateDown, Me.mnuUpdateBottom, Me.mnuUpdateSpacer, Me.mnuUpdateRemove, Me.mnuUpdateSpacer2, Me.mnuUpdatePEDriver, Me.mnuUpdateBootDriver, Me.mnuUpdateLocation, Me.mnuUpdateProperties})
+    Me.mnuMSU.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.mnuUpdateTop, Me.mnuUpdateUp, Me.mnuUpdateDown, Me.mnuUpdateBottom, Me.mnuUpdateSpacer, Me.mnuUpdateRemove, Me.mnuUpdateSpacer2, Me.mnuUpdateBootPEDriver, Me.mnuUpdateBootSetupDriver, Me.mnuUpdateLocation, Me.mnuUpdateProperties})
     '
     'mnuUpdateTop
     '
     Me.mnuUpdateTop.Index = 0
-    Me.mnuUpdateTop.Text = "Move Updates to Top"
+    Me.mnuUpdateTop.Text = "Move Updates to &Top"
     '
     'mnuUpdateUp
     '
     Me.mnuUpdateUp.Index = 1
-    Me.mnuUpdateUp.Text = "Move Updates Up"
+    Me.mnuUpdateUp.Text = "Move Updates &Up"
     '
     'mnuUpdateDown
     '
     Me.mnuUpdateDown.Index = 2
-    Me.mnuUpdateDown.Text = "Move Updates Down"
+    Me.mnuUpdateDown.Text = "Move Updates &Down"
     '
     'mnuUpdateBottom
     '
     Me.mnuUpdateBottom.Index = 3
-    Me.mnuUpdateBottom.Text = "Move Updates to Bottom"
+    Me.mnuUpdateBottom.Text = "Move Updates to &Bottom"
     '
     'mnuUpdateSpacer
     '
@@ -1689,33 +1689,33 @@ Partial Class frmMain
     'mnuUpdateRemove
     '
     Me.mnuUpdateRemove.Index = 5
-    Me.mnuUpdateRemove.Text = "Remove Updates"
+    Me.mnuUpdateRemove.Text = "&Remove Updates"
     '
     'mnuUpdateSpacer2
     '
     Me.mnuUpdateSpacer2.Index = 6
     Me.mnuUpdateSpacer2.Text = "-"
     '
-    'mnuUpdatePEDriver
+    'mnuUpdateBootPEDriver
     '
-    Me.mnuUpdatePEDriver.Index = 7
-    Me.mnuUpdatePEDriver.Text = "Include Driver in PE"
+    Me.mnuUpdateBootPEDriver.Index = 7
+    Me.mnuUpdateBootPEDriver.Text = "Include Driver in &PE"
     '
-    'mnuUpdateBootDriver
+    'mnuUpdateBootSetupDriver
     '
-    Me.mnuUpdateBootDriver.Index = 8
-    Me.mnuUpdateBootDriver.Text = "Include Driver in Setup"
+    Me.mnuUpdateBootSetupDriver.Index = 8
+    Me.mnuUpdateBootSetupDriver.Text = "Include Driver in &Setup"
     '
     'mnuUpdateLocation
     '
     Me.mnuUpdateLocation.Index = 9
-    Me.mnuUpdateLocation.Text = "Open Updates Location"
+    Me.mnuUpdateLocation.Text = "Open Updates &Location"
     '
     'mnuUpdateProperties
     '
     Me.mnuUpdateProperties.DefaultItem = True
     Me.mnuUpdateProperties.Index = 10
-    Me.mnuUpdateProperties.Text = "Properties"
+    Me.mnuUpdateProperties.Text = "P&roperties"
     '
     'mnuISOLabel
     '
@@ -3211,7 +3211,7 @@ Partial Class frmMain
   Friend WithEvents mnuLabelGSP1RMCALUFREO As System.Windows.Forms.MenuItem
   Friend WithEvents mnuLabelGSP1RMCALUVOL As System.Windows.Forms.MenuItem
   Friend WithEvents mnuLabelGSP1RMCALUCHE As System.Windows.Forms.MenuItem
-  Friend WithEvents mnuUpdateBootDriver As System.Windows.Forms.MenuItem
-  Friend WithEvents mnuUpdatePEDriver As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuUpdateBootSetupDriver As System.Windows.Forms.MenuItem
+  Friend WithEvents mnuUpdateBootPEDriver As System.Windows.Forms.MenuItem
 
 End Class

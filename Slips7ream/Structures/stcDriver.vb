@@ -16,8 +16,8 @@
   Public DriverIcon As Image
   Public Architectures As List(Of String)
   Public DriverHardware As Collections.Generic.Dictionary(Of String, List(Of Driver_Hardware))
-  Public IntegrateIntoPE As Boolean
-  Public IntegrateIntoBoot As Boolean
+  Public IntegrateIntoBootPE As Boolean
+  Public IntegrateIntoBootSetup As Boolean
   Public Sub New(RowData As String)
     If Not RowData.Contains("|") Then Return
     Dim DriverData() As String = Split(RowData, "|")
@@ -219,6 +219,14 @@
     If Not String.IsNullOrEmpty([Date]) Then ttDate = String.Concat(en, String.Format("Built on {0}", [Date]))
     Dim ttDriverStorePath As String = Nothing
     If Not String.IsNullOrEmpty(DriverStorePath) Then ttDriverStorePath = String.Concat(en, String.Format("Stored at {0}", DriverStorePath))
+    Dim ttDriverBOOTWIM As String = Nothing
+    If IntegrateIntoBootPE And IntegrateIntoBootSetup Then
+      ttDriverBOOTWIM = String.Concat(en, "This driver will be included in the Setup and PE Image Packages of the destination ISO's BOOT.WIM")
+    ElseIf IntegrateIntoBootPE Then
+      ttDriverBOOTWIM = String.Concat(en, "This driver will be included in the PE Image Package of the destination ISO's BOOT.WIM")
+    ElseIf IntegrateIntoBootSetup Then
+      ttDriverBOOTWIM = String.Concat(en, "This driver will be included in the Setup Image Package of the destination ISO's BOOT.WIM")
+    End If
     Dim sDeviceTT As String = Nothing
     If Not String.IsNullOrEmpty(ttPublishedName) Then sDeviceTT = String.Concat(sDeviceTT, ttPublishedName, vbNewLine)
     If Not String.IsNullOrEmpty(ttOriginalFileName) Then sDeviceTT = String.Concat(sDeviceTT, ttOriginalFileName, vbNewLine)
@@ -253,6 +261,7 @@
     If Not String.IsNullOrEmpty(ttProviderName) Then sDeviceTT = String.Concat(sDeviceTT, ttProviderName, vbNewLine)
     If Not String.IsNullOrEmpty(ttDate) Then sDeviceTT = String.Concat(sDeviceTT, ttDate, vbNewLine)
     If Not String.IsNullOrEmpty(ttDriverStorePath) Then sDeviceTT = String.Concat(sDeviceTT, ttDriverStorePath, vbNewLine)
+    If Not String.IsNullOrEmpty(ttDriverBOOTWIM) Then sDeviceTT = String.Concat(sDeviceTT, ttDriverBOOTWIM, vbNewLine)
     sDeviceTT = sDeviceTT.TrimEnd
     Return sDeviceTT
   End Function

@@ -975,75 +975,75 @@ Public Class frmMain
         Dim allUpdates As Boolean = True
         Dim allDrivers As Boolean = True
         Dim hasDriver As Boolean = False
-        Dim driverBoot As Boolean = True
-        Dim driverPE As Boolean = True
+        Dim driverBootSetup As Boolean = True
+        Dim driverBootPE As Boolean = True
         For I As Integer = 0 To lvMSU.SelectedItems.Count - 1
           Dim lvIndex As Integer = CInt(lvMSU.SelectedItems(I).Tag)
           Dim itemData As Update_File = Updates_ListData(lvIndex).Update
           If itemData.Name = "DRIVER" Then
             hasDriver = True
             allUpdates = False
-            If Not itemData.DriverData.IntegrateIntoBoot Then driverBoot = False
-            If Not itemData.DriverData.IntegrateIntoPE Then driverPE = False
+            If Not itemData.DriverData.IntegrateIntoBootSetup Then driverBootSetup = False
+            If Not itemData.DriverData.IntegrateIntoBootPE Then driverBootPE = False
           Else
             allDrivers = False
           End If
         Next
         If allUpdates Then
           If lvMSU.SelectedItems.Count > 1 Then
-            mnuUpdateTop.Text = "Move Updates to Top"
-            mnuUpdateUp.Text = "Move Updates Up"
-            mnuUpdateDown.Text = "Move Updates Down"
-            mnuUpdateBottom.Text = "Move Updates to Bottom"
-            mnuUpdateRemove.Text = "Remove Updates"
-            mnuUpdateLocation.Text = "Open Update Locations"
+            mnuUpdateTop.Text = "Move Updates to &Top"
+            mnuUpdateUp.Text = "Move Updates &Up"
+            mnuUpdateDown.Text = "Move Updates &Down"
+            mnuUpdateBottom.Text = "Move Updates to &Bottom"
+            mnuUpdateRemove.Text = "&Remove Updates"
+            mnuUpdateLocation.Text = "Open Update &Locations"
           Else
-            mnuUpdateTop.Text = "Move Update to Top"
-            mnuUpdateUp.Text = "Move Update Up"
-            mnuUpdateDown.Text = "Move Update Down"
-            mnuUpdateBottom.Text = "Move Update to Bottom"
-            mnuUpdateRemove.Text = "Remove Update"
-            mnuUpdateLocation.Text = "Open Update Location"
+            mnuUpdateTop.Text = "Move Update to &Top"
+            mnuUpdateUp.Text = "Move Update &Up"
+            mnuUpdateDown.Text = "Move Update &Down"
+            mnuUpdateBottom.Text = "Move Update to &Bottom"
+            mnuUpdateRemove.Text = "&Remove Update"
+            mnuUpdateLocation.Text = "Open Update &Location"
           End If
         ElseIf allDrivers Then
           If lvMSU.SelectedItems.Count > 1 Then
-            mnuUpdateTop.Text = "Move Drivers to Top"
-            mnuUpdateUp.Text = "Move Drivers Up"
-            mnuUpdateDown.Text = "Move Drivers Down"
-            mnuUpdateBottom.Text = "Move Drivers to Bottom"
-            mnuUpdateRemove.Text = "Remove Drivers"
-            mnuUpdatePEDriver.Text = "Include Drivers in PE"
-            mnuUpdateBootDriver.Text = "Include Drivers in Setup"
-            mnuUpdateLocation.Text = "Open Driver Locations"
+            mnuUpdateTop.Text = "Move Drivers to &Top"
+            mnuUpdateUp.Text = "Move Drivers &Up"
+            mnuUpdateDown.Text = "Move Drivers &Down"
+            mnuUpdateBottom.Text = "Move Drivers to &Bottom"
+            mnuUpdateRemove.Text = "&Remove Drivers"
+            mnuUpdateBootPEDriver.Text = "Include Drivers in &PE"
+            mnuUpdateBootSetupDriver.Text = "Include Drivers in &Setup"
+            mnuUpdateLocation.Text = "Open Driver &Locations"
           Else
-            mnuUpdateTop.Text = "Move Driver to Top"
-            mnuUpdateUp.Text = "Move Driver Up"
-            mnuUpdateDown.Text = "Move Driver Down"
-            mnuUpdateBottom.Text = "Move Driver to Bottom"
-            mnuUpdateRemove.Text = "Remove Driver"
-            mnuUpdatePEDriver.Text = "Include Driver in PE"
-            mnuUpdateBootDriver.Text = "Include Driver in Setup"
-            mnuUpdateLocation.Text = "Open Driver Location"
+            mnuUpdateTop.Text = "Move Driver to &Top"
+            mnuUpdateUp.Text = "Move Driver &Up"
+            mnuUpdateDown.Text = "Move Driver &Down"
+            mnuUpdateBottom.Text = "Move Driver to &Bottom"
+            mnuUpdateRemove.Text = "&Remove Driver"
+            mnuUpdateBootPEDriver.Text = "Include Driver in &PE"
+            mnuUpdateBootSetupDriver.Text = "Include Driver in &Setup"
+            mnuUpdateLocation.Text = "Open Driver &Location"
           End If
         Else
-          mnuUpdateTop.Text = "Move Updates and Drivers to Top"
-          mnuUpdateUp.Text = "Move Updates and Drivers Up"
-          mnuUpdateDown.Text = "Move Updates and Drivers Down"
-          mnuUpdateBottom.Text = "Move Updates and Drivers to Bottom"
-          mnuUpdateRemove.Text = "Remove Updates and Drivers"
-          mnuUpdatePEDriver.Text = "Include Drivers in PE"
-          mnuUpdateBootDriver.Text = "Include Drivers in Setup"
-          mnuUpdateLocation.Text = "Open Update and Driver Locations"
+          mnuUpdateTop.Text = "Move Updates and Drivers to &Top"
+          mnuUpdateUp.Text = "Move Updates and Drivers &Up"
+          mnuUpdateDown.Text = "Move Updates and Drivers &Down"
+          mnuUpdateBottom.Text = "Move Updates and Drivers to &Bottom"
+          mnuUpdateRemove.Text = "&Remove Updates and Drivers"
+          mnuUpdateBootPEDriver.Text = "Include Drivers in &PE"
+          mnuUpdateBootSetupDriver.Text = "Include Drivers in &Setup"
+          mnuUpdateLocation.Text = "Open Update and Driver &Locations"
         End If
         If Not chkISO.Checked Or String.IsNullOrEmpty(txtISO.Text) Then
           hasDriver = False
         ElseIf Not IO.File.Exists(txtISO.Text) Then
           hasDriver = False
         End If
-        mnuUpdateBootDriver.Visible = hasDriver
-        mnuUpdateBootDriver.Checked = driverBoot
-        mnuUpdatePEDriver.Visible = hasDriver
-        mnuUpdatePEDriver.Checked = driverPE
+        mnuUpdateBootSetupDriver.Visible = hasDriver
+        mnuUpdateBootSetupDriver.Checked = driverBootSetup
+        mnuUpdateBootPEDriver.Visible = hasDriver
+        mnuUpdateBootPEDriver.Checked = driverBootPE
         mnuMSU.Show(lvMSU, e.Location)
       End If
     End If
@@ -1276,27 +1276,27 @@ Public Class frmMain
     Status_SetText("Idle")
     GUI_ListView_ResizeColumns(GUI_ListView_Columns.MSU)
   End Sub
-  Private Sub mnuUpdatePEDriver_Click(sender As System.Object, e As System.EventArgs) Handles mnuUpdatePEDriver.Click
+  Private Sub mnuUpdatePEDriver_Click(sender As System.Object, e As System.EventArgs) Handles mnuUpdateBootPEDriver.Click
     If Updates_ListSelection Is Nothing OrElse Updates_ListSelection.Count = 0 Then Return
-    Dim enable As Boolean = Not mnuUpdatePEDriver.Checked
+    Dim enable As Boolean = Not mnuUpdateBootPEDriver.Checked
     For Each lvItem As ListViewItem In Updates_ListSelection
       Dim lvIndex As Integer = CInt(lvItem.Tag)
       Dim itemData As Updates_Data = Updates_ListData(lvIndex)
       If itemData.Update.Name = "DRIVER" Then
-        itemData.Update.DriverData.IntegrateIntoPE = enable
+        itemData.Update.DriverData.IntegrateIntoBootPE = enable
         Updates_ListData(lvIndex) = itemData
       End If
     Next
     Updates_Requirements()
   End Sub
-  Private Sub mnuUpdateBootDriver_Click(sender As System.Object, e As System.EventArgs) Handles mnuUpdateBootDriver.Click
+  Private Sub mnuUpdateBootDriver_Click(sender As System.Object, e As System.EventArgs) Handles mnuUpdateBootSetupDriver.Click
     If Updates_ListSelection Is Nothing OrElse Updates_ListSelection.Count = 0 Then Return
-    Dim enable As Boolean = Not mnuUpdateBootDriver.Checked
+    Dim enable As Boolean = Not mnuUpdateBootSetupDriver.Checked
     For Each lvItem As ListViewItem In Updates_ListSelection
       Dim lvIndex As Integer = CInt(lvItem.Tag)
       Dim itemData As Updates_Data = Updates_ListData(lvIndex)
       If itemData.Update.Name = "DRIVER" Then
-        itemData.Update.DriverData.IntegrateIntoBoot = enable
+        itemData.Update.DriverData.IntegrateIntoBootSetup = enable
         Updates_ListData(lvIndex) = itemData
       End If
     Next
@@ -1339,14 +1339,26 @@ Public Class frmMain
         Dim lvItem As ListViewItem = lvMSU.Items(U)
         Dim msuData As Update_File = Updates_ListData(lvIndex).Update
         If msuData.Name = "DRIVER" Then
-          If msuData.DriverData.IntegrateIntoPE And msuData.DriverData.IntegrateIntoBoot Then
-            If Not lvItem.ForeColor = mySettings.DriverColorBootAndPE Then lvItem.ForeColor = mySettings.DriverColorBootAndPE
-          ElseIf msuData.DriverData.IntegrateIntoPE Then
-            If Not lvItem.ForeColor = mySettings.DriverColorPE Then lvItem.ForeColor = mySettings.DriverColorPE
-          ElseIf msuData.DriverData.IntegrateIntoBoot Then
-            If Not lvItem.ForeColor = mySettings.DriverColorBoot Then lvItem.ForeColor = mySettings.DriverColorBoot
+          If msuData.DriverData.IntegrateIntoBootPE And msuData.DriverData.IntegrateIntoBootSetup Then
+            If Not lvItem.ForeColor = mySettings.DriverColorBootAndPE Then
+              lvItem.ForeColor = mySettings.DriverColorBootAndPE
+              lvItem.ToolTipText = msuData.DriverData.ToString
+            End If
+          ElseIf msuData.DriverData.IntegrateIntoBootPE Then
+            If Not lvItem.ForeColor = mySettings.DriverColorPE Then
+              lvItem.ForeColor = mySettings.DriverColorPE
+              lvItem.ToolTipText = msuData.DriverData.ToString
+            End If
+          ElseIf msuData.DriverData.IntegrateIntoBootSetup Then
+            If Not lvItem.ForeColor = mySettings.DriverColorBoot Then
+              lvItem.ToolTipText = msuData.DriverData.ToString
+              lvItem.ForeColor = mySettings.DriverColorBoot
+            End If
           Else
-            If Not lvItem.ForeColor = lvMSU.ForeColor Then lvItem.ForeColor = lvMSU.ForeColor
+            If Not lvItem.ForeColor = lvMSU.ForeColor Then
+              lvItem.ForeColor = lvMSU.ForeColor
+              lvItem.ToolTipText = msuData.DriverData.ToString
+            End If
           End If
           Continue For
         End If
@@ -2192,13 +2204,13 @@ Public Class frmMain
       If InOne Then
         If lvItem.ForeColor = lvMSU.ForeColor Then lvItem.ForeColor = mySettings.UpdateColorUpgrade
         If UpdateAction = Updates_Data.Update_Replace.OnlyOlder Then
-          ttItem = String.Concat(ttItem, vbNewLine, en, "This update will upgrade only integrated older versions.")
+          ttItem = String.Concat(ttItem, vbNewLine, en, "This update will replace integrated versions if they are older")
         ElseIf UpdateAction = Updates_Data.Update_Replace.OnlyNewer Then
-          ttItem = String.Concat(ttItem, vbNewLine, en, "This update will downgrade only integrated newer versions.")
+          ttItem = String.Concat(ttItem, vbNewLine, en, "This update will replace integrated versions if they are newer")
         ElseIf UpdateAction = Updates_Data.Update_Replace.OnlyMissing Then
-          ttItem = String.Concat(ttItem, vbNewLine, en, "This update will only integrate when no other version exists.")
+          ttItem = String.Concat(ttItem, vbNewLine, en, "This update will not replace any integrated versions")
         Else
-          ttItem = String.Concat(ttItem, vbNewLine, en, "This update will replace both newer and older integrated versions.")
+          ttItem = String.Concat(ttItem, vbNewLine, en, "This update will replace all integrated versions")
         End If
       End If
       lvItem.ToolTipText = ttItem
@@ -7004,8 +7016,8 @@ Public Class frmMain
     For I As Integer = 0 To lvMSU.Items.Count - 1
       Dim dIndex As Integer = CInt(lvMSU.Items(I).Tag)
       If Updates_ListData(dIndex).Update.Name = "DRIVER" Then
-        If Updates_ListData(dIndex).Update.DriverData.IntegrateIntoPE Then modifyPE = True
-        If Updates_ListData(dIndex).Update.DriverData.IntegrateIntoBoot Then modifyBoot = True
+        If Updates_ListData(dIndex).Update.DriverData.IntegrateIntoBootPE Then modifyPE = True
+        If Updates_ListData(dIndex).Update.DriverData.IntegrateIntoBootSetup Then modifyBoot = True
         If modifyBoot And modifyPE Then Exit For
       End If
     Next
@@ -7391,8 +7403,8 @@ Public Class frmMain
         Next
         UpdateFiles.Add(Updates_ListData(lvIndex).Update, doReplace)
         If Updates_ListData(lvIndex).Update.Name = "DRIVER" Then
-          If Updates_ListData(lvIndex).Update.DriverData.IntegrateIntoBoot Then BootDriverFiles.Add(Updates_ListData(lvIndex).Update, doReplace)
-          If Updates_ListData(lvIndex).Update.DriverData.IntegrateIntoPE Then PEDriverFiles.Add(Updates_ListData(lvIndex).Update, doReplace)
+          If Updates_ListData(lvIndex).Update.DriverData.IntegrateIntoBootSetup Then BootDriverFiles.Add(Updates_ListData(lvIndex).Update, doReplace)
+          If Updates_ListData(lvIndex).Update.DriverData.IntegrateIntoBootPE Then PEDriverFiles.Add(Updates_ListData(lvIndex).Update, doReplace)
         End If
       Next
     End If
