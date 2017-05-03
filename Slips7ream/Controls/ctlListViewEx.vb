@@ -102,8 +102,12 @@ Public Class ListViewEx
   End Sub
   Protected Overrides Sub OnMouseMove(e As System.Windows.Forms.MouseEventArgs)
     MyBase.OnMouseMove(e)
+    If Me.Items.Count = 0 Then
+      ttLV.ToolTipTitle = Nothing
+      ttLV.SetToolTip(Me, Nothing)
+      Return
+    End If
     If c_FullRowTooltip Then
-      If Me.Items.Count = 0 Then Return
       Dim lvHTInfo As ListViewHitTestInfo = Me.HitTest(e.X, e.Y)
       If lvHTInfo.Item Is Nothing Or lvHTInfo.SubItem Is Nothing Then
         ttLV.ToolTipTitle = Nothing
@@ -128,8 +132,8 @@ Public Class ListViewEx
       ttLV.Persistant = False
       ttLV.ToolTipTitle = sTTTitle
       ttLV.SetToolTip(Me, sTTText)
+      Return
     ElseIf c_TooltipTitles Then
-      If Me.Items.Count = 0 Then Return
       Dim lvHTInfo As ListViewHitTestInfo = Me.HitTest(e.X, e.Y)
       If lvHTInfo.Item Is Nothing OrElse lvHTInfo.Location = ListViewHitTestLocations.None OrElse lvHTInfo.SubItem.Bounds.Left > 0 Then
         ttLV.ToolTipTitle = Nothing
@@ -154,6 +158,11 @@ Public Class ListViewEx
       ttLV.Persistant = False
       ttLV.ToolTipTitle = sTTTitle
       ttLV.SetToolTip(Me, sTTText)
+      Return
+    Else
+      ttLV.ToolTipTitle = Nothing
+      ttLV.SetToolTip(Me, Nothing)
+      Return
     End If
   End Sub
   Protected Overrides Sub OnMouseUp(e As System.Windows.Forms.MouseEventArgs)
