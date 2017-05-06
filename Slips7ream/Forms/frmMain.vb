@@ -5255,6 +5255,11 @@ Public Class frmMain
       If String.IsNullOrEmpty(Message) Then
         tOutput.AppendText(vbNewLine)
       Else
+        If tOutput.TextLength > 1000000 Then
+          Dim sClipped As String = tOutput.Text
+          sClipped = sClipped.Substring(sClipped.IndexOf(vbNewLine & vbNewLine, 150000) + 4)
+          tOutput.Text = sClipped
+        End If
         If MsgType = ConsoleOutput_MessageType.Command Then
           If tOutput.Text.Contains(vbNewLine) Then
             Dim outputSplit() As String = Split(tOutput.Text, vbNewLine)
