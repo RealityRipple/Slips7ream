@@ -5327,7 +5327,9 @@ Public Class frmMain
       Me.MinimumSize = New Size(Me.MinimumSize.Width, Me.MinimumSize.Height - HeightDifferentialA)
       Dim newHeight As Integer = Me.Height - HeightDifferentialA
       Do Until Me.Height <= newHeight + 4
+        Dim expectedHeight As Integer = Me.Height - 4
         Me.Height -= 4
+        If Not Me.Height = expectedHeight Then Exit Do
       Loop
       Me.Height = newHeight
       pnlSlips7ream.ResumeLayout(True)
@@ -5352,7 +5354,9 @@ Public Class frmMain
       pnlSlips7ream.SuspendLayout()
       Dim newHeight As Integer = Me.Height + HeightDifferentialA
       Do Until Me.Height >= newHeight - 4
+        Dim expectedHeight As Integer = Me.Height + 4
         Me.Height += 4
+        If Not Me.Height = expectedHeight Then Exit Do
       Loop
       Me.Height = newHeight
       Me.MinimumSize = New Size(Me.MinimumSize.Width, Me.MinimumSize.Height + HeightDifferentialA)
