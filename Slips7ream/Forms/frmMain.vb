@@ -1831,14 +1831,17 @@ Public Class frmMain
           Dim props As New frmDriverProps(msuData.DriverData)
           props.Show(Me)
         Else
+          Dim bOpened As Boolean = False
           For Each Form In OwnedForms
-            If Form.Name = String.Format("frmUpdate{0}Props", msuData.Name) Then
+            If Form.Name = String.Format("frmUpdate{0}Props", msuData.Ident.GetHashCode.ToString("X")) Then
               Form.Focus()
-              Return
+              bOpened = True
+              Exit For
             End If
           Next
+          If bOpened Then Continue For
           Dim props As New frmUpdateProps
-          props.Name = String.Format("frmUpdate{0}Props", msuData.Name)
+          props.Name = String.Format("frmUpdate{0}Props", msuData.Ident.GetHashCode.ToString("X"))
           props.Text = String.Format("{0} Properties", GetUpdateName(msuData.Ident, msuData.ReleaseType))
           props.txtName.Text = msuData.Name
           props.txtDisplayName.Text = msuData.DisplayName

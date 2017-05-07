@@ -107,6 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationEvents.vb" />
+    <Compile Include="Classes\clsCRC32.vb" />
     <Compile Include="Classes\clsExplorer.vb" />
     <Compile Include="Classes\clsRegistry.vb" />
     <Compile Include="Classes\clsThreadedTimer.vb" />

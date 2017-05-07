@@ -30,10 +30,15 @@
     Get
       If String.IsNullOrEmpty(Name) And String.IsNullOrEmpty(Token) And String.IsNullOrEmpty(Version) Then
         If String.IsNullOrEmpty(Architecture) OrElse Architecture = "neutral" Then
-          If String.IsNullOrEmpty(Language) OrElse Version = "neutral" Then Return True
+          If String.IsNullOrEmpty(Language) OrElse Language = "neutral" Then Return True
         End If
       End If
       Return False
     End Get
   End Property
+  Public Overrides Function GetHashCode() As Integer
+    If IsEmpty Then Return 0
+    Dim cHash As New CRC32
+    Return Convert.ToInt32(cHash.GetByteArrayCrc32(System.Text.Encoding.GetEncoding(28591).GetBytes(String.Concat(Name, Token, Architecture, Language))).ToString("X"), 16)
+  End Function
 End Structure
