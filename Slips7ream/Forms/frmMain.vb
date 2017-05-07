@@ -3614,6 +3614,7 @@ Public Class frmMain
       ImagePackage_ParseList_Merge()
     End If
     ImagePackage_ClearInputThreads(ToRun)
+    If lvMSU.Items.Count > 0 Then Updates_Requirements()
     GUI_ToggleEnabled(True)
     TitleMNG_DrawTitle()
   End Sub
