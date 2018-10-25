@@ -470,7 +470,8 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(ProjectDir)tools" "$(TargetDir)tools" /Y /I /E</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(ProjectDir)tools" "$(TargetDir)tools" /Y /I /E
+D:\Development\Certification\Certify.exe -nt "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
