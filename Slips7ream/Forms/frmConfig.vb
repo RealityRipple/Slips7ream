@@ -137,7 +137,7 @@ Public Class frmConfig
       cdlBrowse.AddPlace(IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Media"), Microsoft.WindowsAPICodePack.Shell.FileDialogAddPlaceLocation.Top)
       Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
       cdlBrowse.Controls.Add(cmdHelp)
-      AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "2_Configuration\2.5_Alert_on_Complete.htm")
+      AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "2_Configuration\2.6_Alert_on_Complete.htm")
       cdlBrowse.InitialDirectory = defDir
       If cdlBrowse.ShowDialog(Me.Handle) = CommonFileDialogResult.Ok Then txtAlertPath.Text = cdlBrowse.FileName
     End Using
@@ -165,7 +165,7 @@ Public Class frmConfig
     End If
   End Sub
   Private Sub lblDonate_LinkClicked(sender As System.Object, e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles lblDonate.LinkClicked
-    Process.Start("http://realityripple.com/donate.php?itm=Slips7ream")
+    Process.Start(clsUpdate.ProtoURL("//realityripple.com/donate.php?itm=Slips7ream"))
   End Sub
   Private Sub cmdOK_Click(sender As System.Object, e As System.EventArgs) Handles cmdOK.Click
     If String.IsNullOrEmpty(txtTemp.Text) Then txtTemp.Text = IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.Temp, "Slips7ream")

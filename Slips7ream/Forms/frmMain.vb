@@ -3265,7 +3265,7 @@ Public Class frmMain
       cdlBrowse.Title = "Choose ISO to Save Image To..."
       Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
       cdlBrowse.Controls.Add(cmdHelp)
-      AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.6_Save_to_ISO.htm")
+      AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_Slips7ream_Interface\1.6_Save_to_ISO.htm")
       If Not String.IsNullOrEmpty(txtISO.Text) Then cdlBrowse.InitialDirectory = txtISO.Text
       If cdlBrowse.ShowDialog(Me.Handle) = CommonFileDialogResult.Ok Then txtISO.Text = cdlBrowse.FileName
     End Using
@@ -3342,7 +3342,7 @@ Public Class frmMain
       cdlBrowse.Title = "Choose INSTALL.WIM Image to Merge..."
       Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
       cdlBrowse.Controls.Add(cmdHelp)
-      AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.2_Merge_WIM.htm")
+      AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_Slips7ream_Interface\1.2_Merge_WIM.htm")
       If Not String.IsNullOrEmpty(txtMerge.Text) Then cdlBrowse.InitialDirectory = txtMerge.Text
       If cdlBrowse.ShowDialog(Me.Handle) = CommonFileDialogResult.Ok Then txtMerge.Text = cdlBrowse.FileName
     End Using

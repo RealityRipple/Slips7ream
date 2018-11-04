@@ -95,7 +95,7 @@ Partial Class frmConfig
     '
     Me.lblTimeout.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblTimeout.AutoSize = True
-    Me.helpS7M.SetHelpKeyword(Me.lblTimeout, "/2_Configuration/2.3_Command_Timeout.htm")
+    Me.helpS7M.SetHelpKeyword(Me.lblTimeout, "/2_Configuration/2.4_Command_Timeout.htm")
     Me.helpS7M.SetHelpNavigator(Me.lblTimeout, System.Windows.Forms.HelpNavigator.Topic)
     Me.lblTimeout.Location = New System.Drawing.Point(3, 154)
     Me.lblTimeout.Name = "lblTimeout"
@@ -138,7 +138,7 @@ Partial Class frmConfig
     'txtTimeout
     '
     Me.txtTimeout.Anchor = System.Windows.Forms.AnchorStyles.Right
-    Me.helpS7M.SetHelpKeyword(Me.txtTimeout, "/2_Configuration/2.3_Command_Timeout.htm")
+    Me.helpS7M.SetHelpKeyword(Me.txtTimeout, "/2_Configuration/2.4_Command_Timeout.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtTimeout, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtTimeout, resources.GetString("txtTimeout.HelpString"))
     Me.txtTimeout.Location = New System.Drawing.Point(127, 151)
@@ -191,7 +191,7 @@ Partial Class frmConfig
     'lblWhitelist
     '
     Me.lblWhitelist.AutoSize = True
-    Me.helpS7M.SetHelpKeyword(Me.lblWhitelist, "/2_Configuration/2.2_Update_Whitelist.htm")
+    Me.helpS7M.SetHelpKeyword(Me.lblWhitelist, "/2_Configuration/2.3_Update_Whitelist.htm")
     Me.helpS7M.SetHelpNavigator(Me.lblWhitelist, System.Windows.Forms.HelpNavigator.Topic)
     Me.lblWhitelist.Location = New System.Drawing.Point(3, 64)
     Me.lblWhitelist.Margin = New System.Windows.Forms.Padding(3, 6, 3, 0)
@@ -206,7 +206,7 @@ Partial Class frmConfig
     Me.txtWhitelist.AcceptsReturn = True
     Me.pnlConfig.SetColumnSpan(Me.txtWhitelist, 3)
     Me.txtWhitelist.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.helpS7M.SetHelpKeyword(Me.txtWhitelist, "/2_Configuration/2.2_Update_Whitelist.htm")
+    Me.helpS7M.SetHelpKeyword(Me.txtWhitelist, "/2_Configuration/2.3_Update_Whitelist.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtWhitelist, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtWhitelist, resources.GetString("txtWhitelist.HelpString"))
     Me.txtWhitelist.Location = New System.Drawing.Point(127, 61)
@@ -240,7 +240,7 @@ Partial Class frmConfig
     Me.lblTimeoutS.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.lblTimeoutS.AutoSize = True
     Me.pnlConfig.SetColumnSpan(Me.lblTimeoutS, 2)
-    Me.helpS7M.SetHelpKeyword(Me.lblTimeoutS, "/2_Configuration/2.3_Command_Timeout.htm")
+    Me.helpS7M.SetHelpKeyword(Me.lblTimeoutS, "/2_Configuration/2.4_Command_Timeout.htm")
     Me.helpS7M.SetHelpNavigator(Me.lblTimeoutS, System.Windows.Forms.HelpNavigator.Topic)
     Me.lblTimeoutS.Location = New System.Drawing.Point(193, 154)
     Me.lblTimeoutS.Name = "lblTimeoutS"
@@ -254,7 +254,7 @@ Partial Class frmConfig
     Me.chkAlert.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.chkAlert.AutoSize = True
     Me.chkAlert.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.helpS7M.SetHelpKeyword(Me.chkAlert, "/2_Configuration/2.5_Alert_on_Complete.htm")
+    Me.helpS7M.SetHelpKeyword(Me.chkAlert, "/2_Configuration/2.6_Alert_on_Complete.htm")
     Me.helpS7M.SetHelpNavigator(Me.chkAlert, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.chkAlert, "The Alert on Complete feature lets you play a sound effect when the Slipstream Pr" & _
         "ocess completes.")
@@ -280,7 +280,7 @@ Partial Class frmConfig
     Me.pnlAlert.Controls.Add(Me.cmdPlay, 3, 0)
     Me.pnlAlert.Controls.Add(Me.chkDefault, 2, 0)
     Me.pnlAlert.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.helpS7M.SetHelpKeyword(Me.pnlAlert, "/2_Configuration/2.5_Alert_on_Complete.htm")
+    Me.helpS7M.SetHelpKeyword(Me.pnlAlert, "/2_Configuration/2.6_Alert_on_Complete.htm")
     Me.helpS7M.SetHelpNavigator(Me.pnlAlert, System.Windows.Forms.HelpNavigator.Topic)
     Me.pnlAlert.Location = New System.Drawing.Point(124, 198)
     Me.pnlAlert.Margin = New System.Windows.Forms.Padding(0)
@@ -295,7 +295,7 @@ Partial Class frmConfig
     '
     Me.txtAlertPath.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
     Me.txtAlertPath.Enabled = False
-    Me.helpS7M.SetHelpKeyword(Me.txtAlertPath, "/2_Configuration/2.5_Alert_on_Complete.htm")
+    Me.helpS7M.SetHelpKeyword(Me.txtAlertPath, "/2_Configuration/2.6_Alert_on_Complete.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtAlertPath, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtAlertPath, "The Alert on Complete feature lets you play a sound effect when the Slipstream Pr" & _
         "ocess completes." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "This file should be a WAV audio file, although any audio file " & _
@@ -312,7 +312,7 @@ Partial Class frmConfig
     Me.cmdAlertBrowse.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.cmdAlertBrowse.Enabled = False
     Me.cmdAlertBrowse.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.helpS7M.SetHelpKeyword(Me.cmdAlertBrowse, "/2_Configuration/2.5_Alert_on_Complete.htm")
+    Me.helpS7M.SetHelpKeyword(Me.cmdAlertBrowse, "/2_Configuration/2.6_Alert_on_Complete.htm")
     Me.helpS7M.SetHelpNavigator(Me.cmdAlertBrowse, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.cmdAlertBrowse, "Click this button to browse for an audio file to use as the Alert.")
     Me.cmdAlertBrowse.Location = New System.Drawing.Point(247, 3)
@@ -327,7 +327,7 @@ Partial Class frmConfig
     '
     Me.cmdPlay.Anchor = System.Windows.Forms.AnchorStyles.None
     Me.cmdPlay.Enabled = False
-    Me.helpS7M.SetHelpKeyword(Me.cmdPlay, "/2_Configuration/2.5_Alert_on_Complete.htm")
+    Me.helpS7M.SetHelpKeyword(Me.cmdPlay, "/2_Configuration/2.6_Alert_on_Complete.htm")
     Me.helpS7M.SetHelpNavigator(Me.cmdPlay, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.cmdPlay, "This button will test the playback of the selected Alert audio file.")
     Me.cmdPlay.Image = CType(resources.GetObject("cmdPlay.Image"), System.Drawing.Image)
@@ -344,7 +344,7 @@ Partial Class frmConfig
     Me.chkDefault.Anchor = System.Windows.Forms.AnchorStyles.None
     Me.chkDefault.Appearance = System.Windows.Forms.Appearance.Button
     Me.chkDefault.Enabled = False
-    Me.helpS7M.SetHelpKeyword(Me.chkDefault, "/2_Configuration/2.5_Alert_on_Complete.htm")
+    Me.helpS7M.SetHelpKeyword(Me.chkDefault, "/2_Configuration/2.6_Alert_on_Complete.htm")
     Me.helpS7M.SetHelpNavigator(Me.chkDefault, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.chkDefault, "Instead of using a custom sound file, you can use the built-in Windows ""tada.wav""" & _
         " sound file or default alert sound.")
@@ -363,7 +363,7 @@ Partial Class frmConfig
     Me.chkHideDriverOutput.AutoSize = True
     Me.pnlConfig.SetColumnSpan(Me.chkHideDriverOutput, 2)
     Me.chkHideDriverOutput.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.helpS7M.SetHelpKeyword(Me.chkHideDriverOutput, "/2_Configuration/2.4_Hide_Driver_Console_Output.htm")
+    Me.helpS7M.SetHelpKeyword(Me.chkHideDriverOutput, "/2_Configuration/2.5_Hide_Driver_Console_Output.htm")
     Me.helpS7M.SetHelpString(Me.chkHideDriverOutput, resources.GetString("chkHideDriverOutput.HelpString"))
     Me.chkHideDriverOutput.Location = New System.Drawing.Point(127, 177)
     Me.chkHideDriverOutput.Name = "chkHideDriverOutput"
