@@ -5564,30 +5564,6 @@ Public Class frmMain
   End Sub
 #End Region
 #End Region
-#Region "Donations"
-  Private Sub Donate_Show()
-    Try
-      If Math.Abs(DateDiff(DateInterval.Minute, Process.GetCurrentProcess.StartTime, Now)) > 30 Then
-        If Now.Month = 5 Or Now.Month = 9 Or Now.Month = 12 Then
-          If Now.DayOfWeek = DayOfWeek.Saturday Or Now.DayOfWeek = DayOfWeek.Sunday Then
-            Dim lastAsk As Long = DateDiff(DateInterval.Month, mySettings.LastNag, Now)
-            If lastAsk > 6 Or lastAsk < -24 Then
-              mySettings.LastNag = Today
-              frmDonate.Show()
-            End If
-          End If
-        End If
-      End If
-    Catch
-    End Try
-  End Sub
-  Friend Sub Donate_Clicked()
-    Try
-      mySettings.LastNag = DateAdd(DateInterval.Month, 24, Today)
-    Catch ex As Exception
-    End Try
-  End Sub
-#End Region
 #End Region
 #Region "Command Calls"
   Private Function CleanMounts(IndependentProgress As Boolean) As Boolean
@@ -10184,7 +10160,6 @@ Public Class frmMain
         End If
       Else
         Status_SetText("Idle")
-        Donate_Show()
       End If
     End If
   End Sub
