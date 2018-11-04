@@ -225,7 +225,7 @@ Partial Class frmPackageProps
     'txtIndex
     '
     Me.txtIndex.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtIndex, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+    Me.helpS7M.SetHelpKeyword(Me.txtIndex, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
         "ge_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtIndex, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtIndex, "This is the index of the Image Package in its parent WIM file. Indexes start from" & _
@@ -255,7 +255,7 @@ Partial Class frmPackageProps
     'txtName
     '
     Me.txtName.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtName, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+    Me.helpS7M.SetHelpKeyword(Me.txtName, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
         "ge_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtName, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtName, resources.GetString("txtName.HelpString"))
@@ -284,7 +284,7 @@ Partial Class frmPackageProps
     'txtDesc
     '
     Me.txtDesc.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtDesc, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+    Me.helpS7M.SetHelpKeyword(Me.txtDesc, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
         "ge_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtDesc, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtDesc, "A simple description of the Operating System, used by the Installer. You can set " & _
@@ -314,7 +314,7 @@ Partial Class frmPackageProps
     'txtSize
     '
     Me.txtSize.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtSize, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+    Me.helpS7M.SetHelpKeyword(Me.txtSize, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
         "ge_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtSize, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtSize, "The total size of the Image Package once extracted, not the actual file size of t" & _
@@ -344,7 +344,7 @@ Partial Class frmPackageProps
     'txtArchitecture
     '
     Me.txtArchitecture.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtArchitecture, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+    Me.helpS7M.SetHelpKeyword(Me.txtArchitecture, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
         "ge_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtArchitecture, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtArchitecture, "This identifies the architecture of the Windows 7 Image Package as either x86 or " & _
@@ -374,7 +374,7 @@ Partial Class frmPackageProps
     'txtHAL
     '
     Me.txtHAL.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtHAL, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+    Me.helpS7M.SetHelpKeyword(Me.txtHAL, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
         "ge_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtHAL, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtHAL, "The Hardware Application Layer used by the OS, which, as far as I know, is always" & _
@@ -404,7 +404,7 @@ Partial Class frmPackageProps
     'txtVersion
     '
     Me.txtVersion.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtVersion, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+    Me.helpS7M.SetHelpKeyword(Me.txtVersion, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
         "ge_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtVersion, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtVersion, "The Operating System Version for Windows 7 is always 6.1. Windows 7 RTM is 6.1.76" & _
@@ -433,7 +433,7 @@ Partial Class frmPackageProps
     'txtEdition
     '
     Me.txtEdition.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtEdition, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+    Me.helpS7M.SetHelpKeyword(Me.txtEdition, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
         "ge_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtEdition, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtEdition, "The Edition of Windows 7 contained in this Image Package.")
@@ -462,7 +462,7 @@ Partial Class frmPackageProps
     'txtInstallation
     '
     Me.txtInstallation.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtInstallation, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+    Me.helpS7M.SetHelpKeyword(Me.txtInstallation, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
         "ge_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtInstallation, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtInstallation, "The target Installation type for this Operating System. Windows 7 is always ""Clie" & _
@@ -491,7 +491,7 @@ Partial Class frmPackageProps
     'txtProductType
     '
     Me.txtProductType.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtProductType, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+    Me.helpS7M.SetHelpKeyword(Me.txtProductType, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
         "ge_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtProductType, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtProductType, "The product type of Windows 7 is always ""WinNT"".")
@@ -519,7 +519,7 @@ Partial Class frmPackageProps
     'txtProductSuite
     '
     Me.txtProductSuite.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtProductSuite, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+    Me.helpS7M.SetHelpKeyword(Me.txtProductSuite, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
         "ge_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtProductSuite, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtProductSuite, "The product suite of Windows 7 is always ""Terminal Server"".")
@@ -548,7 +548,7 @@ Partial Class frmPackageProps
     'txtSystemRoot
     '
     Me.txtSystemRoot.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtSystemRoot, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+    Me.helpS7M.SetHelpKeyword(Me.txtSystemRoot, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
         "ge_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtSystemRoot, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtSystemRoot, "This is the folder where all the Windows files are stored. Windows 7 uses ""WINDOW" & _
@@ -577,7 +577,7 @@ Partial Class frmPackageProps
     'txtFiles
     '
     Me.txtFiles.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtFiles, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+    Me.helpS7M.SetHelpKeyword(Me.txtFiles, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
         "ge_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtFiles, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtFiles, "The total number of files contained in this Image Package.")
@@ -605,7 +605,7 @@ Partial Class frmPackageProps
     'txtDirectories
     '
     Me.txtDirectories.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtDirectories, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+    Me.helpS7M.SetHelpKeyword(Me.txtDirectories, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
         "ge_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtDirectories, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtDirectories, "The total number of folders contained in this Image Package.")
@@ -634,7 +634,7 @@ Partial Class frmPackageProps
     'txtCreated
     '
     Me.txtCreated.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtCreated, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+    Me.helpS7M.SetHelpKeyword(Me.txtCreated, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
         "ge_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtCreated, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtCreated, "The date this Image Package was created. This is the date shown by the Installer." & _
@@ -664,7 +664,7 @@ Partial Class frmPackageProps
     'txtModified
     '
     Me.txtModified.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtModified, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+    Me.helpS7M.SetHelpKeyword(Me.txtModified, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
         "ge_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtModified, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtModified, "The date this Image Package was last modified. This date is not shown in the Inst" & _
@@ -695,7 +695,7 @@ Partial Class frmPackageProps
     'txtLanguages
     '
     Me.txtLanguages.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.helpS7M.SetHelpKeyword(Me.txtLanguages, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+    Me.helpS7M.SetHelpKeyword(Me.txtLanguages, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
         "ge_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtLanguages, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtLanguages, "This is a list of all the languages which are integrated into this Image Package." & _
@@ -740,7 +740,7 @@ Partial Class frmPackageProps
     'txtSPBuild
     '
     Me.txtSPBuild.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtSPBuild, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+    Me.helpS7M.SetHelpKeyword(Me.txtSPBuild, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
         "ge_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtSPBuild, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtSPBuild, "The Build number is usually seen at the end of the Version (above) in a full OS V" & _
@@ -757,7 +757,7 @@ Partial Class frmPackageProps
     'txtSPLevel
     '
     Me.txtSPLevel.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtSPLevel, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+    Me.helpS7M.SetHelpKeyword(Me.txtSPLevel, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
         "ge_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtSPLevel, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtSPLevel, "This value is 0 for Windows 7 RTM and 1 for Service Pack 1.")
@@ -839,7 +839,7 @@ Partial Class frmPackageProps
     Me.cmdLoadFeatures.Anchor = System.Windows.Forms.AnchorStyles.None
     Me.cmdLoadFeatures.AutoSize = True
     Me.cmdLoadFeatures.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.helpS7M.SetHelpKeyword(Me.cmdLoadFeatures, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.1_Windo" & _
+    Me.helpS7M.SetHelpKeyword(Me.cmdLoadFeatures, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.1_Windo" & _
         "ws_Features.htm")
     Me.helpS7M.SetHelpNavigator(Me.cmdLoadFeatures, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.cmdLoadFeatures, "Click this button to populate the list of Windows Features available in this Imag" & _
@@ -861,7 +861,7 @@ Partial Class frmPackageProps
     Me.cmdLoadUpdates.Anchor = System.Windows.Forms.AnchorStyles.None
     Me.cmdLoadUpdates.AutoSize = True
     Me.cmdLoadUpdates.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.helpS7M.SetHelpKeyword(Me.cmdLoadUpdates, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.2_Integ" & _
+    Me.helpS7M.SetHelpKeyword(Me.cmdLoadUpdates, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.2_Integ" & _
         "rated_Windows_Updates.htm")
     Me.helpS7M.SetHelpNavigator(Me.cmdLoadUpdates, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.cmdLoadUpdates, "Click this button to populate the list of Integrated Windows Updates and Language" & _
@@ -950,7 +950,7 @@ Partial Class frmPackageProps
     Me.expFeatures.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.expFeatures.AutoSize = True
     Me.expFeatures.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.helpS7M.SetHelpKeyword(Me.expFeatures, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.1_Windo" & _
+    Me.helpS7M.SetHelpKeyword(Me.expFeatures, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.1_Windo" & _
         "ws_Features.htm")
     Me.helpS7M.SetHelpNavigator(Me.expFeatures, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.expFeatures, "Toggle display of the Windows Features list, which allows you to control which fe" & _
@@ -969,7 +969,7 @@ Partial Class frmPackageProps
     Me.tvFeatures.CheckBoxes = True
     Me.tvFeatures.Dock = System.Windows.Forms.DockStyle.Fill
     Me.tvFeatures.FullRowSelect = True
-    Me.helpS7M.SetHelpKeyword(Me.tvFeatures, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.1_Windo" & _
+    Me.helpS7M.SetHelpKeyword(Me.tvFeatures, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.1_Windo" & _
         "ws_Features.htm")
     Me.helpS7M.SetHelpNavigator(Me.tvFeatures, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.tvFeatures, resources.GetString("tvFeatures.HelpString"))
@@ -991,7 +991,7 @@ Partial Class frmPackageProps
     Me.expUpdates.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.expUpdates.AutoSize = True
     Me.expUpdates.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.helpS7M.SetHelpKeyword(Me.expUpdates, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.2_Integ" & _
+    Me.helpS7M.SetHelpKeyword(Me.expUpdates, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.2_Integ" & _
         "rated_Windows_Updates.htm")
     Me.helpS7M.SetHelpNavigator(Me.expUpdates, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.expUpdates, "Toggle display of the Integrated Windows Updates list, which displays all the Upd" & _
@@ -1014,7 +1014,7 @@ Partial Class frmPackageProps
     Me.lvUpdates.FullRowSelect = True
     Me.lvUpdates.FullRowTooltip = True
     Me.lvUpdates.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
-    Me.helpS7M.SetHelpKeyword(Me.lvUpdates, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.2_Integ" & _
+    Me.helpS7M.SetHelpKeyword(Me.lvUpdates, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.2_Integ" & _
         "rated_Windows_Updates.htm")
     Me.helpS7M.SetHelpNavigator(Me.lvUpdates, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.lvUpdates, resources.GetString("lvUpdates.HelpString"))
@@ -1047,7 +1047,7 @@ Partial Class frmPackageProps
     Me.expDrivers.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.expDrivers.AutoSize = True
     Me.expDrivers.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.helpS7M.SetHelpKeyword(Me.expDrivers, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.3_Integ" & _
+    Me.helpS7M.SetHelpKeyword(Me.expDrivers, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.3_Integ" & _
         "rated_Drivers.htm")
     Me.helpS7M.SetHelpNavigator(Me.expDrivers, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.expDrivers, "Toggle display of the Integrated Drivers list, which displays all the Drivers whi" & _
@@ -1065,7 +1065,7 @@ Partial Class frmPackageProps
     Me.cmdLoadDrivers.Anchor = System.Windows.Forms.AnchorStyles.None
     Me.cmdLoadDrivers.AutoSize = True
     Me.cmdLoadDrivers.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.helpS7M.SetHelpKeyword(Me.cmdLoadDrivers, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.3_Integ" & _
+    Me.helpS7M.SetHelpKeyword(Me.cmdLoadDrivers, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.3_Integ" & _
         "rated_Drivers.htm")
     Me.helpS7M.SetHelpNavigator(Me.cmdLoadDrivers, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.cmdLoadDrivers, "Click this button to populate the list of Integrated Drivers in this Image Packag" & _
@@ -1111,7 +1111,7 @@ Partial Class frmPackageProps
     Me.lvDriverClass.FullRowSelect = True
     Me.lvDriverClass.FullRowTooltip = True
     Me.lvDriverClass.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
-    Me.helpS7M.SetHelpKeyword(Me.lvDriverClass, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.3_Integ" & _
+    Me.helpS7M.SetHelpKeyword(Me.lvDriverClass, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.3_Integ" & _
         "rated_Drivers.htm")
     Me.helpS7M.SetHelpNavigator(Me.lvDriverClass, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.lvDriverClass, resources.GetString("lvDriverClass.HelpString"))
@@ -1146,7 +1146,7 @@ Partial Class frmPackageProps
     Me.lvDriverProvider.FullRowSelect = True
     Me.lvDriverProvider.FullRowTooltip = True
     Me.lvDriverProvider.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
-    Me.helpS7M.SetHelpKeyword(Me.lvDriverProvider, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.3_Integ" & _
+    Me.helpS7M.SetHelpKeyword(Me.lvDriverProvider, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.3_Integ" & _
         "rated_Drivers.htm")
     Me.helpS7M.SetHelpNavigator(Me.lvDriverProvider, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.lvDriverProvider, "This is the list of providers that have provided a Driver INF for the selected Dr" & _
@@ -1184,7 +1184,7 @@ Partial Class frmPackageProps
     Me.lvDriverINF.FullRowSelect = True
     Me.lvDriverINF.FullRowTooltip = True
     Me.lvDriverINF.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
-    Me.helpS7M.SetHelpKeyword(Me.lvDriverINF, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.3_Integ" & _
+    Me.helpS7M.SetHelpKeyword(Me.lvDriverINF, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.3_Integ" & _
         "rated_Drivers.htm")
     Me.helpS7M.SetHelpNavigator(Me.lvDriverINF, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.lvDriverINF, resources.GetString("lvDriverINF.HelpString"))
@@ -1304,7 +1304,7 @@ Partial Class frmPackageProps
     Me.ClientSize = New System.Drawing.Size(599, 512)
     Me.Controls.Add(Me.pnlMain)
     Me.HelpButton = True
-    Me.helpS7M.SetHelpKeyword(Me, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
+    Me.helpS7M.SetHelpKeyword(Me, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Packa" & _
         "ge_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me, System.Windows.Forms.HelpNavigator.Topic)
     Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)

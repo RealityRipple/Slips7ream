@@ -470,7 +470,7 @@ Partial Class frmMain
     Me.lvImages.Dock = System.Windows.Forms.DockStyle.Fill
     Me.lvImages.FullRowSelect = True
     Me.lvImages.FullRowTooltip = True
-    Me.helpS7M.SetHelpKeyword(Me.lvImages, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.0_Image_Packages.htm")
+    Me.helpS7M.SetHelpKeyword(Me.lvImages, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.0_Image_Packages.htm")
     Me.helpS7M.SetHelpNavigator(Me.lvImages, System.Windows.Forms.HelpNavigator.Topic)
     Me.lvImages.HideSelection = False
     Me.lvImages.Location = New System.Drawing.Point(103, 3)
@@ -550,7 +550,7 @@ Partial Class frmMain
     '
     Me.txtSP64.AllowDrop = True
     Me.txtSP64.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtSP64, "/1_SLIPS7REAM_Interface/1.4_Service_Pack.htm")
+    Me.helpS7M.SetHelpKeyword(Me.txtSP64, "/1_Slips7ream_Interface/1.4_Service_Pack.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtSP64, System.Windows.Forms.HelpNavigator.Topic)
     Me.txtSP64.Location = New System.Drawing.Point(3, 5)
     Me.txtSP64.Name = "txtSP64"
@@ -566,7 +566,7 @@ Partial Class frmMain
     Me.cmdSP64.AutoSize = True
     Me.cmdSP64.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
     Me.cmdSP64.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.helpS7M.SetHelpKeyword(Me.cmdSP64, "/1_SLIPS7REAM_Interface/1.4_Service_Pack.htm")
+    Me.helpS7M.SetHelpKeyword(Me.cmdSP64, "/1_Slips7ream_Interface/1.4_Service_Pack.htm")
     Me.helpS7M.SetHelpNavigator(Me.cmdSP64, System.Windows.Forms.HelpNavigator.Topic)
     Me.cmdSP64.Location = New System.Drawing.Point(241, 3)
     Me.cmdSP64.MinimumSize = New System.Drawing.Size(75, 24)
@@ -584,7 +584,7 @@ Partial Class frmMain
     Me.chkSP.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.chkSP.AutoSize = True
     Me.chkSP.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.helpS7M.SetHelpKeyword(Me.chkSP, "/1_SLIPS7REAM_Interface/1.4_Service_Pack.htm")
+    Me.helpS7M.SetHelpKeyword(Me.chkSP, "/1_Slips7ream_Interface/1.4_Service_Pack.htm")
     Me.helpS7M.SetHelpNavigator(Me.chkSP, System.Windows.Forms.HelpNavigator.Topic)
     Me.chkSP.Location = New System.Drawing.Point(3, 6)
     Me.chkSP.Name = "chkSP"
@@ -618,7 +618,7 @@ Partial Class frmMain
     Me.txtSP.AllowDrop = True
     Me.txtSP.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
     Me.txtSP.Enabled = False
-    Me.helpS7M.SetHelpKeyword(Me.txtSP, "/1_SLIPS7REAM_Interface/1.4_Service_Pack.htm")
+    Me.helpS7M.SetHelpKeyword(Me.txtSP, "/1_Slips7ream_Interface/1.4_Service_Pack.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtSP, System.Windows.Forms.HelpNavigator.Topic)
     Me.txtSP.Location = New System.Drawing.Point(3, 5)
     Me.txtSP.Name = "txtSP"
@@ -635,7 +635,7 @@ Partial Class frmMain
     Me.cmdSP.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
     Me.cmdSP.Enabled = False
     Me.cmdSP.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.helpS7M.SetHelpKeyword(Me.cmdSP, "/1_SLIPS7REAM_Interface/1.4_Service_Pack.htm")
+    Me.helpS7M.SetHelpKeyword(Me.cmdSP, "/1_Slips7ream_Interface/1.4_Service_Pack.htm")
     Me.helpS7M.SetHelpNavigator(Me.cmdSP, System.Windows.Forms.HelpNavigator.Topic)
     Me.cmdSP.Location = New System.Drawing.Point(241, 3)
     Me.cmdSP.MinimumSize = New System.Drawing.Size(75, 24)
@@ -698,7 +698,7 @@ Partial Class frmMain
     'chkLoadDrivers
     '
     Me.chkLoadDrivers.Appearance = System.Windows.Forms.Appearance.Button
-    Me.helpS7M.SetHelpKeyword(Me.chkLoadDrivers, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.1_Parse_Packages.htm")
+    Me.helpS7M.SetHelpKeyword(Me.chkLoadDrivers, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.1_Parse_Packages.htm")
     Me.helpS7M.SetHelpNavigator(Me.chkLoadDrivers, System.Windows.Forms.HelpNavigator.Topic)
     Me.chkLoadDrivers.Image = Global.Slips7ream.My.Resources.Resources.load_driver
     Me.chkLoadDrivers.Location = New System.Drawing.Point(48, 1)
@@ -714,7 +714,7 @@ Partial Class frmMain
     'chkLoadUpdates
     '
     Me.chkLoadUpdates.Appearance = System.Windows.Forms.Appearance.Button
-    Me.helpS7M.SetHelpKeyword(Me.chkLoadUpdates, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.1_Parse_Packages.htm")
+    Me.helpS7M.SetHelpKeyword(Me.chkLoadUpdates, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.1_Parse_Packages.htm")
     Me.helpS7M.SetHelpNavigator(Me.chkLoadUpdates, System.Windows.Forms.HelpNavigator.Topic)
     Me.chkLoadUpdates.Image = Global.Slips7ream.My.Resources.Resources.load_update
     Me.chkLoadUpdates.Location = New System.Drawing.Point(24, 1)
@@ -732,7 +732,7 @@ Partial Class frmMain
     Me.cmdLoadPackages.Anchor = System.Windows.Forms.AnchorStyles.Right
     Me.cmdLoadPackages.AutoSize = True
     Me.cmdLoadPackages.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-    Me.helpS7M.SetHelpKeyword(Me.cmdLoadPackages, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.1_Parse_Packages.htm")
+    Me.helpS7M.SetHelpKeyword(Me.cmdLoadPackages, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.1_Parse_Packages.htm")
     Me.helpS7M.SetHelpNavigator(Me.cmdLoadPackages, System.Windows.Forms.HelpNavigator.Topic)
     Me.cmdLoadPackages.Image = Global.Slips7ream.My.Resources.Resources.u_n
     Me.cmdLoadPackages.Location = New System.Drawing.Point(74, 1)
@@ -749,7 +749,7 @@ Partial Class frmMain
     'chkLoadFeatures
     '
     Me.chkLoadFeatures.Appearance = System.Windows.Forms.Appearance.Button
-    Me.helpS7M.SetHelpKeyword(Me.chkLoadFeatures, "/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.1_Parse_Packages.htm")
+    Me.helpS7M.SetHelpKeyword(Me.chkLoadFeatures, "/1_Slips7ream_Interface/1.3_Image_Packages/1.3.1_Parse_Packages.htm")
     Me.helpS7M.SetHelpNavigator(Me.chkLoadFeatures, System.Windows.Forms.HelpNavigator.Topic)
     Me.chkLoadFeatures.Image = Global.Slips7ream.My.Resources.Resources.load_feature
     Me.chkLoadFeatures.Location = New System.Drawing.Point(0, 1)
@@ -806,7 +806,7 @@ Partial Class frmMain
     Me.cmdAddMSU.AutoSize = True
     Me.cmdAddMSU.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
     Me.cmdAddMSU.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.helpS7M.SetHelpKeyword(Me.cmdAddMSU, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.1_Add_Updates.htm")
+    Me.helpS7M.SetHelpKeyword(Me.cmdAddMSU, "/1_Slips7ream_Interface/1.5_Updates/1.5.1_Add_Updates.htm")
     Me.helpS7M.SetHelpNavigator(Me.cmdAddMSU, System.Windows.Forms.HelpNavigator.Topic)
     Me.cmdAddMSU.Location = New System.Drawing.Point(3, 3)
     Me.cmdAddMSU.MinimumSize = New System.Drawing.Size(75, 24)
@@ -870,7 +870,7 @@ Partial Class frmMain
     Me.lvMSU.Dock = System.Windows.Forms.DockStyle.Fill
     Me.lvMSU.FullRowTooltip = True
     Me.lvMSU.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable
-    Me.helpS7M.SetHelpKeyword(Me.lvMSU, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.0_Updates.htm")
+    Me.helpS7M.SetHelpKeyword(Me.lvMSU, "/1_Slips7ream_Interface/1.5_Updates/1.5.0_Updates.htm")
     Me.helpS7M.SetHelpNavigator(Me.lvMSU, System.Windows.Forms.HelpNavigator.Topic)
     Me.lvMSU.HideSelection = False
     Me.lvMSU.LargeImageList = Me.imlUpdates
@@ -934,7 +934,7 @@ Partial Class frmMain
     '
     Me.txtWIM.AllowDrop = True
     Me.txtWIM.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtWIM, "/1_SLIPS7REAM_Interface/1.1_INSTALL.WIM.htm")
+    Me.helpS7M.SetHelpKeyword(Me.txtWIM, "/1_Slips7ream_Interface/1.1_INSTALL.WIM.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtWIM, System.Windows.Forms.HelpNavigator.Topic)
     Me.txtWIM.Location = New System.Drawing.Point(3, 5)
     Me.txtWIM.Name = "txtWIM"
@@ -949,7 +949,7 @@ Partial Class frmMain
     Me.cmdWIM.AutoSize = True
     Me.cmdWIM.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
     Me.cmdWIM.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.helpS7M.SetHelpKeyword(Me.cmdWIM, "/1_SLIPS7REAM_Interface/1.1_INSTALL.WIM.htm")
+    Me.helpS7M.SetHelpKeyword(Me.cmdWIM, "/1_Slips7ream_Interface/1.1_INSTALL.WIM.htm")
     Me.helpS7M.SetHelpNavigator(Me.cmdWIM, System.Windows.Forms.HelpNavigator.Topic)
     Me.cmdWIM.Location = New System.Drawing.Point(246, 3)
     Me.cmdWIM.MinimumSize = New System.Drawing.Size(75, 24)
@@ -1045,7 +1045,7 @@ Partial Class frmMain
     Me.cmdConfig.Size = New System.Drawing.Size(83, 24)
     Me.cmdConfig.TabIndex = 2
     Me.cmdConfig.Text = "Confi&guration"
-    Me.ttInfo.SetToolTip(Me.cmdConfig, "Change SLIPS7REAM settings.")
+    Me.ttInfo.SetToolTip(Me.cmdConfig, "Change Slips7ream settings.")
     Me.cmdConfig.UseVisualStyleBackColor = True
     '
     'expOutput
@@ -1081,7 +1081,7 @@ Partial Class frmMain
     Me.chkISO.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.chkISO.AutoSize = True
     Me.chkISO.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.helpS7M.SetHelpKeyword(Me.chkISO, "/1_SLIPS7REAM_Interface/1.6_Save_to_ISO.htm")
+    Me.helpS7M.SetHelpKeyword(Me.chkISO, "/1_Slips7ream_Interface/1.6_Save_to_ISO.htm")
     Me.helpS7M.SetHelpNavigator(Me.chkISO, System.Windows.Forms.HelpNavigator.Topic)
     Me.chkISO.Location = New System.Drawing.Point(3, 430)
     Me.chkISO.Name = "chkISO"
@@ -1115,7 +1115,7 @@ Partial Class frmMain
     Me.txtISO.AllowDrop = True
     Me.txtISO.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
     Me.txtISO.Enabled = False
-    Me.helpS7M.SetHelpKeyword(Me.txtISO, "/1_SLIPS7REAM_Interface/1.6_Save_to_ISO.htm")
+    Me.helpS7M.SetHelpKeyword(Me.txtISO, "/1_Slips7ream_Interface/1.6_Save_to_ISO.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtISO, System.Windows.Forms.HelpNavigator.Topic)
     Me.txtISO.Location = New System.Drawing.Point(3, 5)
     Me.txtISO.Name = "txtISO"
@@ -1131,7 +1131,7 @@ Partial Class frmMain
     Me.cmdISO.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
     Me.cmdISO.Enabled = False
     Me.cmdISO.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.helpS7M.SetHelpKeyword(Me.cmdISO, "/1_SLIPS7REAM_Interface/1.6_Save_to_ISO.htm")
+    Me.helpS7M.SetHelpKeyword(Me.cmdISO, "/1_Slips7ream_Interface/1.6_Save_to_ISO.htm")
     Me.helpS7M.SetHelpNavigator(Me.cmdISO, System.Windows.Forms.HelpNavigator.Topic)
     Me.cmdISO.Location = New System.Drawing.Point(246, 3)
     Me.cmdISO.MinimumSize = New System.Drawing.Size(75, 24)
@@ -1266,7 +1266,7 @@ Partial Class frmMain
     Me.cmbPriority.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
     Me.cmbPriority.FlatStyle = System.Windows.Forms.FlatStyle.System
     Me.cmbPriority.FormattingEnabled = True
-    Me.helpS7M.SetHelpKeyword(Me.cmbPriority, "/1_SLIPS7REAM_Interface/1.8_Process_Priority.htm")
+    Me.helpS7M.SetHelpKeyword(Me.cmbPriority, "/1_Slips7ream_Interface/1.8_Process_Priority.htm")
     Me.helpS7M.SetHelpNavigator(Me.cmbPriority, System.Windows.Forms.HelpNavigator.Topic)
     Me.cmbPriority.Items.AddRange(New Object() {"Realtime", "High", "Above Normal", "Normal", "Below Normal", "Low"})
     Me.cmbPriority.Location = New System.Drawing.Point(103, 3)
@@ -1294,7 +1294,7 @@ Partial Class frmMain
     Me.cmbCompletion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
     Me.cmbCompletion.FlatStyle = System.Windows.Forms.FlatStyle.System
     Me.cmbCompletion.FormattingEnabled = True
-    Me.helpS7M.SetHelpKeyword(Me.cmbCompletion, "/1_SLIPS7REAM_Interface/1.9_On_Completion.htm")
+    Me.helpS7M.SetHelpKeyword(Me.cmbCompletion, "/1_Slips7ream_Interface/1.9_On_Completion.htm")
     Me.helpS7M.SetHelpNavigator(Me.cmbCompletion, System.Windows.Forms.HelpNavigator.Topic)
     Me.cmbCompletion.Items.AddRange(New Object() {"Do Nothing", "Play Alert Noise", "Close Program", "Shut Down", "Restart", "Sleep"})
     Me.cmbCompletion.Location = New System.Drawing.Point(307, 3)
@@ -1322,7 +1322,7 @@ Partial Class frmMain
     Me.pnlISOOptions.Controls.Add(Me.chkUEFI, 0, 1)
     Me.pnlISOOptions.Controls.Add(Me.cmbLimit, 2, 1)
     Me.pnlISOOptions.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.helpS7M.SetHelpKeyword(Me.pnlISOOptions, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.0_ISO_Features.htm")
+    Me.helpS7M.SetHelpKeyword(Me.pnlISOOptions, "/1_Slips7ream_Interface/1.7_ISO_Features/1.7.0_ISO_Features.htm")
     Me.helpS7M.SetHelpNavigator(Me.pnlISOOptions, System.Windows.Forms.HelpNavigator.Topic)
     Me.pnlISOOptions.Location = New System.Drawing.Point(100, 480)
     Me.pnlISOOptions.Margin = New System.Windows.Forms.Padding(0)
@@ -1340,7 +1340,7 @@ Partial Class frmMain
     Me.cmbLimitType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
     Me.cmbLimitType.FlatStyle = System.Windows.Forms.FlatStyle.System
     Me.cmbLimitType.FormattingEnabled = True
-    Me.helpS7M.SetHelpKeyword(Me.cmbLimitType, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.5_Split_Method.htm")
+    Me.helpS7M.SetHelpKeyword(Me.cmbLimitType, "/1_Slips7ream_Interface/1.7_ISO_Features/1.7.5_Split_Method.htm")
     Me.helpS7M.SetHelpNavigator(Me.cmbLimitType, System.Windows.Forms.HelpNavigator.Topic)
     Me.cmbLimitType.Items.AddRange(New Object() {"Single File", "Split WIM", "Split ISO"})
     Me.cmbLimitType.Location = New System.Drawing.Point(124, 30)
@@ -1357,7 +1357,7 @@ Partial Class frmMain
     Me.cmbISOFormat.Enabled = False
     Me.cmbISOFormat.FlatStyle = System.Windows.Forms.FlatStyle.System
     Me.cmbISOFormat.FormattingEnabled = True
-    Me.helpS7M.SetHelpKeyword(Me.cmbISOFormat, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.4_File_System.htm")
+    Me.helpS7M.SetHelpKeyword(Me.cmbISOFormat, "/1_Slips7ream_Interface/1.7_ISO_Features/1.7.4_File_System.htm")
     Me.helpS7M.SetHelpNavigator(Me.cmbISOFormat, System.Windows.Forms.HelpNavigator.Topic)
     Me.cmbISOFormat.Items.AddRange(New Object() {"ISO 9960", "Joliet", "Joliet / ISO 9960", "UDF", "UDF / ISO 9960", "UDF 1.02", "UDF 1.02 / ISO 9960"})
     Me.cmbISOFormat.Location = New System.Drawing.Point(205, 3)
@@ -1373,7 +1373,7 @@ Partial Class frmMain
     Me.chkUnlock.AutoSize = True
     Me.chkUnlock.Enabled = False
     Me.chkUnlock.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.helpS7M.SetHelpKeyword(Me.chkUnlock, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.2_Unlock_All_Editions.htm")
+    Me.helpS7M.SetHelpKeyword(Me.chkUnlock, "/1_Slips7ream_Interface/1.7_ISO_Features/1.7.2_Unlock_All_Editions.htm")
     Me.helpS7M.SetHelpNavigator(Me.chkUnlock, System.Windows.Forms.HelpNavigator.Topic)
     Me.chkUnlock.Location = New System.Drawing.Point(3, 4)
     Me.chkUnlock.Name = "chkUnlock"
@@ -1400,7 +1400,7 @@ Partial Class frmMain
     Me.chkUEFI.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.chkUEFI.AutoSize = True
     Me.chkUEFI.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.helpS7M.SetHelpKeyword(Me.chkUEFI, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.3_UEFI_Boot.htm")
+    Me.helpS7M.SetHelpKeyword(Me.chkUEFI, "/1_Slips7ream_Interface/1.7_ISO_Features/1.7.3_UEFI_Boot.htm")
     Me.helpS7M.SetHelpNavigator(Me.chkUEFI, System.Windows.Forms.HelpNavigator.Topic)
     Me.chkUEFI.Location = New System.Drawing.Point(3, 31)
     Me.chkUEFI.Name = "chkUEFI"
@@ -1417,7 +1417,7 @@ Partial Class frmMain
     Me.cmbLimit.DropDownWidth = 140
     Me.cmbLimit.FlatStyle = System.Windows.Forms.FlatStyle.System
     Me.cmbLimit.FormattingEnabled = True
-    Me.helpS7M.SetHelpKeyword(Me.cmbLimit, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.5_Split_Method.htm")
+    Me.helpS7M.SetHelpKeyword(Me.cmbLimit, "/1_Slips7ream_Interface/1.7_ISO_Features/1.7.5_Split_Method.htm")
     Me.helpS7M.SetHelpNavigator(Me.cmbLimit, System.Windows.Forms.HelpNavigator.Topic)
     Me.cmbLimit.Location = New System.Drawing.Point(205, 30)
     Me.cmbLimit.Name = "cmbLimit"
@@ -1431,7 +1431,7 @@ Partial Class frmMain
     Me.chkMerge.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.chkMerge.AutoSize = True
     Me.chkMerge.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.helpS7M.SetHelpKeyword(Me.chkMerge, "/1_SLIPS7REAM_Interface/1.2_Merge_WIM.htm")
+    Me.helpS7M.SetHelpKeyword(Me.chkMerge, "/1_Slips7ream_Interface/1.2_Merge_WIM.htm")
     Me.helpS7M.SetHelpNavigator(Me.chkMerge, System.Windows.Forms.HelpNavigator.Topic)
     Me.chkMerge.Location = New System.Drawing.Point(3, 76)
     Me.chkMerge.Name = "chkMerge"
@@ -1465,7 +1465,7 @@ Partial Class frmMain
     Me.txtMerge.AllowDrop = True
     Me.txtMerge.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
     Me.txtMerge.Enabled = False
-    Me.helpS7M.SetHelpKeyword(Me.txtMerge, "/1_SLIPS7REAM_Interface/1.2_Merge_WIM.htm")
+    Me.helpS7M.SetHelpKeyword(Me.txtMerge, "/1_Slips7ream_Interface/1.2_Merge_WIM.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtMerge, System.Windows.Forms.HelpNavigator.Topic)
     Me.txtMerge.Location = New System.Drawing.Point(3, 5)
     Me.txtMerge.Name = "txtMerge"
@@ -1481,7 +1481,7 @@ Partial Class frmMain
     Me.cmdMerge.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
     Me.cmdMerge.Enabled = False
     Me.cmdMerge.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.helpS7M.SetHelpKeyword(Me.cmdMerge, "/1_SLIPS7REAM_Interface/1.2_Merge_WIM.htm")
+    Me.helpS7M.SetHelpKeyword(Me.cmdMerge, "/1_Slips7ream_Interface/1.2_Merge_WIM.htm")
     Me.helpS7M.SetHelpNavigator(Me.cmdMerge, System.Windows.Forms.HelpNavigator.Topic)
     Me.cmdMerge.Location = New System.Drawing.Point(246, 3)
     Me.cmdMerge.MinimumSize = New System.Drawing.Size(75, 24)
@@ -1567,7 +1567,7 @@ Partial Class frmMain
     Me.txtISOLabel.AllowDrop = True
     Me.txtISOLabel.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
     Me.txtISOLabel.Enabled = False
-    Me.helpS7M.SetHelpKeyword(Me.txtISOLabel, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.1_ISO_Label.htm")
+    Me.helpS7M.SetHelpKeyword(Me.txtISOLabel, "/1_Slips7ream_Interface/1.7_ISO_Features/1.7.1_ISO_Label.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtISOLabel, System.Windows.Forms.HelpNavigator.Topic)
     Me.txtISOLabel.Location = New System.Drawing.Point(88, 3)
     Me.txtISOLabel.MaxLength = 32
@@ -1582,7 +1582,7 @@ Partial Class frmMain
     Me.chkAutoLabel.Anchor = System.Windows.Forms.AnchorStyles.Left
     Me.chkAutoLabel.AutoSize = True
     Me.chkAutoLabel.FlatStyle = System.Windows.Forms.FlatStyle.System
-    Me.helpS7M.SetHelpKeyword(Me.chkAutoLabel, "/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.1_ISO_Label.htm")
+    Me.helpS7M.SetHelpKeyword(Me.chkAutoLabel, "/1_Slips7ream_Interface/1.7_ISO_Features/1.7.1_ISO_Label.htm")
     Me.helpS7M.SetHelpNavigator(Me.chkAutoLabel, System.Windows.Forms.HelpNavigator.Topic)
     Me.chkAutoLabel.Location = New System.Drawing.Point(3, 4)
     Me.chkAutoLabel.Name = "chkAutoLabel"
@@ -2851,13 +2851,13 @@ Partial Class frmMain
     Me.CancelButton = Me.cmdClose
     Me.ClientSize = New System.Drawing.Size(424, 754)
     Me.Controls.Add(Me.pnlSlips7ream)
-    Me.helpS7M.SetHelpKeyword(Me, "/1_SLIPS7REAM_Interface/1.0_SLIPS7REAM_Interface.htm")
+    Me.helpS7M.SetHelpKeyword(Me, "/1_Slips7ream_Interface/1.0_Slips7ream_Interface.htm")
     Me.helpS7M.SetHelpNavigator(Me, System.Windows.Forms.HelpNavigator.Topic)
     Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
     Me.MinimumSize = New System.Drawing.Size(440, 556)
     Me.Name = "frmMain"
     Me.helpS7M.SetShowHelp(Me, True)
-    Me.Text = "SLIPS7REAM - Windows 7 Image Slipstream Utility"
+    Me.Text = "Slips7ream - Windows 7 Image Slipstream Utility"
     Me.pnlSlips7ream.ResumeLayout(False)
     Me.pnlSlips7ream.PerformLayout()
     Me.spltSlips7ream.Panel1.ResumeLayout(False)

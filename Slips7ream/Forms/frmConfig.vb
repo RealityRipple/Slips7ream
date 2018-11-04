@@ -28,7 +28,7 @@ Public Class frmConfig
   Private Sub cmdTemp_Click(sender As System.Object, e As System.EventArgs) Handles cmdTemp.Click
     Using cdlBrowse As New CommonOpenFileDialog
       cdlBrowse.AllowNonFileSystemItems = False
-      cdlBrowse.Title = "Select a Directory for SLIPS7REAM to work in..."
+      cdlBrowse.Title = "Select a Directory for Slips7ream to work in..."
       cdlBrowse.AddToMostRecentlyUsedList = True
       cdlBrowse.EnsureFileExists = True
       cdlBrowse.EnsurePathExists = True
@@ -123,7 +123,7 @@ Public Class frmConfig
       cdlBrowse.AllowNonFileSystemItems = False
       cdlBrowse.Filters.Add(New CommonFileDialogFilter("Sound Files", "WAV"))
       cdlBrowse.Filters.Add(New CommonFileDialogFilter("All Files", "*"))
-      cdlBrowse.Title = "Select an Alert sound to play when SLIPS7REAM is done..."
+      cdlBrowse.Title = "Select an Alert sound to play when Slips7ream is done..."
       cdlBrowse.AddToMostRecentlyUsedList = True
       cdlBrowse.EnsureFileExists = True
       cdlBrowse.EnsurePathExists = True
@@ -165,7 +165,7 @@ Public Class frmConfig
     End If
   End Sub
   Private Sub lblDonate_LinkClicked(sender As System.Object, e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles lblDonate.LinkClicked
-    Process.Start("http://realityripple.com/donate.php?itm=SLIPS7REAM")
+    Process.Start("http://realityripple.com/donate.php?itm=Slips7ream")
   End Sub
   Private Sub cmdOK_Click(sender As System.Object, e As System.EventArgs) Handles cmdOK.Click
     If String.IsNullOrEmpty(txtTemp.Text) Then txtTemp.Text = IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.Temp, "Slips7ream")

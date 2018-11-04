@@ -111,7 +111,7 @@ Partial Class frmConfig
     Me.cmdCancel.FlatStyle = System.Windows.Forms.FlatStyle.System
     Me.helpS7M.SetHelpKeyword(Me.cmdCancel, "/2_Configuration/2.0_Configuration.htm")
     Me.helpS7M.SetHelpNavigator(Me.cmdCancel, System.Windows.Forms.HelpNavigator.Topic)
-    Me.helpS7M.SetHelpString(Me.cmdCancel, "Close the SLIPS7REAM Configuration window.")
+    Me.helpS7M.SetHelpString(Me.cmdCancel, "Close the Slips7ream Configuration window.")
     Me.cmdCancel.Location = New System.Drawing.Point(383, 231)
     Me.cmdCancel.Name = "cmdCancel"
     Me.helpS7M.SetShowHelp(Me.cmdCancel, True)
@@ -126,7 +126,7 @@ Partial Class frmConfig
     Me.cmdOK.FlatStyle = System.Windows.Forms.FlatStyle.System
     Me.helpS7M.SetHelpKeyword(Me.cmdOK, "/2_Configuration/2.0_Configuration.htm")
     Me.helpS7M.SetHelpNavigator(Me.cmdOK, System.Windows.Forms.HelpNavigator.Topic)
-    Me.helpS7M.SetHelpString(Me.cmdOK, "Save changes to your settings and close the SLIPS7REAM Configuration window.")
+    Me.helpS7M.SetHelpString(Me.cmdOK, "Save changes to your settings and close the Slips7ream Configuration window.")
     Me.cmdOK.Location = New System.Drawing.Point(302, 231)
     Me.cmdOK.Name = "cmdOK"
     Me.helpS7M.SetShowHelp(Me.cmdOK, True)
@@ -227,7 +227,7 @@ Partial Class frmConfig
     Me.lblDonate.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Underline)
     Me.lblDonate.ForeColor = System.Drawing.Color.MediumBlue
     Me.helpS7M.SetHelpString(Me.lblDonate, "Click this link to visit realityripple.com and make a donation to support develop" & _
-        "ment of SLIPS7REAM.")
+        "ment of Slips7ream.")
     Me.lblDonate.Location = New System.Drawing.Point(50, 236)
     Me.lblDonate.Name = "lblDonate"
     Me.helpS7M.SetShowHelp(Me.lblDonate, True)
@@ -435,7 +435,7 @@ Partial Class frmConfig
     Me.Name = "frmConfig"
     Me.helpS7M.SetShowHelp(Me, True)
     Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-    Me.Text = "SLIPS7REAM Configuration"
+    Me.Text = "Slips7ream Configuration"
     Me.pnlConfig.ResumeLayout(False)
     Me.pnlConfig.PerformLayout()
     CType(Me.txtTimeout, System.ComponentModel.ISupportInitialize).EndInit()

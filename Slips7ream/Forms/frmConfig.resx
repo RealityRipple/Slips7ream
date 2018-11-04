@@ -122,14 +122,14 @@
     <value>98, 17</value>
   </data>
   <data name="txtTimeout.HelpString" xml:space="preserve">
-    <value>This field sets how long SLIPS7REAM will wait for a response from an external process. SLIPS7REAM makes calls to programs such as DISM frequently, and can be told to fail if these calls take too long.
-By default, the Command Timeout feature is disabled (with a value of 0), which means that SLIPS7REAM will wait until the program closes on its own before continuing.</value>
+    <value>This field sets how long Slips7ream will wait for a response from an external process. Slips7ream makes calls to programs such as DISM frequently, and can be told to fail if these calls take too long.
+By default, the Command Timeout feature is disabled (with a value of 0), which means that Slips7ream will wait until the program closes on its own before continuing.</value>
   </data>
   <data name="ttInfo.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>17, 17</value>
   </data>
   <data name="txtTemp.HelpString" xml:space="preserve">
-    <value>The Temp Directory is used for all the hard work done by SLIPS7REAM. When files need to be extracted, copied, or modified for internal use of the program, the Temp Directory is where all the files are stored. SLIPS7REAM automatically clears this directory regularly, so it's important that this directory be empty and unused for any other purpose.</value>
+    <value>The Temp Directory is used for all the hard work done by Slips7ream. When files need to be extracted, copied, or modified for internal use of the program, the Temp Directory is where all the files are stored. Slips7ream automatically clears this directory regularly, so it's important that this directory be empty and unused for any other purpose.</value>
   </data>
   <data name="txtWhitelist.HelpString" xml:space="preserve">
     <value>This field contains a list of names for 32-Bit Windows Updates that are allowed in x64 Image Packages. Each update should be listed on its own line, and should be identified by the Display Name for the update.</value>
@@ -139,6 +139,10 @@ By default, the Command Timeout feature is disabled (with a value of 0), which m
 
 (This feature is useful for integrating Spelling and Hyphenation packages
 for Internet Explorer 10 and 11, and should be used carefully.)</value>
+  </data>
+  <data name="chkHideDriverOutput.HelpString" xml:space="preserve">
+    <value>This checkbox controls whether or not Slips7ream's console will display output when parsing details about drivers, both integrated and from INF files. Drivers can often have a large number of compatible hardware IDs, and iterating through them all can take quite a bit of time. It can also fill up the console window in a matter of seconds.
+By default, Driver outputs are hidden to keep the console window a little cleaner and prevent excessive loading times when reading major driver packages. You can turn this feature off if you want to see everything in the console, or if you're looking for a problem with a driver file.</value>
   </data>
   <data name="lblUpdateDBVer.HelpString" xml:space="preserve">
     <value>The Prerequisites and Replacements KB Article Databases contain updated information about the relation between Updates. You can check for new versions of these Databases by clicking "Update Databases" button. New Databases are usually published soon after Patch Tuesday (the second Tuesday of the month).
@@ -162,10 +166,6 @@ The Replacements Database lists all the updates that have been replaced by newer
         PWggx0idcyesb7DXN+uwf9m/LGELcYFoSHnk4KPHxiy6ZN2jhrSHVYQkyS+UAmOitR9s1wAAAABJRU5E
         rkJggg==
 </value>
-  </data>
-  <data name="chkHideDriverOutput.HelpString" xml:space="preserve">
-    <value>This checkbox controls whether or not SLIPS7REAM's console will display output when parsing details about drivers, both integrated and from INF files. Drivers can often have a large number of compatible hardware IDs, and iterating through them all can take quite a bit of time. It can also fill up the console window in a matter of seconds.
-By default, Driver outputs are hidden to keep the console window a little cleaner and prevent excessive loading times when reading major driver packages. You can turn this feature off if you want to see everything in the console, or if you're looking for a problem with a driver file.</value>
   </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

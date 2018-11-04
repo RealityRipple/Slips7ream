@@ -8,12 +8,12 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("SLIPS7REAM")> 
+<Assembly: AssemblyTitle("Slips7ream")> 
 <Assembly: AssemblyDescription("Windows 7 Image Slipstream Utility")> 
 <Assembly: AssemblyCompany("RealityRipple Software")> 
-<Assembly: AssemblyProduct("SLIPS7REAM")> 
+<Assembly: AssemblyProduct("Slips7ream")> 
 <Assembly: AssemblyCopyright("Copyright does not apply to this product.")> 
-<Assembly: AssemblyTrademark("SLIPS7REAM by RealityRipple Software.")> 
+<Assembly: AssemblyTrademark("Slips7ream by RealityRipple Software.")> 
 
 <Assembly: ComVisible(False)>
 

@@ -122,7 +122,7 @@
   </metadata>
   <data name="lblIdentity.HelpString" xml:space="preserve">
     <value>The Identity string contains the following data, delimited by tildes (~):
-  Name: The Identity Name is the name of the update. It's how SLIPS7REAM tells one update from another, and how it knows to compare different versions of the same update.
+  Name: The Identity Name is the name of the update. It's how Slips7ream tells one update from another, and how it knows to compare different versions of the same update.
   Token: The Token value is almost always 31bf3856ad364e35.
   Architecture: (Usually) redundant with the Architecture value below. If empty, then this update is "AnyCPU" or Architecture-neutral.
   Language: The Language this update applies to. If empty, then this update is Language-neutral.
@@ -130,7 +130,7 @@
   </data>
   <data name="txtIdentity.HelpString" xml:space="preserve">
     <value>The Identity string contains the following data, delimited by tildes (~):
-  Name: The Identity Name is the name of the update. It's how SLIPS7REAM tells one update from another, and how it knows to compare different versions of the same update.
+  Name: The Identity Name is the name of the update. It's how Slips7ream tells one update from another, and how it knows to compare different versions of the same update.
   Token: The Token value is almost always 31bf3856ad364e35.
   Architecture: (Usually) redundant with the Architecture value below. If empty, then this update is "AnyCPU" or Architecture-neutral.
   Language: The Language this update applies to. If empty, then this update is Language-neutral.

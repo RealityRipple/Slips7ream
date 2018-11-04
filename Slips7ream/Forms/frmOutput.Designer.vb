@@ -89,7 +89,7 @@ Partial Class frmOutput
     Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
     Me.MinimumSize = New System.Drawing.Size(200, 125)
     Me.Name = "frmOutput"
-    Me.Text = "SLIPS7REAM Output Console"
+    Me.Text = "Slips7ream Output Console"
     Me.ResumeLayout(False)
     Me.PerformLayout()
 

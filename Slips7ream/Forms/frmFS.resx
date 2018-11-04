@@ -123,7 +123,7 @@
   <data name="lblDescription.Text" xml:space="preserve">
     <value>File Systems based on ISO 9960 can not handle files 4 GB or larger, and creating an ISO image may result in file corruption using your current settings.
 
-SLIPS7REAM suggests you use a UDF-based file system for this ISO, because the following files are greater than 4095 MB:</value>
+Slips7ream suggests you use a UDF-based file system for this ISO, because the following files are greater than 4095 MB:</value>
   </data>
   <metadata name="ttFS.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>

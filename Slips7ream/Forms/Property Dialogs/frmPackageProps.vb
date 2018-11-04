@@ -328,7 +328,7 @@
   Private Sub cmdLoadFeatures_Click(sender As Object, e As EventArgs) Handles cmdLoadFeatures.Click
     If Not frmMain.RunActivity = ActivityType.Nothing Then
       Dim Activity As ActivityRet = ActivityParser(frmMain.RunActivity)
-      MsgDlg(Me, String.Format("Please wait until SLIPS7REAM finishes the {0} process.", Activity.Process), String.Format("SLIPS7REAM is busy {0}.", Activity.Activity), String.Format("Can't Load Windows Features - Busy {0}", Activity.Title), MessageBoxButtons.OK, _TaskDialogIcon.Run, , , "Program Busy")
+      MsgDlg(Me, String.Format("Please wait until Slips7ream finishes the {0} process.", Activity.Process), String.Format("Slips7ream is busy {0}.", Activity.Activity), String.Format("Can't Load Windows Features - Busy {0}", Activity.Title), MessageBoxButtons.OK, _TaskDialogIcon.Run, , , "Program Busy")
       Return
     End If
     Dim iIndex As Integer = CInt(txtIndex.Text)
@@ -446,7 +446,7 @@
   Private Sub cmdLoadUpdates_Click(sender As Object, e As EventArgs) Handles cmdLoadUpdates.Click
     If Not frmMain.RunActivity = ActivityType.Nothing Then
       Dim Activity As ActivityRet = ActivityParser(frmMain.RunActivity)
-      MsgDlg(Me, String.Format("Please wait until SLIPS7REAM finishes the {0} process.", Activity.Process), String.Format("SLIPS7REAM is busy {0}.", Activity.Activity), String.Format("Can't Load Integrated Windows Updates - Busy {0}", Activity.Title), MessageBoxButtons.OK, _TaskDialogIcon.Run, , , "Program Busy")
+      MsgDlg(Me, String.Format("Please wait until Slips7ream finishes the {0} process.", Activity.Process), String.Format("Slips7ream is busy {0}.", Activity.Activity), String.Format("Can't Load Integrated Windows Updates - Busy {0}", Activity.Title), MessageBoxButtons.OK, _TaskDialogIcon.Run, , , "Program Busy")
       Return
     End If
     Dim iIndex As Integer = CInt(txtIndex.Text)
@@ -682,7 +682,7 @@
   Private Sub cmdLoadDrivers_Click(sender As System.Object, e As System.EventArgs) Handles cmdLoadDrivers.Click
     If Not frmMain.RunActivity = ActivityType.Nothing Then
       Dim Activity As ActivityRet = ActivityParser(frmMain.RunActivity)
-      MsgDlg(Me, String.Format("Please wait until SLIPS7REAM finishes the {0} process.", Activity.Process), String.Format("SLIPS7REAM is busy {0}.", Activity.Activity), String.Format("Can't Load Windows Drivers - Busy {0}", Activity.Title), MessageBoxButtons.OK, _TaskDialogIcon.Run, , , "Program Busy")
+      MsgDlg(Me, String.Format("Please wait until Slips7ream finishes the {0} process.", Activity.Process), String.Format("Slips7ream is busy {0}.", Activity.Activity), String.Format("Can't Load Windows Drivers - Busy {0}", Activity.Title), MessageBoxButtons.OK, _TaskDialogIcon.Run, , , "Program Busy")
       Return
     End If
     Dim iIndex As Integer = CInt(txtIndex.Text)

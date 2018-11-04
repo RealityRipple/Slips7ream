@@ -132,22 +132,22 @@
     <value>17, 17</value>
   </metadata>
   <data name="cmbPriority.ToolTip" xml:space="preserve">
-    <value>Choose a SLIPS7REAM work priority.
+    <value>Choose a Slips7ream work priority.
 
 Realtime:
-   SLIPS7REAM will have the highest possible priority.
+   Slips7ream will have the highest possible priority.
    This can cause other applications to hang or your computer to become unresponsive.
 High:
-   SLIPS7REAM will be in the top priority list, using all available processor time.
+   Slips7ream will be in the top priority list, using all available processor time.
 Above Normal:
-   SLIPS7REAM will take priority over normal tasks without interfering with higher priority processes.
+   Slips7ream will take priority over normal tasks without interfering with higher priority processes.
 Normal:
    The default priority value.
 Below Normal:
-   SLIPS7REAM will allow other processes to take precedence.
-   This option is best if you want SLIPS7REAM to run in the background.
+   Slips7ream will allow other processes to take precedence.
+   This option is best if you want Slips7ream to run in the background.
 Low:
-   SLIPS7REAM will only run on idle time, and will be pre-empted by normal program use.
+   Slips7ream will only run on idle time, and will be pre-empted by normal program use.
 
 CAUTION: Use extreme care when specifying High or Realtime.
 The threads of a process with RealTime priority preempt the threads of all other processes,

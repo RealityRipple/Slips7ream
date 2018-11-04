@@ -163,7 +163,7 @@ Partial Class frmDriverProps
     'txtDriverStorePath
     '
     Me.txtDriverStorePath.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtDriverStorePath, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpKeyword(Me.txtDriverStorePath, "/1_Slips7ream_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtDriverStorePath, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtDriverStorePath, "In Integrated Drivers, this is the location where the INF and any other Driver fi" & _
         "les are stored. In the Updates list, this is the same as the Published Name.")
@@ -191,7 +191,7 @@ Partial Class frmDriverProps
     'txtPublishedName
     '
     Me.txtPublishedName.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtPublishedName, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpKeyword(Me.txtPublishedName, "/1_Slips7ream_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtPublishedName, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtPublishedName, "In Integrated Drivers, this is the new name of the INF after integration. In the " & _
         "Updates list, this is the path where the driver INF file is located.")
@@ -218,7 +218,7 @@ Partial Class frmDriverProps
     'txtInBox
     '
     Me.txtInBox.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtInBox, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpKeyword(Me.txtInBox, "/1_Slips7ream_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtInBox, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtInBox, resources.GetString("txtInBox.HelpString"))
     Me.txtInBox.Location = New System.Drawing.Point(101, 81)
@@ -259,7 +259,7 @@ Partial Class frmDriverProps
     'txtOriginalFileName
     '
     Me.txtOriginalFileName.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtOriginalFileName, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpKeyword(Me.txtOriginalFileName, "/1_Slips7ream_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtOriginalFileName, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtOriginalFileName, "Only included in Integrated Drivers. This was the name of the INF before it was i" & _
         "ntegrated.")
@@ -273,7 +273,7 @@ Partial Class frmDriverProps
     'txtProviderName
     '
     Me.txtProviderName.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtProviderName, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpKeyword(Me.txtProviderName, "/1_Slips7ream_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtProviderName, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtProviderName, "The company that wrote the Driver. Not necessarily the same as the Hardware Manuf" & _
         "acturer.")
@@ -301,7 +301,7 @@ Partial Class frmDriverProps
     'txtDate
     '
     Me.txtDate.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtDate, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpKeyword(Me.txtDate, "/1_Slips7ream_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtDate, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtDate, "This is the date the driver was written.")
     Me.txtDate.Location = New System.Drawing.Point(101, 133)
@@ -329,7 +329,7 @@ Partial Class frmDriverProps
     'txtVersion
     '
     Me.txtVersion.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtVersion, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpKeyword(Me.txtVersion, "/1_Slips7ream_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtVersion, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtVersion, "This is the version of the driver. The driver version is usually the same as the " & _
         "OS version for drivers that came with Windows.")
@@ -357,7 +357,7 @@ Partial Class frmDriverProps
     'txtBootCritical
     '
     Me.txtBootCritical.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtBootCritical, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpKeyword(Me.txtBootCritical, "/1_Slips7ream_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtBootCritical, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtBootCritical, "If Yes, then this driver is critical for booting Windows when in use.")
     Me.txtBootCritical.Location = New System.Drawing.Point(101, 185)
@@ -443,7 +443,7 @@ Partial Class frmDriverProps
     'txtClassName
     '
     Me.txtClassName.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtClassName, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpKeyword(Me.txtClassName, "/1_Slips7ream_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtClassName, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtClassName, "The Class Name, identifying what kind of hardware this driver describes.")
     Me.txtClassName.Location = New System.Drawing.Point(72, 3)
@@ -456,7 +456,7 @@ Partial Class frmDriverProps
     'txtClassDescription
     '
     Me.txtClassDescription.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtClassDescription, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpKeyword(Me.txtClassDescription, "/1_Slips7ream_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtClassDescription, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtClassDescription, "Usually a slightly more descriptive version of the Class Name.")
     Me.txtClassDescription.Location = New System.Drawing.Point(72, 28)
@@ -469,7 +469,7 @@ Partial Class frmDriverProps
     'txtClassGUID
     '
     Me.txtClassGUID.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtClassGUID, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpKeyword(Me.txtClassGUID, "/1_Slips7ream_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtClassGUID, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtClassGUID, "The Class GUID, which universally identifies the Driver Class.")
     Me.txtClassGUID.Location = New System.Drawing.Point(72, 53)
@@ -564,7 +564,7 @@ Partial Class frmDriverProps
     Me.cmbArchitecture.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
     Me.cmbArchitecture.FlatStyle = System.Windows.Forms.FlatStyle.System
     Me.cmbArchitecture.FormattingEnabled = True
-    Me.helpS7M.SetHelpKeyword(Me.cmbArchitecture, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpKeyword(Me.cmbArchitecture, "/1_Slips7ream_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.cmbArchitecture, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.cmbArchitecture, "The Architecture dropdown includes all compatible CPU Architectures included in t" & _
         "he driver. Selecting an Architecture entry will re-populate the Hardware dropdow" & _
@@ -595,7 +595,7 @@ Partial Class frmDriverProps
     Me.cmbHardware.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
     Me.cmbHardware.FlatStyle = System.Windows.Forms.FlatStyle.System
     Me.cmbHardware.FormattingEnabled = True
-    Me.helpS7M.SetHelpKeyword(Me.cmbHardware, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpKeyword(Me.cmbHardware, "/1_Slips7ream_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.cmbHardware, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.cmbHardware, "The Hardware dropdown includes all compatible hardware for the selected CPU Archi" & _
         "tecture included in the driver. Selecting a Hardware entry will re-populate the " & _
@@ -698,7 +698,7 @@ Partial Class frmDriverProps
     '
     Me.lstHWCompatibleIDs.Dock = System.Windows.Forms.DockStyle.Fill
     Me.lstHWCompatibleIDs.FormattingEnabled = True
-    Me.helpS7M.SetHelpKeyword(Me.lstHWCompatibleIDs, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpKeyword(Me.lstHWCompatibleIDs, "/1_Slips7ream_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.lstHWCompatibleIDs, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.lstHWCompatibleIDs, "A list of any Hardware IDs that should be included in support along with the sele" & _
         "cted Hardware ID above.")
@@ -715,7 +715,7 @@ Partial Class frmDriverProps
     '
     Me.lstHWExcludeIDs.Dock = System.Windows.Forms.DockStyle.Fill
     Me.lstHWExcludeIDs.FormattingEnabled = True
-    Me.helpS7M.SetHelpKeyword(Me.lstHWExcludeIDs, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpKeyword(Me.lstHWExcludeIDs, "/1_Slips7ream_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.lstHWExcludeIDs, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.lstHWExcludeIDs, "A list of any Hardware IDs that should be excluded from support in the range defi" & _
         "ned by the selected Hardware ID above.")
@@ -732,7 +732,7 @@ Partial Class frmDriverProps
     '
     Me.lstHWIDs.Dock = System.Windows.Forms.DockStyle.Fill
     Me.lstHWIDs.FormattingEnabled = True
-    Me.helpS7M.SetHelpKeyword(Me.lstHWIDs, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpKeyword(Me.lstHWIDs, "/1_Slips7ream_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.lstHWIDs, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.lstHWIDs, "A list of all the Hardware IDs supported by this driver. Selecting an ID will re-" & _
         "populate the Compatible IDs and Exclude IDs lists below.")
@@ -761,7 +761,7 @@ Partial Class frmDriverProps
     'txtHWServiceName
     '
     Me.txtHWServiceName.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtHWServiceName, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpKeyword(Me.txtHWServiceName, "/1_Slips7ream_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtHWServiceName, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtHWServiceName, "The short name of the Windows Service which this driver is attached to.")
     Me.txtHWServiceName.Location = New System.Drawing.Point(90, 3)
@@ -800,7 +800,7 @@ Partial Class frmDriverProps
     'txtHWManufacturer
     '
     Me.txtHWManufacturer.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtHWManufacturer, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpKeyword(Me.txtHWManufacturer, "/1_Slips7ream_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtHWManufacturer, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtHWManufacturer, "The name of the company that created the hardware.")
     Me.txtHWManufacturer.Location = New System.Drawing.Point(90, 55)
@@ -813,7 +813,7 @@ Partial Class frmDriverProps
     'txtHWArchitecture
     '
     Me.txtHWArchitecture.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.helpS7M.SetHelpKeyword(Me.txtHWArchitecture, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpKeyword(Me.txtHWArchitecture, "/1_Slips7ream_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtHWArchitecture, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtHWArchitecture, "Usually redundant with the Architecture dropdown above.")
     Me.txtHWArchitecture.Location = New System.Drawing.Point(90, 29)
@@ -834,7 +834,7 @@ Partial Class frmDriverProps
     Me.ClientSize = New System.Drawing.Size(534, 341)
     Me.Controls.Add(Me.pnlDriver)
     Me.HelpButton = True
-    Me.helpS7M.SetHelpKeyword(Me, "/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
+    Me.helpS7M.SetHelpKeyword(Me, "/1_Slips7ream_Interface/1.5_Updates/1.5.3_Driver_Properties.htm")
     Me.helpS7M.SetHelpNavigator(Me, System.Windows.Forms.HelpNavigator.Topic)
     Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
     Me.MaximizeBox = False

@@ -547,7 +547,7 @@ Public Class frmMain
       cdlBrowse.Title = "Choose INSTALL.WIM Image..."
       Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
       cdlBrowse.Controls.Add(cmdHelp)
-      AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.1_INSTALL.WIM.htm")
+      AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_Slips7ream_Interface\1.1_INSTALL.WIM.htm")
       If cdlBrowse.ShowDialog(Me.Handle) = CommonFileDialogResult.Ok Then txtWIM.Text = cdlBrowse.FileName
     End Using
   End Sub
@@ -643,7 +643,7 @@ Public Class frmMain
       cdlBrowse.Title = "Choose Windows 7 Service Pack 1 EXE..."
       Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
       cdlBrowse.Controls.Add(cmdHelp)
-      AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.4_Service_Pack.htm")
+      AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_Slips7ream_Interface\1.4_Service_Pack.htm")
       If Not String.IsNullOrEmpty(txtSP.Text) Then cdlBrowse.InitialDirectory = txtSP.Text
       If cdlBrowse.ShowDialog(Me.Handle) = CommonFileDialogResult.Ok Then txtSP.Text = cdlBrowse.FileName
     End Using
@@ -688,7 +688,7 @@ Public Class frmMain
       cdlBrowse.Title = "Choose Windows 7 x64 Service Pack 1 EXE..."
       Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
       cdlBrowse.Controls.Add(cmdHelp)
-      AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.4_Service_Pack.htm")
+      AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_Slips7ream_Interface\1.4_Service_Pack.htm")
       If Not String.IsNullOrEmpty(txtSP64.Text) Then cdlBrowse.InitialDirectory = txtSP64.Text
       If cdlBrowse.ShowDialog(Me.Handle) = CommonFileDialogResult.Ok Then txtSP64.Text = cdlBrowse.FileName
     End Using
@@ -1094,7 +1094,7 @@ Public Class frmMain
       cdlBrowse.Title = "Add Windows Updates..."
       Dim cmdHelp As New Controls.CommonFileDialogButton("cmdHelp", "&Help")
       cdlBrowse.Controls.Add(cmdHelp)
-      AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm")
+      AddHandler cmdHelp.Click, Sub(sender2 As Object, e2 As EventArgs) Help.ShowHelp(Nothing, "S7M.chm", HelpNavigator.Topic, "1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm")
       If cdlBrowse.ShowDialog(Me.Handle) = Windows.Forms.DialogResult.OK Then
         Dim FailCollection As New List(Of String)
         Dim FileCount As Integer = cdlBrowse.FileNames.Count
