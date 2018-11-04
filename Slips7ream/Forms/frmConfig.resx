@@ -117,19 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="helpS7M.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="helpS7M.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>98, 17</value>
-  </metadata>
-  <metadata name="helpS7M.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>98, 17</value>
-  </metadata>
+  </data>
   <data name="txtTimeout.HelpString" xml:space="preserve">
     <value>This field sets how long SLIPS7REAM will wait for a response from an external process. SLIPS7REAM makes calls to programs such as DISM frequently, and can be told to fail if these calls take too long.
 By default, the Command Timeout feature is disabled (with a value of 0), which means that SLIPS7REAM will wait until the program closes on its own before continuing.</value>
   </data>
-  <metadata name="ttInfo.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <data name="ttInfo.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>17, 17</value>
-  </metadata>
+  </data>
   <data name="txtTemp.HelpString" xml:space="preserve">
     <value>The Temp Directory is used for all the hard work done by SLIPS7REAM. When files need to be extracted, copied, or modified for internal use of the program, the Temp Directory is where all the files are stored. SLIPS7REAM automatically clears this directory regularly, so it's important that this directory be empty and unused for any other purpose.</value>
   </data>
@@ -142,10 +140,11 @@ By default, the Command Timeout feature is disabled (with a value of 0), which m
 (This feature is useful for integrating Spelling and Hyphenation packages
 for Internet Explorer 10 and 11, and should be used carefully.)</value>
   </data>
-  <metadata name="ttInfo.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="lblUpdateDBVer.HelpString" xml:space="preserve">
+    <value>The Prerequisites and Replacements KB Article Databases contain updated information about the relation between Updates. You can check for new versions of these Databases by clicking "Update Databases" button. New Databases are usually published soon after Patch Tuesday (the second Tuesday of the month).
+The Prerequisites Database contains a list of Updates which are required for other Updates to function. Slips7ream also uses this information to determine the order the Updates are integrated during the Slipstream Process.
+The Replacements Database lists all the updates that have been replaced by newer updates. Slips7ream will treat these Updates as though they are newer and older versions of the same Update, and prompt you to select between them accordingly if they exist in the Updates or the Integrated Updates lists.</value>
+  </data>
   <data name="cmdPlay.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8

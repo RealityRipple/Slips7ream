@@ -21,6 +21,9 @@ Public Class frmConfig
     chkAlert.Checked = mySettings.PlayAlertNoise
     txtAlertPath.Text = mySettings.AlertNoisePath
     chkDefault.Checked = String.IsNullOrEmpty(mySettings.AlertNoisePath)
+    Dim myPrereqs As New MyPrerequisites
+    Dim myReplaces As New MyReplacements
+    lblUpdateDBVer.Text = String.Concat(myPrereqs.DatabaseVersion.Major, ".", Format(myPrereqs.DatabaseVersion.Minor, "00"), vbNewLine, myReplaces.DatabaseVersion.major, ".", Format(myReplaces.DatabaseVersion.Minor, "00"))
   End Sub
   Private Sub cmdTemp_Click(sender As System.Object, e As System.EventArgs) Handles cmdTemp.Click
     Using cdlBrowse As New CommonOpenFileDialog
@@ -51,6 +54,46 @@ Public Class frmConfig
       cdlBrowse.InitialDirectory = sTempPath
       If cdlBrowse.ShowDialog(Me.Handle) = CommonFileDialogResult.Ok Then txtTemp.Text = String.Concat(IO.Path.Combine(cdlBrowse.FileName, "Slips7ream"), IO.Path.DirectorySeparatorChar)
     End Using
+  End Sub
+  Private Sub cmdUpdateDBCheck_Click(sender As System.Object, e As System.EventArgs) Handles cmdUpdateDBCheck.Click
+    Me.Enabled = False
+    Me.UseWaitCursor = True
+    Application.DoEvents()
+    Dim myPrereqs As New MyPrerequisites
+    Dim myReplaces As New MyReplacements
+    Dim sVerStr As String
+    Dim bChanges As Boolean = False
+    Using wsCheck As New WebClientCore
+      wsCheck.CachePolicy = New Net.Cache.HttpRequestCachePolicy(System.Net.Cache.HttpRequestCacheLevel.NoCacheNoStore)
+      Try
+        sVerStr = wsCheck.DownloadString(New Uri(clsUpdate.ProtoURL("//update.realityripple.com/Slips7ream/prerequisite.db")))
+      Catch ex As Exception
+        sVerStr = Nothing
+      End Try
+    End Using
+    If Not String.IsNullOrEmpty(sVerStr) AndAlso sVerStr.Contains(vbLf) Then
+      If myPrereqs.Import(sVerStr) Then bChanges = True
+    End If
+    sVerStr = Nothing
+    Using wsCheck As New WebClientCore
+      wsCheck.CachePolicy = New Net.Cache.HttpRequestCachePolicy(System.Net.Cache.HttpRequestCacheLevel.NoCacheNoStore)
+      Try
+        sVerStr = wsCheck.DownloadString(New Uri(clsUpdate.ProtoURL("//update.realityripple.com/Slips7ream/replacement.db")))
+      Catch ex As Exception
+        sVerStr = Nothing
+      End Try
+    End Using
+    If Not String.IsNullOrEmpty(sVerStr) AndAlso sVerStr.Contains(vbLf) Then
+      If myReplaces.Import(sVerStr) Then bChanges = True
+    End If
+    lblUpdateDBVer.Text = String.Concat(myPrereqs.DatabaseVersion.Major, ".", Format(myPrereqs.DatabaseVersion.Minor, "00"), vbNewLine, myReplaces.DatabaseVersion.Major, ".", Format(myReplaces.DatabaseVersion.Minor, "00"))
+    Me.Enabled = True
+    Me.UseWaitCursor = False
+    If bChanges Then
+      MsgDlg(Me, "New versions of the KB Article Databases have been downloaded and applied.", "Your databases have been updated.", "Database Update", MessageBoxButtons.OK, _TaskDialogIcon.NetworkDrive, , , "KB Database Updates")
+    Else
+      MsgDlg(Me, "Your KB Article databases are already up to date.", "Your databases do not need updating.", "Database Update", MessageBoxButtons.OK, _TaskDialogIcon.NetworkDriveDisconnected, , , "KB Database Updates")
+    End If
   End Sub
   Private Sub txtTimeout_KeyUp(sender As Object, e As System.EventArgs) Handles txtTimeout.KeyUp, txtTimeout.ValueChanged
     If txtTimeout.Value = 0 Then

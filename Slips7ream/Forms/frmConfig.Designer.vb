@@ -43,6 +43,9 @@ Partial Class frmConfig
     Me.cmdPlay = New System.Windows.Forms.Button()
     Me.chkDefault = New System.Windows.Forms.CheckBox()
     Me.chkHideDriverOutput = New System.Windows.Forms.CheckBox()
+    Me.lblUpdateDB = New System.Windows.Forms.Label()
+    Me.lblUpdateDBVer = New System.Windows.Forms.Label()
+    Me.cmdUpdateDBCheck = New System.Windows.Forms.Button()
     Me.helpS7M = New System.Windows.Forms.HelpProvider()
     Me.ttInfo = New Slips7ream.ToolTip(Me.components)
     Me.pnlConfig.SuspendLayout()
@@ -57,24 +60,28 @@ Partial Class frmConfig
     Me.pnlConfig.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
     Me.pnlConfig.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
     Me.pnlConfig.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-    Me.pnlConfig.Controls.Add(Me.lblTimeout, 0, 2)
-    Me.pnlConfig.Controls.Add(Me.cmdCancel, 3, 5)
-    Me.pnlConfig.Controls.Add(Me.cmdOK, 2, 5)
-    Me.pnlConfig.Controls.Add(Me.txtTimeout, 1, 2)
+    Me.pnlConfig.Controls.Add(Me.lblTimeout, 0, 3)
+    Me.pnlConfig.Controls.Add(Me.cmdCancel, 3, 6)
+    Me.pnlConfig.Controls.Add(Me.cmdOK, 2, 6)
+    Me.pnlConfig.Controls.Add(Me.txtTimeout, 1, 3)
     Me.pnlConfig.Controls.Add(Me.lblTemp, 0, 0)
     Me.pnlConfig.Controls.Add(Me.txtTemp, 1, 0)
     Me.pnlConfig.Controls.Add(Me.cmdTemp, 3, 0)
-    Me.pnlConfig.Controls.Add(Me.lblWhitelist, 0, 1)
-    Me.pnlConfig.Controls.Add(Me.txtWhitelist, 1, 1)
-    Me.pnlConfig.Controls.Add(Me.lblDonate, 0, 5)
-    Me.pnlConfig.Controls.Add(Me.lblTimeoutS, 2, 2)
-    Me.pnlConfig.Controls.Add(Me.chkAlert, 0, 4)
-    Me.pnlConfig.Controls.Add(Me.pnlAlert, 1, 4)
-    Me.pnlConfig.Controls.Add(Me.chkHideDriverOutput, 1, 3)
+    Me.pnlConfig.Controls.Add(Me.lblWhitelist, 0, 2)
+    Me.pnlConfig.Controls.Add(Me.txtWhitelist, 1, 2)
+    Me.pnlConfig.Controls.Add(Me.lblDonate, 0, 6)
+    Me.pnlConfig.Controls.Add(Me.lblTimeoutS, 2, 3)
+    Me.pnlConfig.Controls.Add(Me.chkAlert, 0, 5)
+    Me.pnlConfig.Controls.Add(Me.pnlAlert, 1, 5)
+    Me.pnlConfig.Controls.Add(Me.chkHideDriverOutput, 1, 4)
+    Me.pnlConfig.Controls.Add(Me.lblUpdateDB, 0, 1)
+    Me.pnlConfig.Controls.Add(Me.lblUpdateDBVer, 1, 1)
+    Me.pnlConfig.Controls.Add(Me.cmdUpdateDBCheck, 2, 1)
     Me.pnlConfig.Dock = System.Windows.Forms.DockStyle.Fill
     Me.pnlConfig.Location = New System.Drawing.Point(0, 0)
     Me.pnlConfig.Name = "pnlConfig"
-    Me.pnlConfig.RowCount = 6
+    Me.pnlConfig.RowCount = 7
+    Me.pnlConfig.RowStyles.Add(New System.Windows.Forms.RowStyle())
     Me.pnlConfig.RowStyles.Add(New System.Windows.Forms.RowStyle())
     Me.pnlConfig.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
     Me.pnlConfig.RowStyles.Add(New System.Windows.Forms.RowStyle())
@@ -94,7 +101,7 @@ Partial Class frmConfig
     Me.lblTimeout.Name = "lblTimeout"
     Me.helpS7M.SetShowHelp(Me.lblTimeout, True)
     Me.lblTimeout.Size = New System.Drawing.Size(98, 13)
-    Me.lblTimeout.TabIndex = 5
+    Me.lblTimeout.TabIndex = 8
     Me.lblTimeout.Text = "Command Time&out:"
     '
     'cmdCancel
@@ -109,7 +116,7 @@ Partial Class frmConfig
     Me.cmdCancel.Name = "cmdCancel"
     Me.helpS7M.SetShowHelp(Me.cmdCancel, True)
     Me.cmdCancel.Size = New System.Drawing.Size(75, 23)
-    Me.cmdCancel.TabIndex = 12
+    Me.cmdCancel.TabIndex = 15
     Me.cmdCancel.Text = "Cancel"
     Me.cmdCancel.UseVisualStyleBackColor = True
     '
@@ -124,7 +131,7 @@ Partial Class frmConfig
     Me.cmdOK.Name = "cmdOK"
     Me.helpS7M.SetShowHelp(Me.cmdOK, True)
     Me.cmdOK.Size = New System.Drawing.Size(75, 23)
-    Me.cmdOK.TabIndex = 11
+    Me.cmdOK.TabIndex = 14
     Me.cmdOK.Text = "OK"
     Me.cmdOK.UseVisualStyleBackColor = True
     '
@@ -139,7 +146,7 @@ Partial Class frmConfig
     Me.txtTimeout.Name = "txtTimeout"
     Me.helpS7M.SetShowHelp(Me.txtTimeout, True)
     Me.txtTimeout.Size = New System.Drawing.Size(60, 20)
-    Me.txtTimeout.TabIndex = 6
+    Me.txtTimeout.TabIndex = 9
     '
     'lblTemp
     '
@@ -186,12 +193,12 @@ Partial Class frmConfig
     Me.lblWhitelist.AutoSize = True
     Me.helpS7M.SetHelpKeyword(Me.lblWhitelist, "/2_Configuration/2.2_Update_Whitelist.htm")
     Me.helpS7M.SetHelpNavigator(Me.lblWhitelist, System.Windows.Forms.HelpNavigator.Topic)
-    Me.lblWhitelist.Location = New System.Drawing.Point(3, 35)
+    Me.lblWhitelist.Location = New System.Drawing.Point(3, 64)
     Me.lblWhitelist.Margin = New System.Windows.Forms.Padding(3, 6, 3, 0)
     Me.lblWhitelist.Name = "lblWhitelist"
     Me.helpS7M.SetShowHelp(Me.lblWhitelist, True)
     Me.lblWhitelist.Size = New System.Drawing.Size(108, 13)
-    Me.lblWhitelist.TabIndex = 3
+    Me.lblWhitelist.TabIndex = 6
     Me.lblWhitelist.Text = "x86 Update &Whitelist:"
     '
     'txtWhitelist
@@ -202,13 +209,13 @@ Partial Class frmConfig
     Me.helpS7M.SetHelpKeyword(Me.txtWhitelist, "/2_Configuration/2.2_Update_Whitelist.htm")
     Me.helpS7M.SetHelpNavigator(Me.txtWhitelist, System.Windows.Forms.HelpNavigator.Topic)
     Me.helpS7M.SetHelpString(Me.txtWhitelist, resources.GetString("txtWhitelist.HelpString"))
-    Me.txtWhitelist.Location = New System.Drawing.Point(127, 32)
+    Me.txtWhitelist.Location = New System.Drawing.Point(127, 61)
     Me.txtWhitelist.Multiline = True
     Me.txtWhitelist.Name = "txtWhitelist"
     Me.txtWhitelist.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
     Me.helpS7M.SetShowHelp(Me.txtWhitelist, True)
-    Me.txtWhitelist.Size = New System.Drawing.Size(331, 113)
-    Me.txtWhitelist.TabIndex = 4
+    Me.txtWhitelist.Size = New System.Drawing.Size(331, 84)
+    Me.txtWhitelist.TabIndex = 7
     Me.ttInfo.SetToolTip(Me.txtWhitelist, resources.GetString("txtWhitelist.ToolTip"))
     '
     'lblDonate
@@ -217,7 +224,7 @@ Partial Class frmConfig
     Me.lblDonate.AutoSize = True
     Me.pnlConfig.SetColumnSpan(Me.lblDonate, 2)
     Me.lblDonate.Cursor = System.Windows.Forms.Cursors.Hand
-    Me.lblDonate.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!)
+    Me.lblDonate.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Underline)
     Me.lblDonate.ForeColor = System.Drawing.Color.MediumBlue
     Me.helpS7M.SetHelpString(Me.lblDonate, "Click this link to visit realityripple.com and make a donation to support develop" & _
         "ment of SLIPS7REAM.")
@@ -225,7 +232,7 @@ Partial Class frmConfig
     Me.lblDonate.Name = "lblDonate"
     Me.helpS7M.SetShowHelp(Me.lblDonate, True)
     Me.lblDonate.Size = New System.Drawing.Size(89, 13)
-    Me.lblDonate.TabIndex = 13
+    Me.lblDonate.TabIndex = 16
     Me.lblDonate.Text = "Make a Donation"
     '
     'lblTimeoutS
@@ -239,7 +246,7 @@ Partial Class frmConfig
     Me.lblTimeoutS.Name = "lblTimeoutS"
     Me.helpS7M.SetShowHelp(Me.lblTimeoutS, True)
     Me.lblTimeoutS.Size = New System.Drawing.Size(43, 13)
-    Me.lblTimeoutS.TabIndex = 7
+    Me.lblTimeoutS.TabIndex = 10
     Me.lblTimeoutS.Text = "minutes"
     '
     'chkAlert
@@ -255,7 +262,7 @@ Partial Class frmConfig
     Me.chkAlert.Name = "chkAlert"
     Me.helpS7M.SetShowHelp(Me.chkAlert, True)
     Me.chkAlert.Size = New System.Drawing.Size(118, 18)
-    Me.chkAlert.TabIndex = 9
+    Me.chkAlert.TabIndex = 12
     Me.chkAlert.Text = "&Alert on Complete:"
     Me.ttInfo.SetToolTip(Me.chkAlert, "Play an auditory alert when the Slipstream process has completed.")
     Me.chkAlert.UseVisualStyleBackColor = True
@@ -282,7 +289,7 @@ Partial Class frmConfig
     Me.pnlAlert.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
     Me.helpS7M.SetShowHelp(Me.pnlAlert, True)
     Me.pnlAlert.Size = New System.Drawing.Size(337, 30)
-    Me.pnlAlert.TabIndex = 10
+    Me.pnlAlert.TabIndex = 13
     '
     'txtAlertPath
     '
@@ -362,9 +369,49 @@ Partial Class frmConfig
     Me.chkHideDriverOutput.Name = "chkHideDriverOutput"
     Me.helpS7M.SetShowHelp(Me.chkHideDriverOutput, True)
     Me.chkHideDriverOutput.Size = New System.Drawing.Size(161, 18)
-    Me.chkHideDriverOutput.TabIndex = 8
+    Me.chkHideDriverOutput.TabIndex = 11
     Me.chkHideDriverOutput.Text = "Hide &Driver Console Output"
     Me.chkHideDriverOutput.UseVisualStyleBackColor = True
+    '
+    'lblUpdateDB
+    '
+    Me.lblUpdateDB.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.lblUpdateDB.AutoSize = True
+    Me.helpS7M.SetHelpKeyword(Me.lblUpdateDB, "/2_Configuration/2.2_KB_Article_Databases.htm")
+    Me.helpS7M.SetHelpNavigator(Me.lblUpdateDB, System.Windows.Forms.HelpNavigator.Topic)
+    Me.lblUpdateDB.Location = New System.Drawing.Point(3, 37)
+    Me.lblUpdateDB.Name = "lblUpdateDB"
+    Me.helpS7M.SetShowHelp(Me.lblUpdateDB, True)
+    Me.lblUpdateDB.Size = New System.Drawing.Size(110, 13)
+    Me.lblUpdateDB.TabIndex = 3
+    Me.lblUpdateDB.Text = "&KB Article Databases:"
+    '
+    'lblUpdateDBVer
+    '
+    Me.lblUpdateDBVer.Anchor = System.Windows.Forms.AnchorStyles.Right
+    Me.lblUpdateDBVer.AutoSize = True
+    Me.helpS7M.SetHelpKeyword(Me.lblUpdateDBVer, "/2_Configuration/2.2_KB_Article_Databases.htm")
+    Me.helpS7M.SetHelpNavigator(Me.lblUpdateDBVer, System.Windows.Forms.HelpNavigator.Topic)
+    Me.helpS7M.SetHelpString(Me.lblUpdateDBVer, resources.GetString("lblUpdateDBVer.HelpString"))
+    Me.lblUpdateDBVer.Location = New System.Drawing.Point(141, 30)
+    Me.lblUpdateDBVer.Name = "lblUpdateDBVer"
+    Me.helpS7M.SetShowHelp(Me.lblUpdateDBVer, True)
+    Me.lblUpdateDBVer.Size = New System.Drawing.Size(46, 26)
+    Me.lblUpdateDBVer.TabIndex = 4
+    Me.lblUpdateDBVer.Text = "2009.01" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "2009.01"
+    '
+    'cmdUpdateDBCheck
+    '
+    Me.cmdUpdateDBCheck.Anchor = System.Windows.Forms.AnchorStyles.Left
+    Me.helpS7M.SetHelpKeyword(Me.cmdUpdateDBCheck, "/2_Configuration/2.2_KB_Article_Databases.htm")
+    Me.helpS7M.SetHelpNavigator(Me.cmdUpdateDBCheck, System.Windows.Forms.HelpNavigator.Topic)
+    Me.cmdUpdateDBCheck.Location = New System.Drawing.Point(193, 32)
+    Me.cmdUpdateDBCheck.Name = "cmdUpdateDBCheck"
+    Me.helpS7M.SetShowHelp(Me.cmdUpdateDBCheck, True)
+    Me.cmdUpdateDBCheck.Size = New System.Drawing.Size(110, 23)
+    Me.cmdUpdateDBCheck.TabIndex = 5
+    Me.cmdUpdateDBCheck.Text = "Update Databases"
+    Me.cmdUpdateDBCheck.UseVisualStyleBackColor = True
     '
     'helpS7M
     '
@@ -418,4 +465,7 @@ Partial Class frmConfig
   Friend WithEvents chkDefault As System.Windows.Forms.CheckBox
   Friend WithEvents helpS7M As System.Windows.Forms.HelpProvider
   Friend WithEvents chkHideDriverOutput As System.Windows.Forms.CheckBox
+  Friend WithEvents lblUpdateDB As System.Windows.Forms.Label
+  Friend WithEvents lblUpdateDBVer As System.Windows.Forms.Label
+  Friend WithEvents cmdUpdateDBCheck As System.Windows.Forms.Button
 End Class

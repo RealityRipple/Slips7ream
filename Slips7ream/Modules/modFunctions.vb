@@ -2395,6 +2395,7 @@ Public Module modFunctions
       Case "Slow Move File Transfer Failure" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.12_File_Transfer_Failure.htm"
       Case "Slow Copy File Transfer Failure" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.12_File_Transfer_Failure.htm"
       Case "Program Busy" : Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.13_Busy.htm"
+      Case "KB Database Updates" : Return "2_Configuration\2.2_KB_Article_Databases.htm"
       Case Else
         Debug.Print(String.Format("No Help Page for ""{0}""", helpTopic))
         Return "1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.0_Dialogs.htm"
