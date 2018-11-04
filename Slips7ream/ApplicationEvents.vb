@@ -8,6 +8,11 @@
   ' NetworkAvailabilityChanged: Raised when the network connection is connected or disconnected.
   Partial Friend Class MyApplication
     Private Sub MyApplication_Startup(sender As Object, e As Microsoft.VisualBasic.ApplicationServices.StartupEventArgs) Handles Me.Startup
+      If Not Authenticode.IsSelfSigned(Reflection.Assembly.GetExecutingAssembly().Location) Then
+        MsgBox("The Executable """ & IO.Path.GetFileName(Reflection.Assembly.GetExecutingAssembly().Location) & """ is not signed and may be corrupted or modified.", MsgBoxStyle.Critical, My.Application.Info.ProductName)
+        e.Cancel = True
+        Return
+      End If
       If My.Settings.MustUpgrade Then
         My.Settings.Upgrade()
         My.Settings.MustUpgrade = False
