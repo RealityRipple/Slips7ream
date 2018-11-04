@@ -1769,6 +1769,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to &lt;RSAKeyValue&gt;&lt;Modulus&gt;wWHloLDQih6mzKql+oyEbFaL5yJqm31O+gxqLXplEJpGuJjBVeoKmQM8yDEzm8Cv7Vnggu+md3garZvuJlfdFLzBYDMSGWTRkpuMF2mYpLcnCRKD4KRNVvAQv6orTWwKi9Ndp3PE9eOmWD42piHaRc8045G7DwH8+NagoTUXOhNKYjx0+nOQi6+wmXrNleGnDEO9izvlq4WaPY10FBZWEQgOx7xhXaSmCwaNLZUeqmp8IZQEPXHjLMburTJybh26eIi9Pix6ajVmrUtkUbm4lSavAqxpCBd8EBTaC7mhJX9VBWd5SMVJgt8Mb4+6BERfkGXgS61A4qmqhsEUk1IOO8k3uWOMOaUTuLYSPrfFPC6qDW2rt/HweMtUFoknbQH1IsjAfoOmdRzR29Pq1D0ysLmohpBMG7PpKpmQR8E0tlM8U+CckgfWP8NvGL7LOTEIWi5VOB1FICwRwIOKlRUMFjXHqXxdneby/MlcMyqjRq [rest of string was truncated]&quot;;.
+        '''</summary>
+        Friend ReadOnly Property pubkey() As String
+            Get
+                Return ResourceManager.GetString("pubkey", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to FTP Extensibility|FTP Service
         '''Windows Media Center|Windows Media Player
         '''IIS 6 Management Console|IIS Metabase and IIS 6 configuration compatibility
@@ -1841,6 +1850,16 @@ Namespace My.Resources
         Friend ReadOnly Property u_u() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("u_u", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Bitmap.
+        '''</summary>
+        Friend ReadOnly Property update() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("update", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property

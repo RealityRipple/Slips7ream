@@ -107,10 +107,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationEvents.vb" />
+    <Compile Include="Classes\clsAuthenticode.vb" />
     <Compile Include="Classes\clsCRC32.vb" />
     <Compile Include="Classes\clsExplorer.vb" />
     <Compile Include="Classes\clsRegistry.vb" />
     <Compile Include="Classes\clsThreadedTimer.vb" />
+    <Compile Include="Classes\clsWebClient.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\ctlLineBreak.Designer.vb">
       <DependentUpon>ctlLineBreak.vb</DependentUpon>
     </Compile>
@@ -151,16 +155,16 @@
     <Compile Include="Controls\ctlExpander.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Forms\dlgUpdate.Designer.vb">
+      <DependentUpon>dlgUpdate.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\dlgUpdate.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\frmConfig.Designer.vb">
       <DependentUpon>frmConfig.vb</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmConfig.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\frmDonate.Designer.vb">
-      <DependentUpon>frmDonate.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\frmDonate.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\frmFS.Designer.vb">
@@ -232,12 +236,12 @@
       <DependentUpon>ctlExpander.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmConfig.resx">
-      <DependentUpon>frmConfig.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\dlgUpdate.resx">
+      <DependentUpon>dlgUpdate.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmDonate.resx">
-      <DependentUpon>frmDonate.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\frmConfig.resx">
+      <DependentUpon>frmConfig.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmFS.resx">
@@ -288,6 +292,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\update.png" />
+    <None Include="Resources\s7m.xml" />
     <None Include="Resources\features\xps.png" />
     <None Include="Resources\features\world_wide_web_services.png" />
     <None Include="Resources\features\windows_tiff_ifilter.png" />
