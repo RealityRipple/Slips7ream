@@ -10176,6 +10176,9 @@ Public Class frmMain
     Else
       If e.Result = clsUpdate.CheckEventArgs.ResultType.NewUpdate Then
         Status_SetText("New Version Available!")
+        Using dUpdate As New dlgUpdate(e.Version)
+          If dUpdate.ShowDialog(Me) = Windows.Forms.DialogResult.Cancel Then Return
+        End Using
         If MsgDlg(Me, "Would you like to update now?", String.Format("{1} v{0} is available!", e.Version, Application.ProductName), "Application Update", MessageBoxButtons.YesNo, _TaskDialogIcon.InternetRJ45) = Windows.Forms.DialogResult.Yes Then
           cUpdateCheck.DownloadUpdate(IO.Path.Combine(WorkDir, "Setup.exe"))
         End If
@@ -10204,8 +10207,18 @@ Public Class frmMain
       Do
         Application.DoEvents()
         Try
-          If My.Computer.FileSystem.FileExists(IO.Path.Combine(WorkDir, "Setup.exe")) Then
-            Shell(String.Format("{0} /silent", IO.Path.Combine(WorkDir, "Setup.exe")), AppWinStyle.NormalFocus, False)
+          Dim sUpdate As String = IO.Path.Combine(WorkDir, "Setup.exe")
+          If My.Computer.FileSystem.FileExists(sUpdate) Then
+            If Not Authenticode.IsSelfSigned(sUpdate) Then
+              MsgDlg(Me, "The Update file is not correctly signed.", "There was an error starting the update.", "Software Update Error", MessageBoxButtons.OK, _TaskDialogIcon.ShieldError)
+              Return
+            End If
+            Dim oProc As New Process
+            oProc.StartInfo.FileName = sUpdate
+            oProc.StartInfo.Arguments = "/silent"
+            oProc.StartInfo.WindowStyle = ProcessWindowStyle.Normal
+            oProc.StartInfo.UseShellExecute = False
+            oProc.Start()
             Application.Exit()
             Return
           ElseIf RecheckOnMissing Then
