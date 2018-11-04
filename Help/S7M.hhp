@@ -10,10 +10,10 @@ Display compile progress=No
 Full-text search=Yes
 Index file=Index.hhk
 Language=0x409 English (United States)
-Title=Help for SLIPS7REAM
+Title=Help for Slips7ream
 
 [WINDOWS]
-Slips7ream="Help for SLIPS7REAM 3.2","Table of Contents.hhc","Index.hhk","welcome.htm","welcome.htm",,,"5_Glossary_of_Terms\5.0_Glossary_of_Terms.htm","Glossary",0x2520,,0x8004c,[1101,188,1876,746],,,,,,,0
+Slips7ream="Help for Slips7ream 3.2","Table of Contents.hhc","Index.hhk","welcome.htm","welcome.htm",,,"5_Glossary_of_Terms\5.0_Glossary_of_Terms.htm","Glossary",0x2520,,0x8004c,[1101,188,1876,746],,,,,,,0
 
 
 [FILES]
@@ -21,54 +21,55 @@ bullet.png
 link.png
 help.css
 welcome.htm
-1_SLIPS7REAM_Interface\1.0_SLIPS7REAM_Interface.htm
-1_SLIPS7REAM_Interface\1.1_INSTALL.WIM.htm
-1_SLIPS7REAM_Interface\1.2_Merge_WIM.htm
-1_SLIPS7REAM_Interface\1.3_Image_Packages\load_driver.png
-1_SLIPS7REAM_Interface\1.3_Image_Packages\load_feature.png
-1_SLIPS7REAM_Interface\1.3_Image_Packages\load_update.png
-1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm
-1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm
-1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm
-1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm
-1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm
-1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm
-1_SLIPS7REAM_Interface\1.4_Service_Pack.htm
-1_SLIPS7REAM_Interface\1.5_Updates\1.5.0_Updates.htm
-1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm
-1_SLIPS7REAM_Interface\1.5_Updates\1.5.2_Update_Properties.htm
-1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm
-1_SLIPS7REAM_Interface\1.6_Save_to_ISO.htm
-1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm
-1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm
-1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm
-1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm
-1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.4_File_System.htm
-1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm
-1_SLIPS7REAM_Interface\1.8_Process_Priority.htm
-1_SLIPS7REAM_Interface\1.9_On_Completion.htm
-1_SLIPS7REAM_Interface\1.10_Dialogs\close.png
-1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.0_Dialogs.htm
-1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.1_Error_Adding_Updates.htm
-1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.2_Remove_All_Updates.htm
-1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.3_Open_Folder_Missing.htm
-1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.4_Extraction_Error.htm
-1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.5_Active_Mount.htm
-1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.6_EFI_Missing.htm
-1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.7_Interrupt.htm
-1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.8_Alert_Problem.htm
-1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.9_Temp_Folder_Missing.htm
-1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.10_Dependent_Features.htm
-1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.11_Package_Failure.htm
-1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.12_File_Transfer_Failure.htm
-1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.13_Busy.htm
-1_SLIPS7REAM_Interface\1.11_Output_Console.htm
+1_Slips7ream_Interface\1.0_Slips7ream_Interface.htm
+1_Slips7ream_Interface\1.1_INSTALL.WIM.htm
+1_Slips7ream_Interface\1.2_Merge_WIM.htm
+1_Slips7ream_Interface\1.3_Image_Packages\load_driver.png
+1_Slips7ream_Interface\1.3_Image_Packages\load_feature.png
+1_Slips7ream_Interface\1.3_Image_Packages\load_update.png
+1_Slips7ream_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm
+1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm
+1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm
+1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm
+1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm
+1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm
+1_Slips7ream_Interface\1.4_Service_Pack.htm
+1_Slips7ream_Interface\1.5_Updates\1.5.0_Updates.htm
+1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm
+1_Slips7ream_Interface\1.5_Updates\1.5.2_Update_Properties.htm
+1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm
+1_Slips7ream_Interface\1.6_Save_to_ISO.htm
+1_Slips7ream_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm
+1_Slips7ream_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm
+1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm
+1_Slips7ream_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm
+1_Slips7ream_Interface\1.7_ISO_Features\1.7.4_File_System.htm
+1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm
+1_Slips7ream_Interface\1.8_Process_Priority.htm
+1_Slips7ream_Interface\1.9_On_Completion.htm
+1_Slips7ream_Interface\1.10_Dialogs\close.png
+1_Slips7ream_Interface\1.10_Dialogs\1.10.0_Dialogs.htm
+1_Slips7ream_Interface\1.10_Dialogs\1.10.1_Error_Adding_Updates.htm
+1_Slips7ream_Interface\1.10_Dialogs\1.10.2_Remove_All_Updates.htm
+1_Slips7ream_Interface\1.10_Dialogs\1.10.3_Open_Folder_Missing.htm
+1_Slips7ream_Interface\1.10_Dialogs\1.10.4_Extraction_Error.htm
+1_Slips7ream_Interface\1.10_Dialogs\1.10.5_Active_Mount.htm
+1_Slips7ream_Interface\1.10_Dialogs\1.10.6_EFI_Missing.htm
+1_Slips7ream_Interface\1.10_Dialogs\1.10.7_Interrupt.htm
+1_Slips7ream_Interface\1.10_Dialogs\1.10.8_Alert_Problem.htm
+1_Slips7ream_Interface\1.10_Dialogs\1.10.9_Temp_Folder_Missing.htm
+1_Slips7ream_Interface\1.10_Dialogs\1.10.10_Dependent_Features.htm
+1_Slips7ream_Interface\1.10_Dialogs\1.10.11_Package_Failure.htm
+1_Slips7ream_Interface\1.10_Dialogs\1.10.12_File_Transfer_Failure.htm
+1_Slips7ream_Interface\1.10_Dialogs\1.10.13_Busy.htm
+1_Slips7ream_Interface\1.11_Output_Console.htm
 2_Configuration\2.0_Configuration.htm
 2_Configuration\2.1_Temp_Directory_Path.htm
-2_Configuration\2.2_Update_Whitelist.htm
-2_Configuration\2.3_Command_Timeout.htm
-2_Configuration\2.4_Hide_Driver_Console_Output.htm
-2_Configuration\2.5_Alert_on_Complete.htm
+2_Configuration\2.2_KB_Article_Databases.htm
+2_Configuration\2.3_Update_Whitelist.htm
+2_Configuration\2.4_Command_Timeout.htm
+2_Configuration\2.5_Hide_Driver_Console_Output.htm
+2_Configuration\2.6_Alert_on_Complete.htm
 3_Slipstream_Process\3.0_Slipstream_Process.htm
 3_Slipstream_Process\3.1_Integration_Tutorial_(ISO).htm
 3_Slipstream_Process\3.2_Integration_Tutorial_(WIM).htm
@@ -144,6 +145,8 @@ icons\2.1.png
 icons\2.2.png
 icons\2.3.png
 icons\2.4.png
+icons\2.5.png
+icons\2.6.png
 icons\3.0.png
 icons\3.1.png
 icons\3.2.png

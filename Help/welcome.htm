@@ -2,17 +2,17 @@
 <html lang="en-US">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-  <title>SLIPS7REAM Help</title>
+  <title>Slips7ream Help</title>
   <link rel="stylesheet" type="text/css" href="/help.css">
  </head>
  <body>
   <img src="/icons/welcome.png" alt="" style="float: right;">
   <h3>Welcome to</h3>
-  <h1>SLIPS7REAM Help</h1>
+  <h1>Slips7ream Help</h1>
   <div style="text-align: right; font-style: italic;">version 3.2</div>
   <hr>
   <p>Please select a help topic from the Table of Contents to begin.</p>
-  <p>If you can not find the answer to your question, please visit the <a href="http://realityripple.com/Software/Applications/Slips7ream/" title="SLIPS7REAM - RealityRipple Software" target="_blank">SLIPS7REAM Website <img src="/link.png" title="External Link" alt=""></a>.</p>
+  <p>If you can not find the answer to your question, please visit the <a href="http://realityripple.com/Software/Applications/Slips7ream/" title="Slips7ream - RealityRipple Software" target="_blank">Slips7ream Website <img src="/link.png" title="External Link" alt=""></a>.</p>
   <span style="font-size: 140%; font-weight: bold; position: relative; top: 0.5em; left: 0.5em; background-color: #FFFFE1; padding-left: 0.25em; padding-right: 0.25em;">Tip of the Day</span>
   <div id="tipoftheday" style="border: 1px solid black; max-width: 40em; font-style: italic; padding: 1.25em 1em 1em 4em; text-indent: 1em; text-align: justify; margin-bottom: 2em; background: url('icons/hints.png') 1em 2em no-repeat;">The Tip of the Day has failed to load. There may be an issue with JavaScript.</div>
   <script type="text/javascript">
@@ -29,15 +29,15 @@
     {
      case 0: return "Save to ISO must be an existing ISO. This ISO's file system is used, not the one in INSTALL.WIM.";
      case 1: return "The list of Languages in Setup is determined by the last Image Package in the list's Languages. Don't try to include different languages in different packages or you'll end up with a headache.";
-     case 2: return "If you're including drivers in the Setup (BOOT.WIM file), remember that SLIPS7REAM will also add them to all the INSTALL.WIM packages automatically. If a package already has a driver, things might go strangely, so integrate drivers all at once instead of here and there.";
+     case 2: return "If you're including drivers in the Setup (BOOT.WIM file), remember that Slips7ream will also add them to all the INSTALL.WIM packages automatically. If a package already has a driver, things might go strangely, so integrate drivers all at once instead of here and there.";
      case 3: return "You can only merge two WIMs at once, but you can repeat the process with merged WIMs to include packages from as many WIMs as you want. Just make sure to give each package a unique Name within the final WIM!";
      case 4: return "Some updates add or change Windows Features. Integrate all your updates before you make Feature modifications to ensure you're working with the final list.";
-     case 5: return "Even on Low priority, SLIPS7REAM makes heavy use of your hard drive(s). Try not to run SLIPS7REAM on an active server, or overtax your computer while you're Slipstreaming. Mounting Image Packages is particularly hard on a drive, and also always tends to be an early step, so keep that in mind if you absolutely need to do other things.";
+     case 5: return "Even on Low priority, Slips7ream makes heavy use of your hard drive(s). Try not to run Slips7ream on an active server, or overtax your computer while you're Slipstreaming. Mounting Image Packages is particularly hard on a drive, and also always tends to be an early step, so keep that in mind if you absolutely need to do other things.";
      case 6: return "If you want to check on your BOOT.WIM file, you can toss it into the INSTALL.WIM field and read its package information. Just don't make any changes to it that way. If you want to integrate drivers into your BOOT.WIM, use an ISO for your INSTALL.WIM and use the context menu (right-click) on the drivers you want to integrate into the Setup or PE images.";
-     case 7: return "You can't remove a driver from BOOT.WIM packages with SLIPS7REAM. Instead, use a new original ISO in the INSTALL.WIM field and integrate only what you want into the fresh BOOT.WIM. If you want to use a specific INSTALL.WIM, integrate that WIM into a fresh ISO without making any Boot Driver or Language changes to put your new INSTALL.WIM and the old BOOT.WIM into the same ISO, then use that as a starting point for whatever you wish to add.";
-     case 8: return 'Getting a &quot;System Update Readiness Tool&quot; update listed in your fresh install\'s Update list? Keep a copy of <a href="https://support.microsoft.com/en-us/kb/947821" title="Fix Windows Update errors by using the DISM or System Update Readiness tool" target="_blank">KB947821 <img src="/link.png" title="External Link" alt=""></a> handy and install it after Windows is installed (KB947821 can not be integrated). You can avoid this problem entirely by using an official SP1 ISO instead of integrating Service Pack 1 through SLIPS7REAM.';
+     case 7: return "You can't remove a driver from BOOT.WIM packages with Slips7ream. Instead, use a new original ISO in the INSTALL.WIM field and integrate only what you want into the fresh BOOT.WIM. If you want to use a specific INSTALL.WIM, integrate that WIM into a fresh ISO without making any Boot Driver or Language changes to put your new INSTALL.WIM and the old BOOT.WIM into the same ISO, then use that as a starting point for whatever you wish to add.";
+     case 8: return 'Getting a &quot;System Update Readiness Tool&quot; update listed in your fresh install\'s Update list? Keep a copy of <a href="https://support.microsoft.com/en-us/kb/947821" title="Fix Windows Update errors by using the DISM or System Update Readiness tool" target="_blank">KB947821 <img src="/link.png" title="External Link" alt=""></a> handy and install it after Windows is installed (KB947821 can not be integrated). You can avoid this problem entirely by using an official SP1 ISO instead of integrating Service Pack 1 through Slips7ream.';
      case 9: return "Don't split a WIM until you're completely done with it. SWM files are Read-Only and can not be modified, so never rely on a Split WIM for anything, and always make it the last step.";
-     case 10: return "Powering Off, Sleeping, and Hibernation can be triggered on completion, but until the Slipstream process is complete, SLIPS7REAM will keep your computer awake.";
+     case 10: return "Powering Off, Sleeping, and Hibernation can be triggered on completion, but until the Slipstream process is complete, Slips7ream will keep your computer awake.";
      case 11: return "The Updates list is automatically sorted when updates are added, first by KB article, then by requirements, with Drivers sorted by path or file name at the top of the list. You can change the order manually, but requirements will re-order themselves automatically during Slipstreaming.";
      case 12: return "You usually only need the latest Internet Explorer update as they tend to be rollups. Sometimes a second update is necessary, but this is rare.";
      case 13: return "Don't bother integrating KB2952664, KB3021917, KB3068708, or KB3080149. These updates are simply telemetry and Windows 10 upgrade related.";
@@ -98,75 +98,76 @@
   </script>
   <h2>Contents:</h2>
   <ul style="font-size: 90%;">
-   <li>Chapter 1: <a href="/1_SLIPS7REAM_Interface/1.0_SLIPS7REAM_Interface.htm" title="SLIPS7REAM Interface">SLIPS7REAM Interface</a>
+   <li>Chapter 1: <a href="/1_Slips7ream_Interface/1.0_Slips7ream_Interface.htm" title="Slips7ream Interface">Slips7ream Interface</a>
     <ul>
-     <li>Section 1.1: <a href="/1_SLIPS7REAM_Interface/1.1_INSTALL.WIM.htm" title="SLIPS7REAM Interface - INSTALL.WIM">INSTALL.WIM</a></li>
-     <li>Section 1.2: <a href="/1_SLIPS7REAM_Interface/1.2_Merge_WIM.htm" title="SLIPS7REAM Interface - Merge WIM">Merge WIM</a></li>
+     <li>Section 1.1: <a href="/1_Slips7ream_Interface/1.1_INSTALL.WIM.htm" title="Slips7ream Interface - INSTALL.WIM">INSTALL.WIM</a></li>
+     <li>Section 1.2: <a href="/1_Slips7ream_Interface/1.2_Merge_WIM.htm" title="Slips7ream Interface - Merge WIM">Merge WIM</a></li>
      <li>
-      Section 1.3: <a href="/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.0_Image_Packages.htm" title="SLIPS7REAM Interface - Image Packages">Image Packages</a>
+      Section 1.3: <a href="/1_Slips7ream_Interface/1.3_Image_Packages/1.3.0_Image_Packages.htm" title="Slips7ream Interface - Image Packages">Image Packages</a>
       <ul>
-       <li>Section 1.3.1: <a href="/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.1_Parse_Packages.htm" title="SLIPS7REAM Interface - Image Packages - Parse Packages">Parse Packages</a></li>
+       <li>Section 1.3.1: <a href="/1_Slips7ream_Interface/1.3_Image_Packages/1.3.1_Parse_Packages.htm" title="Slips7ream Interface - Image Packages - Parse Packages">Parse Packages</a></li>
        <li>
-        Section 1.3.2: <a href="/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Package_Properties.htm" title="SLIPS7REAM Interface - Image Packages - Package Properties">Package Properties</a>
+        Section 1.3.2: <a href="/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.0_Package_Properties.htm" title="Slips7ream Interface - Image Packages - Package Properties">Package Properties</a>
         <ul>
-         <li>Section 1.3.2.1: <a href="/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.1_Windows_Features.htm" title="SLIPS7REAM Interface - Image Packages - Package Properties - Windows Features">Windows Features</a></li>
-         <li>Section 1.3.2.2: <a href="/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.2_Integrated_Windows_Updates.htm" title="SLIPS7REAM Interface - Image Packages - Package Properties - Integrated Windows Updates">Integrated Windows Updates</a></li>
-         <li>Section 1.3.2.3: <a href="/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.3_Integrated_Drivers.htm" title="SLIPS7REAM Interface - Image Packages - Package Properties - Integrated Drivers">Integrated Drivers</a></li>
+         <li>Section 1.3.2.1: <a href="/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.1_Windows_Features.htm" title="Slips7ream Interface - Image Packages - Package Properties - Windows Features">Windows Features</a></li>
+         <li>Section 1.3.2.2: <a href="/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.2_Integrated_Windows_Updates.htm" title="Slips7ream Interface - Image Packages - Package Properties - Integrated Windows Updates">Integrated Windows Updates</a></li>
+         <li>Section 1.3.2.3: <a href="/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.3_Integrated_Drivers.htm" title="Slips7ream Interface - Image Packages - Package Properties - Integrated Drivers">Integrated Drivers</a></li>
         </ul>
        </li>
       </ul>
      </li>
-     <li>Section 1.4: <a href="/1_SLIPS7REAM_Interface/1.4_Service_Pack.htm" title="SLIPS7REAM Interface - Service Pack">Service Pack</a></li>
+     <li>Section 1.4: <a href="/1_Slips7ream_Interface/1.4_Service_Pack.htm" title="Slips7ream Interface - Service Pack">Service Pack</a></li>
      <li>
-      Section 1.5: <a href="/1_SLIPS7REAM_Interface/1.5_Updates/1.5.0_Updates.htm" title="SLIPS7REAM Interface - Updates">Updates</a>
+      Section 1.5: <a href="/1_Slips7ream_Interface/1.5_Updates/1.5.0_Updates.htm" title="Slips7ream Interface - Updates">Updates</a>
       <ul>
-       <li>Section 1.5.1: <a href="/1_SLIPS7REAM_Interface/1.5_Updates/1.5.1_Add_Updates.htm" title="SLIPS7REAM Interface - Updates - Add Updates">Add Updates</a></li>
-       <li>Section 1.5.2: <a href="/1_SLIPS7REAM_Interface/1.5_Updates/1.5.2_Update_Properties.htm" title="SLIPS7REAM Interface - Updates - Update Properties">Update Properties</a></li>
-       <li>Section 1.5.3: <a href="/1_SLIPS7REAM_Interface/1.5_Updates/1.5.3_Driver_Properties.htm" title="SLIPS7REAM Interface - Updates - Driver Properties">Driver Properties</a></li>
+       <li>Section 1.5.1: <a href="/1_Slips7ream_Interface/1.5_Updates/1.5.1_Add_Updates.htm" title="Slips7ream Interface - Updates - Add Updates">Add Updates</a></li>
+       <li>Section 1.5.2: <a href="/1_Slips7ream_Interface/1.5_Updates/1.5.2_Update_Properties.htm" title="Slips7ream Interface - Updates - Update Properties">Update Properties</a></li>
+       <li>Section 1.5.3: <a href="/1_Slips7ream_Interface/1.5_Updates/1.5.3_Driver_Properties.htm" title="Slips7ream Interface - Updates - Driver Properties">Driver Properties</a></li>
       </ul>
      </li>
-     <li>Section 1.6: <a href="/1_SLIPS7REAM_Interface/1.6_Save_to_ISO.htm" title="SLIPS7REAM Interface - Save to ISO">Save to ISO</a></li></li>
+     <li>Section 1.6: <a href="/1_Slips7ream_Interface/1.6_Save_to_ISO.htm" title="Slips7ream Interface - Save to ISO">Save to ISO</a></li></li>
      <li>
-      Section 1.7: <a href="/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.0_ISO_Features.htm" title="SLIPS7REAM Interface - ISO Features">ISO Features</a>
+      Section 1.7: <a href="/1_Slips7ream_Interface/1.7_ISO_Features/1.7.0_ISO_Features.htm" title="Slips7ream Interface - ISO Features">ISO Features</a>
       <ul>
-       <li>Section 1.7.1: <a href="/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.1_ISO_Label.htm" title="SLIPS7REAM Interface - ISO Features - ISO Label">ISO Label</a></li>
-       <li>Section 1.7.2: <a href="/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.2_Unlock_All_Editions.htm" title="SLIPS7REAM Interface - ISO Features - Unlock All Editions">Unlock All Editions</a></li>
-       <li>Section 1.7.3: <a href="/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.3_UEFI_Boot.htm" title="SLIPS7REAM Interface - ISO Features - UEFI Boot">UEFI Boot</a></li>
-       <li>Section 1.7.4: <a href="/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.4_File_System.htm" title="SLIPS7REAM Interface - ISO Features - File System">File System</a></li>
-       <li>Section 1.7.5: <a href="/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.5_Split_Method.htm" title="SLIPS7REAM Interface - ISO Features - Split Method">Split Method</a></li>
+       <li>Section 1.7.1: <a href="/1_Slips7ream_Interface/1.7_ISO_Features/1.7.1_ISO_Label.htm" title="Slips7ream Interface - ISO Features - ISO Label">ISO Label</a></li>
+       <li>Section 1.7.2: <a href="/1_Slips7ream_Interface/1.7_ISO_Features/1.7.2_Unlock_All_Editions.htm" title="Slips7ream Interface - ISO Features - Unlock All Editions">Unlock All Editions</a></li>
+       <li>Section 1.7.3: <a href="/1_Slips7ream_Interface/1.7_ISO_Features/1.7.3_UEFI_Boot.htm" title="Slips7ream Interface - ISO Features - UEFI Boot">UEFI Boot</a></li>
+       <li>Section 1.7.4: <a href="/1_Slips7ream_Interface/1.7_ISO_Features/1.7.4_File_System.htm" title="Slips7ream Interface - ISO Features - File System">File System</a></li>
+       <li>Section 1.7.5: <a href="/1_Slips7ream_Interface/1.7_ISO_Features/1.7.5_Split_Method.htm" title="Slips7ream Interface - ISO Features - Split Method">Split Method</a></li>
       </ul>
      </li>
-     <li>Section 1.8: <a href="/1_SLIPS7REAM_Interface/1.8_Process_Priority.htm" title="SLIPS7REAM Interface - Process Priority">Process Priority</a></li></li>
-     <li>Section 1.9: <a href="/1_SLIPS7REAM_Interface/1.9_On_Completion.htm" title="SLIPS7REAM Interface - On Completion">On Completion</a></li></li>
+     <li>Section 1.8: <a href="/1_Slips7ream_Interface/1.8_Process_Priority.htm" title="Slips7ream Interface - Process Priority">Process Priority</a></li></li>
+     <li>Section 1.9: <a href="/1_Slips7ream_Interface/1.9_On_Completion.htm" title="Slips7ream Interface - On Completion">On Completion</a></li></li>
      <li>
-      Section 1.10: <a href="/1_SLIPS7REAM_Interface/1.10_Dialogs/1.10.0_Dialogs.htm" title="SLIPS7REAM Interface - Dialogs">Dialogs</a>
+      Section 1.10: <a href="/1_Slips7ream_Interface/1.10_Dialogs/1.10.0_Dialogs.htm" title="Slips7ream Interface - Dialogs">Dialogs</a>
       <ul>
-       <li>Section 1.10.1: <a href="/1_SLIPS7REAM_Interface/1.10_Dialogs/1.10.1_Error_Adding_Updates.htm" title="SLIPS7REAM Interface - Dialogs - Unable to add files to the Update List">Unable to add files to the Update List</a></li>
-       <li>Section 1.10.2: <a href="/1_SLIPS7REAM_Interface/1.10_Dialogs/1.10.2_Remove_All_Updates.htm" title="SLIPS7REAM Interface - Dialogs - Do you want to clear the Update List?">Do you want to clear the Update List?</a></li>
-       <li>Section 1.10.3: <a href="/1_SLIPS7REAM_Interface/1.10_Dialogs/1.10.3_Open_Folder_Missing.htm" title="SLIPS7REAM Interface - Dialogs - Error when Opening Folder">Error when Opening Folder</a></li>
-       <li>Section 1.10.4: <a href="/1_SLIPS7REAM_Interface/1.10_Dialogs/1.10.4_Extraction_Error.htm" title="SLIPS7REAM Interface - Dialogs - Extraction Error">Extraction Error</a></li>
-       <li>Section 1.10.5: <a href="/1_SLIPS7REAM_Interface/1.10_Dialogs/1.10.5_Active_Mount.htm" title="SLIPS7REAM Interface - Dialogs - Active mount has been detected">Active mount has been detected</a></li>
-       <li>Section 1.10.6: <a href="/1_SLIPS7REAM_Interface/1.10_Dialogs/1.10.6_EFI_Missing.htm" title="SLIPS7REAM Interface - Dialogs - Unable to enable UEFI Boot">Unable to enable UEFI Boot</a></li>
-       <li>Section 1.10.7: <a href="/1_SLIPS7REAM_Interface/1.10_Dialogs/1.10.7_Interrupt.htm" title="SLIPS7REAM Interface - Dialogs - Cancel">Cancel</a></li>
-       <li>Section 1.10.8: <a href="/1_SLIPS7REAM_Interface/1.10_Dialogs/1.10.8_Alert_Problem.htm" title="SLIPS7REAM Interface - Dialogs - File could not be played">File could not be played</a></li>
-       <li>Section 1.10.9: <a href="/1_SLIPS7REAM_Interface/1.10_Dialogs/1.10.9_Temp_Folder_Missing.htm" title="SLIPS7REAM Interface - Dialogs - Unable to find parent directory">Unable to find parent directory</a></li>
-       <li>Section 1.10.10: <a href="/1_SLIPS7REAM_Interface/1.10_Dialogs/1.10.10_Dependent_Features.htm" title="SLIPS7REAM Interface - Dialogs - Dependent Windows features will be turned off">Dependent Windows features will be turned off</a></li>
-       <li>Section 1.10.11: <a href="/1_SLIPS7REAM_Interface/1.10_Dialogs/1.10.11_Package_Failure.htm" title="SLIPS7REAM Interface - Dialogs - Error loading packages">Error loading packages</a></li>
-       <li>Section 1.10.12: <a href="/1_SLIPS7REAM_Interface/1.10_Dialogs/1.10.12_File_Transfer_Failure.htm" title="SLIPS7REAM Interface - Dialogs - Unable to transfer file">Unable to transfer file</a></li>
-       <li>Section 1.10.13: <a href="/1_SLIPS7REAM_Interface/1.10_Dialogs/1.10.13_Busy.htm" title="SLIPS7REAM Interface - Dialogs - Busy with another task">Busy with another task</a></li>
+       <li>Section 1.10.1: <a href="/1_Slips7ream_Interface/1.10_Dialogs/1.10.1_Error_Adding_Updates.htm" title="Slips7ream Interface - Dialogs - Unable to add files to the Update List">Unable to add files to the Update List</a></li>
+       <li>Section 1.10.2: <a href="/1_Slips7ream_Interface/1.10_Dialogs/1.10.2_Remove_All_Updates.htm" title="Slips7ream Interface - Dialogs - Do you want to clear the Update List?">Do you want to clear the Update List?</a></li>
+       <li>Section 1.10.3: <a href="/1_Slips7ream_Interface/1.10_Dialogs/1.10.3_Open_Folder_Missing.htm" title="Slips7ream Interface - Dialogs - Error when Opening Folder">Error when Opening Folder</a></li>
+       <li>Section 1.10.4: <a href="/1_Slips7ream_Interface/1.10_Dialogs/1.10.4_Extraction_Error.htm" title="Slips7ream Interface - Dialogs - Extraction Error">Extraction Error</a></li>
+       <li>Section 1.10.5: <a href="/1_Slips7ream_Interface/1.10_Dialogs/1.10.5_Active_Mount.htm" title="Slips7ream Interface - Dialogs - Active mount has been detected">Active mount has been detected</a></li>
+       <li>Section 1.10.6: <a href="/1_Slips7ream_Interface/1.10_Dialogs/1.10.6_EFI_Missing.htm" title="Slips7ream Interface - Dialogs - Unable to enable UEFI Boot">Unable to enable UEFI Boot</a></li>
+       <li>Section 1.10.7: <a href="/1_Slips7ream_Interface/1.10_Dialogs/1.10.7_Interrupt.htm" title="Slips7ream Interface - Dialogs - Cancel">Cancel</a></li>
+       <li>Section 1.10.8: <a href="/1_Slips7ream_Interface/1.10_Dialogs/1.10.8_Alert_Problem.htm" title="Slips7ream Interface - Dialogs - File could not be played">File could not be played</a></li>
+       <li>Section 1.10.9: <a href="/1_Slips7ream_Interface/1.10_Dialogs/1.10.9_Temp_Folder_Missing.htm" title="Slips7ream Interface - Dialogs - Unable to find parent directory">Unable to find parent directory</a></li>
+       <li>Section 1.10.10: <a href="/1_Slips7ream_Interface/1.10_Dialogs/1.10.10_Dependent_Features.htm" title="Slips7ream Interface - Dialogs - Dependent Windows features will be turned off">Dependent Windows features will be turned off</a></li>
+       <li>Section 1.10.11: <a href="/1_Slips7ream_Interface/1.10_Dialogs/1.10.11_Package_Failure.htm" title="Slips7ream Interface - Dialogs - Error loading packages">Error loading packages</a></li>
+       <li>Section 1.10.12: <a href="/1_Slips7ream_Interface/1.10_Dialogs/1.10.12_File_Transfer_Failure.htm" title="Slips7ream Interface - Dialogs - Unable to transfer file">Unable to transfer file</a></li>
+       <li>Section 1.10.13: <a href="/1_Slips7ream_Interface/1.10_Dialogs/1.10.13_Busy.htm" title="Slips7ream Interface - Dialogs - Busy with another task">Busy with another task</a></li>
       </ul>
      </li>
-     <li>Section 1.11: <a href="/1_SLIPS7REAM_Interface/1.11_Output_Console.htm" title="SLIPS7REAM Interface - Output Console">Output Console</a></li></li>
+     <li>Section 1.11: <a href="/1_Slips7ream_Interface/1.11_Output_Console.htm" title="Slips7ream Interface - Output Console">Output Console</a></li></li>
     </ul>
    </li>
    <li>
     Chapter 2: <a href="/2_Configuration/2.0_Configuration.htm" title="Configuration">Configuration</a>
     <ul>
      <li>Section 2.1: <a href="/2_Configuration/2.1_Temp_Directory_Path.htm" title="Configuration - Temp Directory Path">Temp Directory Path</a></li>
-     <li>Section 2.2: <a href="/2_Configuration/2.2_Update_Whitelist.htm" title="Configuration - x86 Update Whitelist">x86 Update Whitelist</a></li>
-     <li>Section 2.3: <a href="/2_Configuration/2.3_Command_Timeout.htm" title="Configuration - Command Timeout">Command Timeout</a></li>
-     <li>Section 2.4: <a href="/2_Configuration/2.4_Hide_Driver_Console_Output.htm" title="Configuration - Hide Driver Console Output">Hide Driver Console Output</a></li>
-     <li>Section 2.5: <a href="/2_Configuration/2.5_Alert_on_Complete.htm" title="Configuration - Alert on Complete">Alert on Complete</a></li>
+     <li>Section 2.2: <a href="/2_Configuration/2.2_KB_Article_Databases.htm" title="Configuration - KB Article Databases">KB Article Databases</a></li>
+     <li>Section 2.3: <a href="/2_Configuration/2.3_Update_Whitelist.htm" title="Configuration - x86 Update Whitelist">x86 Update Whitelist</a></li>
+     <li>Section 2.4: <a href="/2_Configuration/2.4_Command_Timeout.htm" title="Configuration - Command Timeout">Command Timeout</a></li>
+     <li>Section 2.5: <a href="/2_Configuration/2.5_Hide_Driver_Console_Output.htm" title="Configuration - Hide Driver Console Output">Hide Driver Console Output</a></li>
+     <li>Section 2.6: <a href="/2_Configuration/2.6_Alert_on_Complete.htm" title="Configuration - Alert on Complete">Alert on Complete</a></li>
     </ul>
    </li>
    <li>

@@ -29,7 +29,7 @@
   <h3>Section 3.1</h3>
   <h1>Integration Tutorial (ISO)</h1>
   <hr>
-  <p>This tutorial will walk you through <a href="/1_SLIPS7REAM_Interface/1.5_Updates/1.5.1_Add_Updates.htm" title="SLIPS7REAM Interface - Updates - Add Updates">integrating Windows Updates</a> (including Internet Explorer) into a standard Windows 7 <a href="/1_SLIPS7REAM_Interface/1.6_Save_to_ISO.htm" title="SLIPS7REAM Interface - Save to ISO">ISO</a>. If you have trouble with SLIPS7REAM or are a beginner at the Slipstreaming process, you may want to consult this guide.</p>
+  <p>This tutorial will walk you through <a href="/1_Slips7ream_Interface/1.5_Updates/1.5.1_Add_Updates.htm" title="Slips7ream Interface - Updates - Add Updates">integrating Windows Updates</a> (including Internet Explorer) into a standard Windows 7 <a href="/1_Slips7ream_Interface/1.6_Save_to_ISO.htm" title="Slips7ream Interface - Save to ISO">ISO</a>. If you have trouble with Slips7ream or are a beginner at the Slipstreaming process, you may want to consult this guide.</p>
   <hr>
   <p>I suggest you start by setting up a folder for Slipstreaming if you are going to be doing this regularly, so I'll be using the following directory tree for this tutorial:</p>
   <dl>
@@ -75,26 +75,26 @@
   </dl>
   <div>
    <img src="3.1.jpg" alt=""><br>
-   <i>SLIPS7REAM, ready to begin integrating Service Pack 1, Internet Explorer 11, and Windows Updates into Windows 7 Professional</i>
+   <i>Slips7ream, ready to begin integrating Service Pack 1, Internet Explorer 11, and Windows Updates into Windows 7 Professional</i>
   </div>
   <hr>
   <br>
   <ol>
    <li>
-    The first step is to select your source <a href="/1_SLIPS7REAM_Interface/1.1_INSTALL.WIM.htm" title="SLIPS7REAM Interface - INSTALL.WIM">INSTALL.WIM</a>, which is stored inside the &quot;RTM.iso&quot; file above.<br>
+    The first step is to select your source <a href="/1_Slips7ream_Interface/1.1_INSTALL.WIM.htm" title="Slips7ream Interface - INSTALL.WIM">INSTALL.WIM</a>, which is stored inside the &quot;RTM.iso&quot; file above.<br>
     Click the &quot;Browse...&quot; button next to the INSTALL.WIM field to select &quot;C:\Users\&#8203;Admin\Documents\&#8203;Win7_ISO\32-Bit\&#8203;RTM.iso&quot;. You can also drag-and-drop the file into the field with your mouse.<br>
-    SLIPS7REAM will automatically extract the INSTALL.WIM file and read its properties, giving you a list of <a href="/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.0_Image_Packages.htm" title="SLIPS7REAM Interface - Image Packages">Image Packages</a>.
+    Slips7ream will automatically extract the INSTALL.WIM file and read its properties, giving you a list of <a href="/1_Slips7ream_Interface/1.3_Image_Packages/1.3.0_Image_Packages.htm" title="Slips7ream Interface - Image Packages">Image Packages</a>.
    </li>
    <li>
-    You can optionally <a href="/1_SLIPS7REAM_Interface/1.2_Merge_WIM.htm" title="SLIPS7REAM Interface - Merge WIM">include</a> or remove Image Packages as needed. All the Updates will be integrated into all of the finalized Image Packages automatically.<br>
-    You can also <a href="/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.1_Parse_Packages.htm" title="SLIPS7REAM Interface - Image Packages - Parse Packages">read more package data</a> from the Image Packages if you want to <a href="/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.1_Windows_Features.htm" title="SLIPS7REAM Interface - Image Packages - Package Properties - Windows Features">change Features</a>, <a href="/1_SLIPS7REAM_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.2_Integrated_Windows_Updates.htm" title="SLIPS7REAM Interface - Image Packages - Package Properties - Integrated Windows Updates">remove Updates</a>, or just see what's already installed. Having a list of Integrated Updates will also ensure that there aren't version conflicts between Updates.
+    You can optionally <a href="/1_Slips7ream_Interface/1.2_Merge_WIM.htm" title="Slips7ream Interface - Merge WIM">include</a> or remove Image Packages as needed. All the Updates will be integrated into all of the finalized Image Packages automatically.<br>
+    You can also <a href="/1_Slips7ream_Interface/1.3_Image_Packages/1.3.1_Parse_Packages.htm" title="Slips7ream Interface - Image Packages - Parse Packages">read more package data</a> from the Image Packages if you want to <a href="/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.1_Windows_Features.htm" title="Slips7ream Interface - Image Packages - Package Properties - Windows Features">change Features</a>, <a href="/1_Slips7ream_Interface/1.3_Image_Packages/1.3.2_Package_Properties/1.3.2.2_Integrated_Windows_Updates.htm" title="Slips7ream Interface - Image Packages - Package Properties - Integrated Windows Updates">remove Updates</a>, or just see what's already installed. Having a list of Integrated Updates will also ensure that there aren't version conflicts between Updates.
    </li>
    <li>
     Next, click the &quot;Service Pack&quot; checkbox to enable the Service Pack field(s). Click &quot;Browse...&quot; next to the Service Pack field and choose &quot;SP1.exe&quot;, or drag-and-drop the file into the right field.<br>
     Note that if you have mixed <a href="/5_Glossary_of_Terms/5.1_32-Bit.htm" title="Glossary - 32-Bit / x86">32-Bit</a> and <a href="/5_Glossary_of_Terms/5.2_64-Bit.htm" title="Glossary - 64-Bit / x64 / amd64">64-Bit</a> architectures in your Image Packages list, there will be two fields, one for the x86 Service Pack, one for x64.
    </li>
    <li>
-    After providing the Service Pack, it's time to add some <a href="/1_SLIPS7REAM_Interface/1.5_Updates/1.5.0_Updates.htm" title="SLIPS7REAM Interface - Updates">Updates</a>.<br>
+    After providing the Service Pack, it's time to add some <a href="/1_Slips7ream_Interface/1.5_Updates/1.5.0_Updates.htm" title="Slips7ream Interface - Updates">Updates</a>.<br>
     Click on &quot;Add to Updates...&quot; and open the &quot;IE11&quot; folder, then select all of the prerequisite MSU files in this folder and click &quot;Open&quot;.<br>
     When all of the selected files have been added to the Updates list, click &quot;Add to Updates...&quot; again to add &quot;IE11-Windows6.1-x86-en-us.exe&quot;.<br>
     As before, you can also drag the files (or the &quot;IE11&quot; folder) into the Updates list to add them. You can also re-order the files in the list by dragging one or more selected Updates up or down, or by right-clicking your selection and choosing a menu item.
@@ -102,10 +102,10 @@
    <li>Practice adding Updates by including the files in the &quot;Updates&quot; folder as well.</li>
    <li>
     Once all the updates have been included and organized, check the &quot;Save to ISO&quot; field. If it's not enabled, enable it by checking the &quot;Save to ISO&quot; checkbox next to the field.<br>
-    Click &quot;Browse...&quot; and select the &quot;Win7.iso&quot; file or drag the file into the field, and then choose the <a href="/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.1_ISO_Label.htm" title="SLIPS7REAM Interface - ISO Features - ISO Label">Label</a> and <a href="/1_SLIPS7REAM_Interface/1.7_ISO_Features/1.7.0_ISO_Features.htm" title="SLIPS7REAM Interface - ISO Features">Features</a> you want to use.
+    Click &quot;Browse...&quot; and select the &quot;Win7.iso&quot; file or drag the file into the field, and then choose the <a href="/1_Slips7ream_Interface/1.7_ISO_Features/1.7.1_ISO_Label.htm" title="Slips7ream Interface - ISO Features - ISO Label">Label</a> and <a href="/1_Slips7ream_Interface/1.7_ISO_Features/1.7.0_ISO_Features.htm" title="Slips7ream Interface - ISO Features">Features</a> you want to use.
    </li>
    <li>
-    Now it's time to begin the Slipstream operation: click &quot;Begin&quot; at the bottom of the window to start the process, then sit back and wait as SLIPS7REAM does its work.<br>
+    Now it's time to begin the Slipstream operation: click &quot;Begin&quot; at the bottom of the window to start the process, then sit back and wait as Slips7ream does its work.<br>
     When the process is complete, you can click the &quot;Open Folder&quot; button to open the folder containing the finalized ISO file, &quot;Win7.iso&quot;. You can burn the ISO to a disc or extract the contents to a USB flash drive, or store the file for later updating.
    </li>
   </ol>

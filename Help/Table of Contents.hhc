@@ -9,171 +9,171 @@
 </OBJECT>
 <UL>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="Welcome to SLIPS7REAM Help">
+		<param name="Name" value="Welcome to Slips7ream Help">
 		<param name="Local" value="welcome.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="SLIPS7REAM Interface">
-		<param name="Local" value="1_SLIPS7REAM_Interface/1.0_SLIPS7REAM_Interface.htm">
+		<param name="Name" value="Slips7ream Interface">
+		<param name="Local" value="1_Slips7ream_Interface/1.0_Slips7ream_Interface.htm">
 		</OBJECT>
 	<UL>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="INSTALL.WIM">
-			<param name="Local" value="1_SLIPS7REAM_Interface\1.1_INSTALL.WIM.htm">
+			<param name="Local" value="1_Slips7ream_Interface\1.1_INSTALL.WIM.htm">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Merge WIM">
-			<param name="Local" value="1_SLIPS7REAM_Interface\1.2_Merge_WIM.htm">
+			<param name="Local" value="1_Slips7ream_Interface\1.2_Merge_WIM.htm">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Image Packages">
-			<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
+			<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
 			</OBJECT>
 		<UL>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Parse Packages">
-				<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+				<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Package Properties">
-				<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
+				<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
 				</OBJECT>
 			<UL>
 				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="Windows Features">
-					<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+					<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="Integrated Windows Updates">
-					<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+					<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 					</OBJECT>
 				<LI> <OBJECT type="text/sitemap">
 					<param name="Name" value="Integrated Drivers">
-					<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+					<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 					</OBJECT>
 			</UL>
 		</UL>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Service Pack">
-			<param name="Local" value="1_SLIPS7REAM_Interface\1.4_Service_Pack.htm">
+			<param name="Local" value="1_Slips7ream_Interface\1.4_Service_Pack.htm">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Updates">
-			<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.0_Updates.htm">
+			<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.0_Updates.htm">
 			</OBJECT>
 		<UL>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Add Updates">
-				<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+				<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Update Properties">
-				<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
+				<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Driver Properties">
-				<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+				<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
 				</OBJECT>
 		</UL>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Save to ISO">
-			<param name="Local" value="1_SLIPS7REAM_Interface\1.6_Save_to_ISO.htm">
+			<param name="Local" value="1_Slips7ream_Interface\1.6_Save_to_ISO.htm">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="ISO Features">
-			<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
+			<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
 			</OBJECT>
 		<UL>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="ISO Label">
-				<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
+				<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Unlock All Editions">
-				<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+				<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="UEFI Boot">
-				<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
+				<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="File System">
-				<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
+				<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Split Method">
-				<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+				<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
 				</OBJECT>
 		</UL>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Process Priority">
-			<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
+			<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="On Completion">
-			<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
+			<param name="Local" value="1_Slips7ream_Interface\1.9_On_Completion.htm">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Dialogs">
-			<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.0_Dialogs.htm">
+			<param name="Local" value="1_Slips7ream_Interface\1.10_Dialogs\1.10.0_Dialogs.htm">
 			</OBJECT>
 		<UL>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Unable to add files to the Update List">
-				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.1_Error_Adding_Updates.htm">
+				<param name="Local" value="1_Slips7ream_Interface\1.10_Dialogs\1.10.1_Error_Adding_Updates.htm">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Do you want to clear the Update List?">
-				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.2_Remove_All_Updates.htm">
+				<param name="Local" value="1_Slips7ream_Interface\1.10_Dialogs\1.10.2_Remove_All_Updates.htm">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Error when Opening Folder">
-				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.3_Open_Folder_Missing.htm">
+				<param name="Local" value="1_Slips7ream_Interface\1.10_Dialogs\1.10.3_Open_Folder_Missing.htm">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Extraction Error">
-				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.4_Extraction_Error.htm">
+				<param name="Local" value="1_Slips7ream_Interface\1.10_Dialogs\1.10.4_Extraction_Error.htm">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Active mount has been detected">
-				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.5_Active_Mount.htm">
+				<param name="Local" value="1_Slips7ream_Interface\1.10_Dialogs\1.10.5_Active_Mount.htm">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Unable to enable UEFI Boot">
-				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.6_EFI_Missing.htm">
+				<param name="Local" value="1_Slips7ream_Interface\1.10_Dialogs\1.10.6_EFI_Missing.htm">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Cancel">
-				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.7_Interrupt.htm">
+				<param name="Local" value="1_Slips7ream_Interface\1.10_Dialogs\1.10.7_Interrupt.htm">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="File could not be played">
-				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.8_Alert_Problem.htm">
+				<param name="Local" value="1_Slips7ream_Interface\1.10_Dialogs\1.10.8_Alert_Problem.htm">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Unable to find parent directory">
-				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.9_Temp_Folder_Missing.htm">
+				<param name="Local" value="1_Slips7ream_Interface\1.10_Dialogs\1.10.9_Temp_Folder_Missing.htm">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Dependent Windows features will be turned off">
-				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.10_Dependent_Features.htm">
+				<param name="Local" value="1_Slips7ream_Interface\1.10_Dialogs\1.10.10_Dependent_Features.htm">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Error loading packages">
-				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.11_Package_Failure.htm">
+				<param name="Local" value="1_Slips7ream_Interface\1.10_Dialogs\1.10.11_Package_Failure.htm">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Unable to transfer file">
-				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.12_File_Transfer_Failure.htm">
+				<param name="Local" value="1_Slips7ream_Interface\1.10_Dialogs\1.10.12_File_Transfer_Failure.htm">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Busy with another task">
-				<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.13_Busy.htm">
+				<param name="Local" value="1_Slips7ream_Interface\1.10_Dialogs\1.10.13_Busy.htm">
 				</OBJECT>
 		</UL>
   <LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Output Console">
-			<param name="Local" value="1_SLIPS7REAM_Interface\1.11_Output_Console.htm">
+			<param name="Local" value="1_Slips7ream_Interface\1.11_Output_Console.htm">
 			</OBJECT>
 	</UL>
 	<LI> <OBJECT type="text/sitemap">
@@ -186,20 +186,24 @@
 			<param name="Local" value="2_Configuration\2.1_Temp_Directory_Path.htm">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="KB Article Database">
+			<param name="Local" value="2_Configuration\2.2_KB_Article_Databases.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="x86 Update Whitelist">
-			<param name="Local" value="2_Configuration\2.2_Update_Whitelist.htm">
+			<param name="Local" value="2_Configuration\2.3_Update_Whitelist.htm">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Command Timeout">
-			<param name="Local" value="2_Configuration\2.3_Command_Timeout.htm">
+			<param name="Local" value="2_Configuration\2.4_Command_Timeout.htm">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Hide Driver Console Output">
-			<param name="Local" value="2_Configuration\2.4_Hide_Driver_Console_Output.htm">
+			<param name="Local" value="2_Configuration\2.5_Hide_Driver_Console_Output.htm">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Alert on Complete">
-			<param name="Local" value="2_Configuration\2.5_Alert_on_Complete.htm">
+			<param name="Local" value="2_Configuration\2.6_Alert_on_Complete.htm">
 			</OBJECT>
 	</UL>
 	<LI> <OBJECT type="text/sitemap">

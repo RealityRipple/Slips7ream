@@ -8,12 +8,12 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="~">
 		<param name="Name" value="Updates - Update Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="1.02">
 		<param name="Name" value="ISO Features - File System">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="7z">
@@ -33,40 +33,40 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="9960">
 		<param name="Name" value="ISO Features - File System">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="about">
 		<param name="Name" value="Updates - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Update Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Update Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="above normal">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="add">
-		<param name="Name" value="SLIPS7REAM Interface - Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.0_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.0_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="aditional">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="alert">
 		<param name="Name" value="Configuration - Alert on Complete">
 		<param name="Local" value="2_Configuration\2.5_Alert_on_Complete.htm">
-		<param name="Name" value="SLIPS7REAM Interface - On Completion">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
+		<param name="Name" value="Slips7ream Interface - On Completion">
+		<param name="Local" value="1_Slips7ream_Interface\1.9_On_Completion.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Alert on Complete">
@@ -76,28 +76,28 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="already">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="applies to">
-		<param name="Name" value="SLIPS7REAM Interface - Update Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Update Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="architecture">
 		<param name="Name" value="Configuration - x86 Update Whitelist">
 		<param name="Local" value="2_Configuration\2.2_Update_Whitelist.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Update Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Update Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="article">
-		<param name="Name" value="SLIPS7REAM Interface - Update Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Update Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="automated">
@@ -110,8 +110,8 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="automatic">
-		<param name="Name" value="SLIPS7REAM Interface - On Completion">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
+		<param name="Name" value="Slips7ream Interface - On Completion">
+		<param name="Local" value="1_Slips7ream_Interface\1.9_On_Completion.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="beep">
@@ -120,37 +120,37 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="below normal">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="BIOS">
 		<param name="Name" value="ISO Features - UEFI Boot">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
 		<param name="Name" value="Glossary of Terms - UEFI">
 		<param name="Local" value="5_Glossary_of_Terms\5.16_UEFI.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Blu-Ray">
-		<param name="Name" value="SLIPS7REAM Interface - Save to ISO">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.6_Save_to_ISO.htm">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
+		<param name="Name" value="Slips7ream Interface - Save to ISO">
+		<param name="Local" value="1_Slips7ream_Interface\1.6_Save_to_ISO.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Features">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
 		<param name="Name" value="ISO Features - File System">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Label">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Label">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
 		<param name="Name" value="ISO Features - Split Method">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
 		<param name="Name" value="ISO Features - UEFI Boot">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
 		<param name="Name" value="ISO Features - Unlock All Editions">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="boot critical">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="CAB">
@@ -166,51 +166,51 @@
 		<param name="Name" value="CD">
 		<param name="Name" value="Included External Tools - OSCDIMG">
 		<param name="Local" value="4_Included_External_Tools\4.3_OSCDIMG.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Save to ISO">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.6_Save_to_ISO.htm">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
+		<param name="Name" value="Slips7ream Interface - Save to ISO">
+		<param name="Local" value="1_Slips7ream_Interface\1.6_Save_to_ISO.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Features">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
 		<param name="Name" value="ISO Features - File System">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Label">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Label">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
 		<param name="Name" value="ISO Features - Split Method">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
 		<param name="Name" value="ISO Features - UEFI Boot">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
 		<param name="Name" value="ISO Features - Unlock All Editions">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="CFG">
 		<param name="Name" value="ISO Features - Unlock All Editions">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="checkbox">
-		<param name="Name" value="SLIPS7REAM Interface - Merge WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.2_Merge_WIM.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Service Pack">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.4_Service_Pack.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Save to ISO">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.6_Save_to_ISO.htm">
+		<param name="Name" value="Slips7ream Interface - Merge WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.2_Merge_WIM.htm">
+		<param name="Name" value="Slips7ream Interface - Service Pack">
+		<param name="Local" value="1_Slips7ream_Interface\1.4_Service_Pack.htm">
+		<param name="Name" value="Slips7ream Interface - Save to ISO">
+		<param name="Local" value="1_Slips7ream_Interface\1.6_Save_to_ISO.htm">
 		<param name="Name" value="ISO Features - Unlock All Editions">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="class">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="class description">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="class name">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="CLG">
@@ -219,30 +219,30 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="close">
-		<param name="Name" value="SLIPS7REAM Interface - On Completion">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
+		<param name="Name" value="Slips7ream Interface - On Completion">
+		<param name="Local" value="1_Slips7ream_Interface\1.9_On_Completion.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="close program">
-		<param name="Name" value="SLIPS7REAM Interface - On Completion">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
+		<param name="Name" value="Slips7ream Interface - On Completion">
+		<param name="Local" value="1_Slips7ream_Interface\1.9_On_Completion.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="color">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="combine">
-		<param name="Name" value="SLIPS7REAM Interface - Merge WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.2_Merge_WIM.htm">
+		<param name="Name" value="Slips7ream Interface - Merge WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.2_Merge_WIM.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="combo">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
-		<param name="Name" value="SLIPS7REAM Interface - On Completion">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - On Completion">
+		<param name="Local" value="1_Slips7ream_Interface\1.9_On_Completion.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="command">
@@ -264,31 +264,31 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="compare">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="compatibility">
 		<param name="Name" value="ISO Features - UEFI Boot">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="compatible id">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="complete">
-		<param name="Name" value="SLIPS7REAM Interface - On Completion">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
+		<param name="Name" value="Slips7ream Interface - On Completion">
+		<param name="Local" value="1_Slips7ream_Interface\1.9_On_Completion.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="completion">
-		<param name="Name" value="SLIPS7REAM Interface - On Completion">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
+		<param name="Name" value="Slips7ream Interface - On Completion">
+		<param name="Local" value="1_Slips7ream_Interface\1.9_On_Completion.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="config">
@@ -311,12 +311,12 @@
 		<param name="Name" value="console">
 		<param name="Name" value="Configuration - Hide Driver Console Output">
 		<param name="Local" value="2_Configuration\2.4_Hide_Driver_Console_Output.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Output Console">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.11_Output_Console.htm">
+		<param name="Name" value="Slips7ream Interface - Output Console">
+		<param name="Local" value="1_Slips7ream_Interface\1.11_Output_Console.htm">
 		<param name="Name" value="Dialogs - Extraction Error">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.4_Extraction_Error.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.10_Dialogs\1.10.4_Extraction_Error.htm">
 		<param name="Name" value="Dialogs - Error loading packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.10_Dialogs\1.10.11_Package_Failure.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.10_Dialogs\1.10.11_Package_Failure.htm">
 		<param name="Name" value="Included External Tools - 7z.dll">
 		<param name="Local" value="4_Included_External_Tools\4.5_7z.dll.htm">
 		<param name="Name" value="Included External Tools - DISM">
@@ -355,17 +355,17 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="CSM">
 		<param name="Name" value="ISO Features - UEFI Boot">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="defunct">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="delay">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="deployment">
@@ -374,23 +374,23 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="destination">
-		<param name="Name" value="SLIPS7REAM Interface - INSTALL.WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.1_INSTALL.WIM.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Save to ISO">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.6_Save_to_ISO.htm">
+		<param name="Name" value="Slips7ream Interface - INSTALL.WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.1_INSTALL.WIM.htm">
+		<param name="Name" value="Slips7ream Interface - Save to ISO">
+		<param name="Local" value="1_Slips7ream_Interface\1.6_Save_to_ISO.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="details">
-		<param name="Name" value="SLIPS7REAM Interface - Update Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Update Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="directory">
@@ -400,38 +400,38 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="disable">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="disc">
-		<param name="Name" value="SLIPS7REAM Interface - Save to ISO">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.6_Save_to_ISO.htm">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
+		<param name="Name" value="Slips7ream Interface - Save to ISO">
+		<param name="Local" value="1_Slips7ream_Interface\1.6_Save_to_ISO.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Features">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
 		<param name="Name" value="ISO Features - File System">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Label">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Label">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
 		<param name="Name" value="ISO Features - Split Method">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
 		<param name="Name" value="ISO Features - UEFI Boot">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
 		<param name="Name" value="ISO Features - Unlock All Editions">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
 		<param name="Name" value="Glossary of Terms - Disc / ISO">
 		<param name="Local" value="5_Glossary_of_Terms\5.3_Disc.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Disc Label">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Label">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Label">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Disc Name">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Label">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Label">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="dism">
@@ -442,8 +442,8 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="display name">
-		<param name="Name" value="SLIPS7REAM Interface - Update Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Update Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="DLL">
@@ -452,14 +452,14 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="driver">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.0_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.0_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		<param name="Name" value="Glossary of Terms - Driver">
 		<param name="Local" value="5_Glossary_of_Terms\5.5_Driver.htm">
 		<param name="Name" value="Glossary of Terms - Integrated Driver">
@@ -467,93 +467,93 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="driver class">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Driver GUID">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="drivers">
 		<param name="Name" value="ISO Features - UEFI Boot">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.0_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.0_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="DVD">
 		<param name="Name" value="Included External Tools - OSCDIMG">
 		<param name="Local" value="4_Included_External_Tools\4.3_OSCDIMG.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Save to ISO">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.6_Save_to_ISO.htm">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
+		<param name="Name" value="Slips7ream Interface - Save to ISO">
+		<param name="Local" value="1_Slips7ream_Interface\1.6_Save_to_ISO.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Features">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
 		<param name="Name" value="ISO Features - File System">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Label">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Label">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
 		<param name="Name" value="ISO Features - Split Method">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
 		<param name="Name" value="ISO Features - UEFI Boot">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
 		<param name="Name" value="ISO Features - Unlock All Editions">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="edition">
 		<param name="Name" value="Image Packages - Package Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="EI">
 		<param name="Name" value="ISO Features - Unlock All Editions">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="EI.CFG">
 		<param name="Name" value="ISO Features - Unlock All Editions">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="embedded">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="enable">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Enterprise">
 		<param name="Name" value="ISO Features - Unlock All Editions">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="error">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="exclude id">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="EXE">
@@ -590,49 +590,49 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="fail">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="failure">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="fast">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="features">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Features">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
 		<param name="Name" value="ISO Features - File System">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Label">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Label">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
 		<param name="Name" value="ISO Features - Split Method">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
 		<param name="Name" value="ISO Features - UEFI Boot">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
 		<param name="Name" value="ISO Features - Unlock All Editions">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		<param name="Name" value="Glossary of Terms - Windows Feature">
 		<param name="Local" value="5_Glossary_of_Terms\5.17_Windows_Feature.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="file">
 		<param name="Name" value="ISO Features - File System">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="File System">
 		<param name="Name" value="ISO Features - File System">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
 		<param name="Name" value="Glossary of Terms - File System">
 		<param name="Local" value="5_Glossary_of_Terms\5.6_File_System.htm">
 		</OBJECT>
@@ -640,13 +640,13 @@
 		<param name="Name" value="finished">
 		<param name="Name" value="Configuration - Alert on Complete">
 		<param name="Local" value="2_Configuration\2.5_Alert_on_Complete.htm">
-		<param name="Name" value="SLIPS7REAM Interface - On Completion">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
+		<param name="Name" value="Slips7ream Interface - On Completion">
+		<param name="Local" value="1_Slips7ream_Interface\1.9_On_Completion.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="fit">
 		<param name="Name" value="ISO Features - Split Method">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="folder">
@@ -656,17 +656,17 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="FS">
 		<param name="Name" value="ISO Features - File System">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="GB">
 		<param name="Name" value="ISO Features - Split Method">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="graphics">
 		<param name="Name" value="ISO Features - UEFI Boot">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="GUI">
@@ -680,117 +680,117 @@
 		<param name="Local" value="2_Configuration\2.3_Command_Timeout.htm">
 		<param name="Name" value="Configuration - Alert on Complete">
 		<param name="Local" value="2_Configuration\2.5_Alert_on_Complete.htm">
-		<param name="Name" value="SLIPS7REAM Interface">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.0_SLIPS7REAM_Interface.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Image Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
+		<param name="Name" value="Slips7ream Interface">
+		<param name="Local" value="1_Slips7ream_Interface\1.0_Slips7ream_Interface.htm">
+		<param name="Name" value="Slips7ream Interface - Image Packages">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
 		<param name="Name" value="Image Packages - Package Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
-		<param name="Name" value="SLIPS7REAM Interface - INSTALL.WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.1_INSTALL.WIM.htm">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Name" value="Slips7ream Interface - INSTALL.WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.1_INSTALL.WIM.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Features">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
 		<param name="Name" value="ISO Features - File System">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Features - ISO Label">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Features - ISO Label">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
 		<param name="Name" value="ISO Features - Split Method">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
 		<param name="Name" value="ISO Features - UEFI Boot">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
 		<param name="Name" value="ISO Features - Unlock All Editions">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Merge WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.2_Merge_WIM.htm">
-		<param name="Name" value="SLIPS7REAM Interface - On Completion">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Save to ISO">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.6_Save_to_ISO.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Service Pack">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.4_Service_Pack.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.0_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Update Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+		<param name="Name" value="Slips7ream Interface - Merge WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.2_Merge_WIM.htm">
+		<param name="Name" value="Slips7ream Interface - On Completion">
+		<param name="Local" value="1_Slips7ream_Interface\1.9_On_Completion.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - Save to ISO">
+		<param name="Local" value="1_Slips7ream_Interface\1.6_Save_to_ISO.htm">
+		<param name="Name" value="Slips7ream Interface - Service Pack">
+		<param name="Local" value="1_Slips7ream_Interface\1.4_Service_Pack.htm">
+		<param name="Name" value="Slips7ream Interface - Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.0_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Update Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="GUID">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="HAL">
 		<param name="Name" value="Image Packages - Package Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="hang">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="hardware">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="hardware id">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="help">
-		<param name="Name" value="SLIPS7REAM Help">
+		<param name="Name" value="Slips7ream Help">
 		<param name="Local" value="welcome.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="high">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="home">
-		<param name="Name" value="SLIPS7REAM Help">
+		<param name="Name" value="Slips7ream Help">
 		<param name="Local" value="welcome.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Home Basic">
 		<param name="Name" value="ISO Features - Unlock All Editions">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Home Premium">
 		<param name="Name" value="ISO Features - Unlock All Editions">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="icon">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="identity">
-		<param name="Name" value="SLIPS7REAM Interface - Update Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Update Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="idle">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="image">
@@ -800,72 +800,72 @@
 		<param name="Local" value="4_Included_External_Tools\4.3_OSCDIMG.htm">
 		<param name="Name" value="Included External Tools - DISM">
 		<param name="Local" value="4_Included_External_Tools\4.1_DISM.htm">
-		<param name="Name" value="SLIPS7REAM Interface - INSTALL.WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.1_INSTALL.WIM.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Merge WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.2_Merge_WIM.htm">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
+		<param name="Name" value="Slips7ream Interface - INSTALL.WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.1_INSTALL.WIM.htm">
+		<param name="Name" value="Slips7ream Interface - Merge WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.2_Merge_WIM.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Features">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
 		<param name="Name" value="ISO Features - File System">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Label">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Label">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
 		<param name="Name" value="ISO Features - Split Method">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
 		<param name="Name" value="ISO Features - UEFI Boot">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
 		<param name="Name" value="ISO Features - Unlock All Editions">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Image Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+		<param name="Name" value="Slips7ream Interface - Image Packages">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
 		<param name="Name" value="Image Packages - Package Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		<param name="Name" value="Glossary of Terms - Image / WIM">
 		<param name="Local" value="5_Glossary_of_Terms\5.8_Image.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Image Package">
-		<param name="Name" value="SLIPS7REAM Interface - INSTALL.WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.1_INSTALL.WIM.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Merge WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.2_Merge_WIM.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Image Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
+		<param name="Name" value="Slips7ream Interface - INSTALL.WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.1_INSTALL.WIM.htm">
+		<param name="Name" value="Slips7ream Interface - Merge WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.2_Merge_WIM.htm">
+		<param name="Name" value="Slips7ream Interface - Image Packages">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
 		<param name="Name" value="Image Packages - Package Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		<param name="Name" value="Glossary of Terms - Image Package">
 		<param name="Local" value="5_Glossary_of_Terms\5.9_Image_Package.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Image Packages">
-		<param name="Name" value="SLIPS7REAM Interface - Image Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
+		<param name="Name" value="Slips7ream Interface - Image Packages">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
 		<param name="Name" value="Image Packages - Package Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		<param name="Name" value="Glossary of Terms - Image Package">
 		<param name="Local" value="5_Glossary_of_Terms\5.9_Image_Package.htm">
 		</OBJECT>
@@ -881,33 +881,33 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="inbox">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="in-box">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="include">
-		<param name="Name" value="SLIPS7REAM Interface - Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.0_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.0_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="included">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Included External Tools">
@@ -928,42 +928,42 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="index">
-		<param name="Name" value="SLIPS7REAM Help">
+		<param name="Name" value="Slips7ream Help">
 		<param name="Local" value="welcome.htm">
 		<param name="Name" value="Included External Tools">
 		<param name="Local" value="4_Included_External_Tools\4.0_Included_External_Tools.htm">
 		<param name="Name" value="Configuration">
 		<param name="Local" value="2_Configuration\2.0_Configuration.htm">
-		<param name="Name" value="SLIPS7REAM Interface">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.0_SLIPS7REAM_Interface.htm">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.0_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Image Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
+		<param name="Name" value="Slips7ream Interface">
+		<param name="Local" value="1_Slips7ream_Interface\1.0_Slips7ream_Interface.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Features">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
+		<param name="Name" value="Slips7ream Interface - Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.0_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Image Packages">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="INF">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="information">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="INSTALL">
-		<param name="Name" value="SLIPS7REAM Interface - INSTALL.WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.1_INSTALL.WIM.htm">
+		<param name="Name" value="Slips7ream Interface - INSTALL.WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.1_INSTALL.WIM.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="INSTALL.WIM">
-		<param name="Name" value="SLIPS7REAM Interface - INSTALL.WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.1_INSTALL.WIM.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Merge WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.2_Merge_WIM.htm">
+		<param name="Name" value="Slips7ream Interface - INSTALL.WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.1_INSTALL.WIM.htm">
+		<param name="Name" value="Slips7ream Interface - Merge WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.2_Merge_WIM.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="installation">
@@ -974,26 +974,26 @@
 		<param name="Name" value="Included External Tools - ImageX">
 		<param name="Local" value="4_Included_External_Tools\4.2_ImageX.htm">
 		<param name="Name" value="Image Packages - Package Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="installed">
-		<param name="Name" value="SLIPS7REAM Interface - Image Packages - Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Image Packages - Package Properties - Integrated Windows Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="integrate">
-		<param name="Name" value="SLIPS7REAM Interface - Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.0_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.0_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="integrated">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Glossary of Terms - Integrated Driver">
 		<param name="Local" value="5_Glossary_of_Terms\5.10_Integrated_Driver.htm">
 		<param name="Name" value="Glossary of Terms - Integrated Windows Update">
@@ -1002,21 +1002,21 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Integrated Drivers">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		<param name="Name" value="Glossary of Terms - Integrated Driver">
 		<param name="Local" value="5_Glossary_of_Terms\5.10_Integrated_Driver.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Integrated Updates">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Glossary of Terms - Integrated Windows Update">
 		<param name="Local" value="5_Glossary_of_Terms\5.11_Integrated_Windows_Update.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Integrated Windows Updates">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Glossary of Terms - Integrated Windows Update">
 		<param name="Local" value="5_Glossary_of_Terms\5.11_Integrated_Windows_Update.htm">
 		</OBJECT>
@@ -1034,54 +1034,54 @@
 		<param name="Local" value="2_Configuration\2.4_Hide_Driver_Console_Output.htm">
 		<param name="Name" value="Configuration - Alert on Complete">
 		<param name="Local" value="2_Configuration\2.5_Alert_on_Complete.htm">
-		<param name="Name" value="SLIPS7REAM Interface">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.0_SLIPS7REAM_Interface.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Image Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
+		<param name="Name" value="Slips7ream Interface">
+		<param name="Local" value="1_Slips7ream_Interface\1.0_Slips7ream_Interface.htm">
+		<param name="Name" value="Slips7ream Interface - Image Packages">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
 		<param name="Name" value="Image Packages - Package Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
-		<param name="Name" value="SLIPS7REAM Interface - INSTALL.WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.1_INSTALL.WIM.htm">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Name" value="Slips7ream Interface - INSTALL.WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.1_INSTALL.WIM.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Features">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
 		<param name="Name" value="ISO Features - File System">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Label">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Label">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
 		<param name="Name" value="ISO Features - Split Method">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
 		<param name="Name" value="ISO Features - UEFI Boot">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
 		<param name="Name" value="ISO Features - Unlock All Editions">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Merge WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.2_Merge_WIM.htm">
-		<param name="Name" value="SLIPS7REAM Interface - On Completion">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Save to ISO">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.6_Save_to_ISO.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Service Pack">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.4_Service_Pack.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.0_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Update Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Output Console">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.11_Output_Console.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+		<param name="Name" value="Slips7ream Interface - Merge WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.2_Merge_WIM.htm">
+		<param name="Name" value="Slips7ream Interface - On Completion">
+		<param name="Local" value="1_Slips7ream_Interface\1.9_On_Completion.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - Save to ISO">
+		<param name="Local" value="1_Slips7ream_Interface\1.6_Save_to_ISO.htm">
+		<param name="Name" value="Slips7ream Interface - Service Pack">
+		<param name="Local" value="1_Slips7ream_Interface\1.4_Service_Pack.htm">
+		<param name="Name" value="Slips7ream Interface - Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.0_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Update Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Output Console">
+		<param name="Local" value="1_Slips7ream_Interface\1.11_Output_Console.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="international">
@@ -1106,24 +1106,24 @@
 		<param name="Local" value="4_Included_External_Tools\4.5_7z.dll.htm">
 		<param name="Name" value="Included External Tools - OSCDIMG">
 		<param name="Local" value="4_Included_External_Tools\4.3_OSCDIMG.htm">
-		<param name="Name" value="SLIPS7REAM Interface - INSTALL.WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.1_INSTALL.WIM.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Merge WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.2_Merge_WIM.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Save to ISO">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.6_Save_to_ISO.htm">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
+		<param name="Name" value="Slips7ream Interface - INSTALL.WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.1_INSTALL.WIM.htm">
+		<param name="Name" value="Slips7ream Interface - Merge WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.2_Merge_WIM.htm">
+		<param name="Name" value="Slips7ream Interface - Save to ISO">
+		<param name="Local" value="1_Slips7ream_Interface\1.6_Save_to_ISO.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Features">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
 		<param name="Name" value="ISO Features - File System">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Label">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Label">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
 		<param name="Name" value="ISO Features - Split Method">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
 		<param name="Name" value="ISO Features - UEFI Boot">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
 		<param name="Name" value="ISO Features - Unlock All Editions">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
 		<param name="Name" value="Glossary of Terms - Disc / ISO">
 		<param name="Local" value="5_Glossary_of_Terms\5.3_Disc.htm">
 		<param name="Name" value="Glossary of Terms - Split">
@@ -1131,45 +1131,45 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="ISO Features">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Features">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
 		<param name="Name" value="ISO Features - File System">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Label">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Label">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
 		<param name="Name" value="ISO Features - Split Method">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
 		<param name="Name" value="ISO Features - UEFI Boot">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
 		<param name="Name" value="ISO Features - Unlock All Editions">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="ISO Label">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Label">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Label">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="issues">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="join">
-		<param name="Name" value="SLIPS7REAM Interface - Merge WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.2_Merge_WIM.htm">
+		<param name="Name" value="Slips7ream Interface - Merge WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.2_Merge_WIM.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Joliet">
 		<param name="Name" value="ISO Features - File System">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="KB">
 		<param name="Name" value="ISO Features - Split Method">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Update Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+		<param name="Name" value="Slips7ream Interface - Update Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="kit">
@@ -1182,13 +1182,13 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="label">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Label">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Label">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="lag">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="language">
@@ -1196,49 +1196,49 @@
 		<param name="Local" value="4_Included_External_Tools\4.4_IntlCFG.htm">
 		<param name="Name" value="Configuration - x86 Update Whitelist">
 		<param name="Local" value="2_Configuration\2.2_Update_Whitelist.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.0_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Update Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.0_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Update Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="language pack">
-		<param name="Name" value="SLIPS7REAM Interface - Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.0_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Update Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.0_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Update Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="language packs">
-		<param name="Name" value="SLIPS7REAM Interface - Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.0_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Update Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.0_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Update Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="languages">
-		<param name="Name" value="SLIPS7REAM Interface - Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.0_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Update Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.0_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Update Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="legacy">
 		<param name="Name" value="ISO Features - UEFI Boot">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="limit">
 		<param name="Name" value="ISO Features - Split Method">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="line">
@@ -1259,22 +1259,22 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="list">
-		<param name="Name" value="SLIPS7REAM Interface - Image Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
+		<param name="Name" value="Slips7ream Interface - Image Packages">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
 		<param name="Name" value="Image Packages - Package Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.0_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Name" value="Slips7ream Interface - Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.0_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="locale">
@@ -1283,45 +1283,45 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="low">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Main Window">
-		<param name="Name" value="SLIPS7REAM Interface">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.0_SLIPS7REAM_Interface.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Image Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
+		<param name="Name" value="Slips7ream Interface">
+		<param name="Local" value="1_Slips7ream_Interface\1.0_Slips7ream_Interface.htm">
+		<param name="Name" value="Slips7ream Interface - Image Packages">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
-		<param name="Name" value="SLIPS7REAM Interface - INSTALL.WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.1_INSTALL.WIM.htm">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Name" value="Slips7ream Interface - INSTALL.WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.1_INSTALL.WIM.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Features">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.0_ISO_Features.htm">
 		<param name="Name" value="ISO Features - File System">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Label">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Label">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
 		<param name="Name" value="ISO Features - Split Method">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
 		<param name="Name" value="ISO Features - UEFI Boot">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
 		<param name="Name" value="ISO Features - Unlock All Editions">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Merge WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.2_Merge_WIM.htm">
-		<param name="Name" value="SLIPS7REAM Interface - On Completion">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Save to ISO">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.6_Save_to_ISO.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Service Pack">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.4_Service_Pack.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.0_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+		<param name="Name" value="Slips7ream Interface - Merge WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.2_Merge_WIM.htm">
+		<param name="Name" value="Slips7ream Interface - On Completion">
+		<param name="Local" value="1_Slips7ream_Interface\1.9_On_Completion.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - Save to ISO">
+		<param name="Local" value="1_Slips7ream_Interface\1.6_Save_to_ISO.htm">
+		<param name="Name" value="Slips7ream Interface - Service Pack">
+		<param name="Local" value="1_Slips7ream_Interface\1.4_Service_Pack.htm">
+		<param name="Name" value="Slips7ream Interface - Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.0_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="management">
@@ -1330,23 +1330,23 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="manufacturer">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="MB">
 		<param name="Name" value="ISO Features - Split Method">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="merge">
-		<param name="Name" value="SLIPS7REAM Interface - Merge WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.2_Merge_WIM.htm">
+		<param name="Name" value="Slips7ream Interface - Merge WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.2_Merge_WIM.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Merge WIM">
-		<param name="Name" value="SLIPS7REAM Interface - Merge WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.2_Merge_WIM.htm">
+		<param name="Name" value="Slips7ream Interface - Merge WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.2_Merge_WIM.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Microsoft">
@@ -1359,12 +1359,12 @@
 		<param name="Name" value="Included External Tools - DISM">
 		<param name="Local" value="4_Included_External_Tools\4.1_DISM.htm">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="module">
 		<param name="Name" value="ISO Features - UEFI Boot">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="msdn">
@@ -1374,87 +1374,87 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="multiple">
 		<param name="Name" value="ISO Features - Split Method">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="name">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Label">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Label">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="new">
-		<param name="Name" value="SLIPS7REAM Interface - Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Name" value="Slips7ream Interface - Image Packages - Parse Packages">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="noise">
 		<param name="Name" value="Configuration - Alert on Complete">
 		<param name="Local" value="2_Configuration\2.5_Alert_on_Complete.htm">
-		<param name="Name" value="SLIPS7REAM Interface - On Completion">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
+		<param name="Name" value="Slips7ream Interface - On Completion">
+		<param name="Local" value="1_Slips7ream_Interface\1.9_On_Completion.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="normal">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="obsolete">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="old">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="On Completion">
-		<param name="Name" value="SLIPS7REAM Interface - On Completion">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
+		<param name="Name" value="Slips7ream Interface - On Completion">
+		<param name="Local" value="1_Slips7ream_Interface\1.9_On_Completion.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="operating">
-		<param name="Name" value="SLIPS7REAM Interface - Image Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
+		<param name="Name" value="Slips7ream Interface - Image Packages">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
 		<param name="Name" value="Image Packages - Package Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Operating System">
-		<param name="Name" value="SLIPS7REAM Interface - Image Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
+		<param name="Name" value="Slips7ream Interface - Image Packages">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
 		<param name="Name" value="Image Packages - Package Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="optional">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="options">
@@ -1473,63 +1473,63 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="orange">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="OS">
-		<param name="Name" value="SLIPS7REAM Interface - Image Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
+		<param name="Name" value="Slips7ream Interface - Image Packages">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
 		<param name="Name" value="Image Packages - Package Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="package">
-		<param name="Name" value="SLIPS7REAM Interface - Image Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
+		<param name="Name" value="Slips7ream Interface - Image Packages">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		<param name="Name" value="Image Packages - Package Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		<param name="Name" value="Glossary of Terms - Package">
 		<param name="Local" value="5_Glossary_of_Terms\5.12_Package.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Package Properties">
 		<param name="Name" value="Image Packages - Package Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="parse">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="path">
 		<param name="Name" value="Configuration - Temp Directory Path">
 		<param name="Local" value="2_Configuration\2.1_Temp_Directory_Path.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="play">
@@ -1543,102 +1543,102 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="priority">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="process">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Process Priority">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="product suite">
-		<param name="Name" value="SLIPS7REAM Interface - Image Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
+		<param name="Name" value="Slips7ream Interface - Image Packages">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="product type">
 		<param name="Name" value="Image Packages - Package Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Professional">
 		<param name="Name" value="ISO Features - Unlock All Editions">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="programs">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="properties">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Update Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Update Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
 		<param name="Name" value="Image Packages - Package Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="provider">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="realtime">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="reboot">
-		<param name="Name" value="SLIPS7REAM Interface - On Completion">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
+		<param name="Name" value="Slips7ream Interface - On Completion">
+		<param name="Local" value="1_Slips7ream_Interface\1.9_On_Completion.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="red">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="remove">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="require">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="requirement">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="response">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="restart">
-		<param name="Name" value="SLIPS7REAM Interface - On Completion">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
+		<param name="Name" value="Slips7ream Interface - On Completion">
+		<param name="Local" value="1_Slips7ream_Interface\1.9_On_Completion.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="safelist">
@@ -1647,37 +1647,37 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="save">
-		<param name="Name" value="SLIPS7REAM Interface - Save to ISO">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.6_Save_to_ISO.htm">
+		<param name="Name" value="Slips7ream Interface - Save to ISO">
+		<param name="Local" value="1_Slips7ream_Interface\1.6_Save_to_ISO.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Save to ISO">
-		<param name="Name" value="SLIPS7REAM Interface - Save to ISO">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.6_Save_to_ISO.htm">
+		<param name="Name" value="Slips7ream Interface - Save to ISO">
+		<param name="Local" value="1_Slips7ream_Interface\1.6_Save_to_ISO.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="service">
-		<param name="Name" value="SLIPS7REAM Interface - Service Pack">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.4_Service_Pack.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Service Pack">
+		<param name="Local" value="1_Slips7ream_Interface\1.4_Service_Pack.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="service name">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Service Pack">
-		<param name="Name" value="SLIPS7REAM Interface - Service Pack">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.4_Service_Pack.htm">
+		<param name="Name" value="Slips7ream Interface - Service Pack">
+		<param name="Local" value="1_Slips7ream_Interface\1.4_Service_Pack.htm">
 		<param name="Name" value="Glossary of Terms - Service Pack">
 		<param name="Local" value="5_Glossary_of_Terms\5.13_Service_Pack.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Service Pack 1">
-		<param name="Name" value="SLIPS7REAM Interface - Service Pack">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.4_Service_Pack.htm">
+		<param name="Name" value="Slips7ream Interface - Service Pack">
+		<param name="Local" value="1_Slips7ream_Interface\1.4_Service_Pack.htm">
 		<param name="Name" value="Glossary of Terms - Service Pack">
 		<param name="Local" value="5_Glossary_of_Terms\5.13_Service_Pack.htm">
 		</OBJECT>
@@ -1708,18 +1708,18 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="shut down">
-		<param name="Name" value="SLIPS7REAM Interface - On Completion">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
+		<param name="Name" value="Slips7ream Interface - On Completion">
+		<param name="Local" value="1_Slips7ream_Interface\1.9_On_Completion.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="size">
 		<param name="Name" value="ISO Features - Split Method">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="sleep">
-		<param name="Name" value="SLIPS7REAM Interface - On Completion">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
+		<param name="Name" value="Slips7ream Interface - On Completion">
+		<param name="Local" value="1_Slips7ream_Interface\1.9_On_Completion.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="slipstream">
@@ -1731,11 +1731,11 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="slipstreamed">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		<param name="Name" value="Slipstream Process">
 		<param name="Local" value="3_Slipstream_Process\3.0_Slipstream_Process.htm">
 		<param name="Name" value="Glossary of Terms - Slipstream">
@@ -1743,59 +1743,59 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="slow">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="sound">
-		<param name="Name" value="SLIPS7REAM Interface - On Completion">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
+		<param name="Name" value="Slips7ream Interface - On Completion">
+		<param name="Local" value="1_Slips7ream_Interface\1.9_On_Completion.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="source">
-		<param name="Name" value="SLIPS7REAM Interface - INSTALL.WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.1_INSTALL.WIM.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Merge WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.2_Merge_WIM.htm">
+		<param name="Name" value="Slips7ream Interface - INSTALL.WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.1_INSTALL.WIM.htm">
+		<param name="Name" value="Slips7ream Interface - Merge WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.2_Merge_WIM.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="SP">
-		<param name="Name" value="SLIPS7REAM Interface - Service Pack">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.4_Service_Pack.htm">
+		<param name="Name" value="Slips7ream Interface - Service Pack">
+		<param name="Local" value="1_Slips7ream_Interface\1.4_Service_Pack.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="SP1">
-		<param name="Name" value="SLIPS7REAM Interface - Service Pack">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.4_Service_Pack.htm">
+		<param name="Name" value="Slips7ream Interface - Service Pack">
+		<param name="Local" value="1_Slips7ream_Interface\1.4_Service_Pack.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="speed">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="split">
 		<param name="Name" value="ISO Features - Split Method">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
 		<param name="Name" value="Glossary of Terms - Split">
 		<param name="Local" value="5_Glossary_of_Terms\5.15_Split.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Split Method">
 		<param name="Name" value="ISO Features - Split Method">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
 		<param name="Name" value="Glossary of Terms - Split">
 		<param name="Local" value="5_Glossary_of_Terms\5.15_Split.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="standby">
-		<param name="Name" value="SLIPS7REAM Interface - On Completion">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
+		<param name="Name" value="Slips7ream Interface - On Completion">
+		<param name="Local" value="1_Slips7ream_Interface\1.9_On_Completion.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Starter">
 		<param name="Name" value="ISO Features - Unlock All Editions">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="storage">
@@ -1805,53 +1805,53 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="structure">
 		<param name="Name" value="ISO Features - File System">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="superseded">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="support">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Update Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Update Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="suspend">
-		<param name="Name" value="SLIPS7REAM Interface - On Completion">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
+		<param name="Name" value="Slips7ream Interface - On Completion">
+		<param name="Local" value="1_Slips7ream_Interface\1.9_On_Completion.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="SWM">
 		<param name="Name" value="ISO Features - Split Method">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
 		<param name="Name" value="Glossary of Terms - Split">
 		<param name="Local" value="5_Glossary_of_Terms\5.15_Split.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="system">
 		<param name="Name" value="ISO Features - File System">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Image Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
+		<param name="Name" value="Slips7ream Interface - Image Packages">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.0_Image_Packages.htm">
 		<param name="Name" value="Image Packages - Package Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="system root">
 		<param name="Name" value="Image Packages - Package Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.0_Package_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="system32">
@@ -1867,20 +1867,20 @@
 		<param name="Name" value="task">
 		<param name="Name" value="Configuration - Alert on Complete">
 		<param name="Local" value="2_Configuration\2.5_Alert_on_Complete.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
-		<param name="Name" value="SLIPS7REAM Interface - On Completion">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - On Completion">
+		<param name="Local" value="1_Slips7ream_Interface\1.9_On_Completion.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Task Manager">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="TB">
 		<param name="Name" value="ISO Features - Split Method">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="technet">
@@ -1903,8 +1903,8 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="tilde">
-		<param name="Name" value="SLIPS7REAM Interface - Update Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Update Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="timeout">
@@ -1928,76 +1928,76 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="turn off">
-		<param name="Name" value="SLIPS7REAM Interface - On Completion">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.9_On_Completion.htm">
+		<param name="Name" value="Slips7ream Interface - On Completion">
+		<param name="Local" value="1_Slips7ream_Interface\1.9_On_Completion.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="UDF">
 		<param name="Name" value="ISO Features - File System">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.4_File_System.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="UEFI">
 		<param name="Name" value="ISO Features - UEFI Boot">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
 		<param name="Name" value="Glossary of Terms - UEFI">
 		<param name="Local" value="5_Glossary_of_Terms\5.16_UEFI.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="UEFI Boot">
 		<param name="Name" value="ISO Features - UEFI Boot">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
 		<param name="Name" value="Glossary of Terms - UEFI">
 		<param name="Local" value="5_Glossary_of_Terms\5.16_UEFI.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Ultimate">
 		<param name="Name" value="ISO Features - Unlock All Editions">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="uninstall">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="uninstall pending">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="unlock">
 		<param name="Name" value="ISO Features - Unlock All Editions">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Unlock All Editions">
 		<param name="Name" value="ISO Features - Unlock All Editions">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.2_Unlock_All_Editions.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="unresponsive">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="update">
 		<param name="Name" value="Configuration - x86 Update Whitelist">
 		<param name="Local" value="2_Configuration\2.2_Update_Whitelist.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.0_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Update Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.0_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Update Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Glossary of Terms - Windows Update">
 		<param name="Local" value="5_Glossary_of_Terms\5.18_Windows_Update.htm">
 		</OBJECT>
@@ -2005,16 +2005,16 @@
 		<param name="Name" value="updates">
 		<param name="Name" value="Configuration - x86 Update Whitelist">
 		<param name="Local" value="2_Configuration\2.2_Update_Whitelist.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.0_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Add Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Update Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.0_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Add Updates">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.1_Add_Updates.htm">
+		<param name="Name" value="Slips7ream Interface - Update Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.2_Update_Properties.htm">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Glossary of Terms - Windows Update">
 		<param name="Local" value="5_Glossary_of_Terms\5.18_Windows_Update.htm">
 		</OBJECT>
@@ -2027,24 +2027,24 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="version">
-		<param name="Name" value="SLIPS7REAM Interface - Driver Properties">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
+		<param name="Name" value="Slips7ream Interface - Driver Properties">
+		<param name="Local" value="1_Slips7ream_Interface\1.5_Updates\1.5.3_Driver_Properties.htm">
 		<param name="Name" value="Image Packages - Parse Packages">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.1_Parse_Packages.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Package Properties - Integrated Drivers">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.3_Integrated_Drivers.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="video">
 		<param name="Name" value="ISO Features - UEFI Boot">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.3_UEFI_Boot.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Volume Name">
-		<param name="Name" value="SLIPS7REAM Interface - ISO Label">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
+		<param name="Name" value="Slips7ream Interface - ISO Label">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.1_ISO_Label.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="wait">
@@ -2053,12 +2053,12 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="website">
-		<param name="Name" value="SLIPS7REAM Help">
+		<param name="Name" value="Slips7ream Help">
 		<param name="Local" value="welcome.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="welcome">
-		<param name="Name" value="SLIPS7REAM Help">
+		<param name="Name" value="Slips7ream Help">
 		<param name="Local" value="welcome.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
@@ -2070,12 +2070,12 @@
 		<param name="Name" value="WIM">
 		<param name="Name" value="Included External Tools - IntlCFG">
 		<param name="Local" value="4_Included_External_Tools\4.4_IntlCFG.htm">
-		<param name="Name" value="SLIPS7REAM Interface - INSTALL.WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.1_INSTALL.WIM.htm">
-		<param name="Name" value="SLIPS7REAM Interface - Merge WIM">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.2_Merge_WIM.htm">
+		<param name="Name" value="Slips7ream Interface - INSTALL.WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.1_INSTALL.WIM.htm">
+		<param name="Name" value="Slips7ream Interface - Merge WIM">
+		<param name="Local" value="1_Slips7ream_Interface\1.2_Merge_WIM.htm">
 		<param name="Name" value="ISO Features - Split Method">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
 		<param name="Name" value="Glossary of Terms - Image / WIM">
 		<param name="Local" value="5_Glossary_of_Terms\5.8_Image.htm">
 		</OBJECT>
@@ -2093,14 +2093,14 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Windows Features">
 		<param name="Name" value="Package Properties - Windows Features">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.1_Windows_Features.htm">
 		<param name="Name" value="Glossary of Terms - Windows Feature">
 		<param name="Local" value="5_Glossary_of_Terms\5.17_Windows_Feature.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Windows Image">
 		<param name="Name" value="ISO Features - Split Method">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.7_ISO_Features\1.7.5_Split_Method.htm">
 		<param name="Name" value="Glossary of Terms - Image / WIM">
 		<param name="Local" value="5_Glossary_of_Terms\5.8_Image.htm">
 		</OBJECT>
@@ -2109,14 +2109,14 @@
 		<param name="Name" value="Configuration - x86 Update Whitelist">
 		<param name="Local" value="2_Configuration\2.2_Update_Whitelist.htm">
 		<param name="Name" value="Package Properties - Integrated Windows Updates">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
+		<param name="Local" value="1_Slips7ream_Interface\1.3_Image_Packages\1.3.2_Package_Properties\1.3.2.2_Integrated_Windows_Updates.htm">
 		<param name="Name" value="Glossary of Terms - Windows Update">
 		<param name="Local" value="5_Glossary_of_Terms\5.18_Windows_Update.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Work Priority">
-		<param name="Name" value="SLIPS7REAM Interface - Process Priority">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.8_Process_Priority.htm">
+		<param name="Name" value="Slips7ream Interface - Process Priority">
+		<param name="Local" value="1_Slips7ream_Interface\1.8_Process_Priority.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="x64">
@@ -2127,8 +2127,8 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="x64 Service Pack">
-		<param name="Name" value="SLIPS7REAM Interface - Service Pack">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.4_Service_Pack.htm">
+		<param name="Name" value="Slips7ream Interface - Service Pack">
+		<param name="Local" value="1_Slips7ream_Interface\1.4_Service_Pack.htm">
 		<param name="Name" value="Glossary of Terms - Service Pack">
 		<param name="Local" value="5_Glossary_of_Terms\5.13_Service_Pack.htm">
 		</OBJECT>
@@ -2141,8 +2141,8 @@
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="x86 Service Pack">
-		<param name="Name" value="SLIPS7REAM Interface - Service Pack">
-		<param name="Local" value="1_SLIPS7REAM_Interface\1.4_Service_Pack.htm">
+		<param name="Name" value="Slips7ream Interface - Service Pack">
+		<param name="Local" value="1_Slips7ream_Interface\1.4_Service_Pack.htm">
 		<param name="Name" value="Glossary of Terms - Service Pack">
 		<param name="Local" value="5_Glossary_of_Terms\5.13_Service_Pack.htm">
 		</OBJECT>
