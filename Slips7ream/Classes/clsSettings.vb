@@ -494,3 +494,221 @@
     ActiveHive.OpenSubKey("Driver Colors", True).SetValue("BootAndPE", c_DriverColorBootAndPE.ToArgb, Microsoft.Win32.RegistryValueKind.DWord)
   End Sub
 End Class
+Public Class MyPrerequisites
+  Public Structure Updates_Prerequisite
+    Public KBWithRequirement As String
+    Public Requirement()() As String
+    Public Sub New(Input As String)
+      If Not Input.Contains(":") Then Return
+      Dim splitInput() As String = Split(Input, ":", 2)
+      KBWithRequirement = splitInput(0)
+      If splitInput(1).Contains("/") Then
+        Dim splitRequirement() As String = Split(splitInput(1), "/", 2)
+        Dim reqCount As Integer = 0
+        For Each reqList In splitRequirement
+          If String.IsNullOrEmpty(reqList) Then Continue For
+          ReDim Preserve Requirement(reqCount)
+          If Not reqList.Contains(",") Then
+            Requirement(reqCount) = {reqList}
+          Else
+            Requirement(reqCount) = Split(reqList, ",")
+          End If
+          reqCount += 1
+        Next
+      Else
+        ReDim Requirement(0)
+        If Not splitInput(1).Contains(",") Then
+          Requirement(0) = {splitInput(1)}
+        Else
+          Requirement(0) = Split(splitInput(1), ",")
+        End If
+      End If
+    End Sub
+  End Structure
+  Private c_PrerequisiteList() As Updates_Prerequisite
+  Private c_PrereqVer As Version
+  Public ReadOnly Property DatabaseVersion As Version
+    Get
+      Return c_PrereqVer
+    End Get
+  End Property
+  Public ReadOnly Property PrerequisiteList As Updates_Prerequisite()
+    Get
+      Return c_PrerequisiteList
+    End Get
+  End Property
+  Public Sub New()
+    If My.Computer.Registry.CurrentUser.OpenSubKey("Software").GetSubKeyNames.Contains(Application.CompanyName) Then
+      If My.Computer.Registry.CurrentUser.OpenSubKey(IO.Path.Combine("Software", Application.CompanyName)).GetSubKeyNames.Contains(Application.ProductName) Then
+        If My.Computer.Registry.CurrentUser.OpenSubKey(IO.Path.Combine("Software", Application.CompanyName, Application.ProductName)).GetSubKeyNames.Contains("Prerequisite.db") Then
+          ReadRegistry()
+          Return
+        End If
+      End If
+    End If
+    ReadLegacy()
+  End Sub
+  Private Sub ReadRegistry()
+    Dim Hive As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.OpenSubKey(IO.Path.Combine("Software", Application.CompanyName, Application.ProductName, "Prerequisite.db"))
+    Dim sVersion As String = CStr(Hive.GetValue(Nothing, "2009.01"))
+    c_PrereqVer = New Version(sVersion)
+    If Hive.ValueCount <= 1 Then
+      ReadLegacy()
+      Return
+    End If
+    ReDim c_PrerequisiteList(Hive.ValueCount - 2)
+    Dim I As Integer = 0
+    For Each sRequiree As String In Hive.GetValueNames
+      If String.IsNullOrEmpty(sRequiree) Then Continue For
+      Dim preReq As New Updates_Prerequisite(sRequiree & ":" & Join(CType(Hive.GetValue(sRequiree, ""), String()), "/"))
+      c_PrerequisiteList(I) = preReq
+      I += 1
+    Next
+  End Sub
+  Private Sub ReadLegacy()
+    c_PrereqVer = New Version(2009, 1)
+    c_PrerequisiteList = {
+      New Updates_Prerequisite("2592687:2574819/3125574"),
+      New Updates_Prerequisite("2830477:2574819,2857650"),
+      New Updates_Prerequisite("2718695:2533623,2639308,2670838,2729094,2731771,2786081/3125574,2639308,2670838,2729094"),
+      New Updates_Prerequisite("2841134:2533623,2639308,2670838,2729094,2731771,2786081,2834140,2882822,2888049,2849696,2849697/3125574,2670838,2729094,2849696,2849697"),
+      New Updates_Prerequisite("2923545:2830477"),
+      New Updates_Prerequisite("2965788:2830477/3125574"),
+      New Updates_Prerequisite("2984976:2830477,2984972,2592687/3125574,2984972,2592687"),
+      New Updates_Prerequisite("3020388:2830477/3125574"),
+      New Updates_Prerequisite("3042058:3020369/3177467"),
+      New Updates_Prerequisite("3042839:2830477/3125574"),
+      New Updates_Prerequisite("3075226:2830477/3125574"),
+      New Updates_Prerequisite("3082849:3078071"),
+      New Updates_Prerequisite("3095316:3087038"),
+      New Updates_Prerequisite("3125574:3020369/3177467"),
+      New Updates_Prerequisite("3126446:2830477/3125574")
+    }
+    Save()
+  End Sub
+  Public Function Import(inData As String) As Boolean
+    Dim sData() As String = Split(inData, vbLf)
+    Dim sDataVer As String = sData(0)
+    Dim dNewVer As New Version(sDataVer)
+    If (dNewVer.Major > c_PrereqVer.Major) OrElse ((dNewVer.Major = c_PrereqVer.Major) And (dNewVer.Minor > c_PrereqVer.Minor)) Then
+      c_PrereqVer = dNewVer
+      ReDim c_PrerequisiteList(sData.Length - 2)
+      For I As Integer = 1 To sData.Length - 1
+        c_PrerequisiteList(I - 1) = New Updates_Prerequisite(sData(I))
+      Next
+      Save()
+      Return True
+    End If
+    Return False
+  End Function
+  Private Sub Save()
+    If Not My.Computer.Registry.CurrentUser.OpenSubKey("Software").GetSubKeyNames.Contains(Application.CompanyName) Then My.Computer.Registry.CurrentUser.OpenSubKey("Software", True).CreateSubKey(Application.CompanyName)
+    If Not My.Computer.Registry.CurrentUser.OpenSubKey(IO.Path.Combine("Software", Application.CompanyName)).GetSubKeyNames.Contains(Application.ProductName) Then My.Computer.Registry.CurrentUser.OpenSubKey(IO.Path.Combine("Software", Application.CompanyName), True).CreateSubKey(Application.ProductName)
+    If Not My.Computer.Registry.CurrentUser.OpenSubKey(IO.Path.Combine("Software", Application.CompanyName, Application.ProductName)).GetSubKeyNames.Contains("Prerequisite.db") Then My.Computer.Registry.CurrentUser.OpenSubKey(IO.Path.Combine("Software", Application.CompanyName, Application.ProductName), True).CreateSubKey("Prerequisite.db")
+    Dim ActiveHive As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.OpenSubKey(IO.Path.Combine("Software", Application.CompanyName, Application.ProductName, "Prerequisite.db"), True)
+    ActiveHive.SetValue(Nothing, c_PrereqVer.ToString(2))
+    For Each sOldRequiree As String In ActiveHive.GetValueNames
+      If String.IsNullOrEmpty(sOldRequiree) Then Continue For
+      ActiveHive.DeleteValue(sOldRequiree)
+    Next
+    For Each Requiree As Updates_Prerequisite In c_PrerequisiteList
+      Dim sReqData As New List(Of String)
+      For Each Prereq() As String In Requiree.Requirement
+        sReqData.Add(Join(Prereq, ","))
+      Next
+      ActiveHive.SetValue(Requiree.KBWithRequirement, sReqData.ToArray, Microsoft.Win32.RegistryValueKind.MultiString)
+    Next
+  End Sub
+End Class
+Public Class MyReplacements
+  Public Structure Updates_Replacement
+    Public NewKB As String
+    Public OldKBs() As String
+    Public Sub New(Input As String)
+      If Not Input.Contains(":") Then Return
+      Dim splitInput() As String = Split(Input, ":", 2)
+      NewKB = splitInput(0)
+      If Not splitInput(1).Contains(",") Then
+        OldKBs = {splitInput(1)}
+      Else
+        OldKBs = Split(splitInput(1), ",")
+      End If
+    End Sub
+  End Structure
+  Private c_ReplacementList() As Updates_Replacement
+  Private c_ReplaceVer As Version
+  Public ReadOnly Property DatabaseVersion As Version
+    Get
+      Return c_ReplaceVer
+    End Get
+  End Property
+  Public ReadOnly Property ReplacementList As Updates_Replacement()
+    Get
+      Return c_ReplacementList
+    End Get
+  End Property
+  Public Sub New()
+    If My.Computer.Registry.CurrentUser.OpenSubKey("Software").GetSubKeyNames.Contains(Application.CompanyName) Then
+      If My.Computer.Registry.CurrentUser.OpenSubKey(IO.Path.Combine("Software", Application.CompanyName)).GetSubKeyNames.Contains(Application.ProductName) Then
+        If My.Computer.Registry.CurrentUser.OpenSubKey(IO.Path.Combine("Software", Application.CompanyName, Application.ProductName)).GetSubKeyNames.Contains("Replacement.db") Then
+          ReadRegistry()
+          Return
+        End If
+      End If
+    End If
+    ReadLegacy()
+  End Sub
+  Private Sub ReadRegistry()
+    Dim Hive As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.OpenSubKey(IO.Path.Combine("Software", Application.CompanyName, Application.ProductName, "Replacement.db"))
+    Dim sVersion As String = CStr(Hive.GetValue(Nothing, "2009.01"))
+    c_ReplaceVer = New Version(sVersion)
+    If Hive.ValueCount <= 1 Then
+      ReadLegacy()
+      Return
+    End If
+    ReDim c_ReplacementList(Hive.ValueCount - 2)
+    Dim I As Integer = 0
+    For Each sReplacer As String In Hive.GetValueNames
+      If String.IsNullOrEmpty(sReplacer) Then Continue For
+      Dim rePlace As New Updates_Replacement(sReplacer & ":" & Join(CType(Hive.GetValue(sReplacer, ""), String()), ","))
+      c_ReplacementList(I) = rePlace
+      I += 1
+    Next
+  End Sub
+  Private Sub ReadLegacy()
+    c_ReplaceVer = New Version(2009, 1)
+    c_ReplacementList = {
+      New Updates_Replacement("3125574:2574819,2603229,2607047,2607576,2633952,2639308,2640148,2647753,2660075,2661254,2677070,2679255,2699779,2709630,2709981,2719857,2726535,2731771,2732059,2732487,2732500,2735855,2739159,2741355,2749655,2756822,2760730,2762895,2763523,2773072,2779562,2786081,2786400,2791765,2794119,2798162,2799926,2800095,2808679,2813956,2829104,2830477,2834140,2835174,2836502,2843630,2846960,2846960,2847077,2852386,2853952,2863058,2868116,2882822,2888049,2890882,2891804,2893519,2904266,2905454,2908783,2913152,2913431,2913751,2918077,2919469,2922717,2923398,2923545,2928562,2929733,2929755,2966583,2970228,2973337,2977728,2978092,2980245,2981580,2985461,2994023,2998527,2999226,3000988,3001554,3004394,3005788,3006121,3006137,3006625,3008627,3009736,3013410,3013531,3014406,3020338,3020370,3040272,3045645,3048761,3049874,3054476,3065979,3068708,3075249,3077715,3078667,3080079,3080149,3081954,3092627,3095649,3102429,3107998,3112148,3118401,3121255,3133977,3137061,3138378,3138901,3147071,3148851")
+    }
+    Save()
+  End Sub
+  Public Function Import(inData As String) As Boolean
+    Dim sData() As String = Split(inData, vbLf)
+    Dim sDataVer As String = sData(0)
+    Dim dNewVer As New Version(sDataVer)
+    If (dNewVer.Major > c_ReplaceVer.Major) OrElse ((dNewVer.Major = c_ReplaceVer.Major) And (dNewVer.Minor > c_ReplaceVer.Minor)) Then
+      c_ReplaceVer = dNewVer
+      ReDim c_ReplacementList(sData.Length - 2)
+      For I As Integer = 1 To sData.Length - 1
+        c_ReplacementList(I - 1) = New Updates_Replacement(sData(I))
+      Next
+      Save()
+      Return True
+    End If
+    Return False
+  End Function
+  Private Sub Save()
+    If Not My.Computer.Registry.CurrentUser.OpenSubKey("Software").GetSubKeyNames.Contains(Application.CompanyName) Then My.Computer.Registry.CurrentUser.OpenSubKey("Software", True).CreateSubKey(Application.CompanyName)
+    If Not My.Computer.Registry.CurrentUser.OpenSubKey(IO.Path.Combine("Software", Application.CompanyName)).GetSubKeyNames.Contains(Application.ProductName) Then My.Computer.Registry.CurrentUser.OpenSubKey(IO.Path.Combine("Software", Application.CompanyName), True).CreateSubKey(Application.ProductName)
+    If Not My.Computer.Registry.CurrentUser.OpenSubKey(IO.Path.Combine("Software", Application.CompanyName, Application.ProductName)).GetSubKeyNames.Contains("Replacement.db") Then My.Computer.Registry.CurrentUser.OpenSubKey(IO.Path.Combine("Software", Application.CompanyName, Application.ProductName), True).CreateSubKey("Replacement.db")
+    Dim ActiveHive As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.OpenSubKey(IO.Path.Combine("Software", Application.CompanyName, Application.ProductName, "Replacement.db"), True)
+    ActiveHive.SetValue(Nothing, c_ReplaceVer.ToString(2))
+    For Each sOldRequiree As String In ActiveHive.GetValueNames
+      If String.IsNullOrEmpty(sOldRequiree) Then Continue For
+      ActiveHive.DeleteValue(sOldRequiree)
+    Next
+    For Each Replacee As Updates_Replacement In c_ReplacementList
+      ActiveHive.SetValue(Replacee.NewKB, Replacee.OldKBs, Microsoft.Win32.RegistryValueKind.MultiString)
+    Next
+  End Sub
+End Class
