@@ -1,4 +1,5 @@
 ﻿Public Structure Update_Integrated
+  Public [Type] As UpdateFileType
   Public Parent As ImagePackage
   Public Remove As Boolean
   Public Identity As String
@@ -7,21 +8,47 @@
   Public InstallTime As String
   Public Ident As Update_Identity
   Public UpdateInfo As Update_Integrated_Info
+  Public Sub New(owner As ImagePackage, Absent As Boolean)
+    Parent = owner
+    If Absent Then
+      Type = UpdateFileType.Absent
+    Else
+      Type = UpdateFileType.Empty
+    End If
+    Remove = False
+    Identity = Nothing
+    Ident = Nothing
+    State = Nothing
+    ReleaseType = Nothing
+    InstallTime = Nothing
+    UpdateInfo = Nothing
+  End Sub
   Public Sub New(owner As ImagePackage, Info As String)
-    Dim infoLines() As String = Split(Info, vbNewLine)
-    For I As Integer = 0 To infoLines.Length - 1
-      Dim line As String = infoLines(I)
-      If line.StartsWith("Package Identity :") Then
-        Identity = GetVal(line)
-        Ident = New Update_Identity(Identity)
-      ElseIf line.StartsWith("State :") Then
-        State = GetVal(line)
-      ElseIf line.StartsWith("Release Type :") Then
-        ReleaseType = GetVal(line)
-      ElseIf line.StartsWith("Install Time :") Then
-        InstallTime = GetVal(line)
-      End If
-    Next
+    Parent = owner
+    If Not String.IsNullOrEmpty(Info) AndAlso Info.Contains(vbNewLine) Then
+      Dim infoLines() As String = Split(Info, vbNewLine)
+      For I As Integer = 0 To infoLines.Length - 1
+        Dim line As String = infoLines(I)
+        If line.StartsWith("Package Identity :") Then
+          Identity = GetVal(line)
+          Ident = New Update_Identity(Identity)
+        ElseIf line.StartsWith("State :") Then
+          State = GetVal(line)
+        ElseIf line.StartsWith("Release Type :") Then
+          ReleaseType = GetVal(line)
+        ElseIf line.StartsWith("Install Time :") Then
+          InstallTime = GetVal(line)
+        End If
+      Next
+      Type = UpdateFileType.Update
+    Else
+      Type = UpdateFileType.Failure
+      Identity = Nothing
+      Ident = Nothing
+      State = Nothing
+      ReleaseType = Nothing
+      InstallTime = Nothing
+    End If
     Remove = False
     UpdateInfo = Nothing
   End Sub

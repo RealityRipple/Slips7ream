@@ -1,4 +1,5 @@
 ﻿Public Structure Update_File
+  Public [Type] As UpdateFileType
   Public Path As String
   Public Identity As String
   Public Name As String
@@ -15,10 +16,30 @@
   Public ReleaseType As String
   Public AllowedOffline As Boolean
   Private Shared Extract_ReturnList As New List(Of String)
+  Public Sub New(Absent As Boolean)
+    If Absent Then
+      Type = UpdateFileType.Absent
+    Else
+      Type = UpdateFileType.Empty
+    End If
+    Name = Nothing
+    DisplayName = Nothing
+    AppliesTo = Nothing
+    SupportLink = Nothing
+    Architecture = Nothing
+    Identity = Nothing
+    Ident = Nothing
+    KBArticle = Nothing
+    KBVersion = Nothing
+    BuildDate = Nothing
+    ReleaseType = Nothing
+    Failure = Nothing
+  End Sub
   Public Sub New(Location As String)
     Path = Location
     Failure = Nothing
     AllowedOffline = True
+    Type = UpdateFileType.Failure
     If IO.File.Exists(Location) Then
       Select Case GetUpdateType(Location)
         Case UpdateType.MSU
@@ -152,6 +173,7 @@
                 If xMUMallowedOffline IsNot Nothing AndAlso xMUMallowedOffline.Value.Trim.ToLower = "false" Then AllowedOffline = False
               End If
             End If
+            Type = UpdateFileType.Update
           Catch ex As Exception
             Failure = ex.Message
           Finally
@@ -205,6 +227,7 @@
             AppliesTo = xParentAssemblyIdentity.Attribute("name").Value
             Dim wDate As Date = New IO.FileInfo(IO.Path.Combine(CABPath, "update.mum")).CreationTime
             BuildDate = wDate.ToString("yyyy/MM/dd")
+            Type = UpdateFileType.Update
           Catch ex As Exception
             Failure = ex.Message
           Finally
@@ -234,7 +257,7 @@
             End If
             Dim xMUM As XElement = XElement.Load(IO.Path.Combine(LPPath, "update.mum"))
             Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
-            SupportLink = Nothing '"http://windows.microsoft.com/en-us/windows/language-packs#lptabs=win7"
+            SupportLink = Nothing 'clsUpdate.ProtoURL("//windows.microsoft.com/en-us/windows/language-packs#lptabs=win7")
             Architecture = xAssemblyIdentity.Attribute("processorArchitecture").Value
             Identity = MakeIdentity(xAssemblyIdentity.Attribute("name").Value, xAssemblyIdentity.Attribute("publicKeyToken").Value, Architecture, xAssemblyIdentity.Attribute("language").Value, xAssemblyIdentity.Attribute("version").Value)
             Ident = New Update_Identity(Identity)
@@ -252,11 +275,11 @@
             If xInfo.Attribute("LPTargetSPLevel").Value = "1" Then
               AppliesTo = "Windows 7 SP1"
               KBArticle = "248313"
-              SupportLink = String.Format("http://support.microsoft.com?kbid={0}", KBArticle)
+              SupportLink = clsUpdate.ProtoURL(String.Format("//support.microsoft.com?kbid={0}", KBArticle))
             ElseIf xInfo.Attribute("LPTargetSPLevel").Value = "0" Then
               AppliesTo = "Windows 7"
               KBArticle = "972813"
-              SupportLink = String.Format("http://support.microsoft.com?kbid={0}", KBArticle)
+              SupportLink = clsUpdate.ProtoURL(String.Format("//support.microsoft.com?kbid={0}", KBArticle))
             Else
               AppliesTo = String.Format("Windows 7 SP{0}", xInfo.Attribute("LPTargetSPLevel").Value)
               KBArticle = Nothing
@@ -264,6 +287,7 @@
             End If
             Dim wDate As Date = New IO.FileInfo(IO.Path.Combine(LPPath, "update.mum")).CreationTime
             BuildDate = wDate.ToString("yyyy/MM/dd")
+            Type = UpdateFileType.Language
           Catch ex As Exception
             Failure = ex.Message
           Finally
@@ -293,7 +317,7 @@
             End If
             Dim xMUM As XElement = XElement.Load(IO.Path.Combine(MLCPath, "update.mum"))
             Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
-            SupportLink = "http://windows.microsoft.com/en-us/windows/language-packs#lptabs=win7"
+            SupportLink = clsUpdate.ProtoURL("//windows.microsoft.com/en-us/windows/language-packs#lptabs=win7")
             Architecture = xAssemblyIdentity.Attribute("processorArchitecture").Value
             Identity = MakeIdentity(xAssemblyIdentity.Attribute("name").Value, xAssemblyIdentity.Attribute("publicKeyToken").Value, Architecture, xAssemblyIdentity.Attribute("language").Value, xAssemblyIdentity.Attribute("version").Value)
             Ident = New Update_Identity(Identity)
@@ -316,6 +340,7 @@
             End If
             Dim wDate As Date = New IO.FileInfo(IO.Path.Combine(MLCPath, "update.mum")).CreationTime
             BuildDate = wDate.ToString("yyyy/MM/dd")
+            Type = UpdateFileType.Language
           Catch ex As Exception
             Failure = ex.Message
           Finally
@@ -379,7 +404,7 @@
             End If
             Dim xMUM As XElement = XElement.Load(IO.Path.Combine(MSIPath, "update.mum"))
             Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
-            SupportLink = "http://windows.microsoft.com/en-us/windows/language-packs#lptabs=win7"
+            SupportLink = clsUpdate.ProtoURL("//windows.microsoft.com/en-us/windows/language-packs#lptabs=win7")
             Architecture = xAssemblyIdentity.Attribute("processorArchitecture").Value
             Identity = MakeIdentity(xAssemblyIdentity.Attribute("name").Value, xAssemblyIdentity.Attribute("publicKeyToken").Value, Architecture, xAssemblyIdentity.Attribute("language").Value, xAssemblyIdentity.Attribute("version").Value)
             Ident = New Update_Identity(Identity)
@@ -402,6 +427,7 @@
             End If
             Dim wDate As Date = New IO.FileInfo(IO.Path.Combine(MSIPath, "update.mum")).CreationTime
             BuildDate = wDate.ToString("yyyy/MM/dd")
+            Type = UpdateFileType.Update
           Catch ex As Exception
             Failure = ex.Message
           Finally
@@ -422,7 +448,7 @@
                   If IO.File.Exists(IO.Path.Combine(EXEPath, "update.mum")) Then
                     Dim xMUM As XElement = XElement.Load(IO.Path.Combine(EXEPath, "update.mum"))
                     DisplayName = xMUM.Attribute("displayName").Value
-                    SupportLink = "http://support.microsoft.com?kbid=949104"
+                    SupportLink = clsUpdate.ProtoURL("//support.microsoft.com?kbid=949104")
                     Dim xAssemblyIdentity As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}assemblyIdentity")
                     Architecture = xAssemblyIdentity.Attribute("processorArchitecture").Value
                     Identity = MakeIdentity(xAssemblyIdentity.Attribute("name").Value, xAssemblyIdentity.Attribute("publicKeyToken").Value, Architecture, xAssemblyIdentity.Attribute("language").Value, xAssemblyIdentity.Attribute("version").Value)
@@ -439,6 +465,7 @@
                     Dim xPackage As XElement = xMUM.Element("{urn:schemas-microsoft-com:asm.v3}package")
                     ReleaseType = xPackage.Attribute("releaseType").Value
                     Name = GetUpdateName(Ident, ReleaseType)
+                    Type = UpdateFileType.Update
                   Else
                     Failure = "Description File Not Found"
                   End If
@@ -474,11 +501,11 @@
                 If xInfo.Attribute("LPTargetSPLevel").Value = "1" Then
                   AppliesTo = "Windows 7 SP1"
                   KBArticle = "248313"
-                  SupportLink = String.Format("http://support.microsoft.com?kbid={0}", KBArticle)
+                  SupportLink = clsUpdate.ProtoURL(String.Format("//support.microsoft.com?kbid={0}", KBArticle))
                 ElseIf xInfo.Attribute("LPTargetSPLevel").Value = "0" Then
                   AppliesTo = "Windows 7"
                   KBArticle = "972813"
-                  SupportLink = String.Format("http://support.microsoft.com?kbid={0}", KBArticle)
+                  SupportLink = clsUpdate.ProtoURL(String.Format("//support.microsoft.com?kbid={0}", KBArticle))
                 Else
                   AppliesTo = String.Format("Windows 7 SP{0}", xInfo.Attribute("LPTargetSPLevel").Value)
                   KBArticle = Nothing
@@ -486,6 +513,7 @@
                 End If
                 Dim wDate As Date = New IO.FileInfo(IO.Path.Combine(EXEPath, "update.mum")).CreationTime
                 BuildDate = wDate.ToString("yyyy/MM/dd")
+                Type = UpdateFileType.Update
               Else
                 Failure = "Description file not found"
               End If
@@ -496,22 +524,27 @@
           If IO.Directory.Exists(EXEPath) Then SlowDeleteDirectory(EXEPath, FileIO.DeleteDirectoryOption.DeleteAllContents, False)
         Case UpdateType.INF
           DriverData = frmMain.DISM_DriverINF_GetData(Path)
-          Name = "DRIVER"
+          Name = Nothing
           DisplayName = Nothing
           AppliesTo = Nothing
           SupportLink = Nothing
           Architecture = Nothing
+          Identity = Nothing
+          Ident = Nothing
           KBArticle = Nothing
           KBVersion = Nothing
           BuildDate = Nothing
           Failure = Nothing
           ReleaseType = Nothing
+          Type = UpdateFileType.Driver
         Case UpdateType.Other
           Name = Nothing
           DisplayName = Nothing
           AppliesTo = Nothing
           SupportLink = Nothing
           Architecture = Nothing
+          Identity = Nothing
+          Ident = Nothing
           KBArticle = Nothing
           KBVersion = Nothing
           BuildDate = Nothing
@@ -526,6 +559,19 @@
             End Select
           End If
       End Select
+    Else
+      Name = Nothing
+      DisplayName = Nothing
+      AppliesTo = Nothing
+      SupportLink = Nothing
+      Architecture = Nothing
+      Identity = Nothing
+      Ident = Nothing
+      KBArticle = Nothing
+      KBVersion = Nothing
+      BuildDate = Nothing
+      ReleaseType = Nothing
+      Type = UpdateFileType.Empty
     End If
   End Sub
   Private Function Extract_File(Source As String, Destination As String, File As String) As String
